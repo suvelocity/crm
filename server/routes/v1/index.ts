@@ -1,9 +1,11 @@
-const { Router } = require("express");
+import { Request, Response, Router } from "express";
+
 const router = Router();
-const unknownEndpoint = (req, res) => {
+
+const unknownEndpoint = (req: Request, res: Response) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 router.use("/classroom", require("./classroom"));
 
 router.use(unknownEndpoint);
-module.exports = router;
+export default router;
