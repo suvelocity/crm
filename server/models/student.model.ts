@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+import { required } from "joi";
+import mongoose, { Schema, Document } from "mongoose";
 import validator from "validator";
+
 // שם מלא , גיל ,ת.ז ,נייד  ,מקום מגורים , מצב משפחתי, ילדים, רקע אקדמי  (תאריכי התחלה וסיום),שם הכשרה,( Adva, Excellenteam, Cybers)(תאריכי תחילה וסיום)
 // שירות צבאי
 // ניסיון תעסוקתי קודם
@@ -7,7 +9,17 @@ import validator from "validator";
 // אזרחות
 // הערות נוספות
 
-const studentSchema = new mongoose.Schema({
+interface IStudent extends Document {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  idNumber: string;
+  description: string;
+  course: mongoose.Schema.Types.ObjectId;
+}
+
+const studentSchema: Schema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -22,10 +34,12 @@ const studentSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
+    trim: true,
   },
   lastName: {
     type: String,
     required: true,
+    trim: true,
   },
   phone: {
     type: String,
@@ -36,23 +50,29 @@ const studentSchema = new mongoose.Schema({
       },
       message: "mobile must be valid",
     },
+    trim: true,
   },
   idNumber: {
     type: String,
+
     required: true,
+    trim: true,
   },
   description: {
     type: String,
     required: true,
+    trim: true,
   },
   address: {
     type: String,
     required: true,
+    trim: true,
   },
-  course: {
+  class: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
+    ref: "Class",
+    required: true,
   },
 });
 
-export default mongoose.model("Student", studentSchema);
+export default mongoose.model<IStudent>("Student", studentSchema);
