@@ -8,4 +8,4 @@ const unknownEndpoint = (req: Request, res: Response) => {
 router.use("/classroom", require("./classroom"));
 
 router.use(unknownEndpoint);
-export default router;
+module.exports = router;

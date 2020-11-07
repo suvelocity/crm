@@ -4,4 +4,4 @@ const api = express.Router();
 
 api.use("/v1", require("./v1"));
 
-export default api;
+module.exports = api;

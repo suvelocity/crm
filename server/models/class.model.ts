@@ -1,17 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 import validator from "validator";
 
-interface IClass extends Document {
-  className: string;
+export interface IClass extends Document {
+  name: string;
   courseName: string;
   cycleNumber: number;
-  startDate: Date;
-  endDate: Date;
+  startDate: number;
+  endDate: number;
   zoomLink: string;
 }
 
 const classSchema: Schema = new mongoose.Schema({
-  className: {
+  name: {
     type: String,
     required: true,
   },
@@ -25,11 +25,11 @@ const classSchema: Schema = new mongoose.Schema({
     required: true,
   },
   startDate: {
-    type: Date,
+    type: Number,
     required: true,
   },
   endDate: {
-    type: String,
+    type: Number,
     required: true,
   },
   zoomLink: {

@@ -2,13 +2,6 @@ import { required } from "joi";
 import mongoose, { Schema, Document } from "mongoose";
 import validator from "validator";
 
-// שם מלא , גיל ,ת.ז ,נייד  ,מקום מגורים , מצב משפחתי, ילדים, רקע אקדמי  (תאריכי התחלה וסיום),שם הכשרה,( Adva, Excellenteam, Cybers)(תאריכי תחילה וסיום)
-// שירות צבאי
-// ניסיון תעסוקתי קודם
-// שפות (ורמת שליטה)
-// אזרחות
-// הערות נוספות
-
 interface IStudent extends Document {
   email: string;
   firstName: string;
