@@ -5,16 +5,16 @@ import mongoose from "mongoose";
 
 const url = process.env.DB_URI;
 
-console.log(`trying to connect to My Ass`);
-console.log("Amir is a SNAKE");
-console.log("Shahr is a SEXYYYYYYY");
-console.log("I Love Tomer ");
-console.log("Nitzan is a LORD");
+console.log(`trying to connect to DB`);
+// console.log("Amir is a SNAKE");
+// console.log("Shahr is an ASS");
+// console.log("I Love Tomer ");
+// console.log("Nitzan is a LORD");
 mongoose.set("useFindAndModify", false);
 
 mongoose
   .connect(url!, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((r) => console.log("connected successfully to My Ass Babyy"))
+  .then((r) => console.log("connected successfully to DB"))
   .catch((e) => console.log(`failed to connect to MongoDB\n${e.message}`));
 
 const app = express();

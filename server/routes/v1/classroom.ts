@@ -34,7 +34,7 @@ router.put("/:id", (req: Request, res: Response) => {
 router.delete("/:id", (req: Request, res: Response) => {
   ClassRoom.findByIdAndDelete(req.params.id)
     .then(() => res.status(204).json({ success: true }))
-    .catch((e) => res.sendStatus(500));
+    .catch((e: Error) => res.sendStatus(500));
 });
 
 module.exports = router;

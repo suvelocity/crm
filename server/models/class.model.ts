@@ -8,6 +8,7 @@ export interface IClassRoom extends Document {
   startDate: number;
   endDate: number;
   zoomLink: string;
+  students: mongoose.Schema.Types.ObjectId[];
 }
 
 const classRoomSchema: Schema = new mongoose.Schema(
@@ -36,6 +37,9 @@ const classRoomSchema: Schema = new mongoose.Schema(
     zoomLink: {
       type: String,
       required: true,
+    },
+    students: {
+      type: [mongoose.Schema.Types.ObjectId],
     },
   },
   {

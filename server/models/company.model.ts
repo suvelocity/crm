@@ -8,6 +8,7 @@ interface ICompany extends Document {
   contactEmail: string;
   location: string;
   ScaleUpContact: string;
+  jobs: mongoose.Schema.Types.ObjectId[];
 }
 
 const companySchema: Schema = new mongoose.Schema({
@@ -42,6 +43,9 @@ const companySchema: Schema = new mongoose.Schema({
   ScaleUpContact: {
     type: String,
     required: true,
+  },
+  jobs: {
+    type: [mongoose.Schema.Types.ObjectId],
   },
 });
 
