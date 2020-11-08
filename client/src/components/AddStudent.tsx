@@ -7,6 +7,12 @@ import WarningIcon from "@material-ui/icons/Warning";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+
+import styled from "styled-components";
 
 interface IStudent {
   email: string;
@@ -20,7 +26,6 @@ interface IStudent {
 
 function AddStudent() {
   const { register, handleSubmit, errors } = useForm();
-  console.log(errors == undefined);
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
@@ -30,123 +35,219 @@ function AddStudent() {
   };
 
   return (
-    <div>
-      <h1>Add Student</h1>
+    <Wrapper>
+      <TitleWrapper>
+        <Tooltip title="hell">
+          <H1>Add Student</H1>
+        </Tooltip>
+      </TitleWrapper>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input
+        <TextField
+          label="Email"
           name="email"
-          ref={register({
+          inputRef={register({
             required: "Email is required",
             pattern: {
               value: validEmailRegex,
               message: "Please Enter a Valid Email",
             },
           })}
-          placeholder="Email"
         />
         {!empty ? (
           errors.email ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.email.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.email && errors.email.message}
         <br />
-        <input
+        <TextField
           name="firstName"
-          ref={register({ required: "First name is required" })}
-          placeholder="First Name"
+          inputRef={register({ required: "First name is required" })}
+          label="First Name"
         />
         {!empty ? (
           errors.firstName ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.firstName.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.firstName && errors.firstName.message}
         <br />
-        <input
+        <TextField
           name="lastName"
-          ref={register({ required: "Last Name is required" })}
-          placeholder="Last Name"
+          inputRef={register({ required: "Last Name is required" })}
+          label="Last Name"
         />
         {!empty ? (
           errors.lastName ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.lastName.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.lastName && errors.lastName.message}
         <br />
-        <input
+        <TextField
           name="phone"
-          ref={register({
+          inputRef={register({
             required: "Phone is required",
             pattern: {
               value: validPhoneNumberRegex,
               message: "invalid phone number",
             },
           })}
-          placeholder="Phone Number"
+          label="Phone Number"
         />
         {!empty ? (
           errors.phone ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.phone.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.phone && errors.phone.message}
         <br />
-        <input
+        <TextField
           name="idNumber"
-          ref={register({ required: "ID Number is required" })}
-          placeholder="ID Number"
+          inputRef={register({ required: "ID Number is required" })}
+          label="ID Number"
         />
         {!empty ? (
           errors.idNumber ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.idNumber.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.idNumber && errors.idNumber.message}
         <br />
-        <input
+        <TextField
+          multiline
+          style={{ width: "196px" }}
           name="description"
-          ref={register({ required: "Description is required" })}
-          placeholder="Description"
+          inputRef={register({ required: "Description is required" })}
+          label="Description"
         />
         {!empty ? (
           errors.description ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.description.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.description && errors.description.message}
         <br />
-        <input
+        <TextField
           name="course"
-          ref={register({ required: "Course is required" })}
-          placeholder="Course"
+          inputRef={register({ required: "Course is required" })}
+          label="Course"
         />
         {!empty ? (
           errors.course ? (
-            <ErrorOutlineIcon color="error" />
+            <Tooltip title={errors.course.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
           ) : (
-            <DoneIcon color="action" />
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
           )
         ) : null}
-        {errors.course && errors.course.message}
         <br />
-        <button type="submit">Submit</button>
+        <br />
+        <Button variant="contained" color="primary" type="submit">
+          Submit
+        </Button>
       </form>
-    </div>
+    </Wrapper>
   );
 }
 
 export default AddStudent;
+
+const H1 = styled.h1`
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 27px;
+  color: white;
+  position: relative;
+  left: -50%;
+  top: -80px;
+  background-color: #3f51b5;
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 180px;
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+`;
+
+const TitleWrapper = styled.div`
+  position: absolute;
+  left: 50%;
+`;
+
+const Wrapper = styled.div`
+  margin: 5% auto;
+  width: 70%;
+  text-align: center;
+  padding: 40px;
+  border-radius: 7px;
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  min-width: 300px;
+  max-width: 700px;
+`;
