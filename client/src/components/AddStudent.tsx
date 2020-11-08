@@ -1,5 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import network from "../helpers/network";
+import { validEmailRegex, validPhoneNumberRegex } from "../helpers/patterns";
+import CloseIcon from "@material-ui/icons/Close";
+import WarningIcon from "@material-ui/icons/Warning";
+import DoneIcon from "@material-ui/icons/Done";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface IStudent {
   email: string;
@@ -12,87 +19,129 @@ interface IStudent {
 }
 
 function AddStudent() {
-  const [email, setEmail] = useState<string>("");
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [idNumber, setIdNumber] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [course, setCourse] = useState<string>("");
+  const { register, handleSubmit, errors } = useForm();
+  console.log(errors == undefined);
 
-  const handleSubmit = useCallback(async () => {
-    const student: IStudent = {
-      email,
-      firstName,
-      lastName,
-      phone,
-      idNumber,
-      description,
-      course,
-    };
+  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
-    //await network.post('/', student);
-  }, [email, firstName, lastName, phone, idNumber, description, course]);
+  const onSubmit = (data: IStudent) => {
+    console.log(data);
+    //await network.post('/students', data);
+  };
 
   return (
     <div>
       <h1>Add Student</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <input
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
+          name="email"
+          ref={register({
+            required: "Email is required",
+            pattern: {
+              value: validEmailRegex,
+              message: "Please Enter a Valid Email",
+            },
+          })}
           placeholder="Email"
-        />{" "}
+        />
+        {!empty ? (
+          errors.email ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.email && errors.email.message}
         <br />
         <input
-          value={firstName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFirstName(e.target.value)
-          }
+          name="firstName"
+          ref={register({ required: "First name is required" })}
           placeholder="First Name"
         />
+        {!empty ? (
+          errors.firstName ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.firstName && errors.firstName.message}
         <br />
         <input
-          value={lastName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setLastName(e.target.value)
-          }
+          name="lastName"
+          ref={register({ required: "Last Name is required" })}
           placeholder="Last Name"
         />
+        {!empty ? (
+          errors.lastName ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.lastName && errors.lastName.message}
         <br />
         <input
-          value={phone}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPhone(e.target.value)
-          }
+          name="phone"
+          ref={register({
+            required: "Phone is required",
+            pattern: {
+              value: validPhoneNumberRegex,
+              message: "invalid phone number",
+            },
+          })}
           placeholder="Phone Number"
         />
+        {!empty ? (
+          errors.phone ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.phone && errors.phone.message}
         <br />
         <input
-          value={idNumber}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setIdNumber(e.target.value)
-          }
+          name="idNumber"
+          ref={register({ required: "ID Number is required" })}
           placeholder="ID Number"
         />
+        {!empty ? (
+          errors.idNumber ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.idNumber && errors.idNumber.message}
         <br />
         <input
-          value={description}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setDescription(e.target.value)
-          }
+          name="description"
+          ref={register({ required: "Description is required" })}
           placeholder="Description"
         />
+        {!empty ? (
+          errors.description ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.description && errors.description.message}
         <br />
         <input
-          value={course}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setCourse(e.target.value)
-          }
+          name="course"
+          ref={register({ required: "Course is required" })}
           placeholder="Course"
         />
+        {!empty ? (
+          errors.course ? (
+            <ErrorOutlineIcon color="error" />
+          ) : (
+            <DoneIcon color="action" />
+          )
+        ) : null}
+        {errors.course && errors.course.message}
         <br />
         <button type="submit">Submit</button>
       </form>
