@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 import network from "../helpers/network";
+import { H1, Wrapper, TitleWrapper } from "./AddStudent";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 interface IStudent {
   _id: string;
@@ -11,9 +21,21 @@ interface IStudent {
   description: string;
   course: any; // Change This.
 }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightBold,
+    },
+  })
+);
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
+  const classes = useStyles();
 
   useEffect(() => {
     // (async () => {
@@ -65,27 +87,59 @@ function AllStudents() {
     setStudents(mockData);
   }, []);
   return (
-    <div>
-      <h1>All Students</h1>
+    <Wrapper>
+      <TitleWrapper>
+        <H1>All Students</H1>
+      </TitleWrapper>
       {students &&
         students.map((student) => (
-          <div
-            key={student._id}
-            style={{ margin: 20, backgroundColor: "lightGray" }}
-          >
-            <p>
-              <b>
-                Name: {student.firstName} {student.lastName}
-              </b>
-            </p>
-            <p>Email: {student.email}</p>
-            <p>Phone: {student.phone}</p>
-            <p>ID: {student.idNumber}</p>
-            <p>Course: {student.course}</p>
-            <p>Description: {student.description}</p>
-          </div>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>
+                {student.firstName} {student.lastName}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List dense>
+                <ListItem>
+                  <ListItemText
+                    primary={"Name"}
+                    secondary={student.firstName + " " + student.lastName}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary={"Email"} secondary={student.email} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={"Phone Number"}
+                    secondary={student.phone}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={"ID Number"}
+                    secondary={student.idNumber}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={"Description"}
+                    secondary={student.description}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary={"Course"} secondary={student.course} />
+                </ListItem>
+              </List>
+            </AccordionDetails>
+          </Accordion>
         ))}
-    </div>
+    </Wrapper>
   );
 }
 

@@ -6,9 +6,9 @@ import SingleStudent from "./components/SingleStudent";
 function App() {
   return (
     <div>
-      <AddStudent />
-      {/* <AllStudents /> */}
-      <SingleStudent />
+      <AllStudents />
+      {/* <AddStudent />
+      <SingleStudent /> */}
     </div>
   );
 }
