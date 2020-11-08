@@ -1,4 +1,17 @@
 import React from "react";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import EmailIcon from "@material-ui/icons/Email";
+import { H1, Wrapper, TitleWrapper } from "./AddStudent";
+import PersonIcon from "@material-ui/icons/Person";
+import PhoneIcon from "@material-ui/icons/Phone";
+import DialpadIcon from "@material-ui/icons/Dialpad";
+import SubjectIcon from "@material-ui/icons/Subject";
+import ClassIcon from "@material-ui/icons/Class";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 const mock = {
   _id: "fkjshfkjdfdgfddsfhsdf",
@@ -13,18 +26,55 @@ const mock = {
 
 function SingleStudent() {
   return (
-    <div>
-      <p>
-        <b>
-          Name: {mock.firstName} {mock.lastName}
-        </b>
-      </p>
-      <p>Email: {mock.email}</p>
-      <p>Phone: {mock.phone}</p>
-      <p>ID: {mock.idNumber}</p>
-      <p>Course: {mock.course}</p>
-      <p>Description: {mock.description}</p>
-    </div>
+    <Wrapper>
+      <TitleWrapper>
+        <H1>Student</H1>
+      </TitleWrapper>
+      <List>
+        <ListItem>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Name"
+            secondary={mock.firstName + " " + mock.lastName}
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <EmailIcon />
+          </ListItemIcon>
+          <ListItemText primary="Email" secondary={mock.email} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <PhoneIcon />
+          </ListItemIcon>
+          <ListItemText primary="Phone Number" secondary={mock.phone} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <DialpadIcon />
+          </ListItemIcon>
+          <ListItemText primary="ID Number" secondary={mock.idNumber} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <SubjectIcon />
+          </ListItemIcon>
+          <ListItemText primary="Description" secondary={mock.description} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <ClassIcon />
+          </ListItemIcon>
+          <ListItemText primary="Course" secondary={mock.course} />
+        </ListItem>
+      </List>
+      <Button variant="contained" color="primary" onClick={(e) => {}}>
+        Apply for a job
+      </Button>
+    </Wrapper>
   );
 }
 

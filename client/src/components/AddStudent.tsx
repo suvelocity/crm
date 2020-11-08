@@ -221,7 +221,7 @@ function AddStudent() {
 
 export default AddStudent;
 
-const H1 = styled.h1`
+export const H1 = styled.h1`
   padding: 5px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
@@ -234,14 +234,15 @@ const H1 = styled.h1`
   padding: 10px;
   min-width: 180px;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  z-index: 2;
 `;
 
-const TitleWrapper = styled.div`
+export const TitleWrapper = styled.div`
   position: absolute;
   left: 50%;
 `;
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   margin: 5% auto;
   width: 70%;
   text-align: center;
