@@ -94,6 +94,7 @@ function AllStudents() {
       <TitleWrapper>
         <H1>All Students</H1>
       </TitleWrapper>
+      <br />
       {students &&
         students.map((student) => (
           <Accordion>
