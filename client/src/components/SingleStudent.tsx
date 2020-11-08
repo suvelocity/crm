@@ -11,7 +11,6 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 const mock = {
   _id: "fkjshfkjdfdgfddsfhsdf",

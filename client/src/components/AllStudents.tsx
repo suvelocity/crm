@@ -10,6 +10,7 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import PersonIcon from "@material-ui/icons/Person";
 
 interface IStudent {
   _id: string;
@@ -29,6 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
     heading: {
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightBold,
+      marginLeft: 10,
+      marginTop: 3,
     },
   })
 );
@@ -99,6 +102,7 @@ function AllStudents() {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
+              <PersonIcon />
               <Typography className={classes.heading}>
                 {student.firstName} {student.lastName}
               </Typography>
