@@ -40,6 +40,7 @@ const classRoomSchema: Schema = new mongoose.Schema(
     },
     students: {
       type: [mongoose.Schema.Types.ObjectId],
+      ref: "Student",
     },
   },
   {

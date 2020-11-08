@@ -69,8 +69,17 @@ function AllStudents() {
       <h1>All Students</h1>
       {students &&
         students.map((student) => (
-          <div>
-            {student.firstName} {student.lastName}
+          <div style={{ margin: 20, backgroundColor: "lightGray" }}>
+            <p>
+              <b>
+                Name: {student.firstName} {student.lastName}
+              </b>
+            </p>
+            <p>Email: {student.email}</p>
+            <p>Phone: {student.phone}</p>
+            <p>ID: {student.idNumber}</p>
+            <p>Course: {student.course}</p>
+            <p>Description: {student.description}</p>
           </div>
         ))}
     </div>
