@@ -11,6 +11,7 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
+import ApplyStudentModal from "./ApplyStudentModal";
 
 const mock = {
   _id: "fkjshfkjdfdgfddsfhsdf",
@@ -70,9 +71,7 @@ function SingleStudent() {
           <ListItemText primary="Course" secondary={mock.course} />
         </ListItem>
       </List>
-      <Button variant="contained" color="primary" onClick={(e) => {}}>
-        Apply for a job
-      </Button>
+      <ApplyStudentModal />
     </Wrapper>
   );
 }
