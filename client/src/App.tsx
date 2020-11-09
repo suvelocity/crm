@@ -8,9 +8,9 @@ function App() {
   return (
     <div>
       <AddJob />
-      {/* <AllStudents /> */}
-      {/* <AddStudent />
-      <SingleStudent /> */}
+      <AllStudents />
+      <AddStudent />
+      <SingleStudent />
     </div>
   );
 }

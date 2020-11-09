@@ -1,7 +1,6 @@
-
 import styled from "styled-components";
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 export const H1 = styled.h1`
   padding: 5px;
   font-family: Arial, Helvetica, sans-serif;
@@ -10,7 +9,8 @@ export const H1 = styled.h1`
   position: relative;
   left: -50%;
   top: -80px;
-  background-color: ${(props:{color:string}) => props.color === 'red' ? "#bb4040" : " #3f51b5"};
+  background-color: ${(props: { color: string }) =>
+    props.color === "red" ? "#bb4040" : " #3f51b5"};
   border-radius: 5px;
   padding: 10px;
   min-width: 180px;

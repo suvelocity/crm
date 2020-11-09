@@ -11,8 +11,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
-import {Wrapper, TitleWrapper, H1} from '../styles/styledComponents';
-import {IStudent} from '../typescript/interfaces'
+import { Wrapper, TitleWrapper, H1 } from "../styles/styledComponents";
+import { IStudent } from "../typescript/interfaces";
 
 function AddStudent() {
   const { register, handleSubmit, errors } = useForm();
@@ -210,5 +210,3 @@ function AddStudent() {
 }
 
 export default AddStudent;
-
-
