@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import network from "../helpers/network";
-import { H1, Wrapper, TitleWrapper } from "./AddStudent";
+import { H1, Wrapper, TitleWrapper } from "../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
