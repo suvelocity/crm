@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import network from "../helpers/network";
-import { validEmailRegex, validPhoneNumberRegex } from "../helpers/patterns";
+import {
+  validEmailRegex,
+  validPhoneNumberRegex,
+  onlyNumbersRegex,
+} from "../helpers/patterns";
 import CloseIcon from "@material-ui/icons/Close";
 import WarningIcon from "@material-ui/icons/Warning";
 import DoneIcon from "@material-ui/icons/Done";
@@ -62,7 +66,13 @@ function AddStudent() {
         <br />
         <TextField
           name="firstName"
-          inputRef={register({ required: "First name is required" })}
+          inputRef={register({
+            required: "First name is required",
+            minLength: {
+              value: 2,
+              message: "First name needs to be a minimum of 2 letters",
+            },
+          })}
           label="First Name"
         />
         {!empty ? (
@@ -84,7 +94,13 @@ function AddStudent() {
         <br />
         <TextField
           name="lastName"
-          inputRef={register({ required: "Last Name is required" })}
+          inputRef={register({
+            required: "Last Name is required",
+            minLength: {
+              value: 2,
+              message: "First name needs to be a minimum of 2 letters",
+            },
+          })}
           label="Last Name"
         />
         {!empty ? (
@@ -134,7 +150,21 @@ function AddStudent() {
         <br />
         <TextField
           name="idNumber"
-          inputRef={register({ required: "ID Number is required" })}
+          inputRef={register({
+            required: "ID Number is required",
+            minLength: {
+              value: 9,
+              message: "ID need to be 9 letters long",
+            },
+            maxLength: {
+              value: 9,
+              message: "ID need to be 9 letters long",
+            },
+            pattern: {
+              value: onlyNumbersRegex,
+              message: "ID can have only numbers",
+            },
+          })}
           label="ID Number"
         />
         {!empty ? (
