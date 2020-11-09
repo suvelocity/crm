@@ -2,7 +2,7 @@ import { required } from "joi";
 import mongoose, { Schema, Document } from "mongoose";
 import validator from "validator";
 
-interface IStudent extends Document {
+export interface IStudent extends Document {
   email: string;
   firstName: string;
   lastName: string;

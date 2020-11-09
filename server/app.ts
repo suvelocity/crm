@@ -2,6 +2,8 @@ import express, { Response, Request } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import mongoose from "mongoose";
+import "./models/student.model";
+import "./models/job.model";
 
 const url = process.env.DB_URI;
 
