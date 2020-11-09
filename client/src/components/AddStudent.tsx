@@ -3,14 +3,12 @@ import { useForm } from "react-hook-form";
 import network from "../helpers/network";
 import {
   validEmailRegex,
+  validNameRegex,
   validPhoneNumberRegex,
   onlyNumbersRegex,
 } from "../helpers/patterns";
-import CloseIcon from "@material-ui/icons/Close";
-import WarningIcon from "@material-ui/icons/Warning";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -68,6 +66,10 @@ function AddStudent() {
           name="firstName"
           inputRef={register({
             required: "First name is required",
+            pattern: {
+              value: validNameRegex,
+              message: "First name can have only letters and spaces",
+            },
             minLength: {
               value: 2,
               message: "First name needs to be a minimum of 2 letters",
@@ -96,9 +98,13 @@ function AddStudent() {
           name="lastName"
           inputRef={register({
             required: "Last Name is required",
+            pattern: {
+              value: validNameRegex,
+              message: "Last name can have only letters and spaces",
+            },
             minLength: {
               value: 2,
-              message: "First name needs to be a minimum of 2 letters",
+              message: "Last name needs to be a minimum of 2 letters",
             },
           })}
           label="Last Name"
@@ -184,8 +190,11 @@ function AddStudent() {
           )
         ) : null}
         <br />
+        <br />
         <TextField
           multiline
+          rows={4}
+          variant="outlined"
           style={{ width: "196px" }}
           name="description"
           inputRef={register({ required: "Description is required" })}
