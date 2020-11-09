@@ -7,7 +7,7 @@ router.get("/all", async (req: Request, res: Response) => {
     const students: IStudent[] = await Student.find({}).exec();
     res.json(students);
   } catch (err) {
-    res.send(err.message);
+    res.status(500).send("error occurred");
   }
 });
 
@@ -18,10 +18,10 @@ router.delete("/:id", async (req: Request, res: Response) => {
     if (student) {
       return res.json(student);
     } else {
-      return res.send("student not exist");
+      return res.status(400).send("student not exist");
     }
   } catch (err) {
-    res.send("student not exist");
+    res.status(500).send("student not exist");
   }
 });
 
@@ -32,10 +32,10 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
     if (student) {
       return res.json(student);
     } else {
-      return res.send("student not exist");
+      return res.status(400).send("student not exist");
     }
   } catch (err) {
-    res.send("error occurred");
+    res.status(500).send("error occurred");
   }
 });
 
@@ -50,10 +50,10 @@ router.put("/:id", async (req: Request, res: Response) => {
     if (student) {
       return res.json(student);
     } else {
-      return res.send("student not exist");
+      return res.status(400).send("student not exist");
     }
   } catch (err) {
-    res.send("error occurred");
+    res.status(500).send("error occurred");
   }
 });
 
@@ -73,7 +73,7 @@ router.post("/", async (req: Request, res: Response) => {
     const student: IStudent = await newStudent.save();
     res.json(student);
   } catch (err) {
-    res.send("error occurred");
+    res.status(500).send("error occurred");
   }
 });
 
