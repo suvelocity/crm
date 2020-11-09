@@ -21,7 +21,7 @@ const jobSchema: Schema = new mongoose.Schema({
     trim: true,
   },
   requirements: {
-    type: Number,
+    type: [String],
     required: true,
   },
   location: {
