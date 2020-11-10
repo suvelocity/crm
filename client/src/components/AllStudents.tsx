@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import network from "../helpers/network";
-import { H1, Wrapper, TitleWrapper } from "../styles/styledComponents";
+import {
+  H1,
+  Wrapper,
+  TitleWrapper,
+  StyledLink,
+} from "../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -95,6 +101,13 @@ function AllStudents() {
         <H1>All Students</H1>
       </TitleWrapper>
       <br />
+      <StyledLink to="/student/add">
+        <Button variant="contained" color="primary">
+          Add Student
+        </Button>
+      </StyledLink>
+      <br />
+      <br />
       {students &&
         students.map((student) => (
           <Accordion>
@@ -104,9 +117,11 @@ function AllStudents() {
               id="panel1a-header"
             >
               <PersonIcon />
-              <Typography className={classes.heading}>
-                {student.firstName} {student.lastName}
-              </Typography>
+              <StyledLink textDecoration color="black" to="/student/id">
+                <Typography className={classes.heading}>
+                  {student.firstName} {student.lastName}
+                </Typography>
+              </StyledLink>
             </AccordionSummary>
             <AccordionDetails>
               <List dense>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 export const H1 = styled.h1`
@@ -32,4 +33,10 @@ export const Wrapper = styled.div`
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   min-width: 300px;
   max-width: 700px;
+`;
+
+export const StyledLink = styled(Link)`
+  color: ${(props: { color: string }) => (props.color ? props.color : "white")};
+  text-decoration: ${(props: { textDecoration: string }) =>
+    props.textDecoration ? "underline" : "none"};
 `;

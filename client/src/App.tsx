@@ -3,15 +3,38 @@ import AddStudent from "./components/AddStudent";
 import AllStudents from "./components/AllStudents";
 import SingleStudent from "./components/SingleStudent";
 import AddJob from "./components/jobRelated/AddJob";
+import NavBar from "./components/NavBar";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+} from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <AddJob />
-      <AllStudents />
-      <AddStudent />
-      <SingleStudent />
-    </div>
+    <>
+      <Router>
+        <NavBar />
+        <Switch>
+          <Route exact path="/job/add">
+            <AddJob />
+          </Route>
+          <Route exact path="/student/add">
+            <AddStudent />
+          </Route>
+          <Route exact path="/student/all">
+            <AllStudents />
+          </Route>
+          <Route exact path="/student/id">
+            <SingleStudent />
+          </Route>
+          <Route path="*">
+            <div>404 Not Found</div>
+          </Route>
+        </Switch>
+      </Router>
+    </>
   );
 }
 
