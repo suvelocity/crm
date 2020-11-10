@@ -8,10 +8,6 @@ import "./models/job.model";
 const url = process.env.DB_URI;
 
 console.log(`trying to connect to DB`);
-// console.log("Amir is a SNAKE");
-// console.log("Shahr is an ASS");
-// console.log("I Love Tomer ");
-// console.log("Nitzan is a LORD");
 mongoose.set("useFindAndModify", false);
 
 mongoose
