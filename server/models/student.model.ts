@@ -12,6 +12,8 @@ export interface IStudent extends Document {
   address: string;
   // class: mongoose.Schema.Types.ObjectId;
   class: string;
+  jobs: mongoose.Schema.Types.ObjectId[] | IStudent[];
+  age: number;
 }
 
 const studentSchema: Schema = new mongoose.Schema({
@@ -69,6 +71,16 @@ const studentSchema: Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  age: {
+    type: String,
+    required: true,
+  },
+  jobs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
 });
 
 export default mongoose.model<IStudent>("Student", studentSchema);
