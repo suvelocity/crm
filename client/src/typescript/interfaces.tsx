@@ -1,30 +1,31 @@
 export interface IStudent {
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    idNumber: string;
-    description: string;
-    course: any; // Change This.
-  }
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  idNumber: string;
+  description: string;
+  class: string;
+  age: string;
+  address: string;
+  jobs: Partial<IJob>[];
+}
 export interface ICompany {
-  id?:number
-  name:string;
-  contactName:string;
-  contactNumber:string;
-  contactEmail:string;
-  location:string;
-  ScaleUpContact:string;
-  jobs:Pick<IJob, "id">
+  id?: number;
+  name: string;
+  contactName: string;
+  contactNumber: string;
+  contactEmail: string;
+  location: string;
+  ScaleUpContact: string;
+  jobs: Pick<IJob, "id">;
 }
 export interface IJob {
-    id?:number
-    company: Pick<ICompany, "name">;
-    position: string;
-    requirements?: string[];
-    contact: string;
-    location: string;
-    description: string;
-    qualifiedStudents?:Pick<IStudent, "idNumber">[]
-  }
-  
+  id: string;
+  company: string;
+  position: string;
+  requirements: string;
+  location: string;
+  students: Partial<IStudent>[];
+}

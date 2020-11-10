@@ -26,7 +26,7 @@ function App() {
           <Route exact path="/student/all">
             <AllStudents />
           </Route>
-          <Route exact path="/student/id">
+          <Route exact path="/student/:id">
             <SingleStudent />
           </Route>
           <Route path="*">

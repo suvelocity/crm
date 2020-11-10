@@ -17,17 +17,10 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
+import { IStudent } from "../typescript/interfaces";
+import { Loading } from "react-loading-wrapper";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-interface IStudent {
-  _id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  idNumber: string;
-  description: string;
-  course: any; // Change This.
-}
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -44,57 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
 
   useEffect(() => {
-    // (async () => {
-    //   const { data } = await network.get("api/v1/students");
-    //   setStudents(data);
-    // })();
-    const mockData: IStudent[] = [
-      {
-        _id: "fkjshfkjdsfhsdf",
-        email: "foo@bar.com",
-        firstName: "Foo",
-        lastName: "Bar",
-        phone: "1234567890",
-        idNumber: "1234567890",
-        description: "description",
-        course: "362399837402",
-      },
-      {
-        _id: "fkjshfkjdsfdsfdsfdshsdf",
-        email: "foo0@bar.com",
-        firstName: "Foa",
-        lastName: "Baro",
-        phone: "1234567890",
-        idNumber: "1234567890",
-        description: "description",
-        course: "362399837402",
-      },
-      {
-        _id: "fkjshfkdfgdfgfjdsfhsdf",
-        email: "foo123@bar.com",
-        firstName: "Fookoo",
-        lastName: "Baron",
-        phone: "1234567890",
-        idNumber: "1234567890",
-        description: "description",
-        course: "362399837402",
-      },
-      {
-        _id: "fkjshfkjdfdgfddsfhsdf",
-        email: "foshio@bar.com",
-        firstName: "Fooshi",
-        lastName: "Barli",
-        phone: "1234567890",
-        idNumber: "1234567890",
-        description: "description",
-        course: "362399837402",
-      },
-    ];
-    setStudents(mockData);
+    (async () => {
+      const { data } = await network.get("/api/v1/student/all");
+      setStudents(data);
+      setLoading(false);
+    })();
   }, []);
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -108,57 +61,76 @@ function AllStudents() {
       </StyledLink>
       <br />
       <br />
-      {students &&
-        students.map((student) => (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <PersonIcon />
-              <StyledLink textDecoration color="black" to="/student/id">
-                <Typography className={classes.heading}>
-                  {student.firstName} {student.lastName}
-                </Typography>
-              </StyledLink>
-            </AccordionSummary>
-            <AccordionDetails>
-              <List dense>
-                <ListItem>
-                  <ListItemText
-                    primary={"Name"}
-                    secondary={student.firstName + " " + student.lastName}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary={"Email"} secondary={student.email} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary={"Phone Number"}
-                    secondary={student.phone}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary={"ID Number"}
-                    secondary={student.idNumber}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary={"Description"}
-                    secondary={student.description}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary={"Course"} secondary={student.course} />
-                </ListItem>
-              </List>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+      <Loading loading={loading} loadingComponent={<CircularProgress />}>
+        {students &&
+          students.map((student) => (
+            <Accordion key={student.id}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <PersonIcon />
+                <StyledLink
+                  textDecoration
+                  color="black"
+                  to={`/student/${student.id}`}
+                >
+                  <Typography className={classes.heading}>
+                    {student.firstName} {student.lastName}
+                  </Typography>
+                </StyledLink>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List dense>
+                  <ListItem>
+                    <ListItemText
+                      primary={"Name"}
+                      secondary={student.firstName + " " + student.lastName}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary={"Email"} secondary={student.email} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary={"Phone Number"}
+                      secondary={student.phone}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary={"ID Number"}
+                      secondary={student.idNumber}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary={"Description"}
+                      secondary={student.description}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary={"Class"} secondary={student.class} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary={"Address"}
+                      secondary={student.address}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary={"Age"} secondary={student.age} />
+                  </ListItem>
+                  {student.jobs.map((job: any, index: number) => (
+                    <ListItem>
+                      <ListItemText
+                        primary={`Job ${index + 1}`}
+                        secondary={job.position}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+      </Loading>
     </Wrapper>
   );
 }

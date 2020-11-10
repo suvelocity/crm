@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import network from "../helpers/network";
 import {
@@ -15,15 +15,21 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import { Wrapper, TitleWrapper, H1 } from "../styles/styledComponents";
 import { IStudent } from "../typescript/interfaces";
+import { useHistory } from "react-router-dom";
 
 function AddStudent() {
   const { register, handleSubmit, errors } = useForm();
+  const history = useHistory();
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
-  const onSubmit = (data: IStudent) => {
-    console.log(data);
-    //await network.post('/students', data);
+  const onSubmit = async (data: Omit<IStudent, "id">) => {
+    try {
+      await network.post("/api/v1/student", data);
+      history.push("/student/all");
+    } catch (e) {
+      alert("error occurred");
+    }
   };
 
   return (
@@ -218,13 +224,57 @@ function AddStudent() {
         ) : null}
         <br />
         <TextField
-          name="course"
-          inputRef={register({ required: "Course is required" })}
-          label="Course"
+          name="class"
+          inputRef={register({ required: "Class is required" })}
+          label="Class"
         />
         {!empty ? (
-          errors.course ? (
-            <Tooltip title={errors.course.message}>
+          errors.class ? (
+            <Tooltip title={errors.class.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
+          )
+        ) : null}
+        <br />
+        <TextField
+          name="address"
+          inputRef={register({ required: "Address is required" })}
+          label="Address"
+        />
+        {!empty ? (
+          errors.address ? (
+            <Tooltip title={errors.address.message}>
+              <IconButton style={{ cursor: "default" }}>
+                <ErrorOutlineIcon
+                  style={{ width: "30px", height: "30px" }}
+                  color="error"
+                />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <IconButton style={{ cursor: "default" }}>
+              <DoneIcon color="action" />
+            </IconButton>
+          )
+        ) : null}
+        <br />
+        <TextField
+          name="age"
+          inputRef={register({ required: "Age is required" })}
+          label="Age"
+        />
+        {!empty ? (
+          errors.age ? (
+            <Tooltip title={errors.age.message}>
               <IconButton style={{ cursor: "default" }}>
                 <ErrorOutlineIcon
                   style={{ width: "30px", height: "30px" }}

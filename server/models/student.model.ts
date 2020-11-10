@@ -43,7 +43,7 @@ const studentSchema: Schema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (value: string) => {
-        return validator.isMobilePhone(value);
+        return /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/.test(value);
       },
       message: "mobile must be valid",
     },
