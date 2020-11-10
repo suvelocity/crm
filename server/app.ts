@@ -2,14 +2,12 @@ import express, { Response, Request } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import mongoose from "mongoose";
+import "./models/student.model";
+import "./models/job.model";
 
 const url = process.env.DB_URI;
 
 console.log(`trying to connect to DB`);
-// console.log("Amir is a SNAKE");
-// console.log("Shahr is an ASS");
-// console.log("I Love Tomer ");
-// console.log("Nitzan is a LORD");
 mongoose.set("useFindAndModify", false);
 
 mongoose

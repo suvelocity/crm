@@ -1,18 +1,21 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { IStudent } from "./student.model";
 import validator from "validator";
 
-interface IJob extends Document {
-  company: mongoose.Schema.Types.ObjectId;
+export interface IJob extends Document {
+  // company: mongoose.Schema.Types.ObjectId;
+  company: string;
   position: string;
   requirements: string;
   location: string;
-  qualifiedStudents: mongoose.Schema.Types.ObjectId[];
+  students: mongoose.Schema.Types.ObjectId[] | IStudent[];
 }
 
 const jobSchema: Schema = new mongoose.Schema({
   company: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Company",
+    // type: mongoose.Schema.Types.ObjectId,
+    // ref: "Company",
+    type: String,
     required: true,
   },
   position: {
@@ -21,16 +24,26 @@ const jobSchema: Schema = new mongoose.Schema({
     trim: true,
   },
   requirements: {
-    type: [String],
+    type: String,
     required: true,
   },
   location: {
     type: String,
     required: true,
   },
-  qualifiedStudents: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Student",
+  students: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+    },
+  ],
+});
+
+jobSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
   },
 });
 
