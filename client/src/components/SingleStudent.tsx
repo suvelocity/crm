@@ -14,11 +14,10 @@ import ApplyStudentModal from "./ApplyStudentModal";
 import { useParams } from "react-router-dom";
 import network from "../helpers/network";
 import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob } from "../typescript/interfaces";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
-import WorkIcon from "@material-ui/icons/Work";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -72,7 +71,7 @@ function SingleStudent() {
         <TitleWrapper>
           <H1>Student Info</H1>
         </TitleWrapper>
-        <Loading loadingComponent={<CircularProgress />} loading={loading}>
+        <Loading size={30} loading={loading}>
           <List>
             <ListItem>
               <ListItemIcon>
@@ -136,7 +135,7 @@ function SingleStudent() {
           <H1>Student Job Processes</H1>
         </TitleWrapper>
         <br />
-        <Loading loadingComponent={<CircularProgress />} loading={loading}>
+        <Loading loading={loading} size={30}>
           {student?.jobs.map((job: Partial<IJob>) => (
             <Accordion key={job.id}>
               <AccordionSummary

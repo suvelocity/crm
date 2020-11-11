@@ -23,7 +23,7 @@ function getModalStyle() {
   };
 }
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",

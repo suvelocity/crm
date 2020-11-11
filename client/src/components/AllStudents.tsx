@@ -19,7 +19,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
 import { IStudent } from "../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import "react-loading-wrapper/dist/index.css";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +61,7 @@ function AllStudents() {
       </StyledLink>
       <br />
       <br />
-      <Loading loading={loading} loadingComponent={<CircularProgress />}>
+      <Loading loading={loading} size={30}>
         {students &&
           students.map((student) => (
             <Accordion key={student.id}>
