@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
     },
     paper: {
-      textAlign: "center",
       position: "absolute",
       width: "50%",
       maxWidth: 700,
@@ -45,10 +44,12 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
     },
     secondaryHeading: {
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.text.secondary,
+      marginTop: 11,
     },
     button: {
       textAlign: "center",

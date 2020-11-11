@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
     },
     paper: {
-      textAlign: "center",
       position: "absolute",
       width: "50%",
       maxWidth: 700,
