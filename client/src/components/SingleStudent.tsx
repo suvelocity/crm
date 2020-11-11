@@ -4,7 +4,13 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import EmailIcon from "@material-ui/icons/Email";
-import { H1, Wrapper, TitleWrapper } from "../styles/styledComponents";
+import {
+  H1,
+  Wrapper,
+  TitleWrapper,
+  Center,
+  RemoveJobButton,
+} from "../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
@@ -23,7 +29,12 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import WorkIcon from "@material-ui/icons/Work";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import PostAddIcon from "@material-ui/icons/PostAdd";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,10 +46,17 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
+      marginLeft: 10,
+      marginTop: 3,
     },
     secondaryHeading: {
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.text.secondary,
+    },
+    iconButton: {
+      fontSize: theme.typography.pxToRem(10),
+      padding: 0,
+      marginLeft: "auto",
     },
   })
 );
@@ -57,6 +75,24 @@ function SingleStudent() {
     setLoading(false);
   }, [id, setStudent, setLoading]);
 
+  const removeJob = useCallback(
+    async (
+      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      jobId: string
+    ) => {
+      e.stopPropagation();
+      const { data: updated } = await network.patch(
+        `/api/v1/student/modify-jobs/${id}`,
+        {
+          jobs: [jobId],
+          method: "remove",
+        }
+      );
+      setStudent(updated);
+    },
+    [setStudent]
+  );
+
   useEffect(() => {
     try {
       getStudent();
@@ -68,9 +104,11 @@ function SingleStudent() {
   return (
     <>
       <Wrapper>
-        <TitleWrapper>
-          <H1>Student Info</H1>
-        </TitleWrapper>
+        <Center>
+          <TitleWrapper>
+            <H1>Student Info</H1>
+          </TitleWrapper>
+        </Center>
         <Loading size={30} loading={loading}>
           <List>
             <ListItem>
@@ -131,9 +169,11 @@ function SingleStudent() {
         </Loading>
       </Wrapper>
       <Wrapper>
-        <TitleWrapper>
-          <H1>Student Job Processes</H1>
-        </TitleWrapper>
+        <Center>
+          <TitleWrapper>
+            <H1>Student Job Processes</H1>
+          </TitleWrapper>
+        </Center>
         <br />
         <Loading loading={loading} size={30}>
           {student?.jobs.map((job: Partial<IJob>) => (
@@ -144,22 +184,54 @@ function SingleStudent() {
                 aria-controls="additional-actions2-content"
                 id="additional-actions2-header"
               >
+                <WorkIcon />
                 <Typography className={classes.heading}>
                   {job.position}
                 </Typography>
                 <Typography className={classes.secondaryHeading}>
                   {job.company}
                 </Typography>
+                <Typography className={classes.iconButton}>
+                  <IconButton
+                    onClick={(
+                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                    ) => removeJob(e, job.id!)}
+                    style={{ padding: 0 }}
+                  >
+                    <RemoveJobButton />
+                  </IconButton>
+                </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <List>
+                <List dense>
                   <ListItem>
+                    <ListItemIcon>
+                      <PostAddIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"Position"}
+                      secondary={job.position}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <LocationCityIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Company"} secondary={job.company} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <PlaylistAddCheckIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary="Requirements"
                       secondary={job.requirements}
                     />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <BusinessIcon />
+                    </ListItemIcon>
                     <ListItemText primary="Location" secondary={job.location} />
                   </ListItem>
                 </List>
@@ -167,11 +239,13 @@ function SingleStudent() {
             </Accordion>
           ))}
           <br />
-          <ApplyStudentModal
-            currentJobs={student?.jobs.map((job: Partial<IJob>) => job.id)}
-            studentId={student?.id}
-            getStudent={getStudent}
-          />
+          <Center>
+            <ApplyStudentModal
+              currentJobs={student?.jobs.map((job: Partial<IJob>) => job.id)}
+              studentId={student?.id}
+              getStudent={getStudent}
+            />
+          </Center>
         </Loading>
       </Wrapper>
     </>

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import DeleteIcon from "@material-ui/icons/Delete";
+
 export const H1 = styled.h1`
   padding: 5px;
   font-family: Arial, Helvetica, sans-serif;
@@ -27,7 +29,6 @@ export const TitleWrapper = styled.div`
 export const Wrapper = styled.div`
   margin: 5% auto;
   width: 70%;
-  text-align: center;
   padding: 40px;
   border-radius: 7px;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
@@ -35,8 +36,24 @@ export const Wrapper = styled.div`
   max-width: 700px;
 `;
 
+export const Center = styled.div`
+  text-align: center;
+`;
+
 export const StyledLink = styled(Link)`
   color: ${(props: { color: string }) => (props.color ? props.color : "white")};
   text-decoration: ${(props: { textDecoration: string }) =>
     props.textDecoration ? "underline" : "none"};
+`;
+
+export const RemoveJobButton = styled(DeleteIcon)`
+  color: #cf1d1d;
+  transition: 200ms;
+
+  &:hover {
+    color: red;
+    background-color: rgba(99, 99, 99, 0.1);
+    border-radius: 50%;
+    box-shadow: 0px 0px 0 10px rgba(99, 99, 99, 0.1);
+  }
 `;

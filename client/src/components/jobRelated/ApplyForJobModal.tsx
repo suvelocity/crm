@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import network from "../helpers/network";
+import network from "../../helpers/network";
 import { Modal, Button } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent } from "../typescript/interfaces";
+import { IJob, IStudent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 function getModalStyle() {
@@ -45,10 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
+      marginTop: 11,
     },
     button: {
       textAlign: "center",
@@ -57,31 +54,37 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function ApplyStudentModal({
-  currentJobs,
-  studentId,
-  getStudent,
+function ApplyForJobModal({
+  currentStudents,
+  jobId,
+  getJob,
 }: {
-  currentJobs: (string | undefined)[] | undefined;
-  studentId: string | undefined;
-  getStudent: () => void;
+  currentStudents: (string | undefined)[] | undefined;
+  jobId: string | undefined;
+  getJob: () => void;
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState(false);
-  const [jobs, setJobs] = useState<IJob[] | null>();
-  const [jobsToApply, setJobsToApply] = useState<string[]>([]);
+  const [students, setStudents] = useState<IStudent[] | null>();
+  const [studentsToApply, setStudentsToApply] = useState<string[]>([]);
 
   useEffect(() => {
     try {
       (async () => {
-        const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
-        setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
+        const { data }: { data: IStudent[] } = await network.get(
+          "/api/v1/student/all"
+        );
+        setStudents(
+          data.filter(
+            (student: IStudent) => !currentStudents?.includes(student.id)
+          )
+        );
       })();
     } catch (e) {
       console.log(e.message);
     }
-  }, [currentJobs]);
+  }, [currentStudents]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -92,13 +95,13 @@ function ApplyStudentModal({
   };
 
   const handleSubmit = async () => {
-    if (jobsToApply.length > 0) {
+    if (studentsToApply.length > 0) {
       try {
-        await network.patch(`/api/v1/student/modify-jobs/${studentId}`, {
+        await network.patch(`/api/v1/job/modify-students/${jobId}`, {
           method: "add",
-          jobs: jobsToApply,
+          students: studentsToApply,
         });
-        getStudent();
+        getJob();
         handleClose();
       } catch (e) {
         console.log(e);
@@ -110,21 +113,23 @@ function ApplyStudentModal({
 
   const handleCheckBoxOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setJobsToApply((prev) => [...prev, e.target.value]);
+      setStudentsToApply((prev) => [...prev, e.target.value]);
     } else {
-      setJobsToApply((prev) => prev.filter((item) => item !== e.target.value));
+      setStudentsToApply((prev) =>
+        prev.filter((item) => item !== e.target.value)
+      );
     }
   };
   let body = <CircularProgress />;
-  if (jobs) {
+  if (students) {
     body = (
       <div style={modalStyle} className={classes.paper}>
         <div className={classes.root}>
-          <h1>Chose Jobs To Apply To</h1>
-          {jobs.length > 0 ? (
+          <h1>Chose Students To Apply</h1>
+          {students.length > 0 ? (
             <>
-              {jobs?.map((job: IJob) => (
-                <Accordion key={job.id}>
+              {students?.map((student: IStudent) => (
+                <Accordion key={student.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-label="Expand"
@@ -137,45 +142,52 @@ function ApplyStudentModal({
                       onFocus={(event) => event.stopPropagation()}
                       control={
                         <Checkbox
-                          value={job.id}
+                          value={student.id}
                           onChange={handleCheckBoxOnChange}
                         />
                       }
                       label=""
                     />
                     <Typography className={classes.heading}>
-                      {job.position}
-                    </Typography>
-                    <Typography className={classes.secondaryHeading}>
-                      {job.company}
+                      {student.firstName} {student.lastName}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List>
+                    <List dense>
                       <ListItem>
                         <ListItemText
-                          primary="Requirements"
-                          secondary={job.requirements}
+                          primary="Name"
+                          secondary={student.firstName + " " + student.lastName}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary="Location"
-                          secondary={job.location}
+                          primary="Email"
+                          secondary={student.email}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary="Applied Students"
+                          primary="Phone Number"
+                          secondary={student.phone}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Course"
+                          secondary={student.class}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Applied Jobs"
                           secondary={
                             <>
-                              {job.students.map(
-                                (student: Partial<IStudent>) => (
-                                  <p key={student.id}>
-                                    {student.firstName} {student.lastName}
-                                  </p>
-                                )
-                              )}
+                              {student.jobs.map((job: Partial<IJob>) => (
+                                <p key={job.id}>
+                                  {job.position} {job.company}
+                                </p>
+                              ))}
                             </>
                           }
                         />
@@ -185,8 +197,8 @@ function ApplyStudentModal({
                 </Accordion>
               ))}
               <Button
+                style={{ backgroundColor: "#bb4040", color: "white" }}
                 className={classes.button}
-                variant="contained"
                 color="primary"
                 onClick={handleSubmit}
               >
@@ -194,7 +206,7 @@ function ApplyStudentModal({
               </Button>
             </>
           ) : (
-            <h2>Student is already applied for all jobs</h2>
+            <h2>All students are applied for this job</h2>
           )}
         </div>
       </div>
@@ -203,7 +215,11 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button
+        style={{ backgroundColor: "#bb4040", color: "white" }}
+        variant="contained"
+        onClick={handleOpen}
+      >
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
@@ -213,4 +229,4 @@ function ApplyStudentModal({
   );
 }
 
-export default ApplyStudentModal;
+export default ApplyForJobModal;

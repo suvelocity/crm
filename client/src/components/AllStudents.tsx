@@ -5,6 +5,7 @@ import {
   Wrapper,
   TitleWrapper,
   StyledLink,
+  Center,
 } from "../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -17,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent } from "../typescript/interfaces";
+import { IStudent, IJob } from "../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 
@@ -50,16 +51,17 @@ function AllStudents() {
 
   return (
     <Wrapper>
-      <TitleWrapper>
-        <H1>All Students</H1>
-      </TitleWrapper>
-      <br />
-      <StyledLink to="/student/add">
-        <Button variant="contained" color="primary">
-          Add Student
-        </Button>
-      </StyledLink>
-      <br />
+      <Center>
+        <TitleWrapper>
+          <H1>All Students</H1>
+        </TitleWrapper>
+        <br />
+        <StyledLink to="/student/add">
+          <Button variant="contained" color="primary">
+            Add Student
+          </Button>
+        </StyledLink>
+      </Center>
       <br />
       <Loading loading={loading} size={30}>
         {students &&
@@ -118,7 +120,7 @@ function AllStudents() {
                   <ListItem>
                     <ListItemText primary={"Age"} secondary={student.age} />
                   </ListItem>
-                  {student.jobs.map((job: any, index: number) => (
+                  {student.jobs.map((job: Partial<IJob>, index: number) => (
                     <ListItem>
                       <ListItemText
                         primary={`Job ${index + 1}`}
