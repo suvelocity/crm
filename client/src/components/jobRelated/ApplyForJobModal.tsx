@@ -141,6 +141,7 @@ function ApplyForJobModal({
                       onFocus={(event) => event.stopPropagation()}
                       control={
                         <Checkbox
+                          id={student.id}
                           value={student.id}
                           onChange={handleCheckBoxOnChange}
                         />

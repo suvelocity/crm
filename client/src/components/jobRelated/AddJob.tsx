@@ -46,6 +46,7 @@ const AddJob = () => {
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
+            id="company"
             label="Company"
             name="company"
             inputRef={register({
@@ -70,6 +71,7 @@ const AddJob = () => {
           ) : null}
           <br />
           <TextField
+            id="position"
             label="Position"
             inputRef={register({ required: "Position title is required" })}
             name="position"
@@ -114,6 +116,7 @@ const AddJob = () => {
           ) : null}
           <br /> */}
           <TextField
+            id="location"
             name="location"
             inputRef={register({
               required: "Location is required",
@@ -165,6 +168,7 @@ const AddJob = () => {
           <br />
           <br /> */}
           <TextField
+            id="requirements"
             multiline
             rows={4}
             variant="outlined"
@@ -193,6 +197,7 @@ const AddJob = () => {
           <br />
           <br />
           <Button
+            id="submitButton"
             style={{ backgroundColor: "#bb4040", color: "white" }}
             variant="contained"
             color="primary"
