@@ -138,6 +138,7 @@ function ApplyStudentModal({
                       onFocus={(event) => event.stopPropagation()}
                       control={
                         <Checkbox
+                          id={job.id}
                           value={job.id}
                           onChange={handleCheckBoxOnChange}
                         />

@@ -42,6 +42,7 @@ function AddStudent() {
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
+            id="email"
             label="Email"
             name="email"
             inputRef={register({
@@ -70,6 +71,7 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="firstName"
             name="firstName"
             inputRef={register({
               required: "First name is required",
@@ -102,9 +104,10 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="lastName"
             name="lastName"
             inputRef={register({
-              required: "Last Name is required",
+              required: "Last name is required",
               pattern: {
                 value: validNameRegex,
                 message: "Last name can have only letters and spaces",
@@ -134,6 +137,7 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="phone"
             name="phone"
             inputRef={register({
               required: "Phone is required",
@@ -162,9 +166,10 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="idNumber"
             name="idNumber"
             inputRef={register({
-              required: "ID Number is required",
+              required: "ID number is required",
               minLength: {
                 value: 9,
                 message: "ID need to be 9 letters long",
@@ -199,6 +204,7 @@ function AddStudent() {
           <br />
           <br />
           <TextField
+            id="description"
             multiline
             rows={4}
             variant="outlined"
@@ -225,6 +231,7 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="class"
             name="class"
             inputRef={register({ required: "Class is required" })}
             label="Class"
@@ -247,6 +254,7 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="address"
             name="address"
             inputRef={register({ required: "Address is required" })}
             label="Address"
@@ -269,6 +277,7 @@ function AddStudent() {
           ) : null}
           <br />
           <TextField
+            id="age"
             name="age"
             inputRef={register({
               required: "Age is required",
@@ -297,7 +306,12 @@ function AddStudent() {
           ) : null}
           <br />
           <br />
-          <Button variant="contained" color="primary" type="submit">
+          <Button
+            id="submitButton"
+            variant="contained"
+            color="primary"
+            type="submit"
+          >
             Submit
           </Button>
         </form>
