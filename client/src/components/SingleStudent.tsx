@@ -140,15 +140,6 @@ function SingleStudent() {
             </ListItem>
             <ListItem>
               <ListItemIcon>
-                <SubjectIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Description"
-                secondary={student?.description}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
                 <ClassIcon />
               </ListItemIcon>
               <ListItemText primary="Course" secondary={student?.class} />
@@ -165,6 +156,17 @@ function SingleStudent() {
               </ListItemIcon>
               <ListItemText primary="Address" secondary={student?.address} />
             </ListItem>
+            {student?.additionalDetails && (
+              <ListItem>
+                <ListItemIcon>
+                  <SubjectIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Additional Details"
+                  secondary={student?.additionalDetails}
+                />
+              </ListItem>
+            )}
           </List>
         </Loading>
       </Wrapper>

@@ -40,9 +40,7 @@ const AddJob = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <Tooltip title="hell">
-            <H1 color="red">Add Job</H1>
-          </Tooltip>
+          <H1 color="red">Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField

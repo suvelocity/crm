@@ -178,20 +178,6 @@ function ApplyForJobModal({
                           secondary={student.class}
                         />
                       </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Jobs"
-                          secondary={
-                            <>
-                              {student.jobs.map((job: Partial<IJob>) => (
-                                <p key={job.id}>
-                                  {job.position} {job.company}
-                                </p>
-                              ))}
-                            </>
-                          }
-                        />
-                      </ListItem>
                     </List>
                   </AccordionDetails>
                 </Accordion>
@@ -220,7 +206,7 @@ function ApplyForJobModal({
         variant="contained"
         onClick={handleOpen}
       >
-        Apply for a job
+        Assign a Student
       </Button>
       <Modal open={open} onClose={handleClose}>
         {body}

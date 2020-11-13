@@ -103,12 +103,6 @@ function AllStudents() {
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText
-                      primary={"Description"}
-                      secondary={student.description}
-                    />
-                  </ListItem>
-                  <ListItem>
                     <ListItemText primary={"Class"} secondary={student.class} />
                   </ListItem>
                   <ListItem>
@@ -120,14 +114,22 @@ function AllStudents() {
                   <ListItem>
                     <ListItemText primary={"Age"} secondary={student.age} />
                   </ListItem>
-                  {student.jobs.map((job: Partial<IJob>, index: number) => (
+                  {student.additionalDetails && (
+                    <ListItem>
+                      <ListItemText
+                        primary={"Additional Details"}
+                        secondary={student.additionalDetails}
+                      />
+                    </ListItem>
+                  )}
+                  {/* {student.jobs.map((job: Partial<IJob>, index: number) => (
                     <ListItem>
                       <ListItemText
                         primary={`Job ${index + 1}`}
                         secondary={job.position}
                       />
                     </ListItem>
-                  ))}
+                  ))} */}
                 </List>
               </AccordionDetails>
             </Accordion>

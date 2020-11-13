@@ -8,7 +8,7 @@ export interface IStudent extends Document {
   lastName: string;
   phone: string;
   idNumber: string;
-  description: string;
+  additionalDetails: string;
   address: string;
   // class: mongoose.Schema.Types.ObjectId;
   class: string;
@@ -55,11 +55,7 @@ const studentSchema: Schema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  description: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+
   address: {
     type: String,
     required: true,
@@ -74,6 +70,10 @@ const studentSchema: Schema = new mongoose.Schema({
   age: {
     type: String,
     required: true,
+  },
+  additionalDetails: {
+    type: String,
+    trim: true,
   },
   jobs: [
     {

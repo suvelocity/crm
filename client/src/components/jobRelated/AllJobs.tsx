@@ -21,6 +21,11 @@ import WorkIcon from "@material-ui/icons/Work";
 import { IJob, IStudent } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
+import PostAddIcon from "@material-ui/icons/PostAdd";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
+import BusinessIcon from "@material-ui/icons/Business";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,24 +104,36 @@ function AllJobs() {
               <AccordionDetails>
                 <List dense>
                   <ListItem>
+                    <ListItemIcon>
+                      <PostAddIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary={"Position"}
                       secondary={job.position}
                     />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <LocationCityIcon />
+                    </ListItemIcon>
                     <ListItemText primary={"Company"} secondary={job.company} />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <BusinessIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Location" secondary={job.location} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <PlaylistAddCheckIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary="Requirements"
                       secondary={job.requirements}
                     />
                   </ListItem>
-                  <ListItem>
-                    <ListItemText primary="Location" secondary={job.location} />
-                  </ListItem>
-                  {job.students.map(
+                  {/* {job.students.map(
                     (student: Partial<IStudent>, index: number) => (
                       <ListItem>
                         <ListItemText
@@ -125,7 +142,7 @@ function AllJobs() {
                         />
                       </ListItem>
                     )
-                  )}
+                  )} */}
                 </List>
               </AccordionDetails>
             </Accordion>

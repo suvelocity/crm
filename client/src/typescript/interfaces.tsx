@@ -5,7 +5,7 @@ export interface IStudent {
   lastName: string;
   phone: string;
   idNumber: string;
-  description: string;
+  additionalDetails: string;
   class: string;
   age: string;
   address: string;

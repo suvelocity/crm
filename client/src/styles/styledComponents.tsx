@@ -57,3 +57,8 @@ export const RemoveJobButton = styled(DeleteIcon)`
     box-shadow: 0px 0px 0 10px rgba(99, 99, 99, 0.1);
   }
 `;
+
+export const GridDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`;

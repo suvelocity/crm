@@ -139,7 +139,7 @@ function SingleJob() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color="red">Applied For Job</H1>
+            <H1 color="red">Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -204,15 +204,6 @@ function SingleJob() {
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
-                      <SubjectIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Description"
-                      secondary={student.description}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
                       <ClassIcon />
                     </ListItemIcon>
                     <ListItemText primary="Course" secondary={student.class} />
@@ -232,6 +223,17 @@ function SingleJob() {
                       secondary={student.address}
                     />
                   </ListItem>
+                  {student.additionalDetails && (
+                    <ListItem>
+                      <ListItemIcon>
+                        <SubjectIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary="Additional Details"
+                        secondary={student.additionalDetails}
+                      />
+                    </ListItem>
+                  )}
                 </List>
               </AccordionDetails>
             </Accordion>
