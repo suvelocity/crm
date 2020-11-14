@@ -18,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IJob } from "../typescript/interfaces";
+import { IStudent } from "../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 
@@ -56,8 +56,8 @@ function AllStudents() {
           <H1>All Students</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to='/student/add'>
-          <Button variant='contained' color='primary'>
+        <StyledLink to="/student/add">
+          <Button variant="contained" color="primary">
             Add Student
           </Button>
         </StyledLink>
@@ -71,7 +71,7 @@ function AllStudents() {
                 <PersonIcon />
                 <StyledLink
                   textDecoration={"true"}
-                  color='black'
+                  color="black"
                   to={`/student/${student.id}`}
                 >
                   <Typography className={classes.heading}>

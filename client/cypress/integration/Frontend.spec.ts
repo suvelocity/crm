@@ -296,9 +296,6 @@ describe("Student Tests", () => {
       `[title="ID number is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
     );
     cy.get(
-      `[title="Additional details are required"] > .MuiIconButton-label > .MuiSvgIcon-root`
-    );
-    cy.get(
       `[title="Age is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
     );
     cy.get(
@@ -333,6 +330,7 @@ describe("Student Tests", () => {
     cy.get(
       ":nth-child(3) > #additional-actions2-header > .MuiAccordionSummary-content > .makeStyles-iconButton-4 > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root"
     ).click();
+    cy.get(".swal2-confirm").click();
     cy.wait("@apply");
   });
 });
@@ -622,6 +620,7 @@ describe("Job Tests", () => {
     cy.get(
       ":nth-child(3) > #additional-actions2-header > .MuiAccordionSummary-content > .makeStyles-iconButton-3 > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root > path"
     ).click();
+    cy.get(".swal2-confirm").click();
     cy.wait("@apply");
   });
 });
