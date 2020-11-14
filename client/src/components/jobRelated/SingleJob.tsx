@@ -84,7 +84,7 @@ function SingleJob() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
-      }).then(async (result) => {
+      }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
           const { data: updated } = await network.patch(
             `/api/v1/job/modify-students/${id}`,
@@ -114,7 +114,7 @@ function SingleJob() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color='red'>Job Info</H1>
+            <H1 color="red">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
@@ -123,26 +123,26 @@ function SingleJob() {
               <ListItemIcon>
                 <PostAddIcon />
               </ListItemIcon>
-              <ListItemText primary='Position' secondary={job?.position} />
+              <ListItemText primary="Position" secondary={job?.position} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <LocationCityIcon />
               </ListItemIcon>
-              <ListItemText primary='Company' secondary={job?.company} />
+              <ListItemText primary="Company" secondary={job?.company} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <BusinessIcon />
               </ListItemIcon>
-              <ListItemText primary='Location' secondary={job?.location} />
+              <ListItemText primary="Location" secondary={job?.location} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <PlaylistAddCheckIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Requirements'
+                primary="Requirements"
                 secondary={job?.requirements}
               />
             </ListItem>
@@ -152,7 +152,7 @@ function SingleJob() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color='red'>Students In Process</H1>
+            <H1 color="red">Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -161,9 +161,9 @@ function SingleJob() {
             <Accordion key={student.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                aria-label='Expand'
-                aria-controls='additional-actions2-content'
-                id='additional-actions2-header'
+                aria-label="Expand"
+                aria-controls="additional-actions2-content"
+                id="additional-actions2-header"
               >
                 <PersonIcon />
                 <Typography className={classes.heading}>
@@ -187,7 +187,7 @@ function SingleJob() {
                       <PersonIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary='Name'
+                      primary="Name"
                       secondary={student.firstName + " " + student.lastName}
                     />
                   </ListItem>
@@ -195,14 +195,14 @@ function SingleJob() {
                     <ListItemIcon>
                       <EmailIcon />
                     </ListItemIcon>
-                    <ListItemText primary='Email' secondary={student.email} />
+                    <ListItemText primary="Email" secondary={student.email} />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <PhoneIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary='Phone Number'
+                      primary="Phone Number"
                       secondary={student.phone}
                     />
                   </ListItem>
@@ -211,7 +211,7 @@ function SingleJob() {
                       <DialpadIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary='ID Number'
+                      primary="ID Number"
                       secondary={student.idNumber}
                     />
                   </ListItem>
@@ -219,20 +219,20 @@ function SingleJob() {
                     <ListItemIcon>
                       <ClassIcon />
                     </ListItemIcon>
-                    <ListItemText primary='Course' secondary={student.class} />
+                    <ListItemText primary="Course" secondary={student.class} />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <DateRangeIcon />
                     </ListItemIcon>
-                    <ListItemText primary='Age' secondary={student.age} />
+                    <ListItemText primary="Age" secondary={student.age} />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <BusinessIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary='Address'
+                      primary="Address"
                       secondary={student.address}
                     />
                   </ListItem>
@@ -242,7 +242,7 @@ function SingleJob() {
                         <SubjectIcon />
                       </ListItemIcon>
                       <ListItemText
-                        primary='Additional Details'
+                        primary="Additional Details"
                         secondary={student.additionalDetails}
                       />
                     </ListItem>

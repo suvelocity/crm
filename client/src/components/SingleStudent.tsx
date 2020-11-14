@@ -89,7 +89,7 @@ function SingleStudent() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
-      }).then(async (result) => {
+      }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
           const { data: updated } = await network.patch(
             `/api/v1/student/modify-jobs/${id}`,
@@ -129,7 +129,7 @@ function SingleStudent() {
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Name'
+                primary="Name"
                 secondary={student?.firstName + " " + student?.lastName}
               />
             </ListItem>
@@ -137,37 +137,37 @@ function SingleStudent() {
               <ListItemIcon>
                 <EmailIcon />
               </ListItemIcon>
-              <ListItemText primary='Email' secondary={student?.email} />
+              <ListItemText primary="Email" secondary={student?.email} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <PhoneIcon />
               </ListItemIcon>
-              <ListItemText primary='Phone Number' secondary={student?.phone} />
+              <ListItemText primary="Phone Number" secondary={student?.phone} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <DialpadIcon />
               </ListItemIcon>
-              <ListItemText primary='ID Number' secondary={student?.idNumber} />
+              <ListItemText primary="ID Number" secondary={student?.idNumber} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <ClassIcon />
               </ListItemIcon>
-              <ListItemText primary='Course' secondary={student?.class} />
+              <ListItemText primary="Course" secondary={student?.class} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <DateRangeIcon />
               </ListItemIcon>
-              <ListItemText primary='Age' secondary={student?.age} />
+              <ListItemText primary="Age" secondary={student?.age} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
                 <BusinessIcon />
               </ListItemIcon>
-              <ListItemText primary='Address' secondary={student?.address} />
+              <ListItemText primary="Address" secondary={student?.address} />
             </ListItem>
             {student?.additionalDetails && (
               <ListItem>
@@ -175,7 +175,7 @@ function SingleStudent() {
                   <SubjectIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary='Additional Details'
+                  primary="Additional Details"
                   secondary={student?.additionalDetails}
                 />
               </ListItem>
@@ -195,9 +195,9 @@ function SingleStudent() {
             <Accordion key={job.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                aria-label='Expand'
-                aria-controls='additional-actions2-content'
-                id='additional-actions2-header'
+                aria-label="Expand"
+                aria-controls="additional-actions2-content"
+                id="additional-actions2-header"
               >
                 <WorkIcon />
                 <Typography className={classes.heading}>
@@ -239,7 +239,7 @@ function SingleStudent() {
                       <PlaylistAddCheckIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary='Requirements'
+                      primary="Requirements"
                       secondary={job.requirements}
                     />
                   </ListItem>
@@ -247,7 +247,7 @@ function SingleStudent() {
                     <ListItemIcon>
                       <BusinessIcon />
                     </ListItemIcon>
-                    <ListItemText primary='Location' secondary={job.location} />
+                    <ListItemText primary="Location" secondary={job.location} />
                   </ListItem>
                 </List>
               </AccordionDetails>
