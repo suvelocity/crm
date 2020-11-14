@@ -121,19 +121,19 @@ function ApplyStudentModal({
     body = (
       <div style={modalStyle} className={classes.paper}>
         <div className={classes.root}>
-          <h1>Chose Jobs To Apply To</h1>
+          <h1>Choose Jobs To Apply To</h1>
           {jobs.length > 0 ? (
             <>
               {jobs?.map((job: IJob) => (
                 <Accordion key={job.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
+                    aria-label='Expand'
+                    aria-controls='additional-actions2-content'
+                    id='additional-actions2-header'
                   >
                     <FormControlLabel
-                      aria-label="Acknowledge"
+                      aria-label='Acknowledge'
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -143,7 +143,7 @@ function ApplyStudentModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=""
+                      label=''
                     />
                     <Typography className={classes.heading}>
                       {job.position}
@@ -156,19 +156,19 @@ function ApplyStudentModal({
                     <List>
                       <ListItem>
                         <ListItemText
-                          primary="Requirements"
+                          primary='Requirements'
                           secondary={job.requirements}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary="Location"
+                          primary='Location'
                           secondary={job.location}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary="Applied Students"
+                          primary='Applied Students'
                           secondary={
                             <>
                               {job.students.map(
@@ -188,8 +188,8 @@ function ApplyStudentModal({
               ))}
               <Button
                 className={classes.button}
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={handleSubmit}
               >
                 Apply
@@ -205,7 +205,7 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button variant='contained' color='primary' onClick={handleOpen}>
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>

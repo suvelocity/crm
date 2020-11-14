@@ -64,13 +64,13 @@ function AllJobs() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="red">All Jobs</H1>
+          <H1 color='red'>All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to='/job/add'>
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
+            variant='contained'
           >
             Add Job
           </Button>
@@ -83,16 +83,16 @@ function AllJobs() {
             <Accordion key={job.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
+                aria-label='Expand'
+                aria-controls='additional-actions2-content'
+                id='additional-actions2-header'
               >
                 <WorkIcon />
                 <Typography className={classes.heading}>
                   <StyledLink
                     to={`/job/${job.id}`}
-                    textDecoration
-                    color="black"
+                    textDecoration={"true"}
+                    color='black'
                   >
                     {job.position}
                   </StyledLink>
@@ -122,20 +122,20 @@ function AllJobs() {
                     <ListItemIcon>
                       <BusinessIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Location" secondary={job.location} />
+                    <ListItemText primary='Location' secondary={job.location} />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <PlaylistAddCheckIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary="Requirements"
+                      primary='Requirements'
                       secondary={job.requirements}
                     />
                   </ListItem>
                   {/* {job.students.map(
                     (student: Partial<IStudent>, index: number) => (
-                      <ListItem>
+                      <ListItem key={index}>
                         <ListItemText
                           primary={`Student ${index + 1}`}
                           secondary={`${student.firstName} ${student.lastName}`}

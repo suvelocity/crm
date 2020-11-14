@@ -4,6 +4,7 @@ import helmet from "helmet";
 import mongoose from "mongoose";
 import "./models/student.model";
 import "./models/job.model";
+import path from "path";
 
 const url = process.env.DB_URI;
 
@@ -21,8 +22,10 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());
 
+app.use(express.static("../client/build"));
+
 app.get("/", (req: Request, res: Response) => {
-  res.send("<h1>This is CRM</h1>");
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
 app.use("/api", require("./routes"));

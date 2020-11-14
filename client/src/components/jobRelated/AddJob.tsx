@@ -1,16 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import network from "../../helpers/network";
-import { validEmailRegex, validPhoneNumberRegex } from "../../helpers/patterns";
-import CloseIcon from "@material-ui/icons/Close";
-import WarningIcon from "@material-ui/icons/Warning";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
-import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import {
   Wrapper,
@@ -40,13 +35,13 @@ const AddJob = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="red">Add Job</H1>
+          <H1 color='red'>Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            id="company"
-            label="Company"
-            name="company"
+            id='company'
+            label='Company'
+            name='company'
             inputRef={register({
               required: "Company is required",
             })}
@@ -57,22 +52,22 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color="error"
+                    color='error'
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
+                <DoneIcon color='action' />
               </IconButton>
             )
           ) : null}
           <br />
           <TextField
-            id="position"
-            label="Position"
+            id='position'
+            label='Position'
             inputRef={register({ required: "Position title is required" })}
-            name="position"
+            name='position'
           />
           {!empty ? (
             errors.position ? (
@@ -80,13 +75,13 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color="error"
+                    color='error'
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
+                <DoneIcon color='action' />
               </IconButton>
             )
           ) : null}
@@ -114,12 +109,12 @@ const AddJob = () => {
           ) : null}
           <br /> */}
           <TextField
-            id="location"
-            name="location"
+            id='location'
+            name='location'
             inputRef={register({
               required: "Location is required",
             })}
-            label="Location"
+            label='Location'
           />
           {!empty ? (
             errors.location ? (
@@ -127,13 +122,13 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color="error"
+                    color='error'
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
+                <DoneIcon color='action' />
               </IconButton>
             )
           ) : null}
@@ -166,15 +161,15 @@ const AddJob = () => {
           <br />
           <br /> */}
           <TextField
-            id="requirements"
+            id='requirements'
             multiline
             rows={4}
-            variant="outlined"
-            name="requirements"
+            variant='outlined'
+            name='requirements'
             inputRef={register({
               required: "Requirements are required",
             })}
-            label="Job Requirements"
+            label='Job Requirements'
           />
           {!empty ? (
             errors.requirements ? (
@@ -182,24 +177,24 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color="error"
+                    color='error'
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
+                <DoneIcon color='action' />
               </IconButton>
             )
           ) : null}
           <br />
           <br />
           <Button
-            id="submitButton"
+            id='submitButton'
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
-            color="primary"
-            type="submit"
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Submit
           </Button>

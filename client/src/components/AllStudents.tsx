@@ -56,8 +56,8 @@ function AllStudents() {
           <H1>All Students</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/student/add">
-          <Button variant="contained" color="primary">
+        <StyledLink to='/student/add'>
+          <Button variant='contained' color='primary'>
             Add Student
           </Button>
         </StyledLink>
@@ -70,8 +70,8 @@ function AllStudents() {
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <PersonIcon />
                 <StyledLink
-                  textDecoration
-                  color="black"
+                  textDecoration={"true"}
+                  color='black'
                   to={`/student/${student.id}`}
                 >
                   <Typography className={classes.heading}>
