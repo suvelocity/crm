@@ -22,11 +22,11 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());
 
-app.use(express.static("../client/build"));
+// app.use(express.static("../client/build"));
 
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
+// app.get("/", (req: Request, res: Response) => {
+//   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+// });
 
 app.use("/api", require("./routes"));
 
