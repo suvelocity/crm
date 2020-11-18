@@ -20,7 +20,7 @@ import {
   H1,
   Center,
 } from "../styles/styledComponents";
-import { IStudent } from "../typescript/interfaces";
+import { IStudent } from "../typescript-utils/interfaces";
 import { useHistory } from "react-router-dom";
 
 function AddStudent() {

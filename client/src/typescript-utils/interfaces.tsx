@@ -29,3 +29,13 @@ export interface IJob {
   location: string;
   students: Partial<IStudent>[];
 }
+
+export type eventType = string; //for now a string
+export interface IEvent {
+  id: string;
+  studentId: string;
+  jobId?: string;
+  type: eventType;
+  date: Date; //maybe number is better?
+  comment?: string;
+}

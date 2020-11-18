@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import network from "../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob } from "../typescript/interfaces";
+import { IStudent, IJob } from "../typescript-utils/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
 import Accordion from "@material-ui/core/Accordion";
@@ -36,6 +36,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
+import EventsLog from "./EventLog";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -57,6 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.pxToRem(10),
       padding: 0,
       marginLeft: "auto",
+    },
+    details: {
+      height: "auto",
+      padding: "20px",
     },
   })
 );
@@ -217,7 +222,7 @@ function SingleStudent() {
                   </IconButton>
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails className={classes.details}>
                 <List dense>
                   <ListItem>
                     <ListItemIcon>
@@ -250,6 +255,7 @@ function SingleStudent() {
                     <ListItemText primary="Location" secondary={job.location} />
                   </ListItem>
                 </List>
+                <EventsLog />
               </AccordionDetails>
             </Accordion>
           ))}

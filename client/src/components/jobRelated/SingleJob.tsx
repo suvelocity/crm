@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob } from "../../typescript/interfaces";
+import { IStudent, IJob } from "../../typescript-utils/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";

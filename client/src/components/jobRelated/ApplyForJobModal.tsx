@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent } from "../../typescript/interfaces";
+import { IJob, IStudent } from "../../typescript-utils/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 function getModalStyle() {
@@ -131,12 +131,12 @@ function ApplyForJobModal({
                 <Accordion key={student.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label='Expand'
-                    aria-controls='additional-actions2-content'
-                    id='additional-actions2-header'
+                    aria-label="Expand"
+                    aria-controls="additional-actions2-content"
+                    id="additional-actions2-header"
                   >
                     <FormControlLabel
-                      aria-label='Acknowledge'
+                      aria-label="Acknowledge"
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -146,7 +146,7 @@ function ApplyForJobModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=''
+                      label=""
                     />
                     <Typography className={classes.heading}>
                       {student.firstName} {student.lastName}
@@ -156,31 +156,31 @@ function ApplyForJobModal({
                     <List dense>
                       <ListItem>
                         <ListItemText
-                          primary='Name'
+                          primary="Name"
                           secondary={student.firstName + " " + student.lastName}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Email'
+                          primary="Email"
                           secondary={student.email}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Phone Number'
+                          primary="Phone Number"
                           secondary={student.phone}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Course'
+                          primary="Course"
                           secondary={student.class}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Applied Jobs'
+                          primary="Applied Jobs"
                           secondary={
                             <>
                               {student.jobs.map((job: Partial<IJob>) => (
@@ -199,7 +199,7 @@ function ApplyForJobModal({
               <Button
                 style={{ backgroundColor: "#bb4040", color: "white" }}
                 className={classes.button}
-                color='primary'
+                color="primary"
                 onClick={handleSubmit}
               >
                 Apply
@@ -217,7 +217,7 @@ function ApplyForJobModal({
     <>
       <Button
         style={{ backgroundColor: "#bb4040", color: "white" }}
-        variant='contained'
+        variant="contained"
         onClick={handleOpen}
       >
         Assign a Student
