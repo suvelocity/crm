@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import network from "../helpers/network";
 import {
@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+import { FormHelperText, MenuItem, NativeSelect } from "@material-ui/core";
 import {
   GridDiv,
   Wrapper,
@@ -24,13 +25,25 @@ import { IStudent } from "../typescript-utils/interfaces";
 import { useHistory } from "react-router-dom";
 
 function AddStudent() {
+  const [classesData, setClassesData] = useState<any[]>([]); //TODO change type later
   const { register, handleSubmit, errors } = useForm();
   const history = useHistory();
+
+  //Add request to get all available classes
+  const getClasses = useCallback(async () => {
+    try {
+      const classes = await network.get("/api/v1/classes/all-ids-names");
+    } catch (e) {
+      alert("error ocurred");
+    }
+  }, []);
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
   const onSubmit = async (data: Omit<IStudent, "id">) => {
     try {
+      console.log(data);
+      return;
       await network.post("/api/v1/student", data);
       history.push("/student/all");
     } catch (e) {
@@ -207,8 +220,6 @@ function AddStudent() {
                   </IconButton>
                 )
               ) : null}
-            </div>
-            <div>
               <TextField
                 id="class"
                 name="class"
@@ -284,6 +295,147 @@ function AddStudent() {
                 )
               ) : null}
               <br />
+              <TextField
+                id="maritalState"
+                select
+                label="Marital State"
+                name="maritalState"
+                inputRef={register({
+                  required: "Marital state is required",
+                })}
+              >
+                <MenuItem>Single</MenuItem>
+                <MenuItem>Married</MenuItem>
+                <MenuItem>divorced </MenuItem>
+                <MenuItem>widowed </MenuItem>
+                <MenuItem>It's complicated</MenuItem>
+              </TextField>
+              {!empty ? (
+                errors.maritalState ? (
+                  <Tooltip title={errors.maritalState.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
+              <TextField
+                id="children"
+                name="children"
+                type="number"
+                label="Number of children"
+                defaultValue={0}
+                inputRef={register({
+                  min: {
+                    value: 0,
+                    message: "Negative children are not allowed",
+                  },
+                  max: { value: 15, message: "Sorry, no more than 15 kids" },
+                })}
+              />
+              {!empty ? (
+                errors.children ? (
+                  <Tooltip title={errors.children.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              {/* optional: another field pops out in case of a degree, where you can specify what degree */}
+            </div>
+            <div>
+              <TextField
+                id="academicBackground"
+                // className={classes.selectEmpty}
+                select
+                label="Academic Background"
+                value={""}
+                name="academicBackground"
+                // onChange={handleChange}
+                // inputProps={{ "aria-label": "age" }}
+              >
+                <MenuItem>No education</MenuItem>
+                <MenuItem>Middle school</MenuItem>
+                <MenuItem>High school diploma </MenuItem>
+                <MenuItem>Bachelor's degree</MenuItem>
+                <MenuItem>Master's degree</MenuItem>
+              </TextField>
+              <br />
+              <TextField
+                id="languages"
+                name="languages"
+                inputRef={register({
+                  required: "Languages is required",
+                  pattern: {
+                    value: validNameRegex,
+                    message:
+                      "Languages can have only letters seperated by spaces",
+                  },
+                })}
+                label="Languages"
+              />
+              {!empty ? (
+                errors.languages ? (
+                  <Tooltip title={errors.languages.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <TextField
+                id="citizenships"
+                name="citizenships"
+                inputRef={register({
+                  required: "Citizenships is required",
+                  pattern: {
+                    value: validNameRegex,
+                    message:
+                      "Citizenships can have only letters seperated by spaces",
+                  },
+                })}
+                label="Citizenships"
+              />
+              {!empty ? (
+                errors.citizenships ? (
+                  <Tooltip title={errors.citizenships.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
               <br />
               <TextField
                 id="additionalDetails"
@@ -294,6 +446,30 @@ function AddStudent() {
                 name="additionalDetails"
                 inputRef={register()}
                 label="Additional Details"
+              />
+              <br />
+              <br />
+              <TextField
+                id="militaryService"
+                multiline
+                rows={3}
+                variant="outlined"
+                style={{ width: "196px" }}
+                name="militaryService"
+                inputRef={register()}
+                label="Military Service"
+              />{" "}
+              <br />
+              <br />
+              <TextField
+                id="workExperience"
+                multiline
+                rows={3}
+                variant="outlined"
+                style={{ width: "196px" }}
+                name="workExperience"
+                inputRef={register()}
+                label="Work Experience"
               />
             </div>
           </GridDiv>

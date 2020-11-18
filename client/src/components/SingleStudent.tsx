@@ -72,52 +72,52 @@ function SingleStudent() {
   const { id } = useParams();
   const classes = useStyles();
 
-  const getStudent = useCallback(async () => {
-    const { data }: { data: IStudent } = await network.get(
-      `/api/v1/student/byId/${id}`
-    );
-    setStudent(data);
-    setLoading(false);
-  }, [id, setStudent, setLoading]);
+  // const getStudent = useCallback(async () => {
+  //   const { data }: { data: IStudent } = await network.get(
+  //     `/api/v1/student/byId/${id}`
+  //   );
+  //   setStudent(data);
+  //   setLoading(false);
+  // }, [id, setStudent, setLoading]);
 
-  const removeJob = useCallback(
-    async (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      jobId: string
-    ) => {
-      e.stopPropagation();
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: { isConfirmed: boolean }) => {
-        if (result.isConfirmed) {
-          const { data: updated } = await network.patch(
-            `/api/v1/student/modify-jobs/${id}`,
-            {
-              jobs: [jobId],
-              method: "remove",
-            }
-          );
-          setStudent(updated);
-        }
-      });
-    },
-    [setStudent, id]
-  );
+  // const removeJob = useCallback(
+  //   async (
+  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  //     jobId: string
+  //   ) => {
+  //     e.stopPropagation();
+  //     Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "You won't be able to revert this!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     }).then(async (result: { isConfirmed: boolean }) => {
+  //       if (result.isConfirmed) {
+  //         const { data: updated } = await network.patch(
+  //           `/api/v1/student/modify-jobs/${id}`,
+  //           {
+  //             jobs: [jobId],
+  //             method: "remove",
+  //           }
+  //         );
+  //         setStudent(updated);
+  //       }
+  //     });
+  //   },
+  //   [setStudent, id]
+  // );
 
-  useEffect(() => {
-    try {
-      getStudent();
-    } catch (e) {
-      console.log(e.message);
-    }
-    //eslint-disable-next-line
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     getStudent();
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  //   //eslint-disable-next-line
+  // }, []);
 
   return (
     <>
@@ -160,7 +160,7 @@ function SingleStudent() {
               <ListItemIcon>
                 <ClassIcon />
               </ListItemIcon>
-              <ListItemText primary="Course" secondary={student?.class} />
+              <ListItemText primary="Course" secondary={student?.classId} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
@@ -195,8 +195,8 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <br />
-        <Loading loading={loading} size={30}>
-          {student?.jobs.map((job: Partial<IJob>) => (
+        {/* <Loading loading={loading} size={30}> 
+           {student?.jobs.map((job: Partial<IJob>) => (
             <Accordion key={job.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -267,7 +267,7 @@ function SingleStudent() {
               getStudent={getStudent}
             />
           </Center>
-        </Loading>
+        </Loading> */}
       </Wrapper>
     </>
   );

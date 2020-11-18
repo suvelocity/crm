@@ -1,15 +1,21 @@
 export interface IStudent {
-  id: string;
+  id: number;
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
   idNumber: string;
   additionalDetails: string;
-  class: string;
-  age: string;
+  classId: number;
+  age: number;
   address: string;
-  jobs: Partial<IJob>[];
+  maritalStatus: string;
+  children: number;
+  academicBackground: string;
+  militaryService: string;
+  workExperience: string;
+  languages: string;
+  citizenship: string;
 }
 export interface ICompany {
   id?: number;
@@ -22,12 +28,14 @@ export interface ICompany {
   jobs: Pick<IJob, "id">;
 }
 export interface IJob {
-  id: string;
+  id: number;
   company: string;
   position: string;
   requirements: string;
   location: string;
-  students: Partial<IStudent>[];
+  description: string;
+  contact: string;
+  additionalDetails: string;
 }
 
 export type eventType = string; //for now a string

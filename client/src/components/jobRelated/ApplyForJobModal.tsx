@@ -68,22 +68,22 @@ function ApplyForJobModal({
   const [students, setStudents] = useState<IStudent[] | null>();
   const [studentsToApply, setStudentsToApply] = useState<string[]>([]);
 
-  useEffect(() => {
-    try {
-      (async () => {
-        const { data }: { data: IStudent[] } = await network.get(
-          "/api/v1/student/all"
-        );
-        setStudents(
-          data.filter(
-            (student: IStudent) => !currentStudents?.includes(student.id)
-          )
-        );
-      })();
-    } catch (e) {
-      console.log(e.message);
-    }
-  }, [currentStudents]);
+  // useEffect(() => {
+  //   try {
+  //     (async () => {
+  //       const { data }: { data: IStudent[] } = await network.get(
+  //         "/api/v1/student/all"
+  //       );
+  //       setStudents(
+  //         data.filter(
+  //           (student: IStudent) => !currentStudents?.includes(student.id)
+  //         )
+  //       );
+  //     })();
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // }, [currentStudents]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -120,98 +120,98 @@ function ApplyForJobModal({
     }
   };
   let body = <CircularProgress />;
-  if (students) {
-    body = (
-      <div style={modalStyle} className={classes.paper}>
-        <div className={classes.root}>
-          <h1>Choose Students To Apply</h1>
-          {students.length > 0 ? (
-            <>
-              {students?.map((student: IStudent) => (
-                <Accordion key={student.id}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
-                  >
-                    <FormControlLabel
-                      aria-label="Acknowledge"
-                      onClick={(event) => event.stopPropagation()}
-                      onFocus={(event) => event.stopPropagation()}
-                      control={
-                        <Checkbox
-                          id={student.id}
-                          value={student.id}
-                          onChange={handleCheckBoxOnChange}
-                        />
-                      }
-                      label=""
-                    />
-                    <Typography className={classes.heading}>
-                      {student.firstName} {student.lastName}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <List dense>
-                      <ListItem>
-                        <ListItemText
-                          primary="Name"
-                          secondary={student.firstName + " " + student.lastName}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Email"
-                          secondary={student.email}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Phone Number"
-                          secondary={student.phone}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Course"
-                          secondary={student.class}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Jobs"
-                          secondary={
-                            <>
-                              {student.jobs.map((job: Partial<IJob>) => (
-                                <p key={job.id}>
-                                  {job.position} {job.company}
-                                </p>
-                              ))}
-                            </>
-                          }
-                        />
-                      </ListItem>
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-              <Button
-                style={{ backgroundColor: "#bb4040", color: "white" }}
-                className={classes.button}
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Apply
-              </Button>
-            </>
-          ) : (
-            <h2>All students are applied for this job</h2>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // if (students) {
+  //   body = (
+  //     <div style={modalStyle} className={classes.paper}>
+  //       <div className={classes.root}>
+  //         <h1>Choose Students To Apply</h1>
+  //         {students.length > 0 ? (
+  //           <>
+  //             {students?.map((student: IStudent) => (
+  //               <Accordion key={student.id}>
+  //                 <AccordionSummary
+  //                   expandIcon={<ExpandMoreIcon />}
+  //                   aria-label="Expand"
+  //                   aria-controls="additional-actions2-content"
+  //                   id="additional-actions2-header"
+  //                 >
+  //                   <FormControlLabel
+  //                     aria-label="Acknowledge"
+  //                     onClick={(event) => event.stopPropagation()}
+  //                     onFocus={(event) => event.stopPropagation()}
+  //                     control={
+  //                       <Checkbox
+  //                         id={student.id}
+  //                         value={student.id}
+  //                         onChange={handleCheckBoxOnChange}
+  //                       />
+  //                     }
+  //                     label=""
+  //                   />
+  //                   <Typography className={classes.heading}>
+  //                     {student.firstName} {student.lastName}
+  //                   </Typography>
+  //                 </AccordionSummary>
+  //                 <AccordionDetails>
+  //                   <List dense>
+  //                     <ListItem>
+  //                       <ListItemText
+  //                         primary="Name"
+  //                         secondary={student.firstName + " " + student.lastName}
+  //                       />
+  //                     </ListItem>
+  //                     <ListItem>
+  //                       <ListItemText
+  //                         primary="Email"
+  //                         secondary={student.email}
+  //                       />
+  //                     </ListItem>
+  //                     <ListItem>
+  //                       <ListItemText
+  //                         primary="Phone Number"
+  //                         secondary={student.phone}
+  //                       />
+  //                     </ListItem>
+  //                     <ListItem>
+  //                       <ListItemText
+  //                         primary="Course"
+  //                         secondary={student.class}
+  //                       />
+  //                     </ListItem>
+  //                     <ListItem>
+  //                       <ListItemText
+  //                         primary="Applied Jobs"
+  //                         secondary={
+  //                           <>
+  //                             {student.jobs.map((job: Partial<IJob>) => (
+  //                               <p key={job.id}>
+  //                                 {job.position} {job.company}
+  //                               </p>
+  //                             ))}
+  //                           </>
+  //                         }
+  //                       />
+  //                     </ListItem>
+  //                   </List>
+  //                 </AccordionDetails>
+  //               </Accordion>
+  //             ))}
+  //             <Button
+  //               style={{ backgroundColor: "#bb4040", color: "white" }}
+  //               className={classes.button}
+  //               color="primary"
+  //               onClick={handleSubmit}
+  //             >
+  //               Apply
+  //             </Button>
+  //           </>
+  //         ) : (
+  //           <h2>All students are applied for this job</h2>
+  //         )}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -223,7 +223,7 @@ function ApplyForJobModal({
         Assign a Student
       </Button>
       <Modal open={open} onClose={handleClose}>
-        {body}
+        {/* {body} */}
       </Modal>
     </>
   );

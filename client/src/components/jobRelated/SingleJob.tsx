@@ -156,7 +156,7 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <br />
-        <Loading loading={loading} size={30}>
+        {/* <Loading loading={loading} size={30}>
           {job?.students.map((student: Partial<IStudent>) => (
             <Accordion key={student.id}>
               <AccordionSummary
@@ -261,7 +261,7 @@ function SingleJob() {
               getJob={getJob}
             />
           </Center>
-        </Loading>
+        </Loading> */}
       </Wrapper>
     </>
   );
