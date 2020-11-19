@@ -7,7 +7,19 @@ const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
   try {
-    const students: IStudent[] = await Student.findAll({});
+    const students: IStudent[] = await Student.findAll({
+      include: [
+        {
+          model: Event,
+          include: [
+            {
+              model: Job,
+            },
+          ],
+          attributes: ["status", "createdAt"],
+        },
+      ],
+    });
     res.json(students);
   } catch (err) {
     res.status(500).send("error occurred");
@@ -80,25 +92,25 @@ router.patch("/modify-jobs/:id", async (req: Request, res: Response) => {
     const method: "add" | "remove" = req.body.method;
     switch (method) {
       case "add":
-        const studentWithNewJob: any = await Event.create({
+        const event: any = await Event.create({
           studentId: id,
           jobId,
           status,
         });
-        return res.json(studentWithNewJob);
+        return res.json(event);
 
       case "remove":
         const studentWithLessJobs: any = await Event.destroy({
-          where: { studentId: id },
+          where: { studentId: id, jobId },
         });
-        if (studentWithLessJobs) return res.json(studentWithLessJobs);
-        return res.status(404).send("student does not exist");
+        if (studentWithLessJobs) return res.json({ msg: "Event deleted" });
+        return res.status(400).send("event not found");
 
       default:
-        return res.status(404).send("student does not exist");
+        return res.status(400).send("No method included");
     }
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send("Error occurred");
   }
 });
 
