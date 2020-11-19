@@ -5,7 +5,7 @@ const router = Router();
 const unknownEndpoint = (req: Request, res: Response) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
-// router.use("/classroom", require("./class"));
+router.use("/class", require("./class"));
 // router.use("/job", require("./job"));
 router.use("/student", require("./student"));
 

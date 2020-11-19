@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       course: DataTypes.STRING,
       name: DataTypes.STRING,
-      starting_date: DataTypes.DATE,
-      ending_date: DataTypes.DATE,
-      cycle_number: DataTypes.INTEGER,
-      zoom_link: DataTypes.STRING,
-      additional_details: DataTypes.STRING,
+      startingDate: DataTypes.DATE,
+      endingDate: DataTypes.DATE,
+      cycleNumber: DataTypes.INTEGER,
+      zoomLink: DataTypes.STRING,
+      additionalDetails: DataTypes.STRING,
     },
     {
       sequelize,

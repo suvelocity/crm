@@ -57,7 +57,7 @@ router.post("/", async (req: Request, res: Response) => {
       where: { idNumber: body.idNumber },
     });
     if (studentExists) return res.status(400).send("Student already exists");
-    const newStudent: IStudent = new Student({
+    const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,
       lastName: body.lastName,
@@ -74,11 +74,11 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
-    });
+    };
     const student: IStudent = await Student.create(newStudent);
     res.json(student);
   } catch (err) {
-    res.status(500).send("error occurred");
+    res.status(500).send(err.message);
   }
 });
 

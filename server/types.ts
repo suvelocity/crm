@@ -28,3 +28,14 @@ export interface IStudent {
   languages: string;
   citizenship: string;
 }
+
+export interface IClass {
+  id?: number;
+  course: string;
+  name: string;
+  startingDate: string;
+  endingDate: string;
+  cycleNumber: number;
+  zoomLink: string;
+  additionalDetails: string;
+}

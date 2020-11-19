@@ -1,21 +1,42 @@
 import { Router, Request, Response } from "express";
 const router = Router();
+//@ts-ignore
+import { Student, Job, Event, Class } from "../../models";
+import { IStudent, IJob, IClass } from "../../types";
 
-// router.get("/", (req: Request, res: Response) => {
-//   ClassRoom.find()
-//     .then((classes: IClassRoom[]) => res.json(classes))
-//     .catch((e: Error) => res.sendStatus(500));
-// });
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const classes: IClass[] = await Class.findAll({
+      includes: [
+        {
+          models: Student,
+        },
+      ],
+    });
+    res.json(classes);
+  } catch (err) {
+    res.status(500).send("error occurred");
+  }
+});
 
-// router.post("/", (req: Request, res: Response) => {
-//   const newClassRoom: IClassRoom = new ClassRoom({
-//     name: req.body.name,
-//     courseName: req.body.courseName,
-//     cycleNumber: +req.body.cycleNumber,
-//     startDate: req.body.startDate,
-//     endDate: req.body.endDate,
-//     zoomLink: req.body.zoomLink,
-//   });
+router.post("/", async (req: Request, res: Response) => {
+  try {
+    const body: IClass = req.body;
+    const newClass: IClass = {
+      course: body.course,
+      name: body.name,
+      startingDate: body.startingDate,
+      endingDate: body.endingDate,
+      cycleNumber: body.cycleNumber,
+      zoomLink: body.zoomLink,
+      additionalDetails: body.additionalDetails,
+    };
+    const createdClass: IClass = await Class.create(newClass);
+    res.json(createdClass);
+  } catch (err) {
+    res.status(500).send("error occurred");
+  }
+});
 
 //   newClassRoom
 //     .save()
