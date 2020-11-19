@@ -1,8 +1,6 @@
 import express, { Response, Request } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
-import "./models/student.model";
-import "./models/job.model";
 import path from "path";
 
 const app = express();

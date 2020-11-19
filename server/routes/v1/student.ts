@@ -52,7 +52,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const body: Omit<IStudent, "id"> = req.body;
+    const body: IStudent = req.body;
     const studentExists = await Student.findOne({
       where: { idNumber: body.idNumber },
     });
@@ -64,10 +64,16 @@ router.post("/", async (req: Request, res: Response) => {
       phone: body.phone,
       idNumber: body.idNumber,
       additionalDetails: body.additionalDetails,
-      class: body.class,
+      classId: body.classId,
       address: body.address,
       age: body.age,
-      jobs: body.jobs,
+      maritalStatus: body.maritalStatus,
+      children: body.children,
+      academicBackground: body.academicBackground,
+      militaryService: body.militaryService,
+      workExperience: body.workExperience,
+      languages: body.languages,
+      citizenship: body.citizenship,
     });
     const student: IStudent = await Student.create(newStudent);
     res.json(student);

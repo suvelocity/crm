@@ -1,5 +1,5 @@
 export interface IJob {
-  id: number;
+  id?: number;
   company: string;
   position: string;
   requirements: string;
@@ -10,7 +10,7 @@ export interface IJob {
 }
 
 export interface IStudent {
-  id: number;
+  id?: number;
   email: string;
   firstName: string;
   lastName: string;
