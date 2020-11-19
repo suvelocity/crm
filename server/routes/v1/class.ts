@@ -4,16 +4,32 @@ const router = Router();
 import { Student, Job, Event, Class } from "../../models";
 import { IStudent, IJob, IClass } from "../../types";
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/all", async (req: Request, res: Response) => {
   try {
     const classes: IClass[] = await Class.findAll({
-      includes: [
+      include: [
         {
-          models: Student,
+          model: Student,
         },
       ],
     });
     res.json(classes);
+  } catch (err) {
+    res.status(500).send("error occurred");
+  }
+});
+
+router.get("/byId/:id", async (req: Request, res: Response) => {
+  try {
+    const selectedClass: IClass[] = await Class.findByPk(req.params.id, {
+      include: [
+        {
+          model: Student,
+        },
+      ],
+    });
+    if (selectedClass) return res.json(selectedClass);
+    res.status(400).send("Class not found");
   } catch (err) {
     res.status(500).send("error occurred");
   }
@@ -38,23 +54,30 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-//   newClassRoom
-//     .save()
-//     .then((cls: IClassRoom) => res.json(cls))
-//     .catch((e: Error) => res.sendStatus(400));
-// });
+router.put("/:id", async (req: Request, res: Response) => {
+  try {
+    const updated = await Class.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updated[0] === 1) return res.json({ msg: "Class updated" });
+    res.status(400).send("Class not found");
+  } catch (e) {
+    res.status(500).send("error occurred");
+  }
+});
 
-// router.put("/:id", (req: Request, res: Response) => {
-//   const id: string = req.params.id;
-//   ClassRoom.findByIdAndUpdate(id, req.body, { new: true })
-//     .then((classRoom: IClassRoom | null) => res.json(classRoom))
-//     .catch((e: Error) => res.sendStatus(400));
-// });
-
-// router.delete("/:id", (req: Request, res: Response) => {
-//   ClassRoom.findByIdAndDelete(req.params.id)
-//     .then(() => res.status(204).json({ success: true }))
-//     .catch((e: Error) => res.sendStatus(500));
-// });
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const deleted = await Class.destroy({
+      where: { id: req.params.id },
+    });
+    if (deleted === 0) {
+      return res.status(400).send("Class not found");
+    }
+    res.json({ msg: "Class deleted" });
+  } catch (e) {
+    res.status(500).send("error occurred");
+  }
+});
 
 module.exports = router;

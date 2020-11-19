@@ -39,3 +39,9 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
 }
+
+export interface IEvent {
+  id?: number;
+  studentId: number;
+  jobId: number;
+}

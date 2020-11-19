@@ -84,67 +84,30 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/modify-jobs/:id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
-    const id: string = req.params.id;
-    const jobId = req.body.jobId;
-    const status = req.body.status;
-    const method: "add" | "remove" = req.body.method;
-    switch (method) {
-      case "add":
-        const event: any = await Event.create({
-          studentId: id,
-          jobId,
-          status,
-        });
-        return res.json(event);
-
-      case "remove":
-        const studentWithLessJobs: any = await Event.destroy({
-          where: { studentId: id, jobId },
-        });
-        if (studentWithLessJobs) return res.json({ msg: "Event deleted" });
-        return res.status(400).send("event not found");
-
-      default:
-        return res.status(400).send("No method included");
-    }
-  } catch (err) {
-    res.status(500).send("Error occurred");
+    const updated = await Student.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updated[0] === 1) return res.json({ msg: "Student updated" });
+    res.status(400).send("Student not found");
+  } catch (e) {
+    res.status(500).send("error occurred");
   }
 });
 
-// router.put("/:id", async (req: Request, res: Response) => {
-//   try {
-//     const id: string = req.params.id;
-
-//     const student: IStudent | null = await Student.findByIdAndUpdate(
-//       id,
-//       req.body,
-//       { new: true }
-//     ).exec();
-//     if (student) {
-//       return res.json(student);
-//     } else {
-//       return res.status(404).send("student does not exist");
-//     }
-//   } catch (err) {
-//     res.status(500).send("error occurred");
-//   }
-// });
-
-// router.delete("/:id", async (req: Request, res: Response) => {
-//   try {
-//     const id: string = req.params.id;
-//     const student: IStudent | null = await Student.findByIdAndRemove(id);
-//     if (student) {
-//       return res.json(student);
-//     } else {
-//       return res.status(400).send("student not exist");
-//     }
-//   } catch (err) {
-//     res.status(500).send("student not exist");
-//   }
-// });
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const deleted = await Student.destroy({
+      where: { id: req.params.id },
+    });
+    if (deleted === 0) {
+      return res.status(400).send("Student not found");
+    }
+    res.json({ msg: "Student deleted" });
+  } catch (e) {
+    res.status(500).send("error occurred");
+  }
+});
 
 module.exports = router;
