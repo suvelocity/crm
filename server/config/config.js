@@ -10,6 +10,7 @@ module.exports = {
     define: {
       underscored: true,
     },
+    logging: false,
   },
   test: {
     username: "root",

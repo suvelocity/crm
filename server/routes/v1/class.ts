@@ -29,7 +29,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
       ],
     });
     if (selectedClass) return res.json(selectedClass);
-    res.status(400).send("Class not found");
+    res.status(404).send("Class not found");
   } catch (err) {
     res.status(500).send("error occurred");
   }
@@ -60,7 +60,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       where: { id: req.params.id },
     });
     if (updated[0] === 1) return res.json({ msg: "Class updated" });
-    res.status(400).send("Class not found");
+    res.status(404).send("Class not found");
   } catch (e) {
     res.status(500).send("error occurred");
   }
@@ -72,7 +72,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
       where: { id: req.params.id },
     });
     if (deleted === 0) {
-      return res.status(400).send("Class not found");
+      return res.status(404).send("Class not found");
     }
     res.json({ msg: "Class deleted" });
   } catch (e) {

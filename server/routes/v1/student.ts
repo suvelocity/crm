@@ -45,7 +45,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
     if (student) {
       return res.json(student);
     } else {
-      return res.status(400).send("student does not exist");
+      return res.status(404).send("student does not exist");
     }
   } catch (err) {
     res.status(500).send(err.message);
@@ -90,7 +90,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       where: { id: req.params.id },
     });
     if (updated[0] === 1) return res.json({ msg: "Student updated" });
-    res.status(400).send("Student not found");
+    res.status(404).send("Student not found");
   } catch (e) {
     res.status(500).send("error occurred");
   }
@@ -101,7 +101,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const deleted = await Student.destroy({
       where: { id: req.params.id },
     });
-    if (deleted === 0) return res.status(400).send("Student not found");
+    if (deleted === 0) return res.status(404).send("Student not found");
     await Event.destroy({ where: { studentId: req.params.id } });
     res.json({ msg: "Student deleted" });
   } catch (e) {

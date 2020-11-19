@@ -45,7 +45,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
     if (job) {
       return res.json(job);
     } else {
-      return res.status(400).send("Job does not exist");
+      return res.status(404).send("Job does not exist");
     }
   } catch (err) {
     res.status(500).send(err.message);
@@ -88,7 +88,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       where: { id: req.params.id },
     });
     if (updated[0] === 1) return res.json({ msg: "Job updated" });
-    res.status(400).send("Job not found");
+    res.status(404).send("Job not found");
   } catch (e) {
     res.status(500).send("error occurred");
   }
@@ -99,7 +99,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const deleted = await Job.destroy({
       where: { id: req.params.id },
     });
-    if (deleted === 0) return res.status(400).send("Job not found");
+    if (deleted === 0) return res.status(404).send("Job not found");
     await Event.destroy({ where: { jobId: req.params.id } });
     res.json({ msg: "Job deleted" });
   } catch (e) {

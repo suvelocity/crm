@@ -9,26 +9,26 @@ router.post("/", async (req: Request, res: Response) => {
     const studentId: string = req.body.studentId;
     const jobId = req.body.jobId;
     const status = req.body.status;
-    const method: "add" | "remove" = req.body.method;
-    switch (method) {
-      case "add":
-        const event: IEvent = await Event.create({
-          studentId,
-          jobId,
-          status,
-        });
-        return res.json(event);
+    const event: IEvent = await Event.create({
+      studentId,
+      jobId,
+      status,
+    });
+    return res.json(event);
+  } catch (err) {
+    res.status(500).send("Error occurred");
+  }
+});
 
-      case "remove":
-        const studentWithLessJobs: any = await Event.destroy({
-          where: { studentId, jobId },
-        });
-        if (studentWithLessJobs) return res.json({ msg: "Event deleted" });
-        return res.status(400).send("event not found");
-
-      default:
-        return res.status(400).send("No method included");
-    }
+router.delete("/", async (req, res) => {
+  try {
+    const studentId: string = req.body.studentId;
+    const jobId = req.body.jobId;
+    const deleted: any = await Event.destroy({
+      where: { studentId, jobId },
+    });
+    if (deleted) return res.json({ msg: "Event deleted" });
+    return res.status(404).send("event not found");
   } catch (err) {
     res.status(500).send("Error occurred");
   }
