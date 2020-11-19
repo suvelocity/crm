@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasMany(models.Event, {
         foreignKey: "studentId",
+        onDelete: "cascade",
+        hooks: true,
       });
       this.belongsTo(models.Class, {
         foreignKey: "classId",

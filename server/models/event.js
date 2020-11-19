@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.Job, {
         foreignKey: "jobId",
+        onDelete: "cascade",
+        hooks: true,
       });
       this.belongsTo(models.Student, {
         foreignKey: "studentId",

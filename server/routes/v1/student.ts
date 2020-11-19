@@ -101,9 +101,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const deleted = await Student.destroy({
       where: { id: req.params.id },
     });
-    if (deleted === 0) {
-      return res.status(400).send("Student not found");
-    }
+    if (deleted === 0) return res.status(400).send("Student not found");
+    await Event.destroy({ where: { studentId: req.params.id } });
     res.json({ msg: "Student deleted" });
   } catch (e) {
     res.status(500).send("error occurred");
