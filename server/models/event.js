@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Event.init(
     {
-      student_id: DataTypes.INTEGER,
-      job_id: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
+      jobId: DataTypes.INTEGER,
       status: DataTypes.STRING,
     },
     {

@@ -7,18 +7,7 @@ const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
   try {
-    const students: IStudent[] = await Student.findAll({
-      includes: [
-        {
-          models: Event,
-          include: [
-            {
-              model: Job,
-            },
-          ],
-        },
-      ],
-    });
+    const students: IStudent[] = await Student.findAll({});
     res.json(students);
   } catch (err) {
     res.status(500).send("error occurred");
@@ -37,6 +26,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               model: Job,
             },
           ],
+          attributes: ["status", "createdAt"],
         },
       ],
     });
@@ -46,7 +36,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
       return res.status(400).send("student does not exist");
     }
   } catch (err) {
-    res.status(500).send("error occurred");
+    res.status(500).send(err.message);
   }
 });
 
@@ -78,19 +68,19 @@ router.post("/", async (req: Request, res: Response) => {
     const student: IStudent = await Student.create(newStudent);
     res.json(student);
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send("error occurred");
   }
 });
 
 router.patch("/modify-jobs/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const jobId = req.body.job;
+    const jobId = req.body.jobId;
     const status = req.body.status;
     const method: "add" | "remove" = req.body.method;
     switch (method) {
       case "add":
-        const studentWithNewJob: IStudent | null = await Event.create({
+        const studentWithNewJob: any = await Event.create({
           studentId: id,
           jobId,
           status,
@@ -98,7 +88,7 @@ router.patch("/modify-jobs/:id", async (req: Request, res: Response) => {
         return res.json(studentWithNewJob);
 
       case "remove":
-        const studentWithLessJobs: IStudent | null = await Event.destroy({
+        const studentWithLessJobs: any = await Event.destroy({
           where: { studentId: id },
         });
         if (studentWithLessJobs) return res.json(studentWithLessJobs);
