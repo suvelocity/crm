@@ -2,9 +2,9 @@ name: Continuous-Integration
 
 on:
   pull_request:
-    branches: [sql] 
+    branches: [temporarily-disabled] 
   push:
-    branches: [sql] 
+    branches: [temporarily-disabled] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   GCE_INSTANCE: crm-project-test  # TODO: update to instance name
