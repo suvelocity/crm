@@ -77,7 +77,7 @@ jobs:
         --machine-type e2-medium
     #     --address 34.19.193.89 \
 
-# # ---------------------------- ONLY FIRST TIME SETUP -- CHANGE port number to your server port
+# # ---------------------------- ONLY FIRST TIME SETUP IF NO RULE IS SET -- CHANGE port number to your server port
 #     - name: Add Firewall Rules 
 #       run: |-
 #         gcloud compute firewall-rules create default-allow-http-8080 \
