@@ -2,12 +2,12 @@ name: Continuous-Integration
 
 on:
   pull_request:
-    branches: [sql] 
+    branches: [gcloud] 
   push:
-    branches: [sql] 
+    branches: [gcloud] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-  GCE_INSTANCE: crm-project-test  # TODO: update to instance name
+  GCE_INSTANCE: crm-project-test2  # TODO: update to instance name
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   DB_PASS: ${{ secrets.DB_PASS }}
@@ -100,10 +100,10 @@ jobs:
           sudo git clone https://${{secrets.ACCESS_USER}}:${{secrets.ACCESS_TOKEN}}@github.com/${{github.repository}}.git &&
           cd ${{ github.event.repository.name }} &&
           sudo git fetch --all &&
-          sudo git checkout sql && 
+          sudo git checkout gcloud && 
           cd ./client && sudo npm ci --production &&
           sudo npm run build && 
-          cd ../server &&
+          cd ../server && sudo npm ci --production
           sudo npm install pm2@latest -g && 
           pm2 start index.ts --name myapp
         '
