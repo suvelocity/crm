@@ -7,7 +7,7 @@ on:
     branches: [gcloud] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-  GCE_INSTANCE: crm-project-test2  # TODO: update to instance name
+  GCE_INSTANCE: crm-project-test3  # TODO: update to instance name
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   DB_PASS: ${{ secrets.DB_PASS }}
@@ -77,14 +77,14 @@ jobs:
         --machine-type e2-medium
     #     --address 34.19.193.89 \
 
-# ---------------------------- ONLY FIRST TIME SETUP -- CHANGE port number to your server port
-    - name: Add Firewall Rules 
-      run: |-
-        gcloud compute firewall-rules create default-allow-http-8080 \
-        --allow tcp:8080 \
-        --source-ranges 0.0.0.0/0 \
-        --target-tags http-server \
-        --description "Allow port 8080 access to http-server"
+# # ---------------------------- ONLY FIRST TIME SETUP -- CHANGE port number to your server port
+#     - name: Add Firewall Rules 
+#       run: |-
+#         gcloud compute firewall-rules create default-allow-http-8080 \
+#         --allow tcp:8080 \
+#         --source-ranges 0.0.0.0/0 \
+#         --target-tags http-server \
+#         --description "Allow port 8080 access to http-server"
 
 # ---------------------------- ONLY FIRST TIME SETUP -- CHANGE checkout to your branch
     - name: Clone and Initialize 
