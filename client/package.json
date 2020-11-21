@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "newBuild": "INLINE_RUNTIME_CHUNK=false npm run build",
+    "build:prod": "INLINE_RUNTIME_CHUNK=false npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
