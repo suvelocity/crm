@@ -7,7 +7,7 @@ on:
     branches: [gcloud] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-  GCE_INSTANCE: crm-project-test3   # TODO: update to instance name
+  GCE_INSTANCE: crm-project-test   # TODO: update to instance name
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   DB_PASS: ${{ secrets.DB_PASS }}
@@ -104,8 +104,6 @@ jobs:
           cd ./client && sudo npm ci --production &&
           sudo npm run build && 
           cd ../server && sudo npm ci --production
-          sudo npm install pm2@latest -g && 
-          pm2 start index.ts --name myapp
         '
     - name: Pull Origin Branch, Install Dependecies
       run: |-
@@ -151,5 +149,5 @@ jobs:
         --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
           cd ${{ github.event.repository.name }} &&
           cd server && npx sequelize db:migrate &&
-          sudo pm2 reload myapp
+          npm run dev
         '
