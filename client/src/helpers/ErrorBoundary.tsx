@@ -5,7 +5,7 @@ interface ErrorBoundaryProps {
   error: string;
 }
 
-export default class ErrorBoundry extends React.Component<
+export default class ErrorBoundary extends React.Component<
   {},
   ErrorBoundaryProps
 > {
@@ -20,9 +20,9 @@ export default class ErrorBoundry extends React.Component<
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div id='myModal' className='modal'>
-          <div className='modal-content'>
-            <span className='close'>&times;</span>
+        <div id="myModal" className="modal">
+          <div className="modal-content">
+            <span className="close">&times;</span>
             <h2>Opps Error occurred</h2>
           </div>
         </div>
