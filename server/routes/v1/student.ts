@@ -18,6 +18,9 @@ router.get("/all", async (req: Request, res: Response) => {
           ],
           attributes: ["status", "createdAt"],
         },
+        {
+          model: Class,
+        },
       ],
     });
     res.json(students);

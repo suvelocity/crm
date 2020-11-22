@@ -103,7 +103,10 @@ function AllStudents() {
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary={"Class"} secondary={student.class} />
+                    <ListItemText
+                      primary={"Class"}
+                      secondary={student?.Class?.name}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemText

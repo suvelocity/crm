@@ -29,7 +29,7 @@ function AddStudent() {
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
-  const onSubmit = async (data: Omit<IStudent, "id">) => {
+  const onSubmit = async (data: IStudent) => {
     try {
       await network.post("/api/v1/student", data);
       history.push("/student/all");
@@ -270,6 +270,29 @@ function AddStudent() {
               {!empty ? (
                 errors.age ? (
                   <Tooltip title={errors.age.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
+              <TextField
+                id="address"
+                name="address"
+                inputRef={register({ required: "Address is required" })}
+                label="Address"
+              />
+              {!empty ? (
+                errors.address ? (
+                  <Tooltip title={errors.address.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}

@@ -14,6 +14,11 @@ router.get("/all", async (req: Request, res: Response) => {
           include: [
             {
               model: Student,
+              include: [
+                {
+                  model: Class,
+                },
+              ],
             },
           ],
           attributes: ["status", "createdAt"],
@@ -36,6 +41,11 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
           include: [
             {
               model: Student,
+              include: [
+                {
+                  model: Class,
+                },
+              ],
             },
           ],
           attributes: ["status", "createdAt"],
