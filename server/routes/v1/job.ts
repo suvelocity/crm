@@ -22,7 +22,6 @@ router.get("/all", async (req: Request, res: Response) => {
     });
     res.json(jobs);
   } catch (err) {
-    console.log(err);
     res.status(500).send("error occurred");
   }
 });
