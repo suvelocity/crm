@@ -7,7 +7,7 @@ on:
     branches: [gcloud] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-  GCE_INSTANCE: crm-project-shahar   # TODO: update to instance name
+  GCE_INSTANCE: crm-project-newtest   # TODO: update to instance name
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   DB_PASS: ${{ secrets.DB_PASS }}
@@ -100,9 +100,10 @@ jobs:
           sudo git clone https://${{secrets.ACCESS_USER}}:${{secrets.ACCESS_TOKEN}}@github.com/${{github.repository}}.git &&
           cd ${{ github.event.repository.name }} &&
           sudo git fetch --all &&
-          sudo git checkout gcloud && 
+          sudo git checkout gcloud &&
+          sudo git pull origin && 
           cd ./client && sudo npm ci --production &&
-          sudo npm run build && 
+          sudo npm run build:prod && 
           cd ../server && sudo npm ci --production
         '
     - name: Pull Origin Branch, Install Dependecies
@@ -113,7 +114,7 @@ jobs:
           sudo git stash &&
           sudo git pull origin &&
           cd ./client && sudo npm ci --production &&
-          sudo npm run build && 
+          sudo npm run build:prod && 
           cd ../server &&
           sudo npm ci --production &&
           sudo sh createenv.sh ${{secrets.DB_PASS}} ${{secrets.DB_USER}} 
@@ -148,6 +149,5 @@ jobs:
         gcloud compute ssh \
         --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
           cd ${{ github.event.repository.name }} &&
-          cd server && npx sequelize db:migrate &&
-          npm run dev
+          cd server && npx sequelize db:migrate
         '
