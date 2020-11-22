@@ -120,7 +120,7 @@ jobs:
           sudo git stash &&
           sudo git pull origin &&
           cd ./client && sudo npm ci --production &&
-          sudo npm run build:prod && 
+          sudo npm run build && 
           cd ../server &&
           sudo npm ci --production &&
           npx sequelize db:migrate &&
