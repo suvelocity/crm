@@ -105,7 +105,8 @@ jobs:
 #           sudo git pull origin && 
 #           cd ./client && sudo npm ci --production &&
 #           sudo npm run build:prod && 
-#           cd ../server && sudo npm ci --production
+#           cd ../server && sudo npm ci --production &&
+#           sudo sh createenv.sh ${{secrets.DB_PASS}} ${{secrets.DB_USER}}
 #         '
     - name: Pull Origin Branch, Install Dependecies
       run: |-
@@ -117,8 +118,7 @@ jobs:
           cd ./client && sudo npm ci --production &&
           sudo npm run build:prod && 
           cd ../server &&
-          sudo npm ci --production &&
-          sudo sh createenv.sh ${{secrets.DB_PASS}} ${{secrets.DB_USER}} 
+          sudo npm ci --production 
         '
 
 # # ---------------------------- USE ONLY FOR FIRST TIME SETUP ! 
