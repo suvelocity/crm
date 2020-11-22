@@ -14,5 +14,8 @@ app.use(helmet());
 // });
 
 app.use("/api", require("./routes"));
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
+});
 
 export default app;
