@@ -41,7 +41,7 @@ export interface IJob {
 }
 
 export interface IClass {
-  id?: number;
+  id: number;
   course: string;
   name: string;
   startingDate: string;
@@ -49,6 +49,9 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
+  createdAt: string;
+  updatedAt: string;
+  Students: Omit<IStudent, "Class">[];
 }
 
 export interface IEvent {

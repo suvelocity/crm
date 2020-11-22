@@ -83,7 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
     const student: IStudent = await Student.create(newStudent);
     res.json(student);
   } catch (err) {
-    res.status(500).send("error occurred");
+    res.status(500).send(err.message);
   }
 });
 
