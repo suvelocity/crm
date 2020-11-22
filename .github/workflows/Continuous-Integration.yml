@@ -68,13 +68,13 @@ jobs:
     # helper for authentication
     - run: |-
         gcloud --quiet auth configure-docker
-    - name: Create Instance # ---------------------------- ONLY FIRST TIME SETUP
-      run: |-
-        gcloud compute instances create "$GCE_INSTANCE" \
-        --zone "$GCE_INSTANCE_ZONE" \
-        --service-account "$SERVICE_ACCOUNT" \
-        --tags http-server \
-        --machine-type e2-medium
+    # - name: Create Instance # ---------------------------- ONLY FIRST TIME SETUP
+    #   run: |-
+    #     gcloud compute instances create "$GCE_INSTANCE" \
+    #     --zone "$GCE_INSTANCE_ZONE" \
+    #     --service-account "$SERVICE_ACCOUNT" \
+    #     --tags http-server \
+    #     --machine-type e2-medium
 
     #     --address 34.19.193.89 \
 
