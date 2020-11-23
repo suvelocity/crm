@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import NewEventModal from "./NewEventModal";
+import NewEventModal from "../NewEventModal";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -37,7 +37,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
-import EventsLog from "../EventLog";
+import EventLog from "../EventLog";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -267,7 +267,7 @@ function SingleStudent() {
                     />
                   </ListItem>
                 </List>
-                <EventsLog
+                <EventLog
                   events={
                     student?.Events.filter(
                       (ev: IEvent) => ev.Job!.id === event.Job!.id
@@ -275,7 +275,7 @@ function SingleStudent() {
                   }
                 />
                 <NewEventModal
-                  getStudent={getStudent}
+                  get={getStudent}
                   studentId={student?.id!}
                   jobId={event.Job!.id!}
                 />
