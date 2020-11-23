@@ -18,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IClass } from "../../typescript/interfaces";
+import { IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 
@@ -49,7 +49,7 @@ function AllClasses() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/student/all");
+      const { data } = await network.get("/api/v1/class/all");
       setClasses(data);
       setLoading(false);
     })();
@@ -111,14 +111,14 @@ function AllClasses() {
                   <ListItem>
                     <ListItemText
                       primary={"Cycle Number"}
-                      secondary={cls?.Class?.name}
+                      secondary={cls?.cycleNumber}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary={"Address"} secondary={cls.address} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary={"Age"} secondary={cls.age} />
+                    <ListItemText
+                      primary={"Zoom Link"}
+                      secondary={cls.zoomLink}
+                    />
                   </ListItem>
                   {cls.additionalDetails && (
                     <ListItem>
@@ -128,14 +128,6 @@ function AllClasses() {
                       />
                     </ListItem>
                   )}
-                  {/* {student.jobs.map((job: Partial<IJob>, index: number) => (
-                    <ListItem>
-                      <ListItemText
-                        primary={`Job ${index + 1}`}
-                        secondary={job.position}
-                      />
-                    </ListItem>
-                  ))} */}
                 </List>
               </AccordionDetails>
             </Accordion>

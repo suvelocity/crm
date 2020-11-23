@@ -6,6 +6,7 @@ import AddJob from "./components/jobRelated/AddJob";
 import SingleJob from "./components/jobRelated/SingleJob";
 import AllJobs from "./components/jobRelated/AllJobs";
 import NavBar from "./components/NavBar";
+import AllClasses from "./components/classRelated/AllClasses";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 
@@ -18,6 +19,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
+          </Route>
+          <Route exact path="/class/all">
+            <AllClasses />
           </Route>
           <Route exact path="/job/all">
             <AllJobs />
