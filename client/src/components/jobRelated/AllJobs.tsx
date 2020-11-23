@@ -18,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import WorkIcon from "@material-ui/icons/Work";
-import { IJob } from "../../typescript/interfaces";
+import { IJob } from "../../typescript-utils/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import PostAddIcon from "@material-ui/icons/PostAdd";

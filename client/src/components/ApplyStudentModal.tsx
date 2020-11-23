@@ -73,16 +73,16 @@ function ApplyStudentModal({
   const [jobs, setJobs] = useState<IJob[] | null>();
   const [jobsToApply, setJobsToApply] = useState<string[]>([]);
 
-  useEffect(() => {
-    try {
-      (async () => {
-        const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
-        setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
-      })();
-    } catch (e) {
-      console.log(e.message);
-    }
-  }, [currentJobs]);
+  // useEffect(() => {
+  //   try {
+  //     (async () => {
+  //       const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
+  //       setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
+  //     })();
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // }, [currentJobs]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -208,7 +208,7 @@ function ApplyStudentModal({
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
-        {body}
+        {/* {body} */}
       </Modal>
     </>
   );

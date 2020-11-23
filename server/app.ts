@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());
-// app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use("/api", require("./routes"));
 app.use(express.static(path.join(__dirname, "..", "client", "build")));

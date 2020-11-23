@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+
 import network from "../helpers/network";
 import {
   validEmailRegex,
@@ -13,10 +14,12 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+
 import {
   GridDiv,
   Wrapper,
@@ -49,6 +52,8 @@ function AddStudent() {
 
   const onSubmit = async (data: IStudent) => {
     try {
+      console.log(data);
+      return;
       await network.post("/api/v1/student", data);
       history.push("/student/all");
     } catch (e) {
@@ -417,14 +422,16 @@ function AddStudent() {
               <TextField
                 id="children"
                 name="children"
+                type="number"
+                label="Number of children"
+                defaultValue={0}
                 inputRef={register({
-                  required: "Children is required",
-                  pattern: {
-                    value: onlyNumbersRegex,
-                    message: "Children needs to be a number",
+                  min: {
+                    value: 0,
+                    message: "Negative children are not allowed",
                   },
+                  max: { value: 25, message: "Sorry, no more than 25 kids" },
                 })}
-                label="Children"
               />
               {!empty ? (
                 errors.children ? (
@@ -478,6 +485,30 @@ function AddStudent() {
                 name="additionalDetails"
                 inputRef={register()}
                 label="Additional Details"
+              />
+              <br />
+              <br />
+              <TextField
+                id="militaryService"
+                multiline
+                rows={3}
+                variant="outlined"
+                style={{ width: "196px" }}
+                name="militaryService"
+                inputRef={register()}
+                label="Military Service"
+              />{" "}
+              <br />
+              <br />
+              <TextField
+                id="workExperience"
+                multiline
+                rows={3}
+                variant="outlined"
+                style={{ width: "196px" }}
+                name="workExperience"
+                inputRef={register()}
+                label="Work Experience"
               />
             </div>
           </GridDiv>

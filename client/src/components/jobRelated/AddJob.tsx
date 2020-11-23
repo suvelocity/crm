@@ -14,7 +14,7 @@ import {
   Center,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
-import { IJob } from "../../typescript/interfaces";
+import { IJob } from "../../typescript-utils/interfaces";
 
 const AddJob = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -35,13 +35,13 @@ const AddJob = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='red'>Add Job</H1>
+          <H1 color="red">Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            id='company'
-            label='Company'
-            name='company'
+            id="company"
+            label="Company"
+            name="company"
             inputRef={register({
               required: "Company is required",
             })}
@@ -52,22 +52,22 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
           <br />
           <TextField
-            id='position'
-            label='Position'
+            id="position"
+            label="Position"
             inputRef={register({ required: "Position title is required" })}
-            name='position'
+            name="position"
           />
           {!empty ? (
             errors.position ? (
@@ -75,13 +75,13 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
@@ -109,12 +109,12 @@ const AddJob = () => {
           ) : null}
           <br /> */}
           <TextField
-            id='location'
-            name='location'
+            id="location"
+            name="location"
             inputRef={register({
               required: "Location is required",
             })}
-            label='Location'
+            label="Location"
           />
           {!empty ? (
             errors.location ? (
@@ -122,13 +122,13 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
@@ -161,15 +161,15 @@ const AddJob = () => {
           <br />
           <br /> */}
           <TextField
-            id='requirements'
+            id="requirements"
             multiline
             rows={4}
-            variant='outlined'
-            name='requirements'
+            variant="outlined"
+            name="requirements"
             inputRef={register({
               required: "Requirements are required",
             })}
-            label='Job Requirements'
+            label="Job Requirements"
           />
           {!empty ? (
             errors.requirements ? (
@@ -177,24 +177,24 @@ const AddJob = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
           <br />
           <br />
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>

@@ -36,6 +36,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
+import EventsLog from "./EventLog";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -57,6 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.pxToRem(10),
       padding: 0,
       marginLeft: "auto",
+    },
+    details: {
+      height: "auto",
+      padding: "20px",
     },
   })
 );
@@ -217,7 +222,7 @@ function SingleStudent() {
                   </IconButton>
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails className={classes.details}>
                 <List dense>
                   <ListItem>
                     <ListItemIcon>
@@ -256,6 +261,7 @@ function SingleStudent() {
                     />
                   </ListItem>
                 </List>
+                <EventsLog />
               </AccordionDetails>
             </Accordion>
           ))}
