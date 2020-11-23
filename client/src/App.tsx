@@ -3,6 +3,7 @@ import AddStudent from "./components/studentRelated/AddStudent";
 import AllStudents from "./components/studentRelated/AllStudents";
 import SingleStudent from "./components/studentRelated/SingleStudent";
 import AddJob from "./components/jobRelated/AddJob";
+import AddClass from "./components/classRelated/AddClass";
 import SingleJob from "./components/jobRelated/SingleJob";
 import AllJobs from "./components/jobRelated/AllJobs";
 import NavBar from "./components/NavBar";
@@ -44,6 +45,9 @@ function App() {
           </Route>
           <Route exact path="/student/:id">
             <SingleStudent />
+          </Route>
+          <Route exact path="/class/add">
+            <AddClass />
           </Route>
           <Route path="*">
             <div>404 Not Found</div>

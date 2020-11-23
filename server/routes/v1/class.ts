@@ -50,6 +50,7 @@ router.post("/", async (req: Request, res: Response) => {
     const createdClass: IClass = await Class.create(newClass);
     res.json(createdClass);
   } catch (err) {
+    console.log(err);
     res.status(500).send("error occurred");
   }
 });

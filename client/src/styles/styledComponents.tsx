@@ -11,7 +11,7 @@ export const H1 = styled.h1`
   left: -50%;
   top: -80px;
   background-color: ${(props: { color: string }) =>
-    props.color === "red" ? "#bb4040" : " #3f51b5"};
+    props.color ? props.color : " #3f51b5"};
   border-radius: 5px;
   padding: 10px;
   min-width: 180px;
