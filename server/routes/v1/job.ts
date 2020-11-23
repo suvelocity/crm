@@ -3,6 +3,7 @@ import { where } from "sequelize/types";
 //@ts-ignore
 import { Student, Job, Event, Class } from "../../models";
 import { IStudent, IJob } from "../../types";
+import { jobSchema, jobSchemaToPut } from "../../validations";
 const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
@@ -65,6 +66,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   try {
     const body: IJob = req.body;
+
     const {
       id,
       position,
@@ -85,6 +87,8 @@ router.post("/", async (req: Request, res: Response) => {
       requirements,
       additionalDetails,
     };
+    const { value, error } = jobSchema.validate(newJob);
+    if (error) return res.json(error);
     const job: IJob = await Job.create(newJob);
     res.json(job);
   } catch (err) {
@@ -93,6 +97,8 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.put("/:id", async (req: Request, res: Response) => {
+  const { value, error } = jobSchemaToPut.validate(req.body);
+  if (error) return res.json(error);
   try {
     const updated = await Job.update(req.body, {
       where: { id: req.params.id },
