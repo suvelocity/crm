@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import network from "../../helpers/network";
+import network from "../helpers/network";
 import { Modal, Button, TextField } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 
@@ -49,11 +49,11 @@ const useStyles = makeStyles((theme: Theme) =>
 function NewEventModal({
   studentId,
   jobId,
-  getStudent,
+  get,
 }: {
   studentId: number;
   jobId: number;
-  getStudent: () => void;
+  get: () => void;
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
@@ -76,7 +76,7 @@ function NewEventModal({
         jobId,
         status,
       });
-      getStudent();
+      get();
       handleClose();
     } catch (e) {
       console.log(e);

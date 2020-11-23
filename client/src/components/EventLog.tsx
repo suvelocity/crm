@@ -9,51 +9,6 @@ import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import { Theme, createStyles, makeStyles, Typography } from "@material-ui/core";
 
-// const dummyEvents: IEvent[] = [
-//   {
-//     id: "1",
-//     studentId: "Nitzan",
-//     jobId: "aaa",
-//     type: "CV sent",
-//     date: new Date("2020-10-11"),
-//   },
-//   {
-//     id: "2",
-//     studentId: "Nitzan",
-//     jobId: "aaa",
-//     type: "First interview",
-//     date: new Date("2020-10-13"),
-//   },
-//   {
-//     id: "3",
-//     studentId: "Nitzan",
-//     jobId: "aaa",
-//     type: "Second Interview",
-//     date: new Date("2020-10-19"),
-//   },
-//   {
-//     id: "4",
-//     studentId: "Nitzan",
-//     jobId: "aaa",
-//     type: "Hired",
-//     date: new Date("2020-10-19"),
-//   },
-//   {
-//     id: "5",
-//     studentId: "Shahar",
-//     jobId: "aaa",
-//     type: "CV sent",
-//     date: new Date("2020-10-23"),
-//   },
-//   {
-//     id: "6",
-//     studentId: "Shahar",
-//     jobId: "aaa",
-//     type: "Rejected",
-//     date: new Date("2020-10-25"),
-//   },
-// ];
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     timellineItem: {
@@ -65,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-// function EventsLog({ events }: { events: IEvent[] }) {
+
 function EventsLog({ events }: { events: IEvent[] }) {
   const classes = useStyles();
   return (
