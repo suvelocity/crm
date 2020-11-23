@@ -108,7 +108,7 @@ function AllClasses() {
                       secondary={cls.endingDate}
                     />
                   </ListItem>
-                  <ListItem>
+                  {/* <ListItem>
                     <ListItemText
                       primary={"Cycle Number"}
                       secondary={cls?.Class?.name}
@@ -127,7 +127,7 @@ function AllClasses() {
                         secondary={cls.additionalDetails}
                       />
                     </ListItem>
-                  )}
+                  )} */}
                   {/* {student.jobs.map((job: Partial<IJob>, index: number) => (
                     <ListItem>
                       <ListItemText

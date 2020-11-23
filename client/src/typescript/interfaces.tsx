@@ -49,8 +49,6 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
-  createdAt: string;
-  updatedAt: string;
   Students: Omit<IStudent, "Class">[];
 }
 

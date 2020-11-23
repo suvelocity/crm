@@ -64,7 +64,7 @@ function AllJobs() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="red">All Jobs</H1>
+          <H1 color="#bb4040">All Jobs</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/job/add">
