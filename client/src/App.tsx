@@ -7,6 +7,7 @@ import SingleJob from "./components/jobRelated/SingleJob";
 import AllJobs from "./components/jobRelated/AllJobs";
 import NavBar from "./components/NavBar";
 import AllClasses from "./components/classRelated/AllClasses";
+import SingleClass from "./components/classRelated/SingleClass";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 
@@ -22,6 +23,9 @@ function App() {
           </Route>
           <Route exact path="/class/all">
             <AllClasses />
+          </Route>
+          <Route exact path="/class/:id">
+            <SingleClass />
           </Route>
           <Route exact path="/job/all">
             <AllJobs />
