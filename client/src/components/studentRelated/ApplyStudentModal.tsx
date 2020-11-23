@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import network from "../helpers/network";
+import network from "../../helpers/network";
 import { Modal, Button } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent, IEvent } from "../typescript/interfaces";
+import { IJob, IStudent, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 function getModalStyle() {

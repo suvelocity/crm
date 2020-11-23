@@ -1,58 +1,58 @@
 import React from "react";
-import { IEvent } from "../typescript-utils/interfaces";
+import { IEvent } from "../typescript/interfaces";
 import Timeline from "@material-ui/lab/Timeline";
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
 import TimelineConnector from "@material-ui/lab/TimelineConnector";
 import TimelineContent from "@material-ui/lab/TimelineContent";
-import TimelineOpositeContent from "@material-ui/lab/TimelineOppositeContent";
+import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import { Theme, createStyles, makeStyles, Typography } from "@material-ui/core";
 
-const dummyEvents: IEvent[] = [
-  {
-    id: "1",
-    studentId: "Nitzan",
-    jobId: "aaa",
-    type: "CV sent",
-    date: new Date("2020-10-11"),
-  },
-  {
-    id: "2",
-    studentId: "Nitzan",
-    jobId: "aaa",
-    type: "First interview",
-    date: new Date("2020-10-13"),
-  },
-  {
-    id: "3",
-    studentId: "Nitzan",
-    jobId: "aaa",
-    type: "Second Interview",
-    date: new Date("2020-10-19"),
-  },
-  {
-    id: "4",
-    studentId: "Nitzan",
-    jobId: "aaa",
-    type: "Hired",
-    date: new Date("2020-10-19"),
-  },
-  {
-    id: "5",
-    studentId: "Shahar",
-    jobId: "aaa",
-    type: "CV sent",
-    date: new Date("2020-10-23"),
-  },
-  {
-    id: "6",
-    studentId: "Shahar",
-    jobId: "aaa",
-    type: "Rejected",
-    date: new Date("2020-10-25"),
-  },
-];
+// const dummyEvents: IEvent[] = [
+//   {
+//     id: "1",
+//     studentId: "Nitzan",
+//     jobId: "aaa",
+//     type: "CV sent",
+//     date: new Date("2020-10-11"),
+//   },
+//   {
+//     id: "2",
+//     studentId: "Nitzan",
+//     jobId: "aaa",
+//     type: "First interview",
+//     date: new Date("2020-10-13"),
+//   },
+//   {
+//     id: "3",
+//     studentId: "Nitzan",
+//     jobId: "aaa",
+//     type: "Second Interview",
+//     date: new Date("2020-10-19"),
+//   },
+//   {
+//     id: "4",
+//     studentId: "Nitzan",
+//     jobId: "aaa",
+//     type: "Hired",
+//     date: new Date("2020-10-19"),
+//   },
+//   {
+//     id: "5",
+//     studentId: "Shahar",
+//     jobId: "aaa",
+//     type: "CV sent",
+//     date: new Date("2020-10-23"),
+//   },
+//   {
+//     id: "6",
+//     studentId: "Shahar",
+//     jobId: "aaa",
+//     type: "Rejected",
+//     date: new Date("2020-10-25"),
+//   },
+// ];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,23 +66,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 // function EventsLog({ events }: { events: IEvent[] }) {
-function EventsLog() {
+function EventsLog({ events }: { events: IEvent[] }) {
   const classes = useStyles();
   return (
     <>
       <Timeline>
-        {dummyEvents.map((event: IEvent, i: number, arr) => (
-          <TimelineItem
-            // style={{
-            //   backgroundColor: "red",
-            //   minHeight: "20px",
-            //   width: "50px",
-            // }}
-            className={classes.timellineItem}
-          >
-            <TimelineOpositeContent>
-              {event.date.toISOString().slice(0, 10).replace(/-/g, "/")}
-            </TimelineOpositeContent>
+        {events.map((event: IEvent, i: number, arr) => (
+          <TimelineItem className={classes.timellineItem}>
+            <TimelineOppositeContent>
+              {event.createdAt.slice(0, 10).replace(/-/g, "/")}
+            </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot
                 color={i !== arr.length - 1 ? "grey" : "primary"}
@@ -93,10 +86,10 @@ function EventsLog() {
 
             {i === arr.length - 1 ? (
               <TimelineContent>
-                <b> {event.type}</b>
+                <b> {event.status}</b>
               </TimelineContent>
             ) : (
-              <TimelineContent>{event.type}</TimelineContent>
+              <TimelineContent>{event.status}</TimelineContent>
             )}
           </TimelineItem>
         ))}

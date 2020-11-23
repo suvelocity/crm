@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import network from "../helpers/network";
+import network from "../../helpers/network";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   StyledLink,
   Center,
-} from "../styles/styledComponents";
+} from "../../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -18,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent } from "../typescript-utils/interfaces";
+import { IStudent } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 

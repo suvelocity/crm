@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import NewEventModal from "./NewEventModal";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -10,7 +11,7 @@ import {
   TitleWrapper,
   Center,
   RemoveJobButton,
-} from "../styles/styledComponents";
+} from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
@@ -18,10 +19,10 @@ import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
 import { useParams } from "react-router-dom";
-import network from "../helpers/network";
+import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob, IEvent } from "../typescript/interfaces";
+import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
 import Accordion from "@material-ui/core/Accordion";
@@ -36,7 +37,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
-import EventsLog from "./EventLog";
+import EventsLog from "../EventLog";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -69,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
   const classes = useStyles();
 
@@ -76,6 +78,13 @@ function SingleStudent() {
     const { data }: { data: IStudent } = await network.get(
       `/api/v1/student/byId/${id}`
     );
+    const uniqueJobs: IEvent[] = [];
+    data.Events.forEach((event: IEvent) => {
+      if (!uniqueJobs.find((ev: IEvent) => ev.Job!.id === event.Job!.id)) {
+        uniqueJobs.push(event);
+      }
+    });
+    setEventsToMap(uniqueJobs);
     setStudent(data);
     setLoading(false);
   }, [id, setStudent, setLoading]);
@@ -196,7 +205,7 @@ function SingleStudent() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {student?.Events.map((event: IEvent) => (
+          {eventsToMap.map((event: IEvent) => (
             <Accordion key={event.Job!.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -261,7 +270,18 @@ function SingleStudent() {
                     />
                   </ListItem>
                 </List>
-                <EventsLog />
+                <EventsLog
+                  events={
+                    student?.Events.filter(
+                      (ev: IEvent) => ev.Job!.id === event.Job!.id
+                    )!
+                  }
+                />
+                <NewEventModal
+                  getStudent={getStudent}
+                  studentId={student?.id!}
+                  jobId={event.Job!.id!}
+                />
               </AccordionDetails>
             </Accordion>
           ))}

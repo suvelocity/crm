@@ -43,6 +43,9 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
           ],
           attributes: ["status", "createdAt"],
         },
+        {
+          model: Class,
+        },
       ],
     });
     if (student) {
