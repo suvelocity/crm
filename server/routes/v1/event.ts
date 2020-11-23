@@ -20,7 +20,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/", async (req, res) => {
+router.patch("/delete", async (req, res) => {
   try {
     const studentId: string = req.body.studentId;
     const jobId = req.body.jobId;
@@ -30,7 +30,7 @@ router.delete("/", async (req, res) => {
     if (deleted) return res.json({ msg: "Event deleted" });
     return res.status(404).send("event not found");
   } catch (err) {
-    res.status(500).send("Error occurred");
+    res.status(500).send(err.message);
   }
 });
 

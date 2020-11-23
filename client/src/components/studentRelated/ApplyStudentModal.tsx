@@ -12,8 +12,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent, IEvent } from "../../typescript/interfaces";
+import { IJob, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
 
 function getModalStyle() {
   return {
@@ -72,17 +74,18 @@ function ApplyStudentModal({
   const [open, setOpen] = useState(false);
   const [jobs, setJobs] = useState<IJob[] | null>();
   const [jobsToApply, setJobsToApply] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   try {
-  //     (async () => {
-  //       const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
-  //       setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
-  //     })();
-  //   } catch (e) {
-  //     console.log(e.message);
-  //   }
-  // }, [currentJobs]);
+  useEffect(() => {
+    try {
+      (async () => {
+        const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
+        setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
+      })();
+    } catch (e) {
+      console.log(e.message);
+    }
+  }, [currentJobs]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -92,15 +95,22 @@ function ApplyStudentModal({
     setOpen(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (jobsToApply.length > 0) {
       try {
-        await network.patch(`/api/v1/student/modify-jobs/${studentId}`, {
-          method: "add",
-          jobs: jobsToApply,
+        setLoading(true);
+        jobsToApply.forEach(async (jobId: string) => {
+          await network.post(`/api/v1/event`, {
+            studentId,
+            jobId,
+            status: "Started application process",
+          });
         });
-        getStudent();
-        handleClose();
+        setTimeout(() => {
+          getStudent();
+          setLoading(false);
+          handleClose();
+        }, 1000);
       } catch (e) {
         console.log(e);
       }
@@ -208,7 +218,7 @@ function ApplyStudentModal({
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
-        {/* {body} */}
+        <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
   );

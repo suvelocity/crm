@@ -87,7 +87,7 @@ function SingleStudent() {
     setEventsToMap(uniqueJobs);
     setStudent(data);
     setLoading(false);
-  }, [id, setStudent, setLoading]);
+  }, [id, setStudent, setLoading, setEventsToMap]);
 
   const removeJob = useCallback(
     async (
@@ -105,18 +105,15 @@ function SingleStudent() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          const { data: updated } = await network.patch(
-            `/api/v1/student/modify-jobs/${id}`,
-            {
-              jobs: [jobId],
-              method: "remove",
-            }
-          );
-          setStudent(updated);
+          await network.patch("/api/v1/event/delete", {
+            studentId: student?.id!,
+            jobId,
+          });
+          getStudent();
         }
       });
     },
-    [setStudent, id]
+    [setStudent, id, student, getStudent]
   );
 
   useEffect(() => {
@@ -288,9 +285,7 @@ function SingleStudent() {
           <br />
           <Center>
             <ApplyStudentModal
-              currentJobs={student?.Events.map(
-                (event: IEvent) => event.Job!.id!
-              )}
+              currentJobs={eventsToMap.map((event: IEvent) => event.Job!.id!)}
               studentId={student?.id}
               getStudent={getStudent}
             />
