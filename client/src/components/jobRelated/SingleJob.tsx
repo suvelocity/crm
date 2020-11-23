@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob } from "../../typescript/interfaces";
+import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -72,7 +72,7 @@ function SingleJob() {
 
   const removeStudents = useCallback(
     async (
-      studentId: string,
+      studentId: number,
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
       e.stopPropagation();
@@ -157,8 +157,8 @@ function SingleJob() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {job?.students.map((student: Partial<IStudent>) => (
-            <Accordion key={student.id}>
+          {job?.Events.map((event: IEvent) => (
+            <Accordion key={event.Student?.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-label="Expand"
@@ -167,13 +167,13 @@ function SingleJob() {
               >
                 <PersonIcon />
                 <Typography className={classes.heading}>
-                  {student.firstName} {student.lastName}
+                  {event.Student?.firstName} {event.Student?.lastName}
                 </Typography>
                 <Typography className={classes.iconButton}>
                   <IconButton
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeStudents(student.id!, e)}
+                    ) => removeStudents(event.Student!.id!, e)}
                     style={{ padding: 0 }}
                   >
                     <RemoveJobButton />
@@ -188,14 +188,19 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Name"
-                      secondary={student.firstName + " " + student.lastName}
+                      secondary={
+                        event.Student?.firstName + " " + event.Student?.lastName
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <EmailIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Email" secondary={student.email} />
+                    <ListItemText
+                      primary="Email"
+                      secondary={event.Student?.email}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
@@ -203,7 +208,7 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Phone Number"
-                      secondary={student.phone}
+                      secondary={event.Student?.phone}
                     />
                   </ListItem>
                   <ListItem>
@@ -212,20 +217,26 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="ID Number"
-                      secondary={student.idNumber}
+                      secondary={event.Student?.idNumber}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <ClassIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Course" secondary={student.class} />
+                    <ListItemText
+                      primary="Course"
+                      secondary={event.Student?.Class.id}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <DateRangeIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Age" secondary={student.age} />
+                    <ListItemText
+                      primary="Age"
+                      secondary={event.Student?.age}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
@@ -233,17 +244,17 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Address"
-                      secondary={student.address}
+                      secondary={event.Student?.address}
                     />
                   </ListItem>
-                  {student.additionalDetails && (
+                  {event.Student?.additionalDetails && (
                     <ListItem>
                       <ListItemIcon>
                         <SubjectIcon />
                       </ListItemIcon>
                       <ListItemText
                         primary="Additional Details"
-                        secondary={student.additionalDetails}
+                        secondary={event.Student?.additionalDetails}
                       />
                     </ListItem>
                   )}
@@ -254,8 +265,8 @@ function SingleJob() {
           <br />
           <Center>
             <ApplyForJobModal
-              currentStudents={job?.students.map(
-                (student: Partial<IStudent>) => student.id
+              currentStudents={job?.Events.map(
+                (event: IEvent) => event.Student!.id
               )}
               jobId={job?.id}
               getJob={getJob}

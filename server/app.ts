@@ -7,15 +7,12 @@ const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());
-
-// app.get("/", (req: Request, res: Response) => {
-//   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-// });
+// app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use("/api", require("./routes"));
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-app.use('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
+app.use("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
 
 

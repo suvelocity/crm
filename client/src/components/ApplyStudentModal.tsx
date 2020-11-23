@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent } from "../typescript/interfaces";
+import { IJob, IStudent, IEvent } from "../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 function getModalStyle() {
@@ -63,8 +63,8 @@ function ApplyStudentModal({
   studentId,
   getStudent,
 }: {
-  currentJobs: (string | undefined)[] | undefined;
-  studentId: string | undefined;
+  currentJobs: (number | undefined)[] | undefined;
+  studentId: number | undefined;
   getStudent: () => void;
 }) {
   const classes = useStyles();
@@ -128,22 +128,22 @@ function ApplyStudentModal({
                 <Accordion key={job.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label='Expand'
-                    aria-controls='additional-actions2-content'
-                    id='additional-actions2-header'
+                    aria-label="Expand"
+                    aria-controls="additional-actions2-content"
+                    id="additional-actions2-header"
                   >
                     <FormControlLabel
-                      aria-label='Acknowledge'
+                      aria-label="Acknowledge"
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
                         <Checkbox
-                          id={job.id}
+                          id={`${job.id}`}
                           value={job.id}
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=''
+                      label=""
                     />
                     <Typography className={classes.heading}>
                       {job.position}
@@ -156,28 +156,27 @@ function ApplyStudentModal({
                     <List>
                       <ListItem>
                         <ListItemText
-                          primary='Requirements'
+                          primary="Requirements"
                           secondary={job.requirements}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Location'
+                          primary="Location"
                           secondary={job.location}
                         />
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='Applied Students'
+                          primary="Applied Students"
                           secondary={
                             <>
-                              {job.students.map(
-                                (student: Partial<IStudent>) => (
-                                  <p key={student.id}>
-                                    {student.firstName} {student.lastName}
-                                  </p>
-                                )
-                              )}
+                              {job.Events.map((event: IEvent) => (
+                                <p key={event?.Student?.id}>
+                                  {event?.Student?.firstName}{" "}
+                                  {event?.Student?.lastName}
+                                </p>
+                              ))}
                             </>
                           }
                         />
@@ -188,8 +187,8 @@ function ApplyStudentModal({
               ))}
               <Button
                 className={classes.button}
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 onClick={handleSubmit}
               >
                 Apply
@@ -205,7 +204,7 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant='contained' color='primary' onClick={handleOpen}>
+      <Button variant="contained" color="primary" onClick={handleOpen}>
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>

@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import network from "../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob } from "../typescript/interfaces";
+import { IStudent, IJob, IEvent } from "../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
 import Accordion from "@material-ui/core/Accordion";
@@ -78,7 +78,7 @@ function SingleStudent() {
   const removeJob = useCallback(
     async (
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      jobId: string
+      jobId: number
     ) => {
       e.stopPropagation();
       Swal.fire({
@@ -155,7 +155,7 @@ function SingleStudent() {
               <ListItemIcon>
                 <ClassIcon />
               </ListItemIcon>
-              <ListItemText primary="Course" secondary={student?.class} />
+              <ListItemText primary="Course" secondary={student?.Class.name} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
@@ -191,8 +191,8 @@ function SingleStudent() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {student?.jobs.map((job: Partial<IJob>) => (
-            <Accordion key={job.id}>
+          {student?.Events.map((event: IEvent) => (
+            <Accordion key={event.Job!.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-label="Expand"
@@ -201,16 +201,16 @@ function SingleStudent() {
               >
                 <WorkIcon />
                 <Typography className={classes.heading}>
-                  {job.position}
+                  {event.Job!.position}
                 </Typography>
                 <Typography className={classes.secondaryHeading}>
-                  {job.company}
+                  {event.Job!.company}
                 </Typography>
                 <Typography className={classes.iconButton}>
                   <IconButton
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeJob(e, job.id!)}
+                    ) => removeJob(e, event.Job!.id!)}
                     style={{ padding: 0 }}
                   >
                     <RemoveJobButton />
@@ -225,14 +225,17 @@ function SingleStudent() {
                     </ListItemIcon>
                     <ListItemText
                       primary={"Position"}
-                      secondary={job.position}
+                      secondary={event.Job!.position}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <LocationCityIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Company"} secondary={job.company} />
+                    <ListItemText
+                      primary={"Company"}
+                      secondary={event.Job!.company}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
@@ -240,14 +243,17 @@ function SingleStudent() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Requirements"
-                      secondary={job.requirements}
+                      secondary={event.Job!.requirements}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <BusinessIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Location" secondary={job.location} />
+                    <ListItemText
+                      primary="Location"
+                      secondary={event.Job!.location}
+                    />
                   </ListItem>
                 </List>
               </AccordionDetails>
@@ -256,7 +262,9 @@ function SingleStudent() {
           <br />
           <Center>
             <ApplyStudentModal
-              currentJobs={student?.jobs.map((job: Partial<IJob>) => job.id)}
+              currentJobs={student?.Events.map(
+                (event: IEvent) => event.Job!.id!
+              )}
               studentId={student?.id}
               getStudent={getStudent}
             />
