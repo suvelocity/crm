@@ -2,9 +2,9 @@ name: Continuous-Integration
 
 on:
   pull_request:
-    branches: [gcloud] 
+    branches: [specifybranch] 
   push:
-    branches: [gcloud] 
+    branches: [specifybranch] 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   GCE_INSTANCE: checking-changes   # TODO: update to instance name

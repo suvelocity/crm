@@ -3,8 +3,8 @@
         {
             "name": "crmserver",
             "exec_mode": "cluster",
-            "instances": "4",
-            "script": "index.ts",
+            "instances": "2",
+            "script": "index.ts ",
             "interpreter": "ts-node"
         }
     ]
