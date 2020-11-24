@@ -34,7 +34,7 @@ deploy:
 		docker run -d --name=$(CONTAINER_NAME) \
 			--restart=unless-stopped \
 			--network crm-net \
-			-e MYSQL_HOST=localhost \
+			-e MYSQL_HOST=mysql \
 			-e MYSQL_DATABASE=database_development \
 			-e MYSQL_USER=${DB_USER} \
 			-e MYSQL_PASSWORD=${DB_PASS} \
