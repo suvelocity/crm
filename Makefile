@@ -1,7 +1,6 @@
-PROJECT_ID=${PROJECT_ID}
 ZONE=${GCE_INSTANCE_ZONE}
 LOCAL_TAG=${GCE_INSTANCE}-image:$(GITHUB_SHA)
-REMOTE_TAG=gcr.io/$(PROJECT_ID)/$(LOCAL_TAG)
+REMOTE_TAG=gcr.io/${PROJECT_ID}/$(LOCAL_TAG)
 CONTAINER_NAME=songapp-container
 # MIGRATE_TAG=${GCE_INSTANCE}-migrate-image:$(GITHUB_SHA)
 # REMOTE_MIGRATE_TAG=gcr.io/$(PROJECT_ID)/$(MIGRATE_TAG)
@@ -35,6 +34,10 @@ deploy:
 		docker run -d --name=$(CONTAINER_NAME) \
 			--restart=unless-stopped \
 			--network crm-net \
+			-e MYSQL_HOST=localhost \
+			-e MYSQL_DATABASE=database_development \
+			-e MYSQL_USER=${DB_USER} \
+			-e MYSQL_PASSWORD=${DB_PASS} \
 			-p 8080:8080 \
 			$(REMOTE_TAG) \
 			'
@@ -46,10 +49,10 @@ network-init:
 sql-init:
 	$(MAKE) ssh-cmd CMD=' \
 	docker run --name=mysql \
-	-e MYSQL_ROOT_PASSWORD=password \
+	-e MYSQL_ROOT_PASSWORD=${DB_PASS} \
 	-e MYSQL_DATABASE=database_development \
-	-e MYSQL_USER=user \
-	-e MYSQL_PASSWORD=password \
+	-e MYSQL_USER=${DB_USER} \
+	-e MYSQL_PASSWORD=${DB_PASS} \
 	--network crm-net \
 	-d mysql:8 \
 	'
