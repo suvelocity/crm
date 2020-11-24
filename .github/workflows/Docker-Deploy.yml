@@ -32,17 +32,17 @@ jobs:
     - run: |-
         gcloud --quiet auth configure-docker
     - name: Install dependencies
-      run: npm ci
+      run: npm ci -- production
       working-directory: ./client
     # Build production build 
-    - name: Build client
-      run: CI=false npm run build
+    - name: Create production build
+      run: CI=false npm run build:prod
       working-directory: ./client
      #Build the Docker image
-    - name: Build
+    - name: Build image
       run: make build
     # Push the Docker image to Google Container Registry
-    - name: Publish Image
+    - name: Publish image
       run: make push
     # - name: Create Instance with Container
     #   run: |-

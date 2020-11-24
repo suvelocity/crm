@@ -2,9 +2,6 @@ ZONE=${GCE_INSTANCE_ZONE}
 LOCAL_TAG=${GCE_INSTANCE}-image:$(GITHUB_SHA)
 REMOTE_TAG=gcr.io/${PROJECT_ID}/$(LOCAL_TAG)
 CONTAINER_NAME=songapp-container
-# MIGRATE_TAG=${GCE_INSTANCE}-migrate-image:$(GITHUB_SHA)
-# REMOTE_MIGRATE_TAG=gcr.io/$(PROJECT_ID)/$(MIGRATE_TAG)
-# MIGRATE_NAME=migrate-image
 
 ssh-cmd:
 	@gcloud --quiet compute ssh \
