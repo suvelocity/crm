@@ -3,12 +3,16 @@ const router = Router();
 //@ts-ignore
 import { Event } from "../../models";
 import { IEvent } from "../../types";
+import { eventsSchema } from "../../validations";
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const studentId: string = req.body.studentId;
-    const jobId = req.body.jobId;
-    const status = req.body.status;
+    const { jobId, status, studentId } = req.body;
+    const { value, error } = eventsSchema.validate({
+      jobId,
+      status,
+      studentId,
+    });
     const event: IEvent = await Event.create({
       studentId,
       jobId,

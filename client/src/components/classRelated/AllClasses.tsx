@@ -18,9 +18,17 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IClass } from "../../typescript/interfaces";
+import { IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
+import RotateLeftIcon from "@material-ui/icons/RotateLeft";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import BusinessIcon from "@material-ui/icons/Business";
+import DateRangeIcon from "@material-ui/icons/DateRange";
+import SubjectIcon from "@material-ui/icons/Subject";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ClassIcon from "@material-ui/icons/Class";
+import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
+      marginLeft: 15,
       marginTop: 3,
     },
     secondaryHeading: {
@@ -49,7 +57,7 @@ function AllClasses() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/student/all");
+      const { data } = await network.get("/api/v1/class/all");
       setClasses(data);
       setLoading(false);
     })();
@@ -74,7 +82,7 @@ function AllClasses() {
           classes.map((cls) => (
             <Accordion key={cls.id}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <PersonIcon />
+                <ClassIcon />
                 <Typography className={styleClasses.heading}>
                   <StyledLink
                     to={`/class/${cls.id}`}
@@ -91,51 +99,64 @@ function AllClasses() {
               <AccordionDetails>
                 <List dense>
                   <ListItem>
+                    <ListItemIcon>
+                      <ClassIcon />
+                    </ListItemIcon>
                     <ListItemText primary={"Name"} secondary={cls.name} />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <ClassIcon />
+                    </ListItemIcon>
                     <ListItemText primary={"Course"} secondary={cls.course} />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <CalendarTodayIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary={"Starting Date"}
                       secondary={cls.startingDate}
                     />
                   </ListItem>
                   <ListItem>
+                    <ListItemIcon>
+                      <CalendarTodayIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary={"Ending Date"}
                       secondary={cls.endingDate}
                     />
                   </ListItem>
-                  {/* <ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <RotateLeftIcon />
+                    </ListItemIcon>
                     <ListItemText
                       primary={"Cycle Number"}
-                      secondary={cls?.Class?.name}
+                      secondary={cls?.cycleNumber}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary={"Address"} secondary={cls.address} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary={"Age"} secondary={cls.age} />
+                    <ListItemIcon>
+                      <LinkIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"Zoom Link"}
+                      secondary={cls.zoomLink}
+                    />
                   </ListItem>
                   {cls.additionalDetails && (
                     <ListItem>
+                      <ListItemIcon>
+                        <SubjectIcon />
+                      </ListItemIcon>
                       <ListItemText
                         primary={"Additional Details"}
                         secondary={cls.additionalDetails}
                       />
                     </ListItem>
-                  )} */}
-                  {/* {student.jobs.map((job: Partial<IJob>, index: number) => (
-                    <ListItem>
-                      <ListItemText
-                        primary={`Job ${index + 1}`}
-                        secondary={job.position}
-                      />
-                    </ListItem>
-                  ))} */}
+                  )}
                 </List>
               </AccordionDetails>
             </Accordion>

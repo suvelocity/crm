@@ -11,6 +11,7 @@ import {
   TitleWrapper,
   Center,
   RemoveJobButton,
+  GridDiv,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -134,64 +135,77 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Name"
-                secondary={student?.firstName + " " + student?.lastName}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <EmailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Email" secondary={student?.email} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <PhoneIcon />
-              </ListItemIcon>
-              <ListItemText primary="Phone Number" secondary={student?.phone} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <DialpadIcon />
-              </ListItemIcon>
-              <ListItemText primary="ID Number" secondary={student?.idNumber} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <ClassIcon />
-              </ListItemIcon>
-              <ListItemText primary="Course" secondary={student?.Class.name} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <DateRangeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Age" secondary={student?.age} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary="Address" secondary={student?.address} />
-            </ListItem>
-            {student?.additionalDetails && (
+          <GridDiv>
+            <List>
               <ListItem>
                 <ListItemIcon>
-                  <SubjectIcon />
+                  <PersonIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Additional Details"
-                  secondary={student?.additionalDetails}
+                  primary="Name"
+                  secondary={student?.firstName + " " + student?.lastName}
                 />
               </ListItem>
-            )}
-          </List>
+              <ListItem>
+                <ListItemIcon>
+                  <EmailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Email" secondary={student?.email} />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <PhoneIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Phone Number"
+                  secondary={student?.phone}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <DialpadIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="ID Number"
+                  secondary={student?.idNumber}
+                />
+              </ListItem>
+            </List>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <ClassIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Course"
+                  secondary={student?.Class.name}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <DateRangeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Age" secondary={student?.age} />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Address" secondary={student?.address} />
+              </ListItem>
+              {student?.additionalDetails && (
+                <ListItem>
+                  <ListItemIcon>
+                    <SubjectIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Additional Details"
+                    secondary={student?.additionalDetails}
+                  />
+                </ListItem>
+              )}
+            </List>
+          </GridDiv>
         </Loading>
       </Wrapper>
       <Wrapper>
