@@ -68,7 +68,6 @@ router.post("/", async (req: Request, res: Response) => {
     const body: IJob = req.body;
 
     const {
-      id,
       position,
       company,
       description,
@@ -78,7 +77,6 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails,
     } = req.body;
     const newJob: IJob = {
-      id,
       position,
       company,
       description,
