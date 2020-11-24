@@ -3,12 +3,16 @@ const router = Router();
 //@ts-ignore
 import { Event } from "../../models";
 import { IEvent } from "../../types";
+import { eventsSchema } from "../../validations";
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const studentId: string = req.body.studentId;
-    const jobId = req.body.jobId;
-    const status = req.body.status;
+    const { jobId, status, studentId } = req.body;
+    const { value, error } = eventsSchema.validate({
+      jobId,
+      status,
+      studentId,
+    });
     const event: IEvent = await Event.create({
       studentId,
       jobId,
@@ -20,7 +24,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/", async (req, res) => {
+router.patch("/delete", async (req, res) => {
   try {
     const studentId: string = req.body.studentId;
     const jobId = req.body.jobId;
@@ -30,7 +34,7 @@ router.delete("/", async (req, res) => {
     if (deleted) return res.json({ msg: "Event deleted" });
     return res.status(404).send("event not found");
   } catch (err) {
-    res.status(500).send("Error occurred");
+    res.status(500).send(err.message);
   }
 });
 

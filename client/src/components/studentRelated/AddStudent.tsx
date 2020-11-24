@@ -1,12 +1,13 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import network from "../helpers/network";
+
+import network from "../../helpers/network";
 import {
   validEmailRegex,
   validNameRegex,
   validPhoneNumberRegex,
   onlyNumbersRegex,
-} from "../helpers/patterns";
+} from "../../helpers/patterns";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
@@ -23,8 +24,8 @@ import {
   TitleWrapper,
   H1,
   Center,
-} from "../styles/styledComponents";
-import { IStudent, IClass } from "../typescript/interfaces";
+} from "../../styles/styledComponents";
+import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 
 function AddStudent() {
@@ -227,55 +228,6 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id="academicBackground"
-                name="academicBackground"
-                inputRef={register()}
-                label="Academic Background"
-              />
-              {!empty ? (
-                <IconButton style={{ cursor: "default" }}>
-                  <DoneIcon color="action" />
-                </IconButton>
-              ) : null}
-              <br />
-              <TextField
-                id="militaryService"
-                name="militaryService"
-                inputRef={register({
-                  required: "Military service is required",
-                })}
-                label="Military Service"
-              />
-              {!empty ? (
-                errors.militaryService ? (
-                  <Tooltip title={errors.militaryService.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
-              <br />
-              <TextField
-                id="workExperience"
-                name="workExperience"
-                inputRef={register()}
-                label="Work Experience"
-              />
-              {!empty ? (
-                <IconButton style={{ cursor: "default" }}>
-                  <DoneIcon color="action" />
-                </IconButton>
-              ) : null}
-              <br />
-              <TextField
                 id="languages"
                 name="languages"
                 inputRef={register({
@@ -299,6 +251,28 @@ function AddStudent() {
                   </IconButton>
                 )
               ) : null}
+              <br />
+              <br />
+              <TextField
+                id="academicBackground"
+                multiline
+                rows={3}
+                variant="outlined"
+                name="academicBackground"
+                inputRef={register()}
+                label="Academic Background"
+              />
+              <br />
+              <br />
+              <TextField
+                id="workExperience"
+                multiline
+                rows={3}
+                variant="outlined"
+                name="workExperience"
+                inputRef={register()}
+                label="Work Experience"
+              />
             </div>
             <div>
               <FormControl
@@ -417,14 +391,16 @@ function AddStudent() {
               <TextField
                 id="children"
                 name="children"
+                type="number"
+                label="Number of children"
+                defaultValue={0}
                 inputRef={register({
-                  required: "Children is required",
-                  pattern: {
-                    value: onlyNumbersRegex,
-                    message: "Children needs to be a number",
+                  min: {
+                    value: 0,
+                    message: "Negative children are not allowed",
                   },
+                  max: { value: 25, message: "Sorry, no more than 25 kids" },
                 })}
-                label="Children"
               />
               {!empty ? (
                 errors.children ? (
@@ -470,11 +446,21 @@ function AddStudent() {
               <br />
               <br />
               <TextField
+                id="militaryService"
+                multiline
+                rows={3}
+                variant="outlined"
+                name="militaryService"
+                inputRef={register()}
+                label="Military Service"
+              />
+              <br />
+              <br />
+              <TextField
                 id="additionalDetails"
                 multiline
-                rows={4}
+                rows={3}
                 variant="outlined"
-                style={{ width: "196px" }}
                 name="additionalDetails"
                 inputRef={register()}
                 label="Additional Details"

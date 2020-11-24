@@ -14,6 +14,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { IJob, IStudent, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
 
 function getModalStyle() {
   return {
@@ -67,6 +69,7 @@ function ApplyForJobModal({
   const [open, setOpen] = useState(false);
   const [students, setStudents] = useState<IStudent[] | null>();
   const [studentsToApply, setStudentsToApply] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -93,15 +96,22 @@ function ApplyForJobModal({
     setOpen(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (studentsToApply.length > 0) {
       try {
-        await network.patch(`/api/v1/job/modify-students/${jobId}`, {
-          method: "add",
-          students: studentsToApply,
+        setLoading(true);
+        studentsToApply.forEach(async (studentId: string) => {
+          await network.post(`/api/v1/event`, {
+            studentId,
+            jobId,
+            status: "Started application process",
+          });
         });
-        getJob();
-        handleClose();
+        setTimeout(() => {
+          getJob();
+          setLoading(false);
+          handleClose();
+        }, 1000);
       } catch (e) {
         console.log(e);
       }
@@ -178,20 +188,22 @@ function ApplyForJobModal({
                           secondary={student.Class?.name}
                         />
                       </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Jobs"
-                          secondary={
-                            <>
-                              {student.Events.map((event: IEvent) => (
-                                <p key={event.Job?.id}>
-                                  {event.Job?.position} {event.Job?.company}
-                                </p>
-                              ))}
-                            </>
-                          }
-                        />
-                      </ListItem>
+                      {student.Events.length > 0 && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Applied Jobs"
+                            secondary={
+                              <>
+                                {student.Events.map((event: IEvent) => (
+                                  <p key={event.Job?.id}>
+                                    {event.Job?.position} {event.Job?.company}
+                                  </p>
+                                ))}
+                              </>
+                            }
+                          />
+                        </ListItem>
+                      )}
                     </List>
                   </AccordionDetails>
                 </Accordion>
@@ -223,7 +235,7 @@ function ApplyForJobModal({
         Assign a Student
       </Button>
       <Modal open={open} onClose={handleClose}>
-        {body}
+        <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
   );

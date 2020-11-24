@@ -4,6 +4,7 @@ const router = Router();
 import { Student, Job, Event, Class } from "../../models";
 import { IStudent, IJob, IClass } from "../../types";
 
+import { classSchema, classSchemaToPut } from "../../validations";
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const classes: IClass[] = await Class.findAll({
@@ -47,15 +48,20 @@ router.post("/", async (req: Request, res: Response) => {
       zoomLink: body.zoomLink,
       additionalDetails: body.additionalDetails,
     };
+    const { value, error } = classSchema.validate(newClass);
+    if (error) return res.json(error);
     const createdClass: IClass = await Class.create(newClass);
     res.json(createdClass);
   } catch (err) {
+    console.log(err);
     res.status(500).send("error occurred");
   }
 });
 
 router.put("/:id", async (req: Request, res: Response) => {
   try {
+    const { value, error } = classSchemaToPut.validate(req.body);
+    if (error) return res.json(error);
     const updated = await Class.update(req.body, {
       where: { id: req.params.id },
     });

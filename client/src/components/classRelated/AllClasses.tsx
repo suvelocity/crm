@@ -17,15 +17,18 @@ import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import WorkIcon from "@material-ui/icons/Work";
-import { IJob } from "../../typescript-utils/interfaces";
+import PersonIcon from "@material-ui/icons/Person";
+import { IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
+import RotateLeftIcon from "@material-ui/icons/RotateLeft";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import BusinessIcon from "@material-ui/icons/Business";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import DateRangeIcon from "@material-ui/icons/DateRange";
+import SubjectIcon from "@material-ui/icons/Subject";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ClassIcon from "@material-ui/icons/Class";
+import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
+      marginLeft: 15,
       marginTop: 3,
     },
     secondaryHeading: {
@@ -47,15 +50,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function AllJobs() {
-  const [jobs, setJobs] = useState<IJob[]>([]);
+function AllClasses() {
+  const [classes, setClasses] = useState<IClass[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const classes = useStyles();
+  const styleClasses = useStyles();
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/job/all");
-      setJobs(data);
+      const { data } = await network.get("/api/v1/class/all");
+      setClasses(data);
       setLoading(false);
     })();
   }, []);
@@ -64,85 +67,96 @@ function AllJobs() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1>All Classes</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
-          <Button
-            style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
-          >
-            Add Job
+        <StyledLink to="/class/add">
+          <Button variant="contained" color="primary">
+            Add Class
           </Button>
         </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
-        {jobs &&
-          jobs.map((job) => (
-            <Accordion key={job.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
-                <WorkIcon />
-                <Typography className={classes.heading}>
+        {classes &&
+          classes.map((cls) => (
+            <Accordion key={cls.id}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <ClassIcon />
+                <Typography className={styleClasses.heading}>
                   <StyledLink
-                    to={`/job/${job.id}`}
+                    to={`/class/${cls.id}`}
                     textDecoration={"true"}
                     color="black"
                   >
-                    {job.position}
+                    {cls.name}
                   </StyledLink>
                 </Typography>
-                <Typography className={classes.secondaryHeading}>
-                  {job.company}
+                <Typography className={styleClasses.secondaryHeading}>
+                  {cls.course}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <List dense>
                   <ListItem>
                     <ListItemIcon>
-                      <PostAddIcon />
+                      <ClassIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Name"} secondary={cls.name} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <ClassIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Course"} secondary={cls.course} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <CalendarTodayIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={"Position"}
-                      secondary={job.position}
+                      primary={"Starting Date"}
+                      secondary={cls.startingDate}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
-                      <LocationCityIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"Company"} secondary={job.company} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Location" secondary={job.location} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PlaylistAddCheckIcon />
+                      <CalendarTodayIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary="Requirements"
-                      secondary={job.requirements}
+                      primary={"Ending Date"}
+                      secondary={cls.endingDate}
                     />
                   </ListItem>
-                  {/* {job.students.map(
-                    (student: Partial<IStudent>, index: number) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={`Student ${index + 1}`}
-                          secondary={`${student.firstName} ${student.lastName}`}
-                        />
-                      </ListItem>
-                    )
-                  )} */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <RotateLeftIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"Cycle Number"}
+                      secondary={cls?.cycleNumber}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <LinkIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={"Zoom Link"}
+                      secondary={cls.zoomLink}
+                    />
+                  </ListItem>
+                  {cls.additionalDetails && (
+                    <ListItem>
+                      <ListItemIcon>
+                        <SubjectIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={"Additional Details"}
+                        secondary={cls.additionalDetails}
+                      />
+                    </ListItem>
+                  )}
                 </List>
               </AccordionDetails>
             </Accordion>
@@ -152,4 +166,4 @@ function AllJobs() {
   );
 }
 
-export default AllJobs;
+export default AllClasses;

@@ -44,4 +44,5 @@ export interface IEvent {
   id?: number;
   studentId: number;
   jobId: number;
+  status: string;
 }
