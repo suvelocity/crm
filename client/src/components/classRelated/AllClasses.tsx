@@ -67,11 +67,14 @@ function AllClasses() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1>All Classes</H1>
+          <H1 color="#2c6e3c">All Classes</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/class/add">
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#2c6e3c", color: "white" }}
+          >
             Add Class
           </Button>
         </StyledLink>

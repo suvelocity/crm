@@ -93,6 +93,7 @@ function NewEventModal({
   const submitStatus = async (data: any) => {
     data.studentId = studentId;
     data.jobId = jobId;
+    console.log(data);
     try {
       await network.post(`/api/v1/event`, data);
       get();

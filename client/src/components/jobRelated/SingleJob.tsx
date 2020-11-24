@@ -127,7 +127,7 @@ function SingleJob() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color="red">Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>

@@ -24,6 +24,7 @@ export const eventsSchema = Joi.object({
   studentId: Joi.number().required(),
   jobId: Joi.number().required(),
   status: Joi.string().required(),
+  comment: Joi.string(),
 });
 
 export const jobSchema = Joi.object({
