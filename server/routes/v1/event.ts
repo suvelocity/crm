@@ -16,6 +16,7 @@ router.post("/", async (req: Request, res: Response) => {
     });
     return res.json(event);
   } catch (err) {
+    console.log(err);
     res.status(500).send("Error occurred");
   }
 });

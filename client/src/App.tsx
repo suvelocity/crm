@@ -9,6 +9,7 @@ import AllJobs from "./components/jobRelated/AllJobs";
 import NavBar from "./components/NavBar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
+import AllClasses from "./components/classRelated/AllClasses";
 
 function App() {
   return (
@@ -19,6 +20,15 @@ function App() {
         <Switch>
           <Route exact path="/">
             <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
+          </Route>
+          <Route exact path="/class/all">
+            <AllClasses />
+          </Route>
+          <Route exact path="/class/add">
+            <AddClass />
+          </Route>
+          <Route exact path="/class/:id">
+            {/* <SingleClass /> */}
           </Route>
           <Route exact path="/job/all">
             <AllJobs />
@@ -37,9 +47,6 @@ function App() {
           </Route>
           <Route exact path="/student/:id">
             <SingleStudent />
-          </Route>
-          <Route exact path="/class/add">
-            <AddClass />
           </Route>
           <Route path="*">
             <div>404 Not Found</div>
