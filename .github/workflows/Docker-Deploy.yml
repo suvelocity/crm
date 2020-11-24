@@ -41,21 +41,17 @@ jobs:
      #Build the Docker image
     - name: Build
       run: make build
-      # run: |-
-      #   docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
     # Push the Docker image to Google Container Registry
     - name: Publish Image
       run: make push
-      # run: |-
-      #   docker push "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA"
-    - name: Create Instance with Container
-      run: |-
-        gcloud compute instances create "$GCE_INSTANCE" \
-        --image-project cos-cloud \
-        --image cos-stable-85-13310-1041-28 \
-        --zone "$GCE_INSTANCE_ZONE" \
-        --service-account "$SERVICE_ACCOUNT" \
-        --tags http-server \
-        --machine-type e2-medium
+    # - name: Create Instance with Container
+    #   run: |-
+    #     gcloud compute instances create "$GCE_INSTANCE" \
+    #     --image-project cos-cloud \
+    #     --image cos-stable-85-13310-1041-28 \
+    #     --zone "$GCE_INSTANCE_ZONE" \
+    #     --service-account "$SERVICE_ACCOUNT" \
+    #     --tags http-server \
+    #     --machine-type e2-medium
     - name: deploy
       run: make deploy
