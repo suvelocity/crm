@@ -22,6 +22,9 @@ function App() {
           <Route exact path="/">
             <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
           </Route>
+          <Route exact path="/class/add">
+            <AddClass />
+          </Route>
           <Route exact path="/class/all">
             <AllClasses />
           </Route>
@@ -46,9 +49,7 @@ function App() {
           <Route exact path="/student/:id">
             <SingleStudent />
           </Route>
-          <Route exact path="/class/add">
-            <AddClass />
-          </Route>
+
           <Route path="*">
             <div>404 Not Found</div>
           </Route>
