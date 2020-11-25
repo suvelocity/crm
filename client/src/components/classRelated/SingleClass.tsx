@@ -86,7 +86,7 @@ function SingleClass() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1>Class Info</H1>
+            <H1 color="#2c6e3c">Class Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>

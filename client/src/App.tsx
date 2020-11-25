@@ -49,7 +49,6 @@ function App() {
           <Route exact path="/student/:id">
             <SingleStudent />
           </Route>
-
           <Route path="*">
             <div>404 Not Found</div>
           </Route>
