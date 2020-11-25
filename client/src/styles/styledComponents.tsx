@@ -11,7 +11,7 @@ export const H1 = styled.h1`
   left: -50%;
   top: -80px;
   background-color: ${(props: { color: string }) =>
-    props.color ? props.color : " #3f51b5"};
+    props.color ? props.color : "#3f51b5"};
   border-radius: 5px;
   padding: 10px;
   min-width: 180px;
@@ -26,12 +26,17 @@ export const TitleWrapper = styled.div`
 
 export const Wrapper = styled.div`
   margin: 5% auto;
-  width: 70%;
-  padding: 40px;
+  width: 80%;
+  padding: ${(props: { padding: string }) =>
+    props.padding ? props.padding : "40px"};
   border-radius: 7px;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   min-width: 300px;
-  max-width: 700px;
+  max-width: ${(props: { width: string }) =>
+    props.width ? props.width : "700px"};
+  background-color: ${(props: { backgroundColor: string }) =>
+    props.backgroundColor ? props.backgroundColor : "white"};
+  color: ${(props: { color: string }) => (props.color ? props.color : "black")};
 `;
 
 export const Center = styled.div`

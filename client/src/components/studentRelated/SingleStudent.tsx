@@ -12,6 +12,7 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  StyledLink,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -225,9 +226,15 @@ function SingleStudent() {
                 id="additional-actions2-header"
               >
                 <WorkIcon />
-                <Typography className={classes.heading}>
-                  {event.Job!.position}
-                </Typography>
+                <StyledLink
+                  textDecoration={"true"}
+                  color="black"
+                  to={`/process/${student?.id}/${event.Job?.id}`}
+                >
+                  <Typography className={classes.heading}>
+                    {event.Job!.position}
+                  </Typography>
+                </StyledLink>
                 <Typography className={classes.secondaryHeading}>
                   {event.Job!.company}
                 </Typography>
