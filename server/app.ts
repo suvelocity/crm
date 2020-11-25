@@ -7,7 +7,11 @@ const app = express();
 app.use(express.static("../client/build"));
 app.use(express.json());
 app.use(morgan("tiny"));
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 // app.use("/api", require("./routes"));
 // app.use(express.static(path.join(__dirname, "..", "client", "build")));

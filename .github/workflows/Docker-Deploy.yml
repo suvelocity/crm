@@ -38,7 +38,7 @@ jobs:
     - name: Create production build
       run: CI=false INLINE_RUNTIME_CHUNK=false npm run build
       working-directory: ./client
-     #Build the Docker image
+    #Build the Docker image
     - name: Build image
       run: make build
     # Push the Docker image to Google Container Registry
