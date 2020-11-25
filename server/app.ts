@@ -4,7 +4,7 @@ import helmet from "helmet";
 import path from "path";
 
 const app = express();
-app.use(express.static(path.join(__dirname, "../client/build")));
+app.use(express.static("../client/build"));
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(helmet());

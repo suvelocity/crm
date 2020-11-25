@@ -36,7 +36,7 @@ jobs:
       working-directory: ./client
     # Build production build 
     - name: Create production build
-      run: CI=false npm run build:prod
+      run: CI=false INLINE_RUNTIME_CHUNK=false npm run build
       working-directory: ./client
      #Build the Docker image
     - name: Build image
