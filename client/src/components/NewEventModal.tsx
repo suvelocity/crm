@@ -63,7 +63,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 // change this later TODO
-const statuses: string[] = ["Kaki", "pipi", "snake"];
+const statuses: string[] = [
+  "Sent CV",
+  "First interview",
+  "Second interview",
+  "Hired",
+  "Rejected",
+];
 
 function NewEventModal({
   studentId,
