@@ -8,9 +8,14 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn("events", "comment", {
-      type: Sequelize.STRING,
-    });
+    await Promise.all([
+      queryInterface.addColumn("events", "comment", {
+        type: Sequelize.STRING,
+      }),
+      queryInterface.addColumn("events", "date", {
+        type: Sequelize.DATE,
+      }),
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -20,6 +25,9 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn("events", "comment");
+    await Promise.all([
+      queryInterface.removeColumn("events", "comment"),
+      queryInterface.removeColumn("events", "date"),
+    ]);
   },
 };

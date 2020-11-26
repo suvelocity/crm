@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       jobId: DataTypes.INTEGER,
       status: DataTypes.STRING,
       comment: DataTypes.STRING,
+      date: DataTypes.DATE,
     },
     {
       sequelize,

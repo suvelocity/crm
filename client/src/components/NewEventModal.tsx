@@ -154,8 +154,8 @@ function NewEventModal({
               <FormHelperText>Date</FormHelperText>
               <TextField
                 type="date"
-                id="createdAt"
-                name="createdAt"
+                id="date"
+                name="date"
                 inputRef={register({ required: "Event date is required" })}
                 defaultValue={`${new Date().getFullYear()}-${
                   new Date().getMonth() + 1
@@ -163,8 +163,8 @@ function NewEventModal({
                 style={{ width: "12.7vw" }}
               />{" "}
               {!empty ? (
-                errors.createdAt ? (
-                  <Tooltip title={errors.createdAt.message}>
+                errors.date ? (
+                  <Tooltip title={errors.date.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineOutlined
                         style={{ width: "30px", height: "30px" }}

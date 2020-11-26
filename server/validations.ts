@@ -25,6 +25,7 @@ export const eventsSchema = Joi.object({
   jobId: Joi.number().required(),
   status: Joi.string().required(),
   comment: Joi.string(),
+  date: Joi.date(),
 });
 
 export const jobSchema = Joi.object({
