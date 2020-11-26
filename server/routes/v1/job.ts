@@ -68,7 +68,6 @@ router.post("/", async (req: Request, res: Response) => {
     const body: IJob = req.body;
 
     const {
-      id,
       position,
       company,
       description,
@@ -78,7 +77,6 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails,
     } = req.body;
     const newJob: IJob = {
-      id,
       position,
       company,
       description,
@@ -88,7 +86,7 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails,
     };
     const { value, error } = jobSchema.validate(newJob);
-    if (error) return res.json(error);
+    if (error) return res.status(400).json(error);
     const job: IJob = await Job.create(newJob);
     res.json(job);
   } catch (err) {

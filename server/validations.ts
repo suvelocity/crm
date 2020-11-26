@@ -6,8 +6,8 @@ export const classSchema = Joi.object({
   startingDate: Joi.string().required(),
   endingDate: Joi.string().required(),
   cycleNumber: Joi.number().required(),
-  zoomLink: Joi.string().required(),
-  additionalDetails: Joi.string().required(),
+  zoomLink: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().allow(null, ""),
 });
 
 export const classSchemaToPut = Joi.object({
@@ -17,15 +17,15 @@ export const classSchemaToPut = Joi.object({
   endingDate: Joi.string(),
   cycleNumber: Joi.number(),
   zoomLink: Joi.string(),
-  additionalDetails: Joi.string(),
+  additionalDetails: Joi.string().allow(null, ""),
 });
 
 export const eventsSchema = Joi.object({
   studentId: Joi.number().required(),
   jobId: Joi.number().required(),
   status: Joi.string().required(),
-  comment: Joi.string(),
   date: Joi.date(),
+  comment: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
@@ -36,18 +36,18 @@ export const jobSchema = Joi.object({
   location: Joi.string().required(),
   description: Joi.string().required(),
   contact: Joi.string().required(),
-  additionalDetails: Joi.string(),
+  additionalDetails: Joi.string().allow(null, ""),
 });
 
 export const jobSchemaToPut = Joi.object({
   //TODO: check what is required
-  company: Joi.string(),
-  position: Joi.string(),
-  requirements: Joi.string(),
-  location: Joi.string(),
-  description: Joi.string(),
-  contact: Joi.string(),
-  additionalDetails: Joi.string(),
+  company: Joi.string().allow(null, ""),
+  position: Joi.string().allow(null, ""),
+  requirements: Joi.string().allow(null, ""),
+  location: Joi.string().allow(null, ""),
+  description: Joi.string().allow(null, ""),
+  contact: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().allow(null, ""),
 });
 
 export const studentSchema = Joi.object({
@@ -56,7 +56,7 @@ export const studentSchema = Joi.object({
   lastName: Joi.string().required(),
   phone: Joi.string().required(),
   idNumber: Joi.string().required(),
-  additionalDetails: Joi.string().required(),
+  additionalDetails: Joi.string().allow(null, ""),
   classId: Joi.number().required(),
   age: Joi.number().required(),
   address: Joi.string().required(),
@@ -70,20 +70,20 @@ export const studentSchema = Joi.object({
 });
 
 export const studentSchemaToPut = Joi.object({
-  email: Joi.string(),
-  firstName: Joi.string(),
-  lastName: Joi.string(),
-  phone: Joi.string(),
-  idNumber: Joi.string(),
-  additionalDetails: Joi.string(),
-  classId: Joi.number(),
-  age: Joi.number(),
-  address: Joi.string(),
-  maritalStatus: Joi.string(),
-  children: Joi.number(),
-  academicBackground: Joi.string(),
-  militaryService: Joi.string(),
-  workExperience: Joi.string(),
-  languages: Joi.string(),
-  citizenship: Joi.string(),
+  email: Joi.string().allow(null, ""),
+  firstName: Joi.string().allow(null, ""),
+  lastName: Joi.string().allow(null, ""),
+  phone: Joi.string().allow(null, ""),
+  idNumber: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().allow(null, ""),
+  classId: Joi.number().allow(null, ""),
+  age: Joi.number().allow(null, ""),
+  address: Joi.string().allow(null, ""),
+  maritalStatus: Joi.string().allow(null, ""),
+  children: Joi.number().allow(null, ""),
+  academicBackground: Joi.string().allow(null, ""),
+  militaryService: Joi.string().allow(null, ""),
+  workExperience: Joi.string().allow(null, ""),
+  languages: Joi.string().allow(null, ""),
+  citizenship: Joi.string().allow(null, ""),
 });

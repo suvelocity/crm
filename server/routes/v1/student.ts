@@ -26,7 +26,7 @@ router.get("/all", async (req: Request, res: Response) => {
     });
     res.json(students);
   } catch (err) {
-    res.status(500).send("error occurred");
+    res.status(500).send(err.message);
   }
 });
 
@@ -103,7 +103,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     if (updated[0] === 1) return res.json({ msg: "Student updated" });
     res.status(404).send("Student not found");
   } catch (e) {
-    res.status(500).send("error occurred");
+    res.status(500).send(e.message);
   }
 });
 

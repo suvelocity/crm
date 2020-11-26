@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NewEventModal from "../NewEventModal";
+import styled from "styled-components";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -12,6 +13,7 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  StyledLink,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -19,7 +21,7 @@ import DialpadIcon from "@material-ui/icons/Dialpad";
 import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -80,7 +82,11 @@ function SingleStudent() {
       `/api/v1/student/byId/${id}`
     );
     const uniqueJobs: IEvent[] = [];
-    data.Events.forEach((event: IEvent) => {
+    const sortedEvents = data.Events.sort(
+      (e1: IEvent, e2: IEvent) =>
+        new Date(e2.createdAt).valueOf() - new Date(e1.createdAt).valueOf()
+    );
+    sortedEvents.forEach((event: IEvent) => {
       if (!uniqueJobs.find((ev: IEvent) => ev.Job!.id === event.Job!.id)) {
         uniqueJobs.push(event);
       }
@@ -128,7 +134,7 @@ function SingleStudent() {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
             <H1>Student Info</H1>
@@ -208,7 +214,7 @@ function SingleStudent() {
           </GridDiv>
         </Loading>
       </Wrapper>
-      <Wrapper>
+      <Wrapper width="75%">
         <Center>
           <TitleWrapper>
             <H1>Student Job Processes</H1>
@@ -216,86 +222,26 @@ function SingleStudent() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {eventsToMap.map((event: IEvent) => (
-            <Accordion key={event.Job!.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
-                <WorkIcon />
-                <Typography className={classes.heading}>
-                  {event.Job!.position}
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                  {event.Job!.company}
-                </Typography>
-                <Typography className={classes.iconButton}>
-                  <IconButton
-                    onClick={(
-                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeJob(e, event.Job!.id!)}
-                    style={{ padding: 0 }}
-                  >
-                    <RemoveJobButton />
-                  </IconButton>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PostAddIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Position"}
-                      secondary={event.Job!.position}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <LocationCityIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Company"}
-                      secondary={event.Job!.company}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PlaylistAddCheckIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Requirements"
-                      secondary={event.Job!.requirements}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Location"
-                      secondary={event.Job!.location}
-                    />
-                  </ListItem>
-                </List>
-                <EventLog
-                  events={
-                    student?.Events.filter(
-                      (ev: IEvent) => ev.Job!.id === event.Job!.id
-                    )!
-                  }
-                />
-                <NewEventModal
-                  get={getStudent}
-                  studentId={student?.id!}
-                  jobId={event.Job!.id!}
-                />
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          <StyledUl>
+            {eventsToMap.map((event: IEvent) => (
+              <li>
+                <StyledLink
+                  color="black"
+                  to={`/process/${student?.id}/${event.Job?.id}`}
+                >
+                  <StyledDiv>
+                    <WorkIcon />
+                    <StyledSpan weight="bold">{event.Job!.position}</StyledSpan>
+                    <StyledSpan>{event.Job!.company}</StyledSpan>
+                    <StyledSpan>{event.status}</StyledSpan>
+                    <StyledSpan>
+                      {event.createdAt.slice(0, 10).replace(/-/g, "/")}
+                    </StyledSpan>
+                  </StyledDiv>
+                </StyledLink>
+              </li>
+            ))}
+          </StyledUl>
           <br />
           <Center>
             <ApplyStudentModal
@@ -310,4 +256,31 @@ function SingleStudent() {
   );
 }
 
+const StyledSpan = styled.span`
+  font-size: 16px;
+  font-weight: ${(props: { weight: string }) =>
+    props.weight === "bold" && "bold"};
+`;
+
+const StyledDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 3fr 1fr;
+  padding: 10px;
+  align-items: center;
+  transition: 150ms;
+  border-radius: 2px;
+
+  &:hover {
+    background-color: rgba(201, 201, 201, 0.445);
+  }
+`;
+
+const StyledUl = styled.ul`
+  list-style-type: none;
+  padding: 0;
+
+  & > li:nth-child(odd) {
+    background-color: #eeeeee;
+  }
+`;
 export default SingleStudent;
