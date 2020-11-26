@@ -1,0 +1,163 @@
+name: Continuous-Integration
+
+on:
+  pull_request:
+    branches: [specifybranch] 
+  push:
+    branches: [specifybranch] 
+env:
+  PROJECT_ID: ${{ secrets.RUN_PROJECT }}
+  GCE_INSTANCE: checking-changes   # TODO: update to instance name
+  GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
+  SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB_USER: ${{ secrets.DB_USER }}
+
+jobs:
+  # build:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     mysql:
+  #       image: mysql:5.7
+  #       env:
+  #         MYSQL_ALLOW_EMPTY_PASSWORD: yes
+  #         MYSQL_DATABASE: db_test
+  #       ports:
+  #         - 3306:3306
+  #   strategy:
+  #     matrix:
+  #       node-version: [10.x]
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Setup node  (Node.js ${{ matrix.node-version }})
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #   - name: Install server dependencies
+  #     run: npm ci
+  #     working-directory: ./server 
+  #   - name: Install client dependencies
+  #     run: npm ci
+  #     working-directory: ./client
+  #   # - name: Cypress run client
+  #   #   run: npx cypress run
+  #   #   working-directory: ./client  
+  #   - name: Run web server
+  #     run: npm start & npx wait-on http://localhost:3000
+  #     working-directory: ./client
+  #   - name: Cypress run client
+  #     run: npx cypress run
+  #     working-directory: ./client
+
+  setup-build-publish-deploy:
+    # needs: build
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    # Setup gcloud CLI
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        project_id: ${{ secrets.RUN_PROJECT }}
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+# # ---------------------------- ONLY FIRST TIME SETUP
+#     - name: Create Instance 
+#       run: |-
+#         gcloud compute instances create "$GCE_INSTANCE" \
+#         --zone "$GCE_INSTANCE_ZONE" \
+#         --service-account "$SERVICE_ACCOUNT" \
+#         --tags http-server \
+#         --machine-type e2-medium
+
+    #     --address 34.19.193.89 \
+
+# # ---------------------------- ONLY FIRST TIME SETUP IF NO RULE IS SET -- CHANGE port number to your server port
+#     - name: Add Firewall Rules 
+#       run: |-
+#         gcloud compute firewall-rules create default-allow-http-8080 \
+#         --allow tcp:8080 \
+#         --source-ranges 0.0.0.0/0 \
+#         --target-tags http-server \
+#         --description "Allow port 8080 access to http-server"
+
+# # ---------------------------- ONLY FIRST TIME SETUP -- CHANGE checkout to your branch
+#     - name: Clone and Initialize 
+#       #for private repositories, add githubaccesstokensecret and clone the following url :
+#       # sudo git clone https://${{secrets.ACCESS_USER}}:${{secrets.ACCESS_TOKEN}}@github.com/${{github.repository}}.git
+#       # for public : sudo git clone http://github.com/${{github.repository}}
+#       run: |-
+#         gcloud compute ssh \
+#         --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
+#           sudo apt-get -y update &&
+#           sudo apt install -y git &&
+#           sudo apt install -y npm &&
+#           sudo git clone https://${{secrets.ACCESS_USER}}:${{secrets.ACCESS_TOKEN}}@github.com/${{github.repository}}.git &&
+#           cd ${{ github.event.repository.name }} &&
+#           sudo git fetch --all &&
+#           sudo git checkout gcloud &&
+#           sudo git pull origin && 
+#           cd ./client && sudo npm ci --production &&
+#           sudo npm run build:prod && 
+#           cd ../server && sudo npm ci --production &&
+#           sudo sh createenv.sh ${{secrets.DB_PASS}} ${{secrets.DB_USER}} && 
+#           sudo npm i -g pm2 && sudo npm install -g typescript &&
+#           sudo pm2 install typescript &&
+#           sudo pm2 start pm2.json
+#         '
+
+    - name: Pull Origin Branch, Install Dependecies
+      run: |-
+        gcloud compute ssh \
+        --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
+          cd ${{ github.event.repository.name }} &&
+          sudo git stash &&
+          sudo git pull origin &&
+          cd ./client && sudo npm ci --production &&
+          sudo npm run build && 
+          cd ../server &&
+          sudo npm ci --production &&
+          npx sequelize db:migrate &&
+          sudo pm2 reload crmserver
+        '
+
+# # ---------------------------- USE ONLY FOR FIRST TIME SETUP ! 
+#     - name: Create MySql 
+#       run: |-
+#         gcloud compute ssh \
+#         --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
+#           cd ${{ github.event.repository.name }} &&
+#           sudo apt-get -y install default-mysql-server &&
+#           sh mysqlscript.sh ${{ secrets.DB_PASS }} && 
+#           sudo sh mysqlconfig.sh ${{secrets.DB_PASS}} ${{secrets.DB_USER}} &&
+#           sudo mysql < mysqlconfig.txt
+#         '
+#       continue-on-error: true
+
+# # ---------------------------- USE ONLY FOR FIRST TIME SETUP !
+#     - name: create migrate ?seed 
+#       run: |-
+#         gcloud compute ssh \
+#         --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
+#           cd ${{ github.event.repository.name }} &&
+#           sudo rm mysqlconfig.txt &&
+#           cd server && npx sequelize db:create &&
+#           npx sequelize db:migrate &&
+#           sudo pm2 reload crmserver
+#         '
+
+    # - name: Re:Start server
+    #   run: |-
+    #     gcloud compute ssh \
+    #     --zone "$GCE_INSTANCE_ZONE" "$GCE_INSTANCE" --command '
+    #       cd ${{ github.event.repository.name }} &&
+    #       cd server && npx sequelize db:migrate
+    #     '
