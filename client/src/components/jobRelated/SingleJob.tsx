@@ -18,9 +18,10 @@ import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
+import EventLog from "../EventLog";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob } from "../../typescript/interfaces";
+import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -35,6 +36,9 @@ import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ApplyForJobModal from "./ApplyForJobModal";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
+import DescriptionIcon from "@material-ui/icons/Description";
+import NewEventModal from "../NewEventModal";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -59,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
   const classes = useStyles();
 
@@ -66,13 +71,24 @@ function SingleJob() {
     const { data }: { data: IJob } = await network.get(
       `/api/v1/job/byId/${id}`
     );
+    const uniqueStudents: IEvent[] = [];
+    data.Events.forEach((event: IEvent) => {
+      if (
+        !uniqueStudents.find(
+          (ev: IEvent) => ev.Student!.id === event.Student!.id
+        )
+      ) {
+        uniqueStudents.push(event);
+      }
+    });
+    setEventsToMap(uniqueStudents);
     setJob(data);
     setLoading(false);
-  }, [id, setJob, setLoading]);
+  }, [id, setJob, setLoading, setEventsToMap]);
 
   const removeStudents = useCallback(
     async (
-      studentId: string,
+      studentId: number,
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
       e.stopPropagation();
@@ -86,18 +102,15 @@ function SingleJob() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          const { data: updated } = await network.patch(
-            `/api/v1/job/modify-students/${id}`,
-            {
-              students: [studentId],
-              method: "remove",
-            }
-          );
-          setJob(updated);
+          await network.patch("/api/v1/event/delete", {
+            studentId,
+            jobId: job?.id,
+          });
+          getJob();
         }
       });
     },
-    [setJob, id]
+    [setJob, id, job, getJob]
   );
 
   useEffect(() => {
@@ -114,7 +127,7 @@ function SingleJob() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color="red">Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
@@ -146,6 +159,30 @@ function SingleJob() {
                 secondary={job?.requirements}
               />
             </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <DescriptionIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Description"
+                secondary={job?.description}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Contact" secondary={job?.contact} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <SubjectIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Additional Details"
+                secondary={job?.additionalDetails}
+              />
+            </ListItem>
           </List>
         </Loading>
       </Wrapper>
@@ -157,8 +194,8 @@ function SingleJob() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {job?.students.map((student: Partial<IStudent>) => (
-            <Accordion key={student.id}>
+          {eventsToMap.map((event: IEvent) => (
+            <Accordion key={event.Student?.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-label="Expand"
@@ -167,13 +204,13 @@ function SingleJob() {
               >
                 <PersonIcon />
                 <Typography className={classes.heading}>
-                  {student.firstName} {student.lastName}
+                  {event.Student?.firstName} {event.Student?.lastName}
                 </Typography>
                 <Typography className={classes.iconButton}>
                   <IconButton
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeStudents(student.id!, e)}
+                    ) => removeStudents(event.Student!.id!, e)}
                     style={{ padding: 0 }}
                   >
                     <RemoveJobButton />
@@ -188,14 +225,19 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Name"
-                      secondary={student.firstName + " " + student.lastName}
+                      secondary={
+                        event.Student?.firstName + " " + event.Student?.lastName
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <EmailIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Email" secondary={student.email} />
+                    <ListItemText
+                      primary="Email"
+                      secondary={event.Student?.email}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
@@ -203,7 +245,7 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Phone Number"
-                      secondary={student.phone}
+                      secondary={event.Student?.phone}
                     />
                   </ListItem>
                   <ListItem>
@@ -212,20 +254,26 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="ID Number"
-                      secondary={student.idNumber}
+                      secondary={event.Student?.idNumber}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <ClassIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Course" secondary={student.class} />
+                    <ListItemText
+                      primary="Course"
+                      secondary={event.Student?.Class.id}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
                       <DateRangeIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Age" secondary={student.age} />
+                    <ListItemText
+                      primary="Age"
+                      secondary={event.Student?.age}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemIcon>
@@ -233,29 +281,41 @@ function SingleJob() {
                     </ListItemIcon>
                     <ListItemText
                       primary="Address"
-                      secondary={student.address}
+                      secondary={event.Student?.address}
                     />
                   </ListItem>
-                  {student.additionalDetails && (
+                  {event.Student?.additionalDetails && (
                     <ListItem>
                       <ListItemIcon>
                         <SubjectIcon />
                       </ListItemIcon>
                       <ListItemText
                         primary="Additional Details"
-                        secondary={student.additionalDetails}
+                        secondary={event.Student?.additionalDetails}
                       />
                     </ListItem>
                   )}
                 </List>
+                <EventLog
+                  events={
+                    job?.Events.filter(
+                      (ev: IEvent) => ev.Student!.id === event.Student!.id
+                    )!
+                  }
+                />
+                <NewEventModal
+                  get={getJob}
+                  studentId={event.Student!.id!}
+                  jobId={job?.id!}
+                />
               </AccordionDetails>
             </Accordion>
           ))}
           <br />
           <Center>
             <ApplyForJobModal
-              currentStudents={job?.students.map(
-                (student: Partial<IStudent>) => student.id
+              currentStudents={job?.Events.map(
+                (event: IEvent) => event.Student!.id
               )}
               jobId={job?.id}
               getJob={getJob}

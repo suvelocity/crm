@@ -19,15 +19,18 @@ import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import WorkIcon from "@material-ui/icons/Work";
-import { IJob } from "../../typescript-utils/interfaces";
+import PersonIcon from "@material-ui/icons/Person";
+import { IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
+import RotateLeftIcon from "@material-ui/icons/RotateLeft";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import BusinessIcon from "@material-ui/icons/Business";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import DateRangeIcon from "@material-ui/icons/DateRange";
+import SubjectIcon from "@material-ui/icons/Subject";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ClassIcon from "@material-ui/icons/Class";
+import LinkIcon from "@material-ui/icons/Link";
 import styled from "styled-components";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
+      marginLeft: 15,
       marginTop: 3,
     },
     secondaryHeading: {
@@ -50,15 +53,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function AllJobs() {
-  const [jobs, setJobs] = useState<IJob[]>([]);
+function AllClasses() {
+  const [classes, setClasses] = useState<IClass[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const classes = useStyles();
+  const styleClasses = useStyles();
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/job/all");
-      setJobs(data);
+      const { data } = await network.get("/api/v1/class/all");
+      setClasses(data);
       setLoading(false);
     })();
   }, []);
@@ -67,44 +70,44 @@ function AllJobs() {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1 color="#2c6e3c">All Classes</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to="/class/add">
           <Button
-            style={{ backgroundColor: "#bb4040", color: "white" }}
             variant="contained"
+            style={{ backgroundColor: "#2c6e3c", color: "white" }}
           >
-            Add Job
+            Add Class
           </Button>
         </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
-          {jobs && (
+          {classes && (
             <li>
               <TableHeader>
-                <WorkIcon />
-                <StyledSpan weight="bold">company</StyledSpan>
-                <StyledSpan weight="bold">position</StyledSpan>
-                <StyledSpan weight="bold">location</StyledSpan>
+                <ClassIcon />
+                <StyledSpan weight="bold">name</StyledSpan>
+                <StyledSpan weight="bold">course</StyledSpan>
+                <StyledSpan weight="bold">cycle number</StyledSpan>
               </TableHeader>
             </li>
           )}
-          {jobs &&
-            jobs.map((job) => (
+          {classes &&
+            classes.map((cls) => (
               <li>
                 <StyledLink
-                  to={`/job/${job.id}`}
+                  to={`/class/${cls.id}`}
                   textDecoration={"true"}
                   color="black"
                 >
                   <StyledDiv>
-                    <WorkIcon />
-                    <StyledSpan weight="bold">{job.company}</StyledSpan>
-                    <StyledSpan>{job.position}</StyledSpan>
-                    <StyledSpan>{job.location}</StyledSpan>
+                    <ClassIcon />
+                    <StyledSpan weight="bold">{cls.name}</StyledSpan>
+                    <StyledSpan>{cls.course}</StyledSpan>
+                    <StyledSpan>{cls.cycleNumber}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>
@@ -115,7 +118,7 @@ function AllJobs() {
   );
 }
 
-export default AllJobs;
+export default AllClasses;
 
 const StyledDiv = styled.div`
   display: grid;
