@@ -17,6 +17,7 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import EventLog from "../EventLog";
 import styled from "styled-components";
+import NewEventModal from "../NewEventModal";
 
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
@@ -134,7 +135,7 @@ function SingleProcess() {
               </GridDiv>
             </Center>
           </Wrapper>
-          <div style={{ gridColumn: "span 2" }}>
+          <div style={{ gridColumn: "span 2", height: "auto" }}>
             {job?.id && student?.id && (
               <EventLog
                 events={
@@ -147,6 +148,8 @@ function SingleProcess() {
           </div>
         </GridDiv>
       </Loading>
+      <NewEventModal studentId={studentId} jobId={jobId} get={() => null} />
+      {/* need to figure out how to refresh data after new event is added + fix button position */}
     </Wrapper>
   );
 }

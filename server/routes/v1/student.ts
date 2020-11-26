@@ -17,7 +17,7 @@ router.get("/all", async (req: Request, res: Response) => {
               model: Job,
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
         {
           model: Class,
@@ -42,7 +42,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               model: Job,
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
         {
           model: Class,

@@ -3,25 +3,30 @@ import { Link } from "react-router-dom";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 export const H1 = styled.h1`
-  padding: 5px;
+  padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
   color: white;
-  position: relative;
-  left: -50%;
-  top: -80px;
+  /* position: relative; */
+  /* left: -50%;
+  top: -80px; */
+  margin: 0;
+  display: inline;
   background-color: ${(props: { color: string }) =>
     props.color ? props.color : "#3f51b5"};
   border-radius: 5px;
-  padding: 10px;
   min-width: 180px;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   z-index: 2;
 `;
 
 export const TitleWrapper = styled.div`
-  position: absolute;
-  left: 50%;
+  /* position: absolute; */
+  /* left: 50%; */
+  /* top: 50%; */
+  /* width: 50%; */
+  height: 0px;
+  transform: translate(0, -60px);
 `;
 
 export const Wrapper = styled.div`
@@ -63,5 +68,39 @@ export const RemoveJobButton = styled(DeleteIcon)`
 
 export const GridDiv = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${(props: { repeatFormula: string }) =>
+    props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
+`;
+
+export const StyledDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2.5fr 2fr 2.5fr 2fr;
+  padding: 10px;
+  align-items: center;
+  background-color: rgba(180, 180, 180, 0.12);
+  transition: 150ms;
+  border-radius: 2px;
+  margin: 2px;
+  &:hover {
+    background-color: rgba(201, 201, 201, 0.38);
+  }
+`;
+
+export const StyledSpan = styled.span`
+  font-size: 16px;
+  font-weight: ${(props: { weight: string }) =>
+    props.weight === "bold" && "bold"};
+`;
+
+export const TableHeader = styled(StyledDiv)`
+  background-color: rgba(20, 20, 25, 0.6);
+  color: white;
+  &:hover {
+    background-color: rgba(20, 20, 25, 0.6);
+  }
+`;
+
+export const StyledUl = styled.ul`
+  list-style-type: none;
+  padding: 0;
 `;

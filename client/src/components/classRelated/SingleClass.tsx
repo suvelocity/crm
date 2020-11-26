@@ -150,7 +150,7 @@ function SingleClass() {
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1>Students In Class</H1>
+            <H1 color={"#2c6e3c"}>Students In Class</H1>
           </TitleWrapper>
         </Center>
         <br />

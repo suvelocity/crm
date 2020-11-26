@@ -33,21 +33,30 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import WorkIcon from "@material-ui/icons/Work";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
+import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import LanguageIcon from "@material-ui/icons/Language";
+import TranslateIcon from "@material-ui/icons/Translate";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import WorkIcon from "@material-ui/icons/Work";
+import TrackChangesIcon from "@material-ui/icons/TrackChanges";
+
 import Swal from "sweetalert2";
 import EventLog from "../EventLog";
+import { formatPhone } from "../../helpers/general";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
     },
     heading: {
-      fontSize: theme.typography.pxToRem(15),
+      fontSize: theme.typography.pxToRem(30),
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
@@ -84,7 +93,7 @@ function SingleStudent() {
     const uniqueJobs: IEvent[] = [];
     const sortedEvents = data.Events.sort(
       (e1: IEvent, e2: IEvent) =>
-        new Date(e2.createdAt).valueOf() - new Date(e1.createdAt).valueOf()
+        new Date(e2.date).valueOf() - new Date(e1.date).valueOf()
     );
     sortedEvents.forEach((event: IEvent) => {
       if (!uniqueJobs.find((ev: IEvent) => ev.Job!.id === event.Job!.id)) {
@@ -141,7 +150,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv>
+          <GridDiv repeatFormula="1fr 1fr 1.5fr">
             <List>
               <ListItem>
                 <ListItemIcon>
@@ -164,7 +173,7 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Phone Number"
-                  secondary={student?.phone}
+                  secondary={formatPhone(student?.phone)}
                 />
               </ListItem>
               <ListItem>
@@ -176,8 +185,6 @@ function SingleStudent() {
                   secondary={student?.idNumber}
                 />
               </ListItem>
-            </List>
-            <List>
               <ListItem>
                 <ListItemIcon>
                   <ClassIcon />
@@ -187,6 +194,8 @@ function SingleStudent() {
                   secondary={student?.Class.name}
                 />
               </ListItem>
+            </List>
+            <List>
               <ListItem>
                 <ListItemIcon>
                   <DateRangeIcon />
@@ -199,10 +208,75 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText primary="Address" secondary={student?.address} />
               </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <TranslateIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Languages"
+                  secondary={student?.languages}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <FavoriteIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Marital Status"
+                  secondary={student?.maritalStatus}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <ChildFriendlyIcon />{" "}
+                </ListItemIcon>
+                <ListItemText
+                  primary="Children"
+                  secondary={student?.children}
+                />
+              </ListItem>
+            </List>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <AccountBalanceIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Academic Background"
+                  secondary={student?.academicBackground}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <LanguageIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Citizenships"
+                  secondary={student?.citizenship}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Military Service"
+                  secondary={student?.militaryService}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <WorkIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Work Experience"
+                  secondary={student?.workExperience}
+                />
+              </ListItem>
               {student?.additionalDetails && (
                 <ListItem>
                   <ListItemIcon>
-                    <SubjectIcon />
+                    <ContactSupportIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary="Additional Details"
@@ -220,7 +294,6 @@ function SingleStudent() {
             <H1>Student Job Processes</H1>
           </TitleWrapper>
         </Center>
-        <br />
         <Loading loading={loading} size={30}>
           <StyledUl>
             {eventsToMap.map((event: IEvent) => (
@@ -235,7 +308,7 @@ function SingleStudent() {
                     <StyledSpan>{event.Job!.company}</StyledSpan>
                     <StyledSpan>{event.status}</StyledSpan>
                     <StyledSpan>
-                      {event.createdAt.slice(0, 10).replace(/-/g, "/")}
+                      {event.date.slice(0, 10).replace(/-/g, "/")}
                     </StyledSpan>
                   </StyledDiv>
                 </StyledLink>

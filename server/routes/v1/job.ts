@@ -22,7 +22,7 @@ router.get("/all", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
       ],
     });
@@ -49,7 +49,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
       ],
     });

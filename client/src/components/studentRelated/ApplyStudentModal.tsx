@@ -205,7 +205,7 @@ function ApplyStudentModal({
               </Button>
             </>
           ) : (
-            <h2>Student is already applied for all jobs</h2>
+            <h2>No available jobs</h2>
           )}
         </div>
       </div>

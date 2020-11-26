@@ -6,6 +6,8 @@ import {
   TitleWrapper,
   StyledLink,
   Center,
+  StyledSpan,
+  StyledUl,
 } from "../../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -29,6 +31,7 @@ import SubjectIcon from "@material-ui/icons/Subject";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ClassIcon from "@material-ui/icons/Class";
 import LinkIcon from "@material-ui/icons/Link";
+import styled from "styled-components";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,7 +67,7 @@ function AllClasses() {
   }, []);
 
   return (
-    <Wrapper>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1 color="#2c6e3c">All Classes</H1>
@@ -81,92 +84,60 @@ function AllClasses() {
       </Center>
       <br />
       <Loading loading={loading} size={30}>
-        {classes &&
-          classes.map((cls) => (
-            <Accordion key={cls.id}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <StyledUl>
+          {classes && (
+            <li>
+              <TableHeader>
                 <ClassIcon />
-                <Typography className={styleClasses.heading}>
-                  <StyledLink
-                    to={`/class/${cls.id}`}
-                    textDecoration={"true"}
-                    color="black"
-                  >
-                    {cls.name}
-                  </StyledLink>
-                </Typography>
-                <Typography className={styleClasses.secondaryHeading}>
-                  {cls.course}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
-                      <ClassIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"Name"} secondary={cls.name} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <ClassIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"Course"} secondary={cls.course} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CalendarTodayIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Starting Date"}
-                      secondary={cls.startingDate}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <CalendarTodayIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Ending Date"}
-                      secondary={cls.endingDate}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <RotateLeftIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Cycle Number"}
-                      secondary={cls?.cycleNumber}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <LinkIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Zoom Link"}
-                      secondary={cls.zoomLink}
-                    />
-                  </ListItem>
-                  {cls.additionalDetails && (
-                    <ListItem>
-                      <ListItemIcon>
-                        <SubjectIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={"Additional Details"}
-                        secondary={cls.additionalDetails}
-                      />
-                    </ListItem>
-                  )}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                <StyledSpan weight="bold">name</StyledSpan>
+                <StyledSpan weight="bold">course</StyledSpan>
+                <StyledSpan weight="bold">cycle number</StyledSpan>
+              </TableHeader>
+            </li>
+          )}
+          {classes &&
+            classes.map((cls) => (
+              <li>
+                <StyledLink
+                  to={`/class/${cls.id}`}
+                  textDecoration={"true"}
+                  color="black"
+                >
+                  <StyledDiv>
+                    <ClassIcon />
+                    <StyledSpan weight="bold">{cls.name}</StyledSpan>
+                    <StyledSpan>{cls.course}</StyledSpan>
+                    <StyledSpan>{cls.cycleNumber}</StyledSpan>
+                  </StyledDiv>
+                </StyledLink>
+              </li>
+            ))}
+        </StyledUl>
       </Loading>
     </Wrapper>
   );
 }
 
 export default AllClasses;
+
+const StyledDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2.5fr 2.5fr 1fr;
+  padding: 10px;
+  align-items: center;
+  background-color: rgba(180, 180, 180, 0.12);
+  transition: 150ms;
+  border-radius: 2px;
+  margin: 2px;
+  &:hover {
+    background-color: rgba(201, 201, 201, 0.38);
+  }
+`;
+
+const TableHeader = styled(StyledDiv)`
+  background-color: rgba(20, 20, 25, 0.6);
+  color: white;
+  &:hover {
+    background-color: rgba(20, 20, 25, 0.6);
+  }
+`;
