@@ -20,7 +20,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import WorkIcon from "@material-ui/icons/Work";
-import { IJob } from "../../typescript-utils/interfaces";
+import { IJob } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import PostAddIcon from "@material-ui/icons/PostAdd";
@@ -64,16 +64,16 @@ function AllJobs() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1 color='#bb4040'>All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to='/job/add'>
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
+            variant='contained'
           >
             Add Job
           </Button>
@@ -86,9 +86,9 @@ function AllJobs() {
             <li>
               <TableHeader>
                 <WorkIcon />
-                <StyledSpan weight="bold">company</StyledSpan>
-                <StyledSpan weight="bold">position</StyledSpan>
-                <StyledSpan weight="bold">location</StyledSpan>
+                <StyledSpan weight='bold'>company</StyledSpan>
+                <StyledSpan weight='bold'>position</StyledSpan>
+                <StyledSpan weight='bold'>location</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -98,11 +98,11 @@ function AllJobs() {
                 <StyledLink
                   to={`/job/${job.id}`}
                   textDecoration={"true"}
-                  color="black"
+                  color='black'
                 >
                   <StyledDiv>
                     <WorkIcon />
-                    <StyledSpan weight="bold">{job.company}</StyledSpan>
+                    <StyledSpan weight='bold'>{job.company}</StyledSpan>
                     <StyledSpan>{job.position}</StyledSpan>
                     <StyledSpan>{job.location}</StyledSpan>
                   </StyledDiv>
