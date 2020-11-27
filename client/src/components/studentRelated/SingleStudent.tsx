@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NewEventModal from "../NewEventModal";
+import styled from "styled-components";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -12,6 +13,7 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  StyledLink,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -19,7 +21,7 @@ import DialpadIcon from "@material-ui/icons/Dialpad";
 import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -31,21 +33,30 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import WorkIcon from "@material-ui/icons/Work";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import LocationCityIcon from "@material-ui/icons/LocationCity";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import IconButton from "@material-ui/core/IconButton";
+import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import LanguageIcon from "@material-ui/icons/Language";
+import TranslateIcon from "@material-ui/icons/Translate";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import WorkIcon from "@material-ui/icons/Work";
+import TrackChangesIcon from "@material-ui/icons/TrackChanges";
+
 import Swal from "sweetalert2";
 import EventLog from "../EventLog";
+import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
     },
     heading: {
-      fontSize: theme.typography.pxToRem(15),
+      fontSize: theme.typography.pxToRem(30),
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
@@ -80,7 +91,11 @@ function SingleStudent() {
       `/api/v1/student/byId/${id}`
     );
     const uniqueJobs: IEvent[] = [];
-    data.Events.forEach((event: IEvent) => {
+    const sortedEvents = data.Events.sort(
+      (e1: IEvent, e2: IEvent) =>
+        new Date(e2.date).valueOf() - new Date(e1.date).valueOf()
+    );
+    sortedEvents.forEach((event: IEvent) => {
       if (!uniqueJobs.find((ev: IEvent) => ev.Job!.id === event.Job!.id)) {
         uniqueJobs.push(event);
       }
@@ -128,15 +143,16 @@ function SingleStudent() {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
             <H1>Student Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv>
+          <GridDiv repeatFormula="1fr 1fr 1fr">
             <List>
+              {/* {Name} */}
               <ListItem>
                 <ListItemIcon>
                   <PersonIcon />
@@ -146,21 +162,24 @@ function SingleStudent() {
                   secondary={student?.firstName + " " + student?.lastName}
                 />
               </ListItem>
+              {/* Email */}
               <ListItem>
                 <ListItemIcon>
                   <EmailIcon />
                 </ListItemIcon>
                 <ListItemText primary="Email" secondary={student?.email} />
               </ListItem>
+              {/* Phone number */}
               <ListItem>
                 <ListItemIcon>
                   <PhoneIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Phone Number"
-                  secondary={student?.phone}
+                  secondary={formatPhone(student?.phone)}
                 />
               </ListItem>
+              {/* Id number */}
               <ListItem>
                 <ListItemIcon>
                   <DialpadIcon />
@@ -170,8 +189,98 @@ function SingleStudent() {
                   secondary={student?.idNumber}
                 />
               </ListItem>
+              {/* Work Experience */}
+              <ListItem>
+                <ListItemIcon>
+                  <WorkIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Work Experience"
+                  secondary={student?.workExperience}
+                />
+              </ListItem>
             </List>
             <List>
+              {/* Age */}
+              <ListItem>
+                <ListItemIcon>
+                  <DateRangeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Age" secondary={student?.age} />
+              </ListItem>
+              {/* Address */}
+              <ListItem>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Address" secondary={student?.address} />
+              </ListItem>
+              {/* Marital Status */}
+              <ListItem>
+                <ListItemIcon>
+                  <FavoriteIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Marital Status"
+                  secondary={student?.maritalStatus}
+                />
+              </ListItem>
+              {/* Children */}
+              <ListItem>
+                <ListItemIcon>
+                  <ChildFriendlyIcon />{" "}
+                </ListItemIcon>
+                <ListItemText
+                  primary="Children"
+                  secondary={student?.children}
+                />
+              </ListItem>
+
+              {/* {Additional Details} */}
+              {student?.additionalDetails && (
+                <ListItem>
+                  <ListItemIcon>
+                    <ContactSupportIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Additional Details"
+                    secondary={student?.additionalDetails}
+                  />
+                </ListItem>
+              )}
+            </List>
+            <List>
+              {/* Academic Background */}
+              <ListItem>
+                <ListItemIcon>
+                  <AccountBalanceIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Academic Background"
+                  secondary={student?.academicBackground}
+                />
+              </ListItem>
+              {/* Citizenships */}
+              <ListItem>
+                <ListItemIcon>
+                  <LanguageIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Citizenships"
+                  secondary={student?.citizenship}
+                />
+              </ListItem>
+              {/* Languages */}
+              <ListItem>
+                <ListItemIcon>
+                  <TranslateIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Languages"
+                  secondary={student?.languages}
+                />
+              </ListItem>
+              {/* Course */}
               <ListItem>
                 <ListItemIcon>
                   <ClassIcon />
@@ -181,121 +290,46 @@ function SingleStudent() {
                   secondary={student?.Class.name}
                 />
               </ListItem>
+
+              {/* Military Service */}
               <ListItem>
                 <ListItemIcon>
-                  <DateRangeIcon />
+                  <TrackChangesIcon />
                 </ListItemIcon>
-                <ListItemText primary="Age" secondary={student?.age} />
+                <ListItemText
+                  primary="Military Service"
+                  secondary={student?.militaryService}
+                />
               </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText primary="Address" secondary={student?.address} />
-              </ListItem>
-              {student?.additionalDetails && (
-                <ListItem>
-                  <ListItemIcon>
-                    <SubjectIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Additional Details"
-                    secondary={student?.additionalDetails}
-                  />
-                </ListItem>
-              )}
             </List>
           </GridDiv>
         </Loading>
       </Wrapper>
-      <Wrapper>
+      <Wrapper width="75%">
         <Center>
           <TitleWrapper>
             <H1>Student Job Processes</H1>
           </TitleWrapper>
         </Center>
-        <br />
         <Loading loading={loading} size={30}>
-          {eventsToMap.map((event: IEvent) => (
-            <Accordion key={event.Job!.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
-                <WorkIcon />
-                <Typography className={classes.heading}>
-                  {event.Job!.position}
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                  {event.Job!.company}
-                </Typography>
-                <Typography className={classes.iconButton}>
-                  <IconButton
-                    onClick={(
-                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeJob(e, event.Job!.id!)}
-                    style={{ padding: 0 }}
-                  >
-                    <RemoveJobButton />
-                  </IconButton>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PostAddIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Position"}
-                      secondary={event.Job!.position}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <LocationCityIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Company"}
-                      secondary={event.Job!.company}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PlaylistAddCheckIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Requirements"
-                      secondary={event.Job!.requirements}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Location"
-                      secondary={event.Job!.location}
-                    />
-                  </ListItem>
-                </List>
-                <EventLog
-                  events={
-                    student?.Events.filter(
-                      (ev: IEvent) => ev.Job!.id === event.Job!.id
-                    )!
-                  }
-                />
-                <NewEventModal
-                  get={getStudent}
-                  studentId={student?.id!}
-                  jobId={event.Job!.id!}
-                />
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          <StyledUl>
+            {eventsToMap.map((event: IEvent) => (
+              <li>
+                <StyledLink
+                  color="black"
+                  to={`/process/${student?.id}/${event.Job?.id}`}
+                >
+                  <StyledDiv>
+                    <WorkIcon />
+                    <StyledSpan weight="bold">{event.Job!.position}</StyledSpan>
+                    <StyledSpan>{event.Job!.company}</StyledSpan>
+                    <StyledSpan>{event.status}</StyledSpan>
+                    <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
+                  </StyledDiv>
+                </StyledLink>
+              </li>
+            ))}
+          </StyledUl>
           <br />
           <Center>
             <ApplyStudentModal
@@ -310,4 +344,31 @@ function SingleStudent() {
   );
 }
 
+const StyledSpan = styled.span`
+  font-size: 16px;
+  font-weight: ${(props: { weight: string }) =>
+    props.weight === "bold" && "bold"};
+`;
+
+const StyledDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 3fr 1fr;
+  padding: 10px;
+  align-items: center;
+  transition: 150ms;
+  border-radius: 2px;
+
+  &:hover {
+    background-color: rgba(201, 201, 201, 0.445);
+  }
+`;
+
+const StyledUl = styled.ul`
+  list-style-type: none;
+  padding: 0;
+
+  & > li:nth-child(odd) {
+    background-color: #eeeeee;
+  }
+`;
 export default SingleStudent;

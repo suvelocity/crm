@@ -10,6 +10,8 @@ import {
   TitleWrapper,
   Center,
   RemoveJobButton,
+  GridDiv,
+  MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -38,6 +40,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
 import DescriptionIcon from "@material-ui/icons/Description";
 import NewEventModal from "../NewEventModal";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -122,74 +125,80 @@ function SingleJob() {
     //eslint-disable-next-line
   }, [id]);
 
+  console.log(job);
   return (
     <>
-      <Wrapper>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color="red">Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <List>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <ListItem>
               <ListItemIcon>
                 <PostAddIcon />
               </ListItemIcon>
               <ListItemText primary="Position" secondary={job?.position} />
             </ListItem>
+            {/* Position */}
             <ListItem>
               <ListItemIcon>
                 <LocationCityIcon />
               </ListItemIcon>
               <ListItemText primary="Company" secondary={job?.company} />
             </ListItem>
+            {/* Company */}
             <ListItem>
               <ListItemIcon>
                 <BusinessIcon />
               </ListItemIcon>
               <ListItemText primary="Location" secondary={job?.location} />
             </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <PlaylistAddCheckIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Requirements"
-                secondary={job?.requirements}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <DescriptionIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Description"
-                secondary={job?.description}
-              />
-            </ListItem>
+            {/* Location */}
             <ListItem>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Contact" secondary={job?.contact} />
             </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <SubjectIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Additional Details"
-                secondary={job?.additionalDetails}
-              />
-            </ListItem>
-          </List>
+            {/* Contact */}
+          </GridDiv>
+          <br />
+          <MultilineListItem>
+            <ListItemIcon>
+              <DescriptionIcon />
+            </ListItemIcon>
+            <ListItemText primary="Description" secondary={job?.description} />
+          </MultilineListItem>
+          {/* Description */}
+          <MultilineListItem>
+            <ListItemIcon>
+              <PlaylistAddCheckIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Requirements"
+              secondary={job?.requirements}
+            />
+          </MultilineListItem>
+          {/* Requirements */}
+          <MultilineListItem>
+            <ListItemIcon>
+              <ContactSupportIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Additional Details"
+              secondary={job?.additionalDetails}
+            />
+          </MultilineListItem>
+          {/* Additional Details */}
         </Loading>
       </Wrapper>
       <Wrapper>
         <Center>
           <TitleWrapper>
-            <H1 color="red">Students In Process</H1>
+            <H1 color="#bb4040">Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />

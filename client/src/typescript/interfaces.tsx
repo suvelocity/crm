@@ -54,7 +54,8 @@ export interface IClass {
 
 export interface IEvent {
   status: string;
-  createdAt: string;
+  comment: string;
+  date: string;
   Student?: IStudent;
   Job?: IJob;
 }

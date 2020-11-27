@@ -22,7 +22,7 @@ router.get("/all", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
       ],
     });
@@ -49,7 +49,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "createdAt"],
+          attributes: ["status", "date", "comment"],
         },
       ],
     });
@@ -86,10 +86,11 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails,
     };
     const { value, error } = jobSchema.validate(newJob);
-    if (error) return res.json(error);
+    if (error) return res.status(400).json(error);
     const job: IJob = await Job.create(newJob);
     res.json(job);
   } catch (err) {
+    console.log(err);
     res.status(500).send("error occurred");
   }
 });
