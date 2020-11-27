@@ -90,6 +90,7 @@ router.post("/", async (req: Request, res: Response) => {
     const job: IJob = await Job.create(newJob);
     res.json(job);
   } catch (err) {
+    console.log(err);
     res.status(500).send("error occurred");
   }
 });
