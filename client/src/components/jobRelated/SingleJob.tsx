@@ -82,7 +82,11 @@ function SingleJob() {
       `/api/v1/job/byId/${id}`
     );
     const uniqueStudents: IEvent[] = [];
-    data.Events.forEach((event: IEvent) => {
+    const sortedEvents = data.Events.sort(
+      (e1: IEvent, e2: IEvent) =>
+        new Date(e2.date).valueOf() - new Date(e1.date).valueOf()
+    );
+    sortedEvents.forEach((event: IEvent) => {
       if (
         !uniqueStudents.find(
           (ev: IEvent) => ev.Student!.id === event.Student!.id
@@ -135,77 +139,90 @@ function SingleJob() {
   console.log(job);
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
-            <ListItem>
-              <ListItemIcon>
-                <PostAddIcon />
-              </ListItemIcon>
-              <ListItemText primary='Position' secondary={job?.position} />
-            </ListItem>
-            {/* Position */}
-            <ListItem>
-              <ListItemIcon>
-                <LocationCityIcon />
-              </ListItemIcon>
-              <ListItemText primary='Company' secondary={job?.company} />
-            </ListItem>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <PostAddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Position" secondary={job?.position} />
+              </ListItem>
+              {/* Position */}
+            </List>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <LocationCityIcon />
+                </ListItemIcon>
+                <ListItemText primary="Company" secondary={job?.company} />
+              </ListItem>
+            </List>
             {/* Company */}
-            <ListItem>
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary='Location' secondary={job?.location} />
-            </ListItem>
-            {/* Location */}
-            <ListItem>
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary='Contact' secondary={job?.contact} />
-            </ListItem>
-            {/* Contact */}
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Location" secondary={job?.location} />
+              </ListItem>
+            </List>
+            <List>
+              {/* Location */}
+              <ListItem>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="Contact" secondary={job?.contact} />
+              </ListItem>
+              {/* Contact */}
+            </List>
           </GridDiv>
           <br />
-          <MultilineListItem>
-            <ListItemIcon>
-              <DescriptionIcon />
-            </ListItemIcon>
-            <ListItemText primary='Description' secondary={job?.description} />
-          </MultilineListItem>
-          {/* Description */}
-          <MultilineListItem>
-            <ListItemIcon>
-              <PlaylistAddCheckIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary='Requirements'
-              secondary={job?.requirements}
-            />
-          </MultilineListItem>
-          {/* Requirements */}
-          <MultilineListItem>
-            <ListItemIcon>
-              <ContactSupportIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary='Additional Details'
-              secondary={job?.additionalDetails}
-            />
-          </MultilineListItem>
+          <GridDiv repeatFormula="1fr 1fr 1fr">
+            <MultilineListItem>
+              <ListItemIcon>
+                <DescriptionIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Description"
+                secondary={job?.description}
+              />
+            </MultilineListItem>
+            {/* Description */}
+            <MultilineListItem>
+              <ListItemIcon>
+                <PlaylistAddCheckIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Requirements"
+                secondary={job?.requirements}
+              />
+            </MultilineListItem>
+            {/* Requirements */}
+            <MultilineListItem>
+              <ListItemIcon>
+                <ContactSupportIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Additional Details"
+                secondary={job?.additionalDetails}
+              />
+            </MultilineListItem>
+          </GridDiv>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Students In Process</H1>
+            <H1 color="#bb4040">Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -215,10 +232,10 @@ function SingleJob() {
               <li>
                 <TableHeader>
                   <PersonIcon />
-                  <StyledSpan weight='bold'>Name</StyledSpan>
-                  <StyledSpan weight='bold'>Class</StyledSpan>
-                  <StyledSpan weight='bold'>Email</StyledSpan>
-                  <StyledSpan weight='bold'>Phone</StyledSpan>
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Class</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Status</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -226,19 +243,19 @@ function SingleJob() {
               eventsToMap.map((event: IEvent) => (
                 <li key={event.Student?.id}>
                   <StyledLink
-                    color='black'
-                    to={`/student/${event.Student?.id}`}
+                    color="black"
+                    to={`/process/${event.Student?.id}/${job?.id}`}
                   >
                     <StyledDiv>
                       <PersonIcon />
-                      <StyledSpan weight='bold'>
+                      <StyledSpan weight="bold">
                         {event.Student?.firstName} {event.Student?.lastName}
                       </StyledSpan>
                       <StyledSpan>{event.Student?.Class.name}</StyledSpan>
-                      <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>
                         {formatPhone(event.Student?.phone)}
                       </StyledSpan>
+                      <StyledSpan>{event.status}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>
