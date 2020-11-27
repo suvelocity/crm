@@ -113,10 +113,10 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight="bold">name</StyledSpan>
-                <StyledSpan weight="bold">class</StyledSpan>
-                <StyledSpan weight="bold">email</StyledSpan>
-                <StyledSpan weight="bold">phone</StyledSpan>
+                <StyledSpan weight="bold">Name</StyledSpan>
+                <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Email</StyledSpan>
+                <StyledSpan weight="bold">Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
