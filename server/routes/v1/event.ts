@@ -7,19 +7,24 @@ import { eventsSchema } from "../../validations";
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { jobId, status, studentId } = req.body;
+    const { jobId, status, studentId, comment, date } = req.body;
     const { value, error } = eventsSchema.validate({
       jobId,
       status,
       studentId,
+      comment,
+      date,
     });
     const event: IEvent = await Event.create({
       studentId,
       jobId,
       status,
+      comment,
+      date,
     });
     return res.json(event);
   } catch (err) {
+    console.log(err);
     res.status(500).send("Error occurred");
   }
 });

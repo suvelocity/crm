@@ -10,6 +10,8 @@ import {
   TitleWrapper,
   Center,
   RemoveJobButton,
+  GridDiv,
+  MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -36,6 +38,8 @@ import IconButton from "@material-ui/core/IconButton";
 import LinkIcon from "@material-ui/icons/Link";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import { formatToIsraeliDate } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,74 +87,86 @@ function SingleClass() {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1>Class Info</H1>
+            <H1 color="#2c6e3c">Class Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <ClassIcon />
-              </ListItemIcon>
-              <ListItemText primary="Name" secondary={cls?.name} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <ClassIcon />
-              </ListItemIcon>
-              <ListItemText primary="Course" secondary={cls?.course} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CalendarTodayIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Starting Date"
-                secondary={cls?.startingDate}
-              />
-            </ListItem>
-
-            <ListItem>
-              <ListItemIcon>
-                <CalendarTodayIcon />
-              </ListItemIcon>
-              <ListItemText primary="Ending Date" secondary={cls?.endingDate} />
-            </ListItem>
-
-            <ListItem>
-              <ListItemIcon>
-                <RotateLeftIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Cycle Number"
-                secondary={cls?.cycleNumber}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <LinkIcon />
-              </ListItemIcon>
-              <ListItemText primary="Zoom Link" secondary={cls?.zoomLink} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <SubjectIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Additional Details"
-                secondary={cls?.additionalDetails}
-              />
-            </ListItem>
-          </List>
+          <GridDiv repeatingFormula="1fr 1fr">
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <ClassIcon />
+                </ListItemIcon>
+                <ListItemText primary="Name" secondary={cls?.name} />
+              </ListItem>
+              {/* Name */}
+              <ListItem>
+                <ListItemIcon>
+                  <CalendarTodayIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Starting Date"
+                  secondary={formatToIsraeliDate(cls?.startingDate!)}
+                />
+              </ListItem>
+              {/* Starting Date */}
+              <ListItem>
+                <ListItemIcon>
+                  <RotateLeftIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Cycle Number"
+                  secondary={cls?.cycleNumber}
+                />
+              </ListItem>
+              {/* Cycle number */}
+            </List>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <ClassIcon />
+                </ListItemIcon>
+                <ListItemText primary="Course" secondary={cls?.course} />
+              </ListItem>
+              {/* Course */}
+              <ListItem>
+                <ListItemIcon>
+                  <CalendarTodayIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Ending Date"
+                  secondary={formatToIsraeliDate(cls?.endingDate!)}
+                />
+              </ListItem>
+              {/* Ending date */}
+              <ListItem>
+                <ListItemIcon>
+                  <LinkIcon />
+                </ListItemIcon>
+                <ListItemText primary="Zoom Link" secondary={cls?.zoomLink} />
+              </ListItem>
+              {/* Zoom link */}
+            </List>
+          </GridDiv>
+          <MultilineListItem>
+            <ListItemIcon>
+              <ContactSupportIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Additional Details"
+              secondary={cls?.additionalDetails}
+            />
+          </MultilineListItem>
+          {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1>Students In Class</H1>
+            <H1 color={"#2c6e3c"}>Students In Class</H1>
           </TitleWrapper>
         </Center>
         <br />

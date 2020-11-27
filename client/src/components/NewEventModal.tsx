@@ -1,7 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import network from "../helpers/network";
-import { Modal, Button, TextField } from "@material-ui/core";
+import {
+  Modal,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Tooltip,
+  IconButton,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import { Controller, useForm } from "react-hook-form";
+import { ErrorOutlineOutlined } from "@material-ui/icons";
+import DoneIcon from "@material-ui/icons/Done";
+import { Center, GridDiv } from "../styles/styledComponents";
+import { IEvent } from "../typescript/interfaces";
 
 function getModalStyle() {
   return {
@@ -46,6 +62,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+// change this later TODO
+const statuses: string[] = [
+  "Sent CV",
+  "First interview",
+  "Second interview",
+  "Hired",
+  "Rejected",
+];
+
 function NewEventModal({
   studentId,
   jobId,
@@ -58,7 +83,9 @@ function NewEventModal({
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
-  const [status, setStatus] = useState<string>();
+  const { register, handleSubmit, errors, control } = useForm();
+
+  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -68,14 +95,13 @@ function NewEventModal({
     setOpen(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitStatus = async (data: any) => {
+    data.studentId = studentId;
+    data.jobId = jobId;
+    console.log(data);
     try {
-      await network.post(`/api/v1/event`, {
-        studentId,
-        jobId,
-        status,
-      });
+      await network.post(`/api/v1/event`, data);
       get();
       handleClose();
     } catch (e) {
@@ -86,24 +112,123 @@ function NewEventModal({
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <div className={classes.root}>
-        <h1>Add Event To Process</h1>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            required={true}
-            label="Enter New Status"
-            onChange={(e: {
-              target: { value: React.SetStateAction<string | undefined> };
-            }) => setStatus(e.target.value)}
-          />
+        <Center>
+          <h1>Add Event To Process</h1>
+        </Center>
+        <form onSubmit={handleSubmit(submitStatus)}>
+          <GridDiv>
+            <div>
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.course)}
+              >
+                <InputLabel>Please select a status</InputLabel>
+                <Controller
+                  as={
+                    <Select>
+                      {statuses.map((status: string) => (
+                        <MenuItem key={`status-${status}`} value={status}>
+                          {status}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name="status"
+                  rules={{ required: "Event is required" }}
+                  control={control}
+                  defaultValue=""
+                />
+              </FormControl>
+              {!empty ? (
+                errors.status ? (
+                  <Tooltip title={errors.status.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineOutlined
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
+              <br />
+              <FormHelperText>Date</FormHelperText>
+              <TextField
+                type="date"
+                id="date"
+                name="date"
+                inputRef={register({ required: "Event date is required" })}
+                defaultValue={`${new Date().getFullYear()}-${
+                  new Date().getMonth() + 1
+                }-${new Date().getDate()}`}
+                style={{ width: "12.7vw" }}
+              />{" "}
+              {!empty ? (
+                errors.date ? (
+                  <Tooltip title={errors.date.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineOutlined
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+            </div>
+            <div>
+              <br />
+              <TextField
+                multiline
+                rows={4}
+                id="comment"
+                name="comment"
+                label="Comment"
+                variant="outlined"
+                fullWidth
+                inputRef={register({
+                  maxLength: { value: 250, message: "Comment too long" },
+                })}
+              />
+              {!empty ? (
+                errors.comment ? (
+                  <Tooltip title={errors.comment.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineOutlined
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+            </div>
+          </GridDiv>
           <br />
-          <Button
-            type="submit"
-            className={classes.button}
-            variant="contained"
-            color="primary"
-          >
-            Add
-          </Button>
+          <br />
+          <Center>
+            <Button
+              type="submit"
+              className={classes.button}
+              variant="contained"
+              color="primary"
+            >
+              Add
+            </Button>
+          </Center>
         </form>
       </div>
     </div>
@@ -112,7 +237,8 @@ function NewEventModal({
   return (
     <>
       <Button
-        style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
+        // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
+        style={{ display: "block", margin: "4vh auto" }}
         variant="contained"
         color="primary"
         onClick={handleOpen}

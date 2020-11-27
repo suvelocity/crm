@@ -6,6 +6,10 @@ import {
   TitleWrapper,
   StyledLink,
   Center,
+  StyledSpan,
+  TableHeader,
+  StyledUl,
+  StyledDiv,
 } from "../../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -18,10 +22,12 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent } from "../../typescript/interfaces";
+import { IStudent, IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-
+import styled from "styled-components";
+import { formatPhone } from "../../helpers/general";
+import searchResults from "../../functions/searchStudents";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -38,105 +44,99 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
+  const [classNames, setClassNames] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [classFilter, setClassFilter] = useState<string | undefined>("");
+  const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
   const classes = useStyles();
 
   useEffect(() => {
     (async () => {
       const { data } = await network.get("/api/v1/student/all");
+      const names = data.map((student: IStudent) => student.Class?.name);
+      setClassNames(names);
       setStudents(data);
       setLoading(false);
     })();
   }, []);
-
+  useEffect(() => {
+    if (students) {
+      setFilteredStudents(students);
+    }
+  }, [students]);
+  const filter = (by: string, value: string) => {
+    switch (by) {
+      case "class":
+        return setFilteredStudents(
+          students.filter((student: IStudent) =>
+            !value ? true : student.Class.name === value
+          )
+        );
+        break;
+    }
+  };
   return (
-    <Wrapper>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/student/add">
-          <Button variant="contained" color="primary">
-            Add Student
-          </Button>
-        </StyledLink>
+        <div style={{ display: "flex" }}>
+          <select
+            onChange={(e) => filter("class", e.target.value)}
+            defaultValue="none"
+          >
+            <option value="">none</option>
+            {classNames.map((name) => (
+              <option value={name}>{name}</option>
+            ))}
+          </select>
+          <input
+            onChange={(e) =>
+              !e.target.value
+                ? setFilteredStudents(students)
+                : setFilteredStudents(searchResults(e.target.value, students))
+            }
+          ></input>
+          <StyledLink to="/student/add">
+            <Button variant="contained" color="primary">
+              Add Student
+            </Button>
+          </StyledLink>
+        </div>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
-        {students &&
-          students.map((student) => (
-            <Accordion key={student.id}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <StyledUl>
+          {students && (
+            <li>
+              <TableHeader>
                 <PersonIcon />
-                <StyledLink
-                  textDecoration={"true"}
-                  color="black"
-                  to={`/student/${student.id}`}
-                >
-                  <Typography className={classes.heading}>
-                    {student.firstName} {student.lastName}
-                  </Typography>
+                <StyledSpan weight="bold">name</StyledSpan>
+                <StyledSpan weight="bold">class</StyledSpan>
+                <StyledSpan weight="bold">email</StyledSpan>
+                <StyledSpan weight="bold">phone</StyledSpan>
+              </TableHeader>
+            </li>
+          )}
+          {filteredStudents &&
+            filteredStudents.map((student) => (
+              <li>
+                <StyledLink color="black" to={`/student/${student?.id}`}>
+                  <StyledDiv>
+                    <PersonIcon />
+                    <StyledSpan weight="bold">
+                      {student.firstName}&nbsp;{student.lastName}
+                    </StyledSpan>
+                    <StyledSpan>{student.Class.name}</StyledSpan>
+                    <StyledSpan>{student.email}</StyledSpan>
+                    <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
+                  </StyledDiv>
                 </StyledLink>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem>
-                    <ListItemText
-                      primary={"Name"}
-                      secondary={student.firstName + " " + student.lastName}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary={"Email"} secondary={student.email} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={"Phone Number"}
-                      secondary={student.phone}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={"ID Number"}
-                      secondary={student.idNumber}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={"Class"}
-                      secondary={student?.Class?.name}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={"Address"}
-                      secondary={student.address}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary={"Age"} secondary={student.age} />
-                  </ListItem>
-                  {student.additionalDetails && (
-                    <ListItem>
-                      <ListItemText
-                        primary={"Additional Details"}
-                        secondary={student.additionalDetails}
-                      />
-                    </ListItem>
-                  )}
-                  {/* {student.jobs.map((job: Partial<IJob>, index: number) => (
-                    <ListItem>
-                      <ListItemText
-                        primary={`Job ${index + 1}`}
-                        secondary={job.position}
-                      />
-                    </ListItem>
-                  ))} */}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+              </li>
+            ))}
+        </StyledUl>
       </Loading>
     </Wrapper>
   );
