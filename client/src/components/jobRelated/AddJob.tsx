@@ -34,18 +34,19 @@ const AddJob = () => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1 color="#bb4040">Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <GridDiv>
+          <GridDiv repeatFormula="1fr 0.5fr 3fr">
             <div>
               <TextField
                 id="company"
                 label="Company"
                 name="company"
+                fullWidth
                 inputRef={register({
                   required: "Company is required",
                   pattern: {
@@ -80,6 +81,7 @@ const AddJob = () => {
               <TextField
                 id="position"
                 label="Position"
+                fullWidth
                 inputRef={register({
                   required: "Position title is required",
                   pattern: {
@@ -115,6 +117,7 @@ const AddJob = () => {
               <TextField
                 id="location"
                 name="location"
+                fullWidth
                 inputRef={register({
                   required: "Location is required",
                   pattern: {
@@ -150,6 +153,7 @@ const AddJob = () => {
               <br />
               <TextField
                 name="contact"
+                fullWidth
                 inputRef={register({ required: "Contact is required" })}
                 label="Contact"
               />
@@ -174,14 +178,22 @@ const AddJob = () => {
               <br />
               <br />
             </div>
+            <div></div> {/*placeholder*/}
             <div>
               <br />
               <TextField
                 multiline
+                fullWidth
                 rows={3}
                 variant="outlined"
                 name="description"
-                inputRef={register({ required: "Description is required" })}
+                inputRef={register({
+                  required: "Description is required",
+                  maxLength: {
+                    value: 500,
+                    message: "Description are too long",
+                  },
+                })}
                 label="Description"
               />
               {!empty ? (
@@ -205,11 +217,16 @@ const AddJob = () => {
               <TextField
                 id="requirements"
                 multiline
-                rows={3}
+                fullWidth
+                rows={5}
                 variant="outlined"
                 name="requirements"
                 inputRef={register({
                   required: "Requirements are required",
+                  maxLength: {
+                    value: 500,
+                    message: "Requirements are too long",
+                  },
                 })}
                 label="Job Requirements"
               />
@@ -234,10 +251,16 @@ const AddJob = () => {
               <TextField
                 id="additionalDetails"
                 multiline
+                fullWidth
                 rows={3}
                 variant="outlined"
                 name="additionalDetails"
-                inputRef={register()}
+                inputRef={register({
+                  maxLength: {
+                    value: 500,
+                    message: "Additional Details are too long",
+                  },
+                })}
                 label="Additional Details"
               />
               {!empty ? (
