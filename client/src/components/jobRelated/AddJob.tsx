@@ -15,7 +15,7 @@ import {
   GridDiv,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
-import { IJob } from "../../typescript-utils/interfaces";
+import { IJob } from "../../typescript/interfaces";
 import { validNameRegex, validAdressRegex } from "../../helpers/patterns";
 
 const AddJob = () => {
@@ -34,18 +34,18 @@ const AddJob = () => {
   };
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">Add Job</H1>
+          <H1 color='#bb4040'>Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <GridDiv repeatFormula="1fr 0.5fr 3fr">
+          <GridDiv repeatFormula='1fr 0.5fr 3fr'>
             <div>
               <TextField
-                id="company"
-                label="Company"
-                name="company"
+                id='company'
+                label='Company'
+                name='company'
                 fullWidth
                 inputRef={register({
                   required: "Company is required",
@@ -65,13 +65,13 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
@@ -79,8 +79,8 @@ const AddJob = () => {
               <br />
               <br />
               <TextField
-                id="position"
-                label="Position"
+                id='position'
+                label='Position'
                 fullWidth
                 inputRef={register({
                   required: "Position title is required",
@@ -93,7 +93,7 @@ const AddJob = () => {
                     message: "Position needs to have a minimum of 3 letters",
                   },
                 })}
-                name="position"
+                name='position'
               />
               {!empty ? (
                 errors.position ? (
@@ -101,13 +101,13 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
@@ -115,8 +115,8 @@ const AddJob = () => {
               <br />
               <br />
               <TextField
-                id="location"
-                name="location"
+                id='location'
+                name='location'
                 fullWidth
                 inputRef={register({
                   required: "Location is required",
@@ -130,7 +130,7 @@ const AddJob = () => {
                     message: "First name needs to have a minimum of 4 letters",
                   },
                 })}
-                label="Location"
+                label='Location'
               />
               {!empty ? (
                 errors.location ? (
@@ -138,13 +138,13 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
@@ -152,10 +152,10 @@ const AddJob = () => {
               <br />
               <br />
               <TextField
-                name="contact"
+                name='contact'
                 fullWidth
                 inputRef={register({ required: "Contact is required" })}
-                label="Contact"
+                label='Contact'
               />
               {!empty ? (
                 errors.contact ? (
@@ -163,13 +163,13 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
@@ -185,8 +185,8 @@ const AddJob = () => {
                 multiline
                 fullWidth
                 rows={3}
-                variant="outlined"
-                name="description"
+                variant='outlined'
+                name='description'
                 inputRef={register({
                   required: "Description is required",
                   maxLength: {
@@ -194,7 +194,7 @@ const AddJob = () => {
                     message: "Description are too long",
                   },
                 })}
-                label="Description"
+                label='Description'
               />
               {!empty ? (
                 errors.description ? (
@@ -202,25 +202,25 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
               <br />
               <br />
               <TextField
-                id="requirements"
+                id='requirements'
                 multiline
                 fullWidth
                 rows={5}
-                variant="outlined"
-                name="requirements"
+                variant='outlined'
+                name='requirements'
                 inputRef={register({
                   required: "Requirements are required",
                   maxLength: {
@@ -228,7 +228,7 @@ const AddJob = () => {
                     message: "Requirements are too long",
                   },
                 })}
-                label="Job Requirements"
+                label='Job Requirements'
               />
               {!empty ? (
                 errors.requirements ? (
@@ -236,32 +236,32 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
               <br />
               <br />
               <TextField
-                id="additionalDetails"
+                id='additionalDetails'
                 multiline
                 fullWidth
                 rows={3}
-                variant="outlined"
-                name="additionalDetails"
+                variant='outlined'
+                name='additionalDetails'
                 inputRef={register({
                   maxLength: {
                     value: 500,
                     message: "Additional Details are too long",
                   },
                 })}
-                label="Additional Details"
+                label='Additional Details'
               />
               {!empty ? (
                 errors.additionalDetails ? (
@@ -269,13 +269,13 @@ const AddJob = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
+                    <DoneIcon color='action' />
                   </IconButton>
                 )
               ) : null}
@@ -287,11 +287,11 @@ const AddJob = () => {
           </GridDiv>
 
           <Button
-            id="submitButton"
+            id='submitButton'
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
-            color="primary"
-            type="submit"
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Submit
           </Button>
