@@ -11,8 +11,15 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  StyledSpan,
+  TableHeader,
+  StyledUl,
+  StyledDiv,
+  StyledLink,
   MultilineListItem,
 } from "../../styles/styledComponents";
+import { formatPhone } from "../../helpers/general";
+
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
@@ -128,40 +135,40 @@ function SingleJob() {
   console.log(job);
   return (
     <>
-      <Wrapper width="80%">
+      <Wrapper width='80%'>
         <Center>
           <TitleWrapper>
-            <H1 color="#bb4040">Job Info</H1>
+            <H1 color='#bb4040'>Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
+          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
             <ListItem>
               <ListItemIcon>
                 <PostAddIcon />
               </ListItemIcon>
-              <ListItemText primary="Position" secondary={job?.position} />
+              <ListItemText primary='Position' secondary={job?.position} />
             </ListItem>
             {/* Position */}
             <ListItem>
               <ListItemIcon>
                 <LocationCityIcon />
               </ListItemIcon>
-              <ListItemText primary="Company" secondary={job?.company} />
+              <ListItemText primary='Company' secondary={job?.company} />
             </ListItem>
             {/* Company */}
             <ListItem>
               <ListItemIcon>
                 <BusinessIcon />
               </ListItemIcon>
-              <ListItemText primary="Location" secondary={job?.location} />
+              <ListItemText primary='Location' secondary={job?.location} />
             </ListItem>
             {/* Location */}
             <ListItem>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary="Contact" secondary={job?.contact} />
+              <ListItemText primary='Contact' secondary={job?.contact} />
             </ListItem>
             {/* Contact */}
           </GridDiv>
@@ -170,7 +177,7 @@ function SingleJob() {
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
-            <ListItemText primary="Description" secondary={job?.description} />
+            <ListItemText primary='Description' secondary={job?.description} />
           </MultilineListItem>
           {/* Description */}
           <MultilineListItem>
@@ -178,7 +185,7 @@ function SingleJob() {
               <PlaylistAddCheckIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Requirements"
+              primary='Requirements'
               secondary={job?.requirements}
             />
           </MultilineListItem>
@@ -188,138 +195,56 @@ function SingleJob() {
               <ContactSupportIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Additional Details"
+              primary='Additional Details'
               secondary={job?.additionalDetails}
             />
           </MultilineListItem>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper>
+      <Wrapper width='80%'>
         <Center>
           <TitleWrapper>
-            <H1 color="#bb4040">Students In Process</H1>
+            <H1 color='#bb4040'>Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {eventsToMap.map((event: IEvent) => (
-            <Accordion key={event.Student?.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
-                <PersonIcon />
-                <Typography className={classes.heading}>
-                  {event.Student?.firstName} {event.Student?.lastName}
-                </Typography>
-                <Typography className={classes.iconButton}>
-                  <IconButton
-                    onClick={(
-                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => removeStudents(event.Student!.id!, e)}
-                    style={{ padding: 0 }}
+          <StyledUl>
+            {eventsToMap && (
+              <li>
+                <TableHeader>
+                  <PersonIcon />
+                  <StyledSpan weight='bold'>Name</StyledSpan>
+                  <StyledSpan weight='bold'>Class</StyledSpan>
+                  <StyledSpan weight='bold'>Email</StyledSpan>
+                  <StyledSpan weight='bold'>Phone</StyledSpan>
+                </TableHeader>
+              </li>
+            )}
+            {eventsToMap &&
+              eventsToMap.map((event: IEvent) => (
+                <li key={event.Student?.id}>
+                  <StyledLink
+                    color='black'
+                    to={`/student/${event.Student?.id}`}
                   >
-                    <RemoveJobButton />
-                  </IconButton>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
+                    <StyledDiv>
                       <PersonIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Name"
-                      secondary={
-                        event.Student?.firstName + " " + event.Student?.lastName
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <EmailIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Email"
-                      secondary={event.Student?.email}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PhoneIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Phone Number"
-                      secondary={event.Student?.phone}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <DialpadIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="ID Number"
-                      secondary={event.Student?.idNumber}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <ClassIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Course"
-                      secondary={event.Student?.Class.id}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <DateRangeIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Age"
-                      secondary={event.Student?.age}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Address"
-                      secondary={event.Student?.address}
-                    />
-                  </ListItem>
-                  {event.Student?.additionalDetails && (
-                    <ListItem>
-                      <ListItemIcon>
-                        <SubjectIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Additional Details"
-                        secondary={event.Student?.additionalDetails}
-                      />
-                    </ListItem>
-                  )}
-                </List>
-                <EventLog
-                  events={
-                    job?.Events.filter(
-                      (ev: IEvent) => ev.Student!.id === event.Student!.id
-                    )!
-                  }
-                />
-                <NewEventModal
-                  get={getJob}
-                  studentId={event.Student!.id!}
-                  jobId={job?.id!}
-                />
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                      <StyledSpan weight='bold'>
+                        {event.Student?.firstName} {event.Student?.lastName}
+                      </StyledSpan>
+                      <StyledSpan>{event.Student?.Class.name}</StyledSpan>
+                      <StyledSpan>{event.Student?.email}</StyledSpan>
+                      <StyledSpan>
+                        {formatPhone(event.Student?.phone)}
+                      </StyledSpan>
+                    </StyledDiv>
+                  </StyledLink>
+                </li>
+              ))}
+          </StyledUl>
+
           <br />
           <Center>
             <ApplyForJobModal
