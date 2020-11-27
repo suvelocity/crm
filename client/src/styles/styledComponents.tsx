@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { ListItem } from "@material-ui/core";
 
 export const H1 = styled.h1`
   padding: 10px 20px;
@@ -103,4 +104,8 @@ export const TableHeader = styled(StyledDiv)`
 export const StyledUl = styled.ul`
   list-style-type: none;
   padding: 0;
+`;
+
+export const MultilineListItem = styled(ListItem)`
+  white-space: pre-wrap;
 `;

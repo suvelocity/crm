@@ -17,7 +17,8 @@ import {
 import styled from "styled-components";
 // import WithGoBack from "./hoc/WithGoBack";
 import UpdateIcon from "@material-ui/icons/Update";
-import CheckCircleSharpIcon from "@material-ui/icons/CachedSharp";
+import { CheckCircleOutline } from "@material-ui/icons";
+import { formatToIsraeliDate } from "../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: "10vh",
       background: "rgba(181,181,181,0.12)",
       textAlign: "left",
+      whiteSpace: "pre-wrap",
     },
   })
 );
@@ -69,7 +71,7 @@ function EventsLog({ events }: { events: IEvent[] }) {
               color={i !== arr.length - 1 ? "grey" : "primary"}
               variant={i !== arr.length - 1 ? "outlined" : undefined}
             >
-              {i === arr.length - 1 ? <UpdateIcon /> : <CheckCircleSharpIcon />}
+              {i === arr.length - 1 ? <UpdateIcon /> : <CheckCircleOutline />}
             </TimelineDot>
             {i !== arr.length - 1 && <TimelineConnector />}
           </TimelineSeparator>
@@ -87,11 +89,5 @@ function EventsLog({ events }: { events: IEvent[] }) {
   );
 }
 
-function formatToIsraeliDate(date: string) {
-  const baseDate = new Date(date);
-  return `${baseDate.getDate()}/${
-    baseDate.getMonth() + 1
-  }/${baseDate.getFullYear()}`;
-}
 // export default WithGoBack(EventsLog);
 export default EventsLog;

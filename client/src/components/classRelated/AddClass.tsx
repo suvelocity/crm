@@ -240,7 +240,41 @@ const AddClass = () => {
               ) : null}
             </div>
           </GridDiv>
+          <br />
 
+          <TextField
+            id="additionalDetails"
+            multiline
+            fullWidth
+            rows={5}
+            variant="outlined"
+            name="additionalDetails"
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Additional Details are too long",
+              },
+            })}
+            label="Additional Details"
+          />
+          {!empty ? (
+            errors.additionalDetails ? (
+              <Tooltip title={errors.additionalDetails.message}>
+                <IconButton style={{ cursor: "default" }}>
+                  <ErrorOutlineIcon
+                    style={{ width: "30px", height: "30px" }}
+                    color="error"
+                  />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <IconButton style={{ cursor: "default" }}>
+                <DoneIcon color="action" />
+              </IconButton>
+            )
+          ) : null}
+          <br />
+          <br />
           <Button
             id="submitButton"
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
