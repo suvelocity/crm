@@ -54,7 +54,7 @@ function AllStudents() {
     (async () => {
       const { data } = await network.get("/api/v1/student/all");
       const names = data.map((student: IStudent) => student.Class?.name);
-      setClassNames(names);
+      setClassNames(Array.from(new Set(names)));
       setStudents(data);
       setLoading(false);
     })();
