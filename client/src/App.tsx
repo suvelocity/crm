@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import AddStudent from "./components/studentRelated/AddStudent";
 import AllStudents from "./components/studentRelated/AllStudents";
 import SingleStudent from "./components/studentRelated/SingleStudent";
