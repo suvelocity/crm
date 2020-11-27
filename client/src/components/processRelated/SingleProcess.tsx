@@ -6,6 +6,7 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  MultilineListItem,
 } from "../../styles/styledComponents";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -174,7 +175,7 @@ function SingleProcess() {
                     />
                   </CenteredListItem>
                 </List>
-                <List>
+                <List dense>
                   <CenteredListItem>
                     <ListItemText
                       classes={{ primary: classes.primary }}
@@ -192,12 +193,14 @@ function SingleProcess() {
                 </List>
               </GridDiv>
             </Center>
-            <ListItemText
-              style={{ width: "95%", margin: "0 auto" }}
-              classes={{ primary: classes.primary }}
-              primary="Requirements"
-              secondary={`${job?.requirements}`}
-            />
+            <MultilineListItem>
+              <ListItemText
+                style={{ width: "95%", margin: "0 auto" }}
+                classes={{ primary: classes.primary }}
+                primary="Requirements"
+                secondary={`${job?.requirements}`}
+              />
+            </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
             {job?.id && student?.id && (
