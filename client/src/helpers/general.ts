@@ -11,6 +11,14 @@ export function convertDateToString(date: number) {
   const dd = String(today.getDate()).padStart(2, "0");
   const mm = String(today.getMonth() + 1).padStart(2, "0");
   const yyyy = today.getFullYear();
-  const generatedDate = `${yyyy}-${mm}-${dd}`;
-  return `${generatedDate}`;
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+export function formatToIsraeliDate(date: string) {
+  const baseDate = new Date(date);
+  return `${baseDate.getDate().toString().padStart(2, "0")}/${(
+    baseDate.getMonth() + 1
+  )
+    .toString()
+    .padStart(2, "0")}/${baseDate.getFullYear()}`;
 }

@@ -195,7 +195,9 @@ function NewEventModal({
                 label="Comment"
                 variant="outlined"
                 fullWidth
-                inputRef={register({ maxLength: 50 })}
+                inputRef={register({
+                  maxLength: { value: 250, message: "Comment too long" },
+                })}
               />
               {!empty ? (
                 errors.comment ? (
@@ -235,7 +237,8 @@ function NewEventModal({
   return (
     <>
       <Button
-        style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
+        // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
+        style={{ display: "block", margin: "4vh auto" }}
         variant="contained"
         color="primary"
         onClick={handleOpen}

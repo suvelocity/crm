@@ -6,6 +6,7 @@ import {
   Center,
   RemoveJobButton,
   GridDiv,
+  MultilineListItem,
 } from "../../styles/styledComponents";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -18,12 +19,25 @@ import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import EventLog from "../EventLog";
 import styled from "styled-components";
 import NewEventModal from "../NewEventModal";
+import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
+import PersonIcon from "@material-ui/icons/Person";
+import WorkIcon from "@material-ui/icons/Work";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    primary: {
+      fontWeight: "bold",
+      fontSize: "1.1em",
+    },
+  })
+);
 
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
   const [job, setJob] = useState<IJob>();
   const [loading, setLoading] = useState<boolean>(true);
   const { studentId, jobId } = useParams();
+  const classes = useStyles();
 
   useEffect(() => {
     (async () => {
@@ -53,80 +67,125 @@ function SingleProcess() {
       <br />
       <Loading loading={loading} size={30}>
         <GridDiv>
-          <Wrapper padding="30px 10px 10px 5px" backgroundColor="#e9f2f7">
+          <Wrapper padding="10px" backgroundColor="#fafafa">
+            <PersonIcon
+              style={{
+                position: "absolute",
+                backgroundColor: "#3f51b5",
+                color: "white",
+                borderRadius: "50%",
+                padding: "8px",
+                fontSize: "3em",
+                transform: "translate(-25px,-25px)",
+              }}
+            />
             <Center>
-              <h2 style={{ margin: 5 }}>Student</h2>
+              <h2
+                style={{
+                  margin: "5px auto",
+                  backgroundColor: "#3f51b5",
+                  borderRadius: "15px",
+                  color: "white",
+                  width: "fit-content",
+                  padding: "5px 20px",
+                }}
+              >
+                Student
+              </h2>
               <GridDiv>
                 <List dense>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Name"
                       secondary={`${student?.firstName} ${student?.lastName}`}
                     />
                   </CenteredListItem>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Email"
                       secondary={`${student?.email}`}
-                    />
-                  </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      primary="Course"
-                      secondary={`${student?.Class.course}`}
                     />
                   </CenteredListItem>
                 </List>
                 <List dense>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Class"
                       secondary={`${student?.Class.name}`}
                     />
                   </CenteredListItem>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Phone"
                       secondary={`${student?.phone}`}
                     />
                   </CenteredListItem>
                 </List>
               </GridDiv>
+              <ListItemText
+                classes={{ primary: classes.primary }}
+                primary="Course"
+                secondary={`${student?.Class.course}`}
+              />
             </Center>
           </Wrapper>
-          <Wrapper padding="30px 10px 10px 5px" backgroundColor="#e9f2f7">
+          <Wrapper padding="10px" backgroundColor="#fafafa">
+            <WorkIcon
+              style={{
+                position: "absolute",
+                backgroundColor: "#3f51b5",
+                color: "white",
+                borderRadius: "50%",
+                padding: "8px",
+                fontSize: "3em",
+                transform: "translate(-25px,-25px)",
+              }}
+            />
             <Center>
-              <h2 style={{ margin: 5 }}>Job</h2>
+              <h2
+                style={{
+                  margin: "5px auto",
+                  backgroundColor: "#3f51b5",
+                  borderRadius: "15px",
+                  color: "white",
+                  width: "fit-content",
+                  padding: "5px 20px",
+                }}
+              >
+                Job
+              </h2>
               <GridDiv>
                 <List dense>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Position"
                       secondary={`${job?.position}`}
                     />
                   </CenteredListItem>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Company"
                       secondary={`${job?.company}`}
                     />
                   </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      primary="Requirements"
-                      secondary={`${job?.requirements}`}
-                    />
-                  </CenteredListItem>
                 </List>
-                <List>
+                <List dense>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Location"
                       secondary={`${job?.location}`}
                     />
                   </CenteredListItem>
                   <CenteredListItem>
                     <ListItemText
+                      classes={{ primary: classes.primary }}
                       primary="Contact"
                       secondary={`${job?.contact}`}
                     />
@@ -134,6 +193,14 @@ function SingleProcess() {
                 </List>
               </GridDiv>
             </Center>
+            <MultilineListItem>
+              <ListItemText
+                style={{ width: "95%", margin: "0 auto" }}
+                classes={{ primary: classes.primary }}
+                primary="Requirements"
+                secondary={`${job?.requirements}`}
+              />
+            </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
             {job?.id && student?.id && (
@@ -149,6 +216,7 @@ function SingleProcess() {
         </GridDiv>
       </Loading>
       <NewEventModal studentId={studentId} jobId={jobId} get={() => null} />
+
       {/* need to figure out how to refresh data after new event is added + fix button position */}
     </Wrapper>
   );
