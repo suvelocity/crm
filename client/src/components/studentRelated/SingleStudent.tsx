@@ -49,7 +49,7 @@ import TrackChangesIcon from "@material-ui/icons/TrackChanges";
 
 import Swal from "sweetalert2";
 import EventLog from "../EventLog";
-import { formatPhone } from "../../helpers/general";
+import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -307,9 +307,7 @@ function SingleStudent() {
                     <StyledSpan weight="bold">{event.Job!.position}</StyledSpan>
                     <StyledSpan>{event.Job!.company}</StyledSpan>
                     <StyledSpan>{event.status}</StyledSpan>
-                    <StyledSpan>
-                      {event.date.slice(0, 10).replace(/-/g, "/")}
-                    </StyledSpan>
+                    <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>
