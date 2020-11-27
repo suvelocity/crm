@@ -104,6 +104,7 @@ function ApplyStudentModal({
             studentId,
             jobId,
             status: "Started application process",
+            date: new Date(),
           });
         });
         setTimeout(() => {
