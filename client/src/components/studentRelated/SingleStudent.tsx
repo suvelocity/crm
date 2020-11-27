@@ -150,8 +150,9 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula="1fr 1fr 1.5fr">
+          <GridDiv repeatFormula="1fr 1fr 1fr">
             <List>
+              {/* {Name} */}
               <ListItem>
                 <ListItemIcon>
                   <PersonIcon />
@@ -161,12 +162,14 @@ function SingleStudent() {
                   secondary={student?.firstName + " " + student?.lastName}
                 />
               </ListItem>
+              {/* Email */}
               <ListItem>
                 <ListItemIcon>
                   <EmailIcon />
                 </ListItemIcon>
                 <ListItemText primary="Email" secondary={student?.email} />
               </ListItem>
+              {/* Phone number */}
               <ListItem>
                 <ListItemIcon>
                   <PhoneIcon />
@@ -176,6 +179,7 @@ function SingleStudent() {
                   secondary={formatPhone(student?.phone)}
                 />
               </ListItem>
+              {/* Id number */}
               <ListItem>
                 <ListItemIcon>
                   <DialpadIcon />
@@ -185,85 +189,7 @@ function SingleStudent() {
                   secondary={student?.idNumber}
                 />
               </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <ClassIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Course"
-                  secondary={student?.Class.name}
-                />
-              </ListItem>
-            </List>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <DateRangeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Age" secondary={student?.age} />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText primary="Address" secondary={student?.address} />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <TranslateIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Languages"
-                  secondary={student?.languages}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <FavoriteIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Marital Status"
-                  secondary={student?.maritalStatus}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <ChildFriendlyIcon />{" "}
-                </ListItemIcon>
-                <ListItemText
-                  primary="Children"
-                  secondary={student?.children}
-                />
-              </ListItem>
-            </List>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <AccountBalanceIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Academic Background"
-                  secondary={student?.academicBackground}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <LanguageIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Citizenships"
-                  secondary={student?.citizenship}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <TrackChangesIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Military Service"
-                  secondary={student?.militaryService}
-                />
-              </ListItem>
+              {/* Work Experience */}
               <ListItem>
                 <ListItemIcon>
                   <WorkIcon />
@@ -273,6 +199,44 @@ function SingleStudent() {
                   secondary={student?.workExperience}
                 />
               </ListItem>
+            </List>
+            <List>
+              {/* Age */}
+              <ListItem>
+                <ListItemIcon>
+                  <DateRangeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Age" secondary={student?.age} />
+              </ListItem>
+              {/* Address */}
+              <ListItem>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Address" secondary={student?.address} />
+              </ListItem>
+              {/* Marital Status */}
+              <ListItem>
+                <ListItemIcon>
+                  <FavoriteIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Marital Status"
+                  secondary={student?.maritalStatus}
+                />
+              </ListItem>
+              {/* Children */}
+              <ListItem>
+                <ListItemIcon>
+                  <ChildFriendlyIcon />{" "}
+                </ListItemIcon>
+                <ListItemText
+                  primary="Children"
+                  secondary={student?.children}
+                />
+              </ListItem>
+
+              {/* {Additional Details} */}
               {student?.additionalDetails && (
                 <ListItem>
                   <ListItemIcon>
@@ -284,6 +248,59 @@ function SingleStudent() {
                   />
                 </ListItem>
               )}
+            </List>
+            <List>
+              {/* Academic Background */}
+              <ListItem>
+                <ListItemIcon>
+                  <AccountBalanceIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Academic Background"
+                  secondary={student?.academicBackground}
+                />
+              </ListItem>
+              {/* Citizenships */}
+              <ListItem>
+                <ListItemIcon>
+                  <LanguageIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Citizenships"
+                  secondary={student?.citizenship}
+                />
+              </ListItem>
+              {/* Languages */}
+              <ListItem>
+                <ListItemIcon>
+                  <TranslateIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Languages"
+                  secondary={student?.languages}
+                />
+              </ListItem>
+              {/* Course */}
+              <ListItem>
+                <ListItemIcon>
+                  <ClassIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Course"
+                  secondary={student?.Class.name}
+                />
+              </ListItem>
+
+              {/* Military Service */}
+              <ListItem>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Military Service"
+                  secondary={student?.militaryService}
+                />
+              </ListItem>
             </List>
           </GridDiv>
         </Loading>
