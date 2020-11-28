@@ -16,7 +16,7 @@ import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
-import EventLog from "../EventLog";
+import EventLog from "./EventLog";
 import styled from "styled-components";
 import NewEventModal from "../NewEventModal";
 import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";

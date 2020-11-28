@@ -85,7 +85,7 @@ router.post("/", async (req: Request, res: Response) => {
       citizenship: body.citizenship,
     };
     const { value, error } = studentSchema.validate(newStudent);
-    if (error) return res.json(error);
+    if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
     res.json(student);
   } catch (err) {
