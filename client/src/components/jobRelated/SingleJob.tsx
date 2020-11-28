@@ -132,43 +132,54 @@ function SingleJob() {
     //eslint-disable-next-line
   }, [id]);
 
+  const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
+    const sortedEvents = eventsToMap
+      ?.concat(newEvent)
+      .sort(
+        (a: IEvent, b: IEvent) =>
+          new Date(a.date).getMilliseconds() -
+          new Date(b.date).getMilliseconds()
+      );
+    setEventsToMap(sortedEvents);
+  };
+
   console.log(job);
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <ListItem>
               <ListItemIcon>
                 <PostAddIcon />
               </ListItemIcon>
-              <ListItemText primary='Position' secondary={job?.position} />
+              <ListItemText primary="Position" secondary={job?.position} />
             </ListItem>
             {/* Position */}
             <ListItem>
               <ListItemIcon>
                 <LocationCityIcon />
               </ListItemIcon>
-              <ListItemText primary='Company' secondary={job?.company} />
+              <ListItemText primary="Company" secondary={job?.company} />
             </ListItem>
             {/* Company */}
             <ListItem>
               <ListItemIcon>
                 <BusinessIcon />
               </ListItemIcon>
-              <ListItemText primary='Location' secondary={job?.location} />
+              <ListItemText primary="Location" secondary={job?.location} />
             </ListItem>
             {/* Location */}
             <ListItem>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary='Contact' secondary={job?.contact} />
+              <ListItemText primary="Contact" secondary={job?.contact} />
             </ListItem>
             {/* Contact */}
           </GridDiv>
@@ -177,7 +188,7 @@ function SingleJob() {
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
-            <ListItemText primary='Description' secondary={job?.description} />
+            <ListItemText primary="Description" secondary={job?.description} />
           </MultilineListItem>
           {/* Description */}
           <MultilineListItem>
@@ -185,7 +196,7 @@ function SingleJob() {
               <PlaylistAddCheckIcon />
             </ListItemIcon>
             <ListItemText
-              primary='Requirements'
+              primary="Requirements"
               secondary={job?.requirements}
             />
           </MultilineListItem>
@@ -195,17 +206,17 @@ function SingleJob() {
               <ContactSupportIcon />
             </ListItemIcon>
             <ListItemText
-              primary='Additional Details'
+              primary="Additional Details"
               secondary={job?.additionalDetails}
             />
           </MultilineListItem>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Students In Process</H1>
+            <H1 color="#bb4040">Students In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -215,10 +226,10 @@ function SingleJob() {
               <li>
                 <TableHeader>
                   <PersonIcon />
-                  <StyledSpan weight='bold'>Name</StyledSpan>
-                  <StyledSpan weight='bold'>Class</StyledSpan>
-                  <StyledSpan weight='bold'>Email</StyledSpan>
-                  <StyledSpan weight='bold'>Phone</StyledSpan>
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Class</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Phone</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -226,12 +237,12 @@ function SingleJob() {
               eventsToMap.map((event: IEvent) => (
                 <li key={event.Student?.id}>
                   <StyledLink
-                    color='black'
+                    color="black"
                     to={`/student/${event.Student?.id}`}
                   >
                     <StyledDiv>
                       <PersonIcon />
-                      <StyledSpan weight='bold'>
+                      <StyledSpan weight="bold">
                         {event.Student?.firstName} {event.Student?.lastName}
                       </StyledSpan>
                       <StyledSpan>{event.Student?.Class.name}</StyledSpan>
