@@ -74,11 +74,11 @@ const statuses: string[] = [
 function NewEventModal({
   studentId,
   jobId,
-  get,
+  add,
 }: {
   studentId: number;
   jobId: number;
-  get: () => void;
+  add: (ne: IEvent) => void;
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
@@ -101,8 +101,13 @@ function NewEventModal({
     data.jobId = jobId;
     console.log(data);
     try {
-      await network.post(`/api/v1/event`, data);
-      get();
+      const {
+        data: newEvent,
+      }: { data: any; newEvent: IEvent } = await network.post(
+        `/api/v1/event`,
+        data
+      );
+      add(newEvent);
       handleClose();
     } catch (e) {
       console.log(e);
