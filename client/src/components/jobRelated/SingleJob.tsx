@@ -238,7 +238,7 @@ function SingleJob() {
                 <li key={event.Student?.id}>
                   <StyledLink
                     color="black"
-                    to={`/student/${event.Student?.id}`}
+                    to={`/process/${event.Student?.id}/${job?.id}`}
                   >
                     <StyledDiv>
                       <PersonIcon />

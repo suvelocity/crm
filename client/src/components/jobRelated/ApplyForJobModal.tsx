@@ -219,7 +219,7 @@ function ApplyForJobModal({
               </Button>
             </>
           ) : (
-            <h2>All students are applied for this job</h2>
+            <h2>No students available</h2>
           )}
         </div>
       </div>
