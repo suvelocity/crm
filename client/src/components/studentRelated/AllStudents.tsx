@@ -14,7 +14,7 @@ import {
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IClass } from "../../typescript/interfaces";
+import { IStudent, IClass, IEvent } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
@@ -50,6 +50,12 @@ export interface Name {
   firstName:string;
   lastName:string;
 }
+const onTheSameDay = (day1:number, day2:number) => {
+  const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
+  const Day = 1000*60*60*24;
+  const diffLessThanDay = Math.abs(day1 - day2) < Day;
+  return sameDayNumber && diffLessThanDay;
+}
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
@@ -63,24 +69,36 @@ function AllStudents() {
     Name: "",
   })
   const classes = useStyles();
-
+  const getRecentJobsStatus = (events:IEvent[]): string[] => {
+    type JobEvents={[id:string]:{time:number,status:string}}
+    let jobs:JobEvents={};
+    for(let i = 0; i < events.length; i++){
+      const id:number = events[i].Job!.id!;
+      const eventTime = new Date(events[i].date);
+      console.log(events[i].status, eventTime)
+      if(!jobs[`job${id}`]){
+        jobs[`job${id}`] = {time: eventTime.getTime(), status: events[i].status};
+      }else if(eventTime.getTime() > jobs[`job${id}`].time || onTheSameDay(jobs[`job${id}`].time, eventTime.getTime()) ){
+        jobs[`job${id}`] = {time: eventTime.getTime(), status: events[i].status};
+      }
+    }
+    let JobStatuses:{[status:string]:string} = {};
+    for(const key in jobs) {
+      if(!JobStatuses[jobs[key].status])
+      JobStatuses[jobs[key].status] = jobs[key].status;
+    }
+    return Object.keys(JobStatuses);
+  }
   useEffect(() => {
     (async () => {
       const { data } = await network.get("/api/v1/student/all");
       const newClassNames:string[] = Array.from(new Set(data.map((student: IStudent) => student.Class.name)));
       const newCourseNames:string[] = Array.from(new Set (data.map((student: IStudent) => student.Class.course)));
-      const newJobStatuses:string[] = Array.from(new Set (data.map((student: IStudent) => {
-        let mostRecentStatus:string = "";
-        let mostRecentTime:number = 0;
-        for(let i = 0; i < student.Events.length; i++){
-          const eventTime = new Date(student.Events[i].date).getTime();
-          if(eventTime > mostRecentTime){
-            mostRecentTime = eventTime;
-            mostRecentStatus = student.Events[i].status;
-          }
-        }
-        return mostRecentStatus;
-      })));
+      let JobStatuses:string[] =[]
+      data.forEach((student: IStudent) => {
+        JobStatuses = [...JobStatuses, ...getRecentJobsStatus(student.Events)]
+      })
+      const newJobStatuses:string[] =Array.from(new Set(JobStatuses));
       const newFullNames:string[] = Array.from(new Set (data.map((student: IStudent) =>student.firstName + " " + student.lastName)));
       setFilterOptionsArray([
         {
@@ -113,8 +131,9 @@ function AllStudents() {
     return students.filter(student =>{
       const classCondition = !filterAttributes.Class? true : (student.Class.name === filterAttributes.Class);
       const courseCondition = !filterAttributes.Course? true : (student.Class.course === filterAttributes.Course);
-      const recentEvent = student.Events[student.Events.length -1];
-      const jobStatusCondition = !filterAttributes.JobStatus? true : (!recentEvent? false : recentEvent.status === filterAttributes.JobStatus);
+      const recentJobStatus = getRecentJobsStatus(student.Events);
+      console.log(recentJobStatus);
+      const jobStatusCondition = !filterAttributes.JobStatus? true : (recentJobStatus.includes(filterAttributes.JobStatus));
       const firstName = filterAttributes.Name.split(" ")[0];
       const lastName = filterAttributes.Name.split(" ")[1];
       const firstNameCondition = !firstName ? true : (student.firstName === firstName);
