@@ -11,21 +11,12 @@ import {
   StyledUl,
   StyledDiv,
 } from "../../styles/styledComponents";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import PersonIcon from "@material-ui/icons/Person";
 import { IStudent, IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import styled from "styled-components";
 import { formatPhone } from "../../helpers/general";
 import searchResults from "../../functions/searchStudents";
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,7 +67,7 @@ function AllStudents() {
     }
   };
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
@@ -85,9 +76,9 @@ function AllStudents() {
         <div style={{ display: "flex" }}>
           <select
             onChange={(e) => filter("class", e.target.value)}
-            defaultValue="none"
+            defaultValue='none'
           >
-            <option value="">none</option>
+            <option value=''>none</option>
             {classNames.map((name) => (
               <option value={name}>{name}</option>
             ))}
@@ -99,8 +90,8 @@ function AllStudents() {
                 : setFilteredStudents(searchResults(e.target.value, students))
             }
           ></input>
-          <StyledLink to="/student/add">
-            <Button variant="contained" color="primary">
+          <StyledLink to='/student/add'>
+            <Button variant='contained' color='primary'>
               Add Student
             </Button>
           </StyledLink>
@@ -113,20 +104,20 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight="bold">name</StyledSpan>
-                <StyledSpan weight="bold">class</StyledSpan>
-                <StyledSpan weight="bold">email</StyledSpan>
-                <StyledSpan weight="bold">phone</StyledSpan>
+                <StyledSpan weight='bold'>Name</StyledSpan>
+                <StyledSpan weight='bold'>Class</StyledSpan>
+                <StyledSpan weight='bold'>Email</StyledSpan>
+                <StyledSpan weight='bold'>Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
           {filteredStudents &&
             filteredStudents.map((student) => (
               <li>
-                <StyledLink color="black" to={`/student/${student?.id}`}>
+                <StyledLink color='black' to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {student.firstName}&nbsp;{student.lastName}
                     </StyledSpan>
                     <StyledSpan>{student.Class.name}</StyledSpan>

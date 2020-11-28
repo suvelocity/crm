@@ -253,26 +253,6 @@ function AddStudent() {
               ) : null}
               <br />
               <br />
-              <TextField
-                id="academicBackground"
-                multiline
-                rows={3}
-                variant="outlined"
-                name="academicBackground"
-                inputRef={register()}
-                label="Academic Background"
-              />
-              <br />
-              <br />
-              <TextField
-                id="workExperience"
-                multiline
-                rows={3}
-                variant="outlined"
-                name="workExperience"
-                inputRef={register()}
-                label="Work Experience"
-              />
             </div>
             <div>
               <FormControl
@@ -443,30 +423,57 @@ function AddStudent() {
                   </IconButton>
                 )
               ) : null}
-              <br />
-              <br />
-              <TextField
-                id="militaryService"
-                multiline
-                rows={3}
-                variant="outlined"
-                name="militaryService"
-                inputRef={register()}
-                label="Military Service"
-              />
-              <br />
-              <br />
-              <TextField
-                id="additionalDetails"
-                multiline
-                rows={3}
-                variant="outlined"
-                name="additionalDetails"
-                inputRef={register()}
-                label="Additional Details"
-              />
             </div>
           </GridDiv>
+          <br />
+          <br />
+          <TextField
+            id="militaryService"
+            multiline
+            fullWidth
+            rows={4}
+            variant="outlined"
+            name="militaryService"
+            inputRef={register()}
+            label="Military Service"
+          />
+          <br />
+          <br />
+          <TextField
+            id="workExperience"
+            multiline
+            fullWidth
+            rows={4}
+            variant="outlined"
+            name="workExperience"
+            inputRef={register()}
+            label="Work Experience"
+          />
+          <br />
+          <br />{" "}
+          <TextField
+            id="academicBackground"
+            multiline
+            fullWidth
+            rows={4}
+            variant="outlined"
+            name="academicBackground"
+            inputRef={register()}
+            label="Academic Background"
+          />
+          <br />
+          <br />
+          <TextField
+            id="additionalDetails"
+            multiline
+            fullWidth
+            rows={4}
+            variant="outlined"
+            name="additionalDetails"
+            inputRef={register()}
+            label="Additional Details"
+          />
+          <br />
           <br />
           <Button
             id="submitButton"
