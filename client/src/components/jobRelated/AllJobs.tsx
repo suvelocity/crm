@@ -67,16 +67,16 @@ function AllJobs() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1 color='#bb4040'>All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to='/job/add'>
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
+            variant='contained'
           >
             Add Job
           </Button>
