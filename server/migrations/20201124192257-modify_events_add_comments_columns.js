@@ -9,10 +9,10 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await Promise.all([
-      queryInterface.addColumn("events", "comment", {
+      queryInterface.addColumn("Events", "comment", {
         type: Sequelize.STRING,
       }),
-      queryInterface.addColumn("events", "date", {
+      queryInterface.addColumn("Events", "date", {
         type: Sequelize.DATE,
       }),
     ]);
@@ -26,8 +26,8 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await Promise.all([
-      queryInterface.removeColumn("events", "comment"),
-      queryInterface.removeColumn("events", "date"),
+      queryInterface.removeColumn("Events", "comment"),
+      queryInterface.removeColumn("Events", "date"),
     ]);
   },
 };

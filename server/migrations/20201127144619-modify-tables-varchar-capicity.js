@@ -9,25 +9,25 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await Promise.all([
-      queryInterface.changeColumn("jobs", "description", {
+      queryInterface.changeColumn("Jobs", "description", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("jobs", "requirements", {
+      queryInterface.changeColumn("Jobs", "requirements", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("jobs", "additional_details", {
+      queryInterface.changeColumn("Jobs", "additional_details", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("classes", "additional_details", {
+      queryInterface.changeColumn("Classes", "additional_details", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("students", "additional_details", {
+      queryInterface.changeColumn("Students", "additional_details", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("students", "military_service", {
+      queryInterface.changeColumn("Students", "military_service", {
         type: Sequelize.STRING(500),
       }),
-      queryInterface.changeColumn("students", "work_experience", {
+      queryInterface.changeColumn("Students", "work_experience", {
         type: Sequelize.STRING(500),
       }),
     ]);
@@ -41,25 +41,25 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await Promise.all([
-      queryInterface.changeColumn("jobs", "description", {
+      queryInterface.changeColumn("Jobs", "description", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("jobs", "requirements", {
+      queryInterface.changeColumn("Jobs", "requirements", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("jobs", "additional_details", {
+      queryInterface.changeColumn("Jobs", "additional_details", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("classes", "additional_details", {
+      queryInterface.changeColumn("Classes", "additional_details", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("students", "additional_details", {
+      queryInterface.changeColumn("Students", "additional_details", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("students", "military_service", {
+      queryInterface.changeColumn("Students", "military_service", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("students", "work_experience", {
+      queryInterface.changeColumn("Students", "work_experience", {
         type: Sequelize.STRING,
       }),
     ]);
