@@ -95,7 +95,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 router.put("/:id", async (req: Request, res: Response) => {
   const { value, error } = studentSchema.validate(req.body);
-  if (error) return res.json(error);
+  if (error) return res.status(400).json(error);
   try {
     const updated = await Student.update(req.body, {
       where: { id: req.params.id },
