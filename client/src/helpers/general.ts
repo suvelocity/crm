@@ -1,5 +1,7 @@
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
+  if (isNaN(+phoneNumber)) return phoneNumber;
+  if (!phoneNumber.startsWith("05")) return phoneNumber;
   const newArr: string[] = phoneNumber.split("");
   newArr.splice(3, 0, "-");
   newArr.splice(7, 0, "-");

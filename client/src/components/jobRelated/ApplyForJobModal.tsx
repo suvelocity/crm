@@ -104,6 +104,7 @@ function ApplyForJobModal({
           await network.post(`/api/v1/event`, {
             studentId,
             jobId,
+            date: Date.now(),
             status: "Started application process",
           });
         });
@@ -218,7 +219,7 @@ function ApplyForJobModal({
               </Button>
             </>
           ) : (
-            <h2>All students are applied for this job</h2>
+            <h2>No students available</h2>
           )}
         </div>
       </div>
