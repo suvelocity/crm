@@ -12,6 +12,11 @@ import {
   RemoveJobButton,
   GridDiv,
   MultilineListItem,
+  StyledSpan,
+  TableHeader,
+  StyledDiv,
+  StyledUl,
+  StyledLink,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -40,6 +45,7 @@ import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
+import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -100,7 +106,10 @@ function SingleClass() {
                 <ListItemIcon>
                   <ClassIcon />
                 </ListItemIcon>
-                <ListItemText primary="Name" secondary={cls?.name} />
+                <ListItemText
+                  primary="Name"
+                  secondary={capitalize(cls?.name)}
+                />
               </ListItem>
               {/* Name */}
               <ListItem>
@@ -129,7 +138,10 @@ function SingleClass() {
                 <ListItemIcon>
                   <ClassIcon />
                 </ListItemIcon>
-                <ListItemText primary="Course" secondary={cls?.course} />
+                <ListItemText
+                  primary="Course"
+                  secondary={capitalize(cls?.course)}
+                />
               </ListItem>
               {/* Course */}
               <ListItem>
@@ -151,15 +163,17 @@ function SingleClass() {
               {/* Zoom link */}
             </List>
           </GridDiv>
-          <MultilineListItem>
-            <ListItemIcon>
-              <ContactSupportIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Additional Details"
-              secondary={cls?.additionalDetails}
-            />
-          </MultilineListItem>
+          {cls?.additionalDetails && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <ContactSupportIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Additional Details"
+                secondary={capitalize(cls?.additionalDetails)}
+              />
+            </MultilineListItem>
+          )}
           {/* Additional Details */}
         </Loading>
       </Wrapper>
@@ -171,84 +185,34 @@ function SingleClass() {
         </Center>
         <br />
         <Loading loading={loading} size={30}>
-          {cls?.Students!.map((student: Omit<IStudent, "Class">) => (
-            <Accordion key={student.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
-                <PersonIcon />
-                <Typography className={classes.heading}>
-                  {student.firstName} {student.lastName}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
+          <StyledUl>
+            {cls?.Students && (
+              <li>
+                <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                  <PersonIcon />
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Phone</StyledSpan>
+                </TableHeader>
+              </li>
+            )}
+            {cls?.Students &&
+              cls?.Students!.map((student: Omit<IStudent, "Class">) => (
+                <li key={student.id}>
+                  <StyledLink color="black" to={`/student/${student.id}`}>
+                    <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
                       <PersonIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Name"
-                      secondary={student.firstName + " " + student.lastName}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <EmailIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Email" secondary={student.email} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PhoneIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Phone Number"
-                      secondary={student.phone}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <DialpadIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="ID Number"
-                      secondary={student.idNumber}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <DateRangeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Age" secondary={student.age} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Address"
-                      secondary={student.address}
-                    />
-                  </ListItem>
-                  {student.additionalDetails && (
-                    <ListItem>
-                      <ListItemIcon>
-                        <SubjectIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Additional Details"
-                        secondary={student.additionalDetails}
-                      />
-                    </ListItem>
-                  )}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                      <StyledSpan weight="bold">
+                        {capitalize(student.firstName)}{" "}
+                        {capitalize(student.lastName)}
+                      </StyledSpan>
+                      <StyledSpan>{student.email}</StyledSpan>
+                      <StyledSpan>{student.phone}</StyledSpan>
+                    </StyledDiv>
+                  </StyledLink>
+                </li>
+              ))}
+          </StyledUl>
           {/* <br />
           <Center>
           </Center> */}

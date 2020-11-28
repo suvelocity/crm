@@ -94,10 +94,6 @@ const AddClass = () => {
                 label='Name'
                 inputRef={register({
                   required: "Class title is required",
-                  pattern: {
-                    value: validNameRegex,
-                    message: "Class can have only letters and spaces",
-                  },
                   minLength: {
                     value: 2,
                     message: "Class needs to have a minimum of 2 letters",

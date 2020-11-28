@@ -19,8 +19,11 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
 import searchResults from "../../functions/searchStudents";
+
 import {SelectInputs} from '../FiltersComponents';
 import {FiltersComponents} from "../FiltersComponents";
+import { capitalize } from "../../helpers/general";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -150,10 +153,10 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight='bold'>Name</StyledSpan>
-                <StyledSpan weight='bold'>Class</StyledSpan>
-                <StyledSpan weight='bold'>Email</StyledSpan>
-                <StyledSpan weight='bold'>Phone</StyledSpan>
+                <StyledSpan weight="bold">Name</StyledSpan>
+                <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Email</StyledSpan>
+                <StyledSpan weight="bold">Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -163,10 +166,11 @@ function AllStudents() {
                 <StyledLink color='black' to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
-                    <StyledSpan weight='bold'>
-                      {student.firstName}&nbsp;{student.lastName}
+                    <StyledSpan weight="bold">
+                      {capitalize(student.firstName)}&nbsp;
+                      {capitalize(student.lastName)}
                     </StyledSpan>
-                    <StyledSpan>{student.Class.name}</StyledSpan>
+                    <StyledSpan>{capitalize(student.Class.name)}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                   </StyledDiv>

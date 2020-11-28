@@ -75,7 +75,8 @@ export const GridDiv = styled.div`
 
 export const StyledDiv = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2.5fr 2fr 2.5fr 2fr;
+  grid-template-columns: ${(props: { repeatFormula: string }) =>
+    props.repeatFormula ? props.repeatFormula : "1fr 2.5fr 2fr 2.5fr 2fr"};
   padding: 10px;
   align-items: center;
   background-color: rgba(180, 180, 180, 0.12);

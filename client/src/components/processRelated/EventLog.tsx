@@ -1,5 +1,5 @@
 import React from "react";
-import { IEvent } from "../typescript/interfaces";
+import { IEvent } from "../../typescript/interfaces";
 import Timeline from "@material-ui/lab/Timeline";
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
@@ -7,6 +7,7 @@ import TimelineConnector from "@material-ui/lab/TimelineConnector";
 import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
+import { capitalize } from "../../helpers/general";
 import {
   Theme,
   createStyles,
@@ -18,7 +19,7 @@ import styled from "styled-components";
 // import WithGoBack from "./hoc/WithGoBack";
 import UpdateIcon from "@material-ui/icons/Update";
 import { CheckCircleOutline } from "@material-ui/icons";
-import { formatToIsraeliDate } from "../helpers/general";
+import { formatToIsraeliDate } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,8 +78,8 @@ function EventsLog({ events }: { events: IEvent[] }) {
 
           <TimelineContent>
             <Paper className={classes.ticket}>
-              <TicketHeader>{event.status}</TicketHeader>
-              <Typography>{event.comment}</Typography>
+              <TicketHeader>{capitalize(event.status)}</TicketHeader>
+              <Typography>{capitalize(event.comment)}</Typography>
               <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp>
             </Paper>
           </TimelineContent>

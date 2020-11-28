@@ -49,7 +49,7 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails: body.additionalDetails,
     };
     const { value, error } = classSchema.validate(newClass);
-    if (error) return res.json(error);
+    if (error) return res.status(400).json(error);
     const createdClass: IClass = await Class.create(newClass);
     res.json(createdClass);
   } catch (err) {
@@ -61,7 +61,7 @@ router.post("/", async (req: Request, res: Response) => {
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { value, error } = classSchemaToPut.validate(req.body);
-    if (error) return res.json(error);
+    if (error) return res.status(400).json(error);
     const updated = await Class.update(req.body, {
       where: { id: req.params.id },
     });
