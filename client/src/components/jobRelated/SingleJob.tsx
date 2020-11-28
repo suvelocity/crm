@@ -27,7 +27,7 @@ import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
-import EventLog from "../EventLog";
+import EventLog from "../processRelated/EventLog";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
@@ -48,6 +48,8 @@ import Swal from "sweetalert2";
 import DescriptionIcon from "@material-ui/icons/Description";
 import NewEventModal from "../NewEventModal";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import { formatToIsraeliDate } from "../../helpers/general";
+import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,7 +84,11 @@ function SingleJob() {
       `/api/v1/job/byId/${id}`
     );
     const uniqueStudents: IEvent[] = [];
-    data.Events.forEach((event: IEvent) => {
+    const sortedEvents = data.Events.sort(
+      (e1: IEvent, e2: IEvent) =>
+        new Date(e2.date).valueOf() - new Date(e1.date).valueOf()
+    );
+    sortedEvents.forEach((event: IEvent) => {
       if (
         !uniqueStudents.find(
           (ev: IEvent) => ev.Student!.id === event.Student!.id
@@ -154,62 +160,93 @@ function SingleJob() {
         </Center>
         <Loading size={30} loading={loading}>
           <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
-            <ListItem>
-              <ListItemIcon>
-                <PostAddIcon />
-              </ListItemIcon>
-              <ListItemText primary="Position" secondary={job?.position} />
-            </ListItem>
-            {/* Position */}
-            <ListItem>
-              <ListItemIcon>
-                <LocationCityIcon />
-              </ListItemIcon>
-              <ListItemText primary="Company" secondary={job?.company} />
-            </ListItem>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <PostAddIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Position"
+                  secondary={capitalize(job?.position)}
+                />
+              </ListItem>
+              {/* Position */}
+            </List>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <LocationCityIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Company"
+                  secondary={capitalize(job?.company)}
+                />
+              </ListItem>
+            </List>
             {/* Company */}
-            <ListItem>
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary="Location" secondary={job?.location} />
-            </ListItem>
-            {/* Location */}
-            <ListItem>
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="Contact" secondary={job?.contact} />
-            </ListItem>
-            {/* Contact */}
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Location"
+                  secondary={capitalize(job?.location)}
+                />
+              </ListItem>
+            </List>
+            <List>
+              {/* Location */}
+              <ListItem>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Contact"
+                  secondary={capitalize(job?.contact)}
+                />
+              </ListItem>
+              {/* Contact */}
+            </List>
           </GridDiv>
           <br />
-          <MultilineListItem>
-            <ListItemIcon>
-              <DescriptionIcon />
-            </ListItemIcon>
-            <ListItemText primary="Description" secondary={job?.description} />
-          </MultilineListItem>
-          {/* Description */}
-          <MultilineListItem>
-            <ListItemIcon>
-              <PlaylistAddCheckIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Requirements"
-              secondary={job?.requirements}
-            />
-          </MultilineListItem>
-          {/* Requirements */}
-          <MultilineListItem>
-            <ListItemIcon>
-              <ContactSupportIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Additional Details"
-              secondary={job?.additionalDetails}
-            />
-          </MultilineListItem>
+          <GridDiv repeatFormula="1fr 1fr 1fr">
+            {job?.description && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <DescriptionIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Description"
+                  secondary={capitalize(job?.description)}
+                />
+              </MultilineListItem>
+            )}
+            {/* Description */}
+            {job?.requirements && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <PlaylistAddCheckIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Requirements"
+                  secondary={capitalize(job?.requirements)}
+                />
+              </MultilineListItem>
+            )}
+            {/* Requirements */}
+            {job?.additionalDetails && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <ContactSupportIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Additional Details"
+                  secondary={capitalize(job?.additionalDetails)}
+                />
+              </MultilineListItem>
+            )}
+          </GridDiv>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
@@ -224,12 +261,13 @@ function SingleJob() {
           <StyledUl>
             {eventsToMap && (
               <li>
-                <TableHeader>
+                <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Class</StyledSpan>
                   <StyledSpan weight="bold">Email</StyledSpan>
-                  <StyledSpan weight="bold">Phone</StyledSpan>
+                  <StyledSpan weight="bold">Status</StyledSpan>
+                  <StyledSpan weight="bold">Date</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -240,16 +278,18 @@ function SingleJob() {
                     color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
-                    <StyledDiv>
+                    <StyledDiv repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">
-                        {event.Student?.firstName} {event.Student?.lastName}
+                        {capitalize(event.Student?.firstName)}{" "}
+                        {capitalize(event.Student?.lastName)}
                       </StyledSpan>
-                      <StyledSpan>{event.Student?.Class.name}</StyledSpan>
-                      <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>
-                        {formatPhone(event.Student?.phone)}
+                        {capitalize(event.Student?.Class.name)}
                       </StyledSpan>
+                      <StyledSpan>{event.Student?.email}</StyledSpan>
+                      <StyledSpan>{capitalize(event.status)}</StyledSpan>
+                      <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>

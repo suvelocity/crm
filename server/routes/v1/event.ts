@@ -15,6 +15,7 @@ router.post("/", async (req: Request, res: Response) => {
       comment,
       date,
     });
+    if (error) return res.status(400).json(error);
     const event: IEvent = await Event.create({
       studentId,
       jobId,

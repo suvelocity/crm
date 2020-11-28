@@ -14,8 +14,14 @@ import {
   RemoveJobButton,
   GridDiv,
   StyledLink,
+  StyledDiv,
+  TableHeader,
+  StyledSpan,
+  StyledUl,
+  MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
+import DescriptionIcon from "@material-ui/icons/Description";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import SubjectIcon from "@material-ui/icons/Subject";
@@ -46,9 +52,10 @@ import TranslateIcon from "@material-ui/icons/Translate";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import WorkIcon from "@material-ui/icons/Work";
 import TrackChangesIcon from "@material-ui/icons/TrackChanges";
+import { capitalize } from "../../helpers/general";
 
 import Swal from "sweetalert2";
-import EventLog from "../EventLog";
+import EventLog from "../processRelated/EventLog";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -159,7 +166,11 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Name"
-                  secondary={student?.firstName + " " + student?.lastName}
+                  secondary={
+                    capitalize(student?.firstName) +
+                    " " +
+                    capitalize(student?.lastName)
+                  }
                 />
               </ListItem>
               {/* Email */}
@@ -189,16 +200,6 @@ function SingleStudent() {
                   secondary={student?.idNumber}
                 />
               </ListItem>
-              {/* Work Experience */}
-              <ListItem>
-                <ListItemIcon>
-                  <WorkIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Work Experience"
-                  secondary={student?.workExperience}
-                />
-              </ListItem>
             </List>
             <List>
               {/* Age */}
@@ -213,7 +214,10 @@ function SingleStudent() {
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
-                <ListItemText primary="Address" secondary={student?.address} />
+                <ListItemText
+                  primary="Address"
+                  secondary={capitalize(student?.address)}
+                />
               </ListItem>
               {/* Marital Status */}
               <ListItem>
@@ -222,7 +226,7 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Marital Status"
-                  secondary={student?.maritalStatus}
+                  secondary={capitalize(student?.maritalStatus)}
                 />
               </ListItem>
               {/* Children */}
@@ -235,31 +239,8 @@ function SingleStudent() {
                   secondary={student?.children}
                 />
               </ListItem>
-
-              {/* {Additional Details} */}
-              {student?.additionalDetails && (
-                <ListItem>
-                  <ListItemIcon>
-                    <ContactSupportIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Additional Details"
-                    secondary={student?.additionalDetails}
-                  />
-                </ListItem>
-              )}
             </List>
             <List>
-              {/* Academic Background */}
-              <ListItem>
-                <ListItemIcon>
-                  <AccountBalanceIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Academic Background"
-                  secondary={student?.academicBackground}
-                />
-              </ListItem>
               {/* Citizenships */}
               <ListItem>
                 <ListItemIcon>
@@ -267,7 +248,7 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Citizenships"
-                  secondary={student?.citizenship}
+                  secondary={capitalize(student?.citizenship)}
                 />
               </ListItem>
               {/* Languages */}
@@ -277,7 +258,7 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Languages"
-                  secondary={student?.languages}
+                  secondary={capitalize(student?.languages)}
                 />
               </ListItem>
               {/* Course */}
@@ -287,22 +268,56 @@ function SingleStudent() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Course"
-                  secondary={student?.Class.name}
+                  secondary={capitalize(student?.Class.name)}
                 />
               </ListItem>
-
-              {/* Military Service */}
+              {/* Work Experience */}
               <ListItem>
                 <ListItemIcon>
-                  <TrackChangesIcon />
+                  <WorkIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Military Service"
-                  secondary={student?.militaryService}
+                  primary="Work Experience"
+                  secondary={capitalize(student?.workExperience)}
                 />
               </ListItem>
             </List>
           </GridDiv>
+          {student?.militaryService && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <TrackChangesIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Military Service"
+                secondary={capitalize(student?.militaryService)}
+              />
+            </MultilineListItem>
+          )}
+          {/* Description */}
+          {student?.academicBackground && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Academic Background"
+                secondary={capitalize(student?.academicBackground)}
+              />
+            </MultilineListItem>
+          )}
+          {/* Requirements */}
+          {student?.additionalDetails && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <ContactSupportIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Additional Details"
+                secondary={capitalize(student?.additionalDetails)}
+              />
+            </MultilineListItem>
+          )}
         </Loading>
       </Wrapper>
       <Wrapper width="75%">
@@ -313,6 +328,13 @@ function SingleStudent() {
         </Center>
         <Loading loading={loading} size={30}>
           <StyledUl>
+            <TableHeader>
+              <WorkIcon />
+              <StyledSpan weight="bold">Position</StyledSpan>
+              <StyledSpan weight="bold">Company</StyledSpan>
+              <StyledSpan weight="bold">Status</StyledSpan>
+              <StyledSpan weight="bold">Date</StyledSpan>
+            </TableHeader>
             {eventsToMap.map((event: IEvent) => (
               <li>
                 <StyledLink
@@ -321,9 +343,11 @@ function SingleStudent() {
                 >
                   <StyledDiv>
                     <WorkIcon />
-                    <StyledSpan weight="bold">{event.Job!.position}</StyledSpan>
-                    <StyledSpan>{event.Job!.company}</StyledSpan>
-                    <StyledSpan>{event.status}</StyledSpan>
+                    <StyledSpan weight="bold">
+                      {capitalize(event.Job!.position)}
+                    </StyledSpan>
+                    <StyledSpan>{capitalize(event.Job!.company)}</StyledSpan>
+                    <StyledSpan>{capitalize(event.status)}</StyledSpan>
                     <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
@@ -344,31 +368,31 @@ function SingleStudent() {
   );
 }
 
-const StyledSpan = styled.span`
-  font-size: 16px;
-  font-weight: ${(props: { weight: string }) =>
-    props.weight === "bold" && "bold"};
-`;
+// const StyledSpan = styled.span`
+//   font-size: 16px;
+//   font-weight: ${(props: { weight: string }) =>
+//     props.weight === "bold" && "bold"};
+// `;
 
-const StyledDiv = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr 3fr 1fr;
-  padding: 10px;
-  align-items: center;
-  transition: 150ms;
-  border-radius: 2px;
+// const StyledDiv = styled.div`
+//   display: grid;
+//   grid-template-columns: 1fr 2fr 2fr 3fr 1fr;
+//   padding: 10px;
+//   align-items: center;
+//   transition: 150ms;
+//   border-radius: 2px;
 
-  &:hover {
-    background-color: rgba(201, 201, 201, 0.445);
-  }
-`;
+//   &:hover {
+//     background-color: rgba(201, 201, 201, 0.445);
+//   }
+// `;
 
-const StyledUl = styled.ul`
-  list-style-type: none;
-  padding: 0;
+// const StyledUl = styled.ul`
+//   list-style-type: none;
+//   padding: 0;
 
-  & > li:nth-child(odd) {
-    background-color: #eeeeee;
-  }
-`;
+//   & > li:nth-child(odd) {
+//     background-color: #eeeeee;
+//   }
+// `;
 export default SingleStudent;

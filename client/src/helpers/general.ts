@@ -8,6 +8,12 @@ export const formatPhone = (phoneNumber: string | undefined) => {
   return newArr.join("");
 };
 
+export function capitalize(s: string | undefined) {
+  if (s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+}
+
 export function convertDateToString(date: number) {
   let today = new Date(date);
   const dd = String(today.getDate()).padStart(2, "0");
