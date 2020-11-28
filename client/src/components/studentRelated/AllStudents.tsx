@@ -110,7 +110,7 @@ function AllStudents() {
           possibleValues: newCourseNames
         },
         {
-          filterBy:"JobStatus",
+          filterBy:"Job Status",
           possibleValues: newJobStatuses
         },
         {

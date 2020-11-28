@@ -20,7 +20,7 @@ export const FiltersComponents = ({array,filterObject, callbackFunction, widthPe
             return callbackFunction({...filterObject, Class:value});
         case "Course":
             return callbackFunction({...filterObject, Course:value});
-        case "JobStatus":
+        case "Job Status":
             return callbackFunction({...filterObject, JobStatus:value});
         case "Name":
             return callbackFunction({...filterObject, Name:value});
