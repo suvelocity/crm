@@ -58,7 +58,6 @@ const DateStamp = styled.span`
 function EventsLog({ events }: { events: IEvent[] }) {
   const classes = useStyles();
 
-  console.log(events);
   return (
     <Timeline align="alternate">
       {events.map((event: IEvent, i: number, arr) => (
