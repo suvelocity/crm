@@ -138,6 +138,17 @@ function SingleJob() {
     //eslint-disable-next-line
   }, [id]);
 
+  const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
+    const sortedEvents = eventsToMap
+      ?.concat(newEvent)
+      .sort(
+        (a: IEvent, b: IEvent) =>
+          new Date(a.date).getMilliseconds() -
+          new Date(b.date).getMilliseconds()
+      );
+    setEventsToMap(sortedEvents);
+  };
+
   console.log(job);
   return (
     <>

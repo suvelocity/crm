@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
   const [job, setJob] = useState<IJob>();
+  const [events, setEvents] = useState<IEvent[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { studentId, jobId } = useParams();
   const classes = useStyles();
@@ -50,6 +51,12 @@ function SingleProcess() {
           `/api/v1/job/byId/${jobId}`
         );
         setJob(jobData);
+        const filteredEvents = studentData?.Events.filter(
+          (event: IEvent) => event.Job?.id === jobData.id
+        ).sort(sortByDate);
+        // console.log(student?.Events);
+        // console.log(filteredEvents);
+        setEvents(filteredEvents);
         setLoading(false);
       } catch (e) {
         console.log(e.message);
@@ -57,6 +64,11 @@ function SingleProcess() {
     })();
   }, []);
 
+  const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
+    const sortedEvents = events?.concat(newEvent).sort(sortByDate);
+    setEvents(sortedEvents);
+  };
+  console.log(student);
   return (
     <Wrapper width="90%">
       <Center>
@@ -203,19 +215,11 @@ function SingleProcess() {
             </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
-            {job?.id && student?.id && (
-              <EventLog
-                events={
-                  student?.Events.filter(
-                    (event: IEvent) => job!.id === event.Job!.id
-                  )!
-                }
-              />
-            )}
+            {job?.id && student?.id && events && <EventLog events={events} />}
           </div>
         </GridDiv>
       </Loading>
-      <NewEventModal studentId={studentId} jobId={jobId} get={() => null} />
+      <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
 
       {/* need to figure out how to refresh data after new event is added + fix button position */}
     </Wrapper>
@@ -225,5 +229,10 @@ function SingleProcess() {
 const CenteredListItem = styled(ListItem)`
   text-align: center;
 `;
+
+function sortByDate(event1: IEvent, event2: IEvent) {
+  // helper function to sort events by date
+  return new Date(event1.date).getTime() - new Date(event2.date).getTime();
+}
 
 export default SingleProcess;
