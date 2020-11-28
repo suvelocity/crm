@@ -8,6 +8,8 @@ import {
   Center,
   StyledSpan,
   StyledUl,
+  TableHeader,
+  StyledDiv,
 } from "../../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -29,6 +31,7 @@ import BusinessIcon from "@material-ui/icons/Business";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import styled from "styled-components";
+import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,16 +67,16 @@ function AllJobs() {
   }, []);
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color='#bb4040'>All Jobs</H1>
+          <H1 color="#bb4040">All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to='/job/add'>
+        <StyledLink to="/job/add">
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant='contained'
+            variant="contained"
           >
             Add Job
           </Button>
@@ -84,26 +87,24 @@ function AllJobs() {
         <StyledUl>
           {jobs && (
             <li>
-              <TableHeader>
+              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
                 <WorkIcon />
-                <StyledSpan weight='bold'>company</StyledSpan>
-                <StyledSpan weight='bold'>position</StyledSpan>
-                <StyledSpan weight='bold'>location</StyledSpan>
+                <StyledSpan weight="bold">Position</StyledSpan>
+                <StyledSpan weight="bold">Company</StyledSpan>
+                <StyledSpan weight="bold">Location</StyledSpan>
               </TableHeader>
             </li>
           )}
           {jobs &&
             jobs.map((job) => (
               <li>
-                <StyledLink
-                  to={`/job/${job.id}`}
-                  textDecoration={"true"}
-                  color='black'
-                >
-                  <StyledDiv>
+                <StyledLink to={`/job/${job.id}`} color="black">
+                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
                     <WorkIcon />
-                    <StyledSpan weight='bold'>{job.company}</StyledSpan>
-                    <StyledSpan>{job.position}</StyledSpan>
+                    <StyledSpan weight="bold">
+                      {capitalize(job.position)}
+                    </StyledSpan>
+                    <StyledSpan>{capitalize(job.company)}</StyledSpan>
                     <StyledSpan>{job.location}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
@@ -116,25 +117,3 @@ function AllJobs() {
 }
 
 export default AllJobs;
-
-const StyledDiv = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 2.5fr 2.5fr 1fr;
-  padding: 10px;
-  align-items: center;
-  background-color: rgba(180, 180, 180, 0.12);
-  transition: 150ms;
-  border-radius: 2px;
-  margin: 2px;
-  &:hover {
-    background-color: rgba(201, 201, 201, 0.38);
-  }
-`;
-
-const TableHeader = styled(StyledDiv)`
-  background-color: rgba(20, 20, 25, 0.6);
-  color: white;
-  &:hover {
-    background-color: rgba(20, 20, 25, 0.6);
-  }
-`;

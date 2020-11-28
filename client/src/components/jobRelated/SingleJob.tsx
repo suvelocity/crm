@@ -27,7 +27,7 @@ import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
-import EventLog from "../EventLog";
+import EventLog from "../processRelated/EventLog";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
@@ -48,6 +48,8 @@ import Swal from "sweetalert2";
 import DescriptionIcon from "@material-ui/icons/Description";
 import NewEventModal from "../NewEventModal";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import { formatToIsraeliDate } from "../../helpers/general";
+import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -152,7 +154,10 @@ function SingleJob() {
                 <ListItemIcon>
                   <PostAddIcon />
                 </ListItemIcon>
-                <ListItemText primary="Position" secondary={job?.position} />
+                <ListItemText
+                  primary="Position"
+                  secondary={capitalize(job?.position)}
+                />
               </ListItem>
               {/* Position */}
             </List>
@@ -161,7 +166,10 @@ function SingleJob() {
                 <ListItemIcon>
                   <LocationCityIcon />
                 </ListItemIcon>
-                <ListItemText primary="Company" secondary={job?.company} />
+                <ListItemText
+                  primary="Company"
+                  secondary={capitalize(job?.company)}
+                />
               </ListItem>
             </List>
             {/* Company */}
@@ -170,7 +178,10 @@ function SingleJob() {
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
-                <ListItemText primary="Location" secondary={job?.location} />
+                <ListItemText
+                  primary="Location"
+                  secondary={capitalize(job?.location)}
+                />
               </ListItem>
             </List>
             <List>
@@ -179,42 +190,51 @@ function SingleJob() {
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
-                <ListItemText primary="Contact" secondary={job?.contact} />
+                <ListItemText
+                  primary="Contact"
+                  secondary={capitalize(job?.contact)}
+                />
               </ListItem>
               {/* Contact */}
             </List>
           </GridDiv>
           <br />
           <GridDiv repeatFormula="1fr 1fr 1fr">
-            <MultilineListItem>
-              <ListItemIcon>
-                <DescriptionIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Description"
-                secondary={job?.description}
-              />
-            </MultilineListItem>
+            {job?.description && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <DescriptionIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Description"
+                  secondary={capitalize(job?.description)}
+                />
+              </MultilineListItem>
+            )}
             {/* Description */}
-            <MultilineListItem>
-              <ListItemIcon>
-                <PlaylistAddCheckIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Requirements"
-                secondary={job?.requirements}
-              />
-            </MultilineListItem>
+            {job?.requirements && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <PlaylistAddCheckIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Requirements"
+                  secondary={capitalize(job?.requirements)}
+                />
+              </MultilineListItem>
+            )}
             {/* Requirements */}
-            <MultilineListItem>
-              <ListItemIcon>
-                <ContactSupportIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Additional Details"
-                secondary={job?.additionalDetails}
-              />
-            </MultilineListItem>
+            {job?.additionalDetails && (
+              <MultilineListItem>
+                <ListItemIcon>
+                  <ContactSupportIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Additional Details"
+                  secondary={capitalize(job?.additionalDetails)}
+                />
+              </MultilineListItem>
+            )}
           </GridDiv>
           {/* Additional Details */}
         </Loading>
@@ -230,12 +250,13 @@ function SingleJob() {
           <StyledUl>
             {eventsToMap && (
               <li>
-                <TableHeader>
+                <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Class</StyledSpan>
                   <StyledSpan weight="bold">Email</StyledSpan>
                   <StyledSpan weight="bold">Status</StyledSpan>
+                  <StyledSpan weight="bold">Date</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -246,16 +267,18 @@ function SingleJob() {
                     color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
-                    <StyledDiv>
+                    <StyledDiv repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">
-                        {event.Student?.firstName} {event.Student?.lastName}
+                        {capitalize(event.Student?.firstName)}{" "}
+                        {capitalize(event.Student?.lastName)}
                       </StyledSpan>
-                      <StyledSpan>{event.Student?.Class.name}</StyledSpan>
                       <StyledSpan>
-                        {formatPhone(event.Student?.phone)}
+                        {capitalize(event.Student?.Class.name)}
                       </StyledSpan>
-                      <StyledSpan>{event.status}</StyledSpan>
+                      <StyledSpan>{event.Student?.email}</StyledSpan>
+                      <StyledSpan>{capitalize(event.status)}</StyledSpan>
+                      <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>
