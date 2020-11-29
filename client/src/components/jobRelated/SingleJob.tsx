@@ -210,47 +210,45 @@ function SingleJob() {
             </List>
           </GridDiv>
           <br />
-          <GridDiv repeatFormula="1fr 1fr 1fr">
-            {job?.description && (
-              <MultilineListItem>
-                <ListItemIcon>
-                  <DescriptionIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Description"
-                  secondary={capitalize(job?.description)}
-                />
-              </MultilineListItem>
-            )}
-            {/* Description */}
-            {job?.requirements && (
-              <MultilineListItem>
-                <ListItemIcon>
-                  <PlaylistAddCheckIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Requirements"
-                  secondary={capitalize(job?.requirements)}
-                />
-              </MultilineListItem>
-            )}
-            {/* Requirements */}
-            {job?.additionalDetails && (
-              <MultilineListItem>
-                <ListItemIcon>
-                  <ContactSupportIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Additional Details"
-                  secondary={capitalize(job?.additionalDetails)}
-                />
-              </MultilineListItem>
-            )}
-          </GridDiv>
+          {job?.description && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <DescriptionIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Description"
+                secondary={capitalize(job?.description)}
+              />
+            </MultilineListItem>
+          )}
+          {/* Description */}
+          {job?.requirements && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <PlaylistAddCheckIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Requirements"
+                secondary={capitalize(job?.requirements)}
+              />
+            </MultilineListItem>
+          )}
+          {/* Requirements */}
+          {job?.additionalDetails && (
+            <MultilineListItem>
+              <ListItemIcon>
+                <ContactSupportIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Additional Details"
+                secondary={capitalize(job?.additionalDetails)}
+              />
+            </MultilineListItem>
+          )}
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width="80%">
+      <Wrapper width="65%">
         <Center>
           <TitleWrapper>
             <H1 color="#bb4040">Students In Process</H1>
@@ -261,13 +259,13 @@ function SingleJob() {
           <StyledUl>
             {eventsToMap && (
               <li>
-                <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
+                {/* <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr"> */}
+                <TableHeader repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Class</StyledSpan>
                   <StyledSpan weight="bold">Email</StyledSpan>
                   <StyledSpan weight="bold">Status</StyledSpan>
-                  <StyledSpan weight="bold">Date</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -278,7 +276,7 @@ function SingleJob() {
                     color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
-                    <StyledDiv repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr 1fr">
+                    <StyledDiv repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">
                         {capitalize(event.Student?.firstName)}{" "}
@@ -288,8 +286,11 @@ function SingleJob() {
                         {capitalize(event.Student?.Class.name)}
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
-                      <StyledSpan>{capitalize(event.status)}</StyledSpan>
-                      <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
+                      <StyledSpan>{`${capitalize(
+                        event.status
+                      )}, as of ${formatToIsraeliDate(
+                        event.date
+                      )}`}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>
