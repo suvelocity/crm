@@ -200,6 +200,18 @@ function SingleStudent() {
                   secondary={student?.idNumber}
                 />
               </ListItem>
+              {/* Military Service */}
+              {student?.militaryService && (
+                <MultilineListItem>
+                  <ListItemIcon>
+                    <TrackChangesIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Military Service"
+                    secondary={capitalize(student?.militaryService)}
+                  />
+                </MultilineListItem>
+              )}
             </List>
             <List>
               {/* Age */}
@@ -239,6 +251,16 @@ function SingleStudent() {
                   secondary={student?.children}
                 />
               </ListItem>
+              {/* Work Experience */}
+              <ListItem>
+                <ListItemIcon>
+                  <WorkIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Work Experience"
+                  secondary={capitalize(student?.workExperience)}
+                />
+              </ListItem>
             </List>
             <List>
               {/* Citizenships */}
@@ -271,56 +293,36 @@ function SingleStudent() {
                   secondary={capitalize(student?.Class.name)}
                 />
               </ListItem>
-              {/* Work Experience */}
-              <ListItem>
-                <ListItemIcon>
-                  <WorkIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Work Experience"
-                  secondary={capitalize(student?.workExperience)}
-                />
-              </ListItem>
+              {/* Academib Background */}
+              {student?.academicBackground && (
+                <MultilineListItem>
+                  <ListItemIcon>
+                    <AccountBalanceIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Academic Background"
+                    secondary={capitalize(student?.academicBackground)}
+                  />
+                </MultilineListItem>
+              )}
+
+              {/* Additional Details */}
+              {student?.additionalDetails && (
+                <MultilineListItem>
+                  <ListItemIcon>
+                    <ContactSupportIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Additional Details"
+                    secondary={capitalize(student?.additionalDetails)}
+                  />
+                </MultilineListItem>
+              )}
             </List>
           </GridDiv>
-          {student?.militaryService && (
-            <MultilineListItem>
-              <ListItemIcon>
-                <TrackChangesIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Military Service"
-                secondary={capitalize(student?.militaryService)}
-              />
-            </MultilineListItem>
-          )}
-          {/* Description */}
-          {student?.academicBackground && (
-            <MultilineListItem>
-              <ListItemIcon>
-                <AccountBalanceIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Academic Background"
-                secondary={capitalize(student?.academicBackground)}
-              />
-            </MultilineListItem>
-          )}
-          {/* Requirements */}
-          {student?.additionalDetails && (
-            <MultilineListItem>
-              <ListItemIcon>
-                <ContactSupportIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Additional Details"
-                secondary={capitalize(student?.additionalDetails)}
-              />
-            </MultilineListItem>
-          )}
         </Loading>
       </Wrapper>
-      <Wrapper width="75%">
+      <Wrapper width="65%">
         <Center>
           <TitleWrapper>
             <H1>Student Job Processes</H1>
@@ -328,12 +330,11 @@ function SingleStudent() {
         </Center>
         <Loading loading={loading} size={30}>
           <StyledUl>
-            <TableHeader>
+            <TableHeader repeatFormula="0.5fr 1.5fr 1.5fr 2fr">
               <WorkIcon />
               <StyledSpan weight="bold">Position</StyledSpan>
               <StyledSpan weight="bold">Company</StyledSpan>
               <StyledSpan weight="bold">Status</StyledSpan>
-              <StyledSpan weight="bold">Date</StyledSpan>
             </TableHeader>
             {eventsToMap.map((event: IEvent) => (
               <li>
@@ -341,14 +342,15 @@ function SingleStudent() {
                   color="black"
                   to={`/process/${student?.id}/${event.Job?.id}`}
                 >
-                  <StyledDiv>
+                  <StyledDiv repeatFormula="0.5fr 1.5fr 1.5fr 2fr">
                     <WorkIcon />
                     <StyledSpan weight="bold">
                       {capitalize(event.Job!.position)}
                     </StyledSpan>
                     <StyledSpan>{capitalize(event.Job!.company)}</StyledSpan>
-                    <StyledSpan>{capitalize(event.status)}</StyledSpan>
-                    <StyledSpan>{formatToIsraeliDate(event.date)}</StyledSpan>
+                    <StyledSpan>{`${capitalize(
+                      event.status
+                    )}, as of ${formatToIsraeliDate(event.date)}`}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>

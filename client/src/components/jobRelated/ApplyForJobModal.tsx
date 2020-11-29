@@ -104,7 +104,7 @@ function ApplyForJobModal({
           await network.post(`/api/v1/event`, {
             studentId,
             jobId,
-            date: Date.now(),
+            date: new Date().setHours(0, 0, 0, 0),
             status: "Started application process",
           });
         });

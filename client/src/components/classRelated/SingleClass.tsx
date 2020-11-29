@@ -45,7 +45,7 @@ import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
-import { capitalize } from "../../helpers/general";
+import { capitalize, formatPhone } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -177,7 +177,7 @@ function SingleClass() {
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width="80%">
+      <Wrapper width="50%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Students In Class</H1>
@@ -207,7 +207,7 @@ function SingleClass() {
                         {capitalize(student.lastName)}
                       </StyledSpan>
                       <StyledSpan>{student.email}</StyledSpan>
-                      <StyledSpan>{student.phone}</StyledSpan>
+                      <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>

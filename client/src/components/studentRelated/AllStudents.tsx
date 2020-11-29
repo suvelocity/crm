@@ -20,8 +20,8 @@ import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
 import searchResults from "../../functions/searchStudents";
 
-import {SelectInputs} from '../FiltersComponents';
-import {FiltersComponents} from "../FiltersComponents";
+import { SelectInputs } from "../FiltersComponents";
+import { FiltersComponents } from "../FiltersComponents";
 import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,77 +47,100 @@ export interface filterStudentObject {
   Name: string;
 }
 export interface Name {
-  firstName:string;
-  lastName:string;
+  firstName: string;
+  lastName: string;
 }
-const onTheSameDay = (day1:number, day2:number) => {
+const onTheSameDay = (day1: number, day2: number) => {
   const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
-  const Day = 1000*60*60*24;
+  const Day = 1000 * 60 * 60 * 24;
   const diffLessThanDay = Math.abs(day1 - day2) < Day;
   return sameDayNumber && diffLessThanDay;
-}
+};
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
-  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>([]);
-  const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>({
-    Class: "",
-    Course: "",
-    JobStatus: "",
-    Name: "",
-  })
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
+    []
+  );
+  const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
+    {
+      Class: "",
+      Course: "",
+      JobStatus: "",
+      Name: "",
+    }
+  );
   const classes = useStyles();
-  const getRecentJobsStatus = (events:IEvent[]): string[] => {
-    type JobEvents={[id:string]:{time:number,status:string}}
-    let jobs:JobEvents={};
-    for(let i = 0; i < events.length; i++){
-      const id:number = events[i].Job!.id!;
+  const getRecentJobsStatus = (events: IEvent[]): string[] => {
+    type JobEvents = { [id: string]: { time: number; status: string } };
+    let jobs: JobEvents = {};
+    for (let i = 0; i < events.length; i++) {
+      const id: number = events[i].Job!.id!;
       const eventTime = new Date(events[i].date);
-      console.log(events[i].status, eventTime)
-      if(!jobs[`job${id}`]){
-        jobs[`job${id}`] = {time: eventTime.getTime(), status: events[i].status};
-      }else if(eventTime.getTime() > jobs[`job${id}`].time || onTheSameDay(jobs[`job${id}`].time, eventTime.getTime()) ){
-        jobs[`job${id}`] = {time: eventTime.getTime(), status: events[i].status};
+      console.log(events[i].status, eventTime);
+      if (!jobs[`job${id}`]) {
+        jobs[`job${id}`] = {
+          time: eventTime.getTime(),
+          status: events[i].status,
+        };
+      } else if (
+        eventTime.getTime() > jobs[`job${id}`].time ||
+        onTheSameDay(jobs[`job${id}`].time, eventTime.getTime())
+      ) {
+        jobs[`job${id}`] = {
+          time: eventTime.getTime(),
+          status: events[i].status,
+        };
       }
     }
-    let JobStatuses:{[status:string]:string} = {};
-    for(const key in jobs) {
-      if(!JobStatuses[jobs[key].status])
-      JobStatuses[jobs[key].status] = jobs[key].status;
+    let JobStatuses: { [status: string]: string } = {};
+    for (const key in jobs) {
+      if (!JobStatuses[jobs[key].status])
+        JobStatuses[jobs[key].status] = jobs[key].status;
     }
     return Object.keys(JobStatuses);
-  }
+  };
   useEffect(() => {
     (async () => {
       const { data } = await network.get("/api/v1/student/all");
-      const newClassNames:string[] = Array.from(new Set(data.map((student: IStudent) => student.Class.name)));
-      const newCourseNames:string[] = Array.from(new Set (data.map((student: IStudent) => student.Class.course)));
-      let JobStatuses:string[] =[]
+      const newClassNames: string[] = Array.from(
+        new Set(data.map((student: IStudent) => student.Class.name))
+      );
+      const newCourseNames: string[] = Array.from(
+        new Set(data.map((student: IStudent) => student.Class.course))
+      );
+      let JobStatuses: string[] = [];
       data.forEach((student: IStudent) => {
-        JobStatuses = [...JobStatuses, ...getRecentJobsStatus(student.Events)]
-      })
-      const newJobStatuses:string[] =Array.from(new Set(JobStatuses));
-      const newFullNames:string[] = Array.from(new Set (data.map((student: IStudent) =>student.firstName + " " + student.lastName)));
+        JobStatuses = [...JobStatuses, ...getRecentJobsStatus(student.Events)];
+      });
+      const newJobStatuses: string[] = Array.from(new Set(JobStatuses));
+      const newFullNames: string[] = Array.from(
+        new Set(
+          data.map(
+            (student: IStudent) => student.firstName + " " + student.lastName
+          )
+        )
+      );
       setFilterOptionsArray([
         {
-          filterBy:"Class",
-          possibleValues: newClassNames
+          filterBy: "Class",
+          possibleValues: newClassNames,
         },
         {
-          filterBy:"Course",
-          possibleValues: newCourseNames
+          filterBy: "Course",
+          possibleValues: newCourseNames,
         },
         {
-          filterBy:"Job Status",
-          possibleValues: newJobStatuses
+          filterBy: "Job Status",
+          possibleValues: newJobStatuses,
         },
         {
-          filterBy:"Name",
-          possibleValues: newFullNames
+          filterBy: "Name",
+          possibleValues: newFullNames,
         },
-      ])
+      ]);
       setStudents(data);
       setLoading(false);
     })();
@@ -128,38 +151,59 @@ function AllStudents() {
     }
   }, [students]);
   const filterFunc = useCallback(() => {
-    return students.filter(student =>{
-      const classCondition = !filterAttributes.Class? true : (student.Class.name === filterAttributes.Class);
-      const courseCondition = !filterAttributes.Course? true : (student.Class.course === filterAttributes.Course);
+    return students.filter((student) => {
+      const classCondition = !filterAttributes.Class
+        ? true
+        : student.Class.name === filterAttributes.Class;
+      const courseCondition = !filterAttributes.Course
+        ? true
+        : student.Class.course === filterAttributes.Course;
       const recentJobStatus = getRecentJobsStatus(student.Events);
-      console.log(recentJobStatus);
-      const jobStatusCondition = !filterAttributes.JobStatus? true : (recentJobStatus.includes(filterAttributes.JobStatus));
+      const jobless =
+        recentJobStatus.length === 0 ||
+        recentJobStatus.every((status) => status === "Rejected");
+      const jobStatusCondition = !filterAttributes.JobStatus
+        ? true
+        : filterAttributes.JobStatus === "None"
+        ? jobless
+        : recentJobStatus.includes(filterAttributes.JobStatus);
       const firstName = filterAttributes.Name.split(" ")[0];
       const lastName = filterAttributes.Name.split(" ")[1];
-      const firstNameCondition = !firstName ? true : (student.firstName === firstName);
-      const lastNameCondition = !lastName ? true : (student.lastName === lastName);
-      return classCondition && courseCondition && firstNameCondition && lastNameCondition && jobStatusCondition;
-    })
-  },[filterAttributes])
+      const firstNameCondition = !firstName
+        ? true
+        : student.firstName === firstName;
+      const lastNameCondition = !lastName
+        ? true
+        : student.lastName === lastName;
+      return (
+        classCondition &&
+        courseCondition &&
+        firstNameCondition &&
+        lastNameCondition &&
+        jobStatusCondition
+      );
+    });
+  }, [filterAttributes]);
   useEffect(() => {
-    setFilteredStudents(filterFunc())
-  },[filterAttributes])
+    setFilteredStudents(filterFunc());
+  }, [filterAttributes]);
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
         </TitleWrapper>
         <br />
         <div style={{ display: "flex" }}>
-          <FiltersComponents 
-          array={filterOptionsArray} 
-          filterObject={filterAttributes} 
-          callbackFunction={setFilterAttributes} 
-          widthPercent={75}/>
-          <StyledLink to='/student/add'>
-            <Button variant='contained' color='primary'>
+          <FiltersComponents
+            array={filterOptionsArray}
+            filterObject={filterAttributes}
+            callbackFunction={setFilterAttributes}
+            widthPercent={75}
+          />
+          <StyledLink to="/student/add">
+            <Button variant="contained" color="primary">
               Add Student
             </Button>
           </StyledLink>
@@ -182,7 +226,7 @@ function AllStudents() {
           {filteredStudents &&
             filteredStudents.map((student) => (
               <li>
-                <StyledLink color='black' to={`/student/${student?.id}`}>
+                <StyledLink color="black" to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
                     <StyledSpan weight="bold">
