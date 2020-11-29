@@ -251,7 +251,7 @@ function SingleJob() {
       <Wrapper width="65%">
         <Center>
           <TitleWrapper>
-            <H1 color="#bb4040">Students In Process</H1>
+            <H1 color="#bb4040">Applicants In Process</H1>
           </TitleWrapper>
         </Center>
         <br />

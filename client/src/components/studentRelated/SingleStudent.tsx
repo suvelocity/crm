@@ -325,7 +325,7 @@ function SingleStudent() {
       <Wrapper width="65%">
         <Center>
           <TitleWrapper>
-            <H1>Student Job Processes</H1>
+            <H1>Job Applications</H1>
           </TitleWrapper>
         </Center>
         <Loading loading={loading} size={30}>

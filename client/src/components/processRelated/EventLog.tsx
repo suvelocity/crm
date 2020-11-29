@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       background: "rgba(181,181,181,0.12)",
       textAlign: "left",
       whiteSpace: "pre-wrap",
+      width: "95%",
     },
   })
 );
@@ -46,8 +47,15 @@ const TicketHeader = styled.div`
 `;
 
 const DateStamp = styled.span`
-  font-size: 0.6em;
-  color: rgb(190, 190, 190);
+  /* background-color: #3f51b5; */
+  font-size: 0.5em;
+  /* color: white; */
+  /* margin-bottom: 10px; */
+  /* position: absolute;
+  left: 40%; */
+  padding: 8px;
+  border-radius: 15px;
+  box-shadow: -2px 2px 4px rgba(10, 10, 15, 0.3);
 `;
 // function EventsLog({
 //   events,
@@ -63,9 +71,9 @@ function EventsLog({ events }: { events: IEvent[] }) {
     <Timeline align="alternate">
       {events.map((event: IEvent, i: number, arr) => (
         <TimelineItem className={classes.timellineItem}>
-          {/* <TimelineOppositeContent>
-              {event.date.slice(0, 10).replace(/-/g, "/")}
-            </TimelineOppositeContent> */}
+          <TimelineOppositeContent>
+            <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp>
+          </TimelineOppositeContent>
           <TimelineSeparator>
             <TimelineDot
               color={i !== arr.length - 1 ? "grey" : "primary"}
@@ -76,11 +84,17 @@ function EventsLog({ events }: { events: IEvent[] }) {
             {i !== arr.length - 1 && <TimelineConnector />}
           </TimelineSeparator>
 
-          <TimelineContent>
+          <TimelineContent
+          // style={{
+          //   display: "flex",
+          //   flexDirection: "column",
+          //   alignItems: "start",
+          // }}
+          >
             <Paper className={classes.ticket}>
+              {/* <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp> */}
               <TicketHeader>{capitalize(event.status)}</TicketHeader>
               <Typography>{capitalize(event.comment)}</Typography>
-              <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp>
             </Paper>
           </TimelineContent>
         </TimelineItem>
