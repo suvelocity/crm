@@ -18,7 +18,7 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import EventLog from "./EventLog";
 import styled from "styled-components";
-import NewEventModal from "../NewEventModal";
+import NewEventModal from "./NewEventModal";
 import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import WorkIcon from "@material-ui/icons/Work";
@@ -54,8 +54,6 @@ function SingleProcess() {
         const filteredEvents = studentData?.Events.filter(
           (event: IEvent) => event.Job?.id === jobData.id
         ).sort(sortByDate);
-        // console.log(student?.Events);
-        // console.log(filteredEvents);
         setEvents(filteredEvents);
         setLoading(false);
       } catch (e) {
@@ -68,7 +66,7 @@ function SingleProcess() {
     const sortedEvents = events?.concat(newEvent).sort(sortByDate);
     setEvents(sortedEvents);
   };
-  console.log(student);
+
   return (
     <Wrapper width="90%">
       <Center>

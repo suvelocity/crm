@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import NewEventModal from "../NewEventModal";
-import styled from "styled-components";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -53,10 +51,9 @@ import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import WorkIcon from "@material-ui/icons/Work";
 import TrackChangesIcon from "@material-ui/icons/TrackChanges";
 import { capitalize } from "../../helpers/general";
-
 import Swal from "sweetalert2";
-import EventLog from "../processRelated/EventLog";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

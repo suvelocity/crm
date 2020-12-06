@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import network from "../helpers/network";
+import network from "../../helpers/network";
 import {
   Modal,
   Button,
@@ -16,8 +16,8 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
 import { ErrorOutlineOutlined } from "@material-ui/icons";
 import DoneIcon from "@material-ui/icons/Done";
-import { Center, GridDiv } from "../styles/styledComponents";
-import { IEvent } from "../typescript/interfaces";
+import { Center, GridDiv } from "../../styles/styledComponents";
+import { IEvent, status } from "../../typescript/interfaces";
 
 function getModalStyle() {
   return {
@@ -63,12 +63,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 // change this later TODO
-const statuses: string[] = [
+const statuses: status[] = [
   "Sent CV",
+  "Phone Interview",
   "First interview",
   "Second interview",
+  "Third Interview",
+  "Forth interview",
+  "Home Test",
   "Hired",
   "Rejected",
+  "Irrelevant",
+  "Removed Application",
+  "Position Frozen",
+  "Canceled",
 ];
 
 function NewEventModal({
@@ -96,14 +104,13 @@ function NewEventModal({
   };
 
   // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
-  const submitStatus = async (data: any) => {
+  const submitStatus = async (data: IEvent) => {
     data.studentId = studentId;
     data.jobId = jobId;
-    console.log(data);
     try {
       const {
         data: newEvent,
-      }: { data: any; newEvent: IEvent } = await network.post(
+      }: { data: IEvent; newEvent: IEvent } = await network.post(
         `/api/v1/event`,
         data
       );
