@@ -1,15 +1,22 @@
 export interface IStudent {
-  id: string;
-  email: string;
+  id?: number;
   firstName: string;
   lastName: string;
-  phone: string;
   idNumber: string;
-  additionalDetails: string;
-  class: string;
-  age: string;
+  email: string;
+  phone: string;
+  Class: IClass;
   address: string;
-  jobs: Partial<IJob>[];
+  age: number;
+  maritalStatus: string;
+  children: number;
+  academicBackground: string;
+  militaryService: string;
+  workExperience: string;
+  languages: string;
+  citizenship: string;
+  additionalDetails: string;
+  Events: IEvent[];
 }
 export interface ICompany {
   id?: number;
@@ -22,10 +29,33 @@ export interface ICompany {
   jobs: Pick<IJob, "id">;
 }
 export interface IJob {
-  id: string;
+  id?: number;
   company: string;
   position: string;
   requirements: string;
   location: string;
-  students: Partial<IStudent>[];
+  description: string;
+  contact: string;
+  additionalDetails: string;
+  Events: IEvent[];
+}
+
+export interface IClass {
+  id: number;
+  course: string;
+  name: string;
+  startingDate: string;
+  endingDate: string;
+  cycleNumber: number;
+  zoomLink: string;
+  additionalDetails: string;
+  Students: Omit<IStudent, "Class">[];
+}
+
+export interface IEvent {
+  status: string;
+  comment: string;
+  date: string;
+  Student?: IStudent;
+  Job?: IJob;
 }
