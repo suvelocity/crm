@@ -8,14 +8,14 @@ import { eventsSchema } from "../../validations";
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { jobId, status, studentId, comment, date } = req.body;
-    const { value, error } = eventsSchema.validate({
+    const { error } = eventsSchema.validate({
       jobId,
       status,
       studentId,
       comment,
       date,
     });
-    if (error) return res.status(400).json(error);
+    if (error) return res.status(400).json({ error: error.message });
     const event: IEvent = await Event.create({
       studentId,
       jobId,
@@ -24,9 +24,8 @@ router.post("/", async (req: Request, res: Response) => {
       date,
     });
     return res.json(event);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error occurred");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -37,10 +36,10 @@ router.patch("/delete", async (req, res) => {
     const deleted: any = await Event.destroy({
       where: { studentId, jobId },
     });
-    if (deleted) return res.json({ msg: "Event deleted" });
-    return res.status(404).send("event not found");
-  } catch (err) {
-    res.status(500).send(err.message);
+    if (deleted) return res.json({ message: "Event deleted" });
+    return res.status(404).json({ error: "Event not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
