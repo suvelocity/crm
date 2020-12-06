@@ -11,6 +11,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import WorkIcon from "@material-ui/icons/Work";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
+import ClassIcon from "@material-ui/icons/Class";
 
 function NavAppBar() {
   const [open, setOpen] = useState(false);
@@ -21,39 +22,45 @@ function NavAppBar() {
 
   return (
     <div>
-      <AppBar position='static'>
+      <AppBar position="static">
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
-            color='inherit'
-            edge='start'
-            aria-label='menu'
+            color="inherit"
+            edge="start"
+            aria-label="menu"
           >
             <Menu />
           </IconButton>
-          <StyledLink to='/student/all'>
-            <Typography variant='h4'>CRM</Typography>
+          <StyledLink to="/student/all">
+            <Typography variant="h4">CRM</Typography>
           </StyledLink>
         </Toolbar>
       </AppBar>
       <Drawer
-        anchor='left'
+        anchor="left"
         open={open}
         onClose={() => {
           setOpen(false);
         }}
       >
         <StyledDrawer>
-          <StyledLink to='/student/all'>
+          <StyledLink to="/student/all">
             <DrawerItem onClick={() => setOpen(false)}>
               All students
               <PeopleIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/job/all'>
+          <StyledLink to="/job/all">
             <DrawerItem onClick={() => setOpen(false)}>
               All Jobs
               <WorkIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/class/all">
+            <DrawerItem onClick={() => setOpen(false)}>
+              All Classes
+              <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
         </StyledDrawer>

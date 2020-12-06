@@ -6,6 +6,10 @@ import {
   TitleWrapper,
   StyledLink,
   Center,
+  StyledSpan,
+  StyledUl,
+  TableHeader,
+  StyledDiv,
 } from "../../styles/styledComponents";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -26,6 +30,8 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import BusinessIcon from "@material-ui/icons/Business";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import styled from "styled-components";
+import { capitalize } from "../../helpers/general";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,16 +67,16 @@ function AllJobs() {
   }, []);
 
   return (
-    <Wrapper>
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="red">All Jobs</H1>
+          <H1 color='#bb4040'>All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to='/job/add'>
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
+            variant='contained'
           >
             Add Job
           </Button>
@@ -78,75 +84,33 @@ function AllJobs() {
       </Center>
       <br />
       <Loading loading={loading} size={30}>
-        {jobs &&
-          jobs.map((job) => (
-            <Accordion key={job.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-label="Expand"
-                aria-controls="additional-actions2-content"
-                id="additional-actions2-header"
-              >
+        <StyledUl>
+          {jobs && (
+            <li>
+              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
                 <WorkIcon />
-                <Typography className={classes.heading}>
-                  <StyledLink
-                    to={`/job/${job.id}`}
-                    textDecoration={"true"}
-                    color="black"
-                  >
-                    {job.position}
-                  </StyledLink>
-                </Typography>
-                <Typography className={classes.secondaryHeading}>
-                  {job.company}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PostAddIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={"Position"}
-                      secondary={job.position}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <LocationCityIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"Company"} secondary={job.company} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <BusinessIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Location" secondary={job.location} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon>
-                      <PlaylistAddCheckIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Requirements"
-                      secondary={job.requirements}
-                    />
-                  </ListItem>
-                  {/* {job.students.map(
-                    (student: Partial<IStudent>, index: number) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={`Student ${index + 1}`}
-                          secondary={`${student.firstName} ${student.lastName}`}
-                        />
-                      </ListItem>
-                    )
-                  )} */}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                <StyledSpan weight="bold">Position</StyledSpan>
+                <StyledSpan weight="bold">Company</StyledSpan>
+                <StyledSpan weight="bold">Location</StyledSpan>
+              </TableHeader>
+            </li>
+          )}
+          {jobs &&
+            jobs.map((job) => (
+              <li>
+                <StyledLink to={`/job/${job.id}`} color="black">
+                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                    <WorkIcon />
+                    <StyledSpan weight="bold">
+                      {capitalize(job.position)}
+                    </StyledSpan>
+                    <StyledSpan>{capitalize(job.company)}</StyledSpan>
+                    <StyledSpan>{job.location}</StyledSpan>
+                  </StyledDiv>
+                </StyledLink>
+              </li>
+            ))}
+        </StyledUl>
       </Loading>
     </Wrapper>
   );
