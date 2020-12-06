@@ -40,20 +40,11 @@ deploy:
 	@echo "removing old container..."
 	-$(MAKE) ssh-cmd CMD='docker container rm $(CONTAINER_NAME)'
 	@echo "starting new container..."
-	@$(MAKE) ssh-cmd CMD='\
-		docker run -d --name=$(CONTAINER_NAME) \
-			--restart=unless-stopped \
-			--network $(NETWORK_NAME) \
-			-e MYSQL_HOST=${DB_HOST} \
-			-e MYSQL_DATABASE=${DB_NAME} \
-			-e MYSQL_USER=${DB_USER} \
-			-e MYSQL_PASSWORD=${DB_PASS} \
-			-p ${SERVER_PORT}:${SERVER_PORT} \
-			$(REMOTE_TAG) \
-			'
-	# ADD the followoing line bellow MYSQL_PASSWORD If you added the ENV_FILE Secret :
-	# --env-file=.env \ 
+	$(MAKE) start-app
+	@echo "Removing Unused Images from VM"
+	$(MAKE) remove-images
 	@echo "Good Job Deploy Succeded !"
+
 
 network-init:
 	$(MAKE) ssh-cmd CMD='docker network create $(NETWORK_NAME)'
@@ -66,7 +57,7 @@ create-firewall-rule:
 		--description "Allow port ${SERVER_PORT} access to http-server"
 
 sql-init:
-	$(MAKE) ssh-cmd CMD=' \
+	@$(MAKE) ssh-cmd CMD=' \
 		docker run --name=${DB_HOST} \
 			-e MYSQL_ROOT_PASSWORD=${DB_PASS} \
 			-e MYSQL_DATABASE=${DB_NAME} \
@@ -75,3 +66,22 @@ sql-init:
 			--network $(NETWORK_NAME) \
 			-d mysql:8 \
 			'
+
+start-app:
+	@$(MAKE) ssh-cmd CMD='\
+		docker run -d --name=$(CONTAINER_NAME) \
+			--restart=unless-stopped \
+			--network $(NETWORK_NAME) \
+			-e MYSQL_HOST=${DB_HOST} \
+			-e MYSQL_DATABASE=${DB_NAME} \
+			-e MYSQL_USER=${DB_USER} \
+			-e MYSQL_PASSWORD=${DB_PASS} \
+			-p ${SERVER_PORT}:${SERVER_PORT} \
+			$(REMOTE_TAG) \
+			'
+
+# ADD the followoing line bellow MYSQL_PASSWORD If you added the ENV_FILE Secret :
+# --env-file=.env \ 
+
+remove-images:
+	@$(MAKE) ssh-cmd CMD='docker image prune -a -f'
