@@ -125,12 +125,12 @@ function AllStudents() {
       );
       setFilterOptionsArray([
         {
-          filterBy: "Class",
-          possibleValues: newClassNames,
-        },
-        {
           filterBy: "Course",
           possibleValues: newCourseNames,
+        },
+        {
+          filterBy: "Class",
+          possibleValues: newClassNames,
         },
         {
           filterBy: "Job Status",
