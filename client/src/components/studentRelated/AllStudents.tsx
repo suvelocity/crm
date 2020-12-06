@@ -79,7 +79,6 @@ function AllStudents() {
     for (let i = 0; i < events.length; i++) {
       const id: number = events[i].Job!.id!;
       const eventTime = new Date(events[i].date);
-      console.log(events[i].status, eventTime);
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),

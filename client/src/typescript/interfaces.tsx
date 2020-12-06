@@ -52,9 +52,26 @@ export interface IClass {
   Students: Omit<IStudent, "Class">[];
 }
 
+export type status =
+  | "Sent CV"
+  | "Phone Interview"
+  | "First interview"
+  | "Second interview"
+  | "Third Interview"
+  | "Forth interview"
+  | "Home Test"
+  | "Hired"
+  | "Rejected"
+  | "Irrelevant"
+  | "Removed Application"
+  | "Position Frozen"
+  | "Canceled";
+
 export interface IEvent {
-  status: string;
-  comment: string;
+  status: status;
+  studentId?: number;
+  jobId?: number;
+  comment?: string;
   date: string;
   Student?: IStudent;
   Job?: IJob;

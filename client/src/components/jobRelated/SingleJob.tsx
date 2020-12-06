@@ -3,7 +3,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import EmailIcon from "@material-ui/icons/Email";
 import {
   H1,
   Wrapper,
@@ -18,8 +17,6 @@ import {
   StyledLink,
   MultilineListItem,
 } from "../../styles/styledComponents";
-import { formatPhone } from "../../helpers/general";
-
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
@@ -46,7 +43,6 @@ import ApplyForJobModal from "./ApplyForJobModal";
 import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
 import DescriptionIcon from "@material-ui/icons/Description";
-import NewEventModal from "../NewEventModal";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize } from "../../helpers/general";
@@ -149,7 +145,6 @@ function SingleJob() {
     setEventsToMap(sortedEvents);
   };
 
-  console.log(job);
   return (
     <>
       <Wrapper width="80%">
