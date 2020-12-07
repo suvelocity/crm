@@ -9,7 +9,6 @@ import {
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   StyledLink,
   StyledDiv,
@@ -19,29 +18,17 @@ import {
   MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
-import DescriptionIcon from "@material-ui/icons/Description";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
-import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
+import { IStudent, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import IconButton from "@material-ui/core/IconButton";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -54,41 +41,11 @@ import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(30),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-    },
-    iconButton: {
-      fontSize: theme.typography.pxToRem(10),
-      padding: 0,
-      marginLeft: "auto",
-    },
-    details: {
-      height: "auto",
-      padding: "20px",
-    },
-  })
-);
-
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-  const classes = useStyles();
 
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(

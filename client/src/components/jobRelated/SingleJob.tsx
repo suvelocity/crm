@@ -8,7 +8,6 @@ import {
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   StyledSpan,
   TableHeader,
@@ -18,62 +17,27 @@ import {
   MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
-import PhoneIcon from "@material-ui/icons/Phone";
-import DialpadIcon from "@material-ui/icons/Dialpad";
-import SubjectIcon from "@material-ui/icons/Subject";
-import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
-import EventLog from "../processRelated/EventLog";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
-import DateRangeIcon from "@material-ui/icons/DateRange";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import { IJob, IEvent } from "../../typescript/interfaces";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import LocationCityIcon from "@material-ui/icons/LocationCity";
 import BusinessIcon from "@material-ui/icons/Business";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ApplyForJobModal from "./ApplyForJobModal";
-import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize } from "../../helpers/general";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-    iconButton: {
-      fontSize: theme.typography.pxToRem(10),
-      padding: 0,
-      marginLeft: "auto",
-    },
-  })
-);
-
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-  const classes = useStyles();
 
   const getJob = useCallback(async () => {
     const { data }: { data: IJob } = await network.get(

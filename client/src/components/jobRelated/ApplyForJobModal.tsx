@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IStudent, IEvent } from "../../typescript/interfaces";
+import { IStudent, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import network from "../../helpers/network";
 import {
   Modal,
@@ -111,13 +111,13 @@ function NewEventModal({
       const {
         data: newEvent,
       }: { data: IEvent; newEvent: IEvent } = await network.post(
-        `/api/v1/event`,
+        "/api/v1/event",
         data
       );
       add(newEvent);
       handleClose();
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
     }
   };
 

@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-
 import network from "../../helpers/network";
 import {
   validEmailRegex,

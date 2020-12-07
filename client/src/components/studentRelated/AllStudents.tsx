@@ -11,45 +11,20 @@ import {
   StyledUl,
   StyledDiv,
 } from "../../styles/styledComponents";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IClass, IEvent } from "../../typescript/interfaces";
+import {
+  IStudent,
+  IEvent,
+  filterStudentObject,
+  SelectInputs,
+} from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
-import searchResults from "../../functions/searchStudents";
-
-import { SelectInputs } from "../FiltersComponents";
 import { FiltersComponents } from "../FiltersComponents";
 import { capitalize } from "../../helpers/general";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-  })
-);
-
-type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
-
-export interface filterStudentObject {
-  Class: string;
-  Course: string;
-  JobStatus: string;
-  Name: string;
-}
-export interface Name {
-  firstName: string;
-  lastName: string;
-}
 const onTheSameDay = (day1: number, day2: number) => {
   const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
   const Day = 1000 * 60 * 60 * 24;
@@ -72,7 +47,6 @@ function AllStudents() {
       Name: "",
     }
   );
-  const classes = useStyles();
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
     type JobEvents = { [id: string]: { time: number; status: string } };
     let jobs: JobEvents = {};
