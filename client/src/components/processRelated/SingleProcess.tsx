@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   MultilineListItem,
 } from "../../styles/styledComponents";
@@ -19,7 +18,7 @@ import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import EventLog from "./EventLog";
 import styled from "styled-components";
 import NewEventModal from "./NewEventModal";
-import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import WorkIcon from "@material-ui/icons/Work";
 

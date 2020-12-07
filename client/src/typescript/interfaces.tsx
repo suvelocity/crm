@@ -76,3 +76,21 @@ export interface IEvent {
   Student?: IStudent;
   Job?: IJob;
 }
+
+type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
+
+export interface filterStudentObject {
+  Class: string;
+  Course: string;
+  JobStatus: string;
+  Name: string;
+}
+export interface Name {
+  firstName: string;
+  lastName: string;
+}
+
+export interface SelectInputs {
+  filterBy: string;
+  possibleValues: string[];
+}

@@ -3,13 +3,11 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import EmailIcon from "@material-ui/icons/Email";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   MultilineListItem,
   StyledSpan,
@@ -19,27 +17,12 @@ import {
   StyledLink,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
-import PhoneIcon from "@material-ui/icons/Phone";
-import DialpadIcon from "@material-ui/icons/Dialpad";
-import SubjectIcon from "@material-ui/icons/Subject";
 import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IClass, IEvent } from "../../typescript/interfaces";
-import DateRangeIcon from "@material-ui/icons/DateRange";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import BusinessIcon from "@material-ui/icons/Business";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import IconButton from "@material-ui/core/IconButton";
+import { IStudent, IClass } from "../../typescript/interfaces";
 import LinkIcon from "@material-ui/icons/Link";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
@@ -47,32 +30,10 @@ import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize, formatPhone } from "../../helpers/general";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-    iconButton: {
-      fontSize: theme.typography.pxToRem(10),
-      padding: 0,
-      marginLeft: "auto",
-    },
-  })
-);
-
 function SingleClass() {
   const [cls, setCls] = useState<IClass | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
-  const classes = useStyles();
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(

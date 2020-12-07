@@ -16,7 +16,6 @@ import {
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
 import { IJob } from "../../typescript/interfaces";
-import { validNameRegex, validAdressRegex } from "../../helpers/patterns";
 import {
   FormControl,
   FormHelperText,
@@ -44,7 +43,7 @@ const AddClass = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='#2c6e3c'>Add Class</H1>
+          <H1 color="#2c6e3c">Add Class</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -57,18 +56,18 @@ const AddClass = () => {
                 <Controller
                   as={
                     <Select>
-                      <MenuItem key='opt1' value='Cyber4s'>
+                      <MenuItem key="opt1" value="Cyber4s">
                         Cyber4s
                       </MenuItem>
-                      <MenuItem key='opt2' value='Test'>
+                      <MenuItem key="opt2" value="Test">
                         Test
                       </MenuItem>
                     </Select>
                   }
-                  name='course'
+                  name="course"
                   rules={{ required: "Course is required" }}
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                 />
               </FormControl>
               {!empty ? (
@@ -77,21 +76,21 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
               <br />
               <br />
               <TextField
-                id='name'
-                label='Name'
+                id="name"
+                label="Name"
                 inputRef={register({
                   required: "Class title is required",
                   minLength: {
@@ -99,7 +98,7 @@ const AddClass = () => {
                     message: "Class needs to have a minimum of 2 letters",
                   },
                 })}
-                name='name'
+                name="name"
               />
               {!empty ? (
                 errors.name ? (
@@ -107,13 +106,13 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
@@ -122,9 +121,9 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>Start Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='startingDate'
-                  name='startingDate'
+                  type="date"
+                  id="startingDate"
+                  name="startingDate"
                   inputRef={register({ required: "Start date is required" })}
                   defaultValue={`${new Date().getFullYear()}-${
                     new Date().getMonth() + 1
@@ -138,13 +137,13 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
@@ -153,14 +152,14 @@ const AddClass = () => {
             </div>
             <div>
               <TextField
-                id='cycleNumber'
-                name='cycleNumber'
-                type='number'
+                id="cycleNumber"
+                name="cycleNumber"
+                type="number"
                 defaultValue={1}
                 inputRef={register({
                   required: "Cycle number is required",
                 })}
-                label='Cycle Number'
+                label="Cycle Number"
               />
               {!empty ? (
                 errors.cycleNumber ? (
@@ -168,22 +167,22 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
               <br />
               <br />
               <TextField
-                name='zoomLink'
+                name="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
-                label='Zoom Link'
+                label="Zoom Link"
               />
               {!empty ? (
                 errors.zoomLink ? (
@@ -191,13 +190,13 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
@@ -206,9 +205,9 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>End Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='endingDate'
-                  name='endingDate'
+                  type="date"
+                  id="endingDate"
+                  name="endingDate"
                   inputRef={register({
                     required: "End date is required",
                   })}
@@ -224,13 +223,13 @@ const AddClass = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
                 ) : (
                   <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color='action' />
+                    <DoneIcon color="action" />
                   </IconButton>
                 )
               ) : null}
@@ -239,19 +238,19 @@ const AddClass = () => {
           <br />
 
           <TextField
-            id='additionalDetails'
+            id="additionalDetails"
             multiline
             fullWidth
             rows={5}
-            variant='outlined'
-            name='additionalDetails'
+            variant="outlined"
+            name="additionalDetails"
             inputRef={register({
               maxLength: {
                 value: 500,
                 message: "Additional Details are too long",
               },
             })}
-            label='Additional Details'
+            label="Additional Details"
           />
           {!empty ? (
             errors.additionalDetails ? (
@@ -259,24 +258,24 @@ const AddClass = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
           <br />
           <br />
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>
