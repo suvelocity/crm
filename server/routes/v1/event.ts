@@ -1,9 +1,27 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Event } from "../../models";
+import { Event, Student, Job } from "../../models";
 import { IEvent } from "../../types";
 import { eventsSchema } from "../../validations";
+
+router.get("/all", async (req: Request, res: Response) => {
+  try {
+    const events: IEvent[] = await Event.findAll({
+      include: [
+        {
+          model: Student,
+        },
+        {
+          model: Job,
+        },
+      ],
+    });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.post("/", async (req: Request, res: Response) => {
   try {

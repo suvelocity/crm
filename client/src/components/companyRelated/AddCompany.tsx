@@ -50,7 +50,7 @@ const AddCompany = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#9e9e23">Add Company</H1>
+          <H1 color="#a3a365">Add Company</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -227,7 +227,7 @@ const AddCompany = () => {
           <br />
           <Button
             id="submitButton"
-            style={{ backgroundColor: "#9e9e23", color: "white" }}
+            style={{ backgroundColor: "#a3a365", color: "white" }}
             variant="contained"
             color="primary"
             type="submit"

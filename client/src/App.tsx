@@ -16,6 +16,7 @@ import SingleProcess from "./components/processRelated/SingleProcess";
 import AddCompany from "./components/companyRelated/AddCompany";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
+import AllProcesses from "./components/processRelated/AllProcesses";
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
             </Route>
             <Route exact path="/company/:id">
               <SingleCompany />
+            </Route>
+            <Route exact path="/process/all">
+              <AllProcesses />
             </Route>
             <Route exact path="/process/:studentId/:jobId">
               <SingleProcess />

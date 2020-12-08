@@ -13,6 +13,7 @@ import BusinessIcon from "@material-ui/icons/Business";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
 import ClassIcon from "@material-ui/icons/Class";
+import TimelineIcon from "@material-ui/icons/Timeline";
 
 function NavAppBar() {
   const [open, setOpen] = useState(false);
@@ -68,6 +69,12 @@ function NavAppBar() {
             <DrawerItem onClick={() => setOpen(false)}>
               Companies
               <BusinessIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/process/all">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Processes
+              <TimelineIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
         </StyledDrawer>
