@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
+      this.belongsTo(models.Student,{
+        foreignKey: "mentorId"   
+      });
       this.belongsTo(models.Class, {
         foreignKey: "classId",
       });
@@ -36,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       citizenship: DataTypes.STRING,
       additionalDetails: DataTypes.STRING,
       classId: DataTypes.INTEGER,
+      mentorId: DataTypes.INTEGER,
     },
     {
       sequelize,
