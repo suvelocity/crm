@@ -46,3 +46,12 @@ export interface IEvent {
   jobId: number;
   status: string;
 }
+export interface IMentor {
+  id?: number;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  job: string;
+}
