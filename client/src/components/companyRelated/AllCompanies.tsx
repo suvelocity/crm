@@ -31,18 +31,18 @@ function AllCompanies() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#9e9e23">All Companies</H1>
+          <H1 color='#9e9e23'>All Companies</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/company/add">
+        <StyledLink to='/company/add'>
           <Button
-            variant="contained"
+            variant='contained'
             style={{ backgroundColor: "#9e9e23", color: "white" }}
           >
-            Add Class
+            Add Company
           </Button>
         </StyledLink>
       </Center>
@@ -51,21 +51,21 @@ function AllCompanies() {
         <StyledUl>
           {companies && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+              <TableHeader repeatFormula='1fr 2.5fr 2.5fr 1fr'>
                 <BusinessIcon />
-                <StyledSpan weight="bold">Name</StyledSpan>
-                <StyledSpan weight="bold">Location</StyledSpan>
-                <StyledSpan weight="bold">Contact Name</StyledSpan>
+                <StyledSpan weight='bold'>Name</StyledSpan>
+                <StyledSpan weight='bold'>Location</StyledSpan>
+                <StyledSpan weight='bold'>Contact Name</StyledSpan>
               </TableHeader>
             </li>
           )}
           {companies &&
             companies.map((company) => (
               <li>
-                <StyledLink to={`/company/${company.id}`} color="black">
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                <StyledLink to={`/company/${company.id}`} color='black'>
+                  <StyledDiv repeatFormula='1fr 2.5fr 2.5fr 1fr'>
                     <BusinessIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {capitalize(company.name)}
                     </StyledSpan>
                     <StyledSpan>{capitalize(company.location)}</StyledSpan>

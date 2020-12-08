@@ -17,6 +17,7 @@ import {
   MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
+import BusinessIcon from "@material-ui/icons/Business";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import ClassIcon from "@material-ui/icons/Class";
@@ -27,7 +28,6 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
