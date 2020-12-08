@@ -87,3 +87,14 @@ export const studentSchemaToPut = Joi.object({
   languages: Joi.string().allow(null, ""),
   citizenship: Joi.string().allow(null, ""),
 });
+
+export const meetingSchema = Joi.object({
+  studentId: Joi.number().required(),
+  place: Joi.string().allow(null, ""),
+  date: Joi.date().min(new Date()).allow(null, "")
+})
+
+export const meetingSchemaToPut = Joi.object({
+  place: Joi.string().allow(null, ""),
+  date: Joi.string()
+})
