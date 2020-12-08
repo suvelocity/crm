@@ -94,9 +94,7 @@ function NewEventModal({
               </FormControl>
               {!empty ? (
                 errors.status ? (
-                  <Tooltip title={errors.status.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.status.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -115,9 +113,7 @@ function NewEventModal({
               />{" "}
               {!empty ? (
                 errors.date ? (
-                  <Tooltip title={errors.date.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.date.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -139,9 +135,7 @@ function NewEventModal({
               />
               {!empty ? (
                 errors.comment ? (
-                  <Tooltip title={errors.comment.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.comment.message} />
                 ) : (
                   <ActionBtn />
                 )

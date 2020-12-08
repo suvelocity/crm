@@ -31,9 +31,11 @@ const AddClass = () => {
 
   const empty = Object.keys(errors).length === 0;
 
-  const defaultDateValue = `${new Date().getFullYear()}-${
-    new Date().getMonth() + 1
-  }-${new Date().getDate()}`;
+  const defaultDateValue = `${new Date().getFullYear()}-${(
+    "0" +
+    (new Date().getMonth() + 1)
+  ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+  console.log(defaultDateValue);
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
@@ -76,9 +78,7 @@ const AddClass = () => {
               </FormControl>
               {!empty ? (
                 errors.course ? (
-                  <Tooltip title={errors.course.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.course.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -98,9 +98,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.name ? (
-                  <Tooltip title={errors.name.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.name.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -120,9 +118,7 @@ const AddClass = () => {
               </FormControl>
               {!empty ? (
                 errors.startDate ? (
-                  <Tooltip title={errors.startDate.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.startDate.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -142,9 +138,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.cycleNumber ? (
-                  <Tooltip title={errors.cycleNumber.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.cycleNumber.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -158,9 +152,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.zoomLink ? (
-                  <Tooltip title={errors.zoomLink.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.company.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -175,17 +167,13 @@ const AddClass = () => {
                   inputRef={register({
                     required: "End date is required",
                   })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
+                  defaultValue={defaultDateValue}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
               {!empty ? (
                 errors.endDate ? (
-                  <Tooltip title={errors.endDate.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.endDate.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -210,9 +198,7 @@ const AddClass = () => {
           />
           {!empty ? (
             errors.additionalDetails ? (
-              <Tooltip title={errors.additionalDetails.message}>
-                <ErrorBtn />
-              </Tooltip>
+              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
             ) : (
               <ActionBtn />
             )
