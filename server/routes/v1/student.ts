@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 //@ts-ignore
-import { Student, Job, Event, Class } from "../../models";
+import { Student, Company, Job, Event, Class } from "../../models";
 import { IStudent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 const router = Router();
@@ -14,6 +14,12 @@ router.get("/all", async (req: Request, res: Response) => {
           include: [
             {
               model: Job,
+              include: [
+                {
+                  model: Company,
+                  attributes: ["name"],
+                },
+              ],
             },
           ],
           attributes: ["status", "date", "comment"],
@@ -39,6 +45,12 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
           include: [
             {
               model: Job,
+              include: [
+                {
+                  model: Company,
+                  attributes: ["name"],
+                },
+              ],
             },
           ],
           attributes: ["status", "date", "comment"],

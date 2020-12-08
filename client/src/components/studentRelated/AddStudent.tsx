@@ -204,7 +204,7 @@ function AddStudent() {
                   required: "Phone is required",
                   pattern: {
                     value: validPhoneNumberRegex,
-                    message: "invalid phone number",
+                    message: "Invalid phone number",
                   },
                 })}
                 label="Phone Number"

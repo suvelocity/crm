@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import network from "../../helpers/network";
 import DoneIcon from "@material-ui/icons/Done";
@@ -15,7 +15,7 @@ import {
   GridDiv,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
-import { IClass } from "../../typescript/interfaces";
+import { ICompany } from "../../typescript/interfaces";
 import {
   FormControl,
   FormHelperText,
@@ -23,19 +23,23 @@ import {
   MenuItem,
   Select,
 } from "@material-ui/core";
+import {
+  validEmailRegex,
+  validNameRegex,
+  validPhoneNumberRegex,
+  onlyNumbersRegex,
+} from "../../helpers/patterns";
 
-const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
-
-const AddClass = () => {
+const AddCompany = () => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
-  const onSubmit = async (data: Omit<IClass, "id">) => {
+  const onSubmit = async (data: Omit<ICompany, "id">) => {
     try {
-      await network.post("/api/v1/class", data);
-      history.push("/class/all");
+      await network.post("/api/v1/company", data);
+      history.push("/company/all");
     } catch (e) {
       alert("error occurred");
     }
@@ -45,58 +49,19 @@ const AddClass = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">Add Class</H1>
+          <H1 color="#9e9e23">Add Company</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
             <div>
-              <FormControl
-                style={{ minWidth: 200 }}
-                error={Boolean(errors.course)}
-              >
-                <InputLabel>Please select a course</InputLabel>
-                <Controller
-                  as={
-                    <Select>
-                      {courses.map((course: string, i: number) => (
-                        <MenuItem key={`opt${i}`} value={course}>
-                          {course}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  }
-                  name="course"
-                  rules={{ required: "Course is required" }}
-                  control={control}
-                  defaultValue=""
-                />
-              </FormControl>
-              {!empty ? (
-                errors.course ? (
-                  <Tooltip title={errors.course.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
-              <br />
-              <br />
               <TextField
                 id="name"
                 label="Name"
                 inputRef={register({
-                  required: "Class title is required",
+                  required: "Company name is required",
                   minLength: {
                     value: 2,
-                    message: "Class needs to have a minimum of 2 letters",
+                    message: "Company needs to have a minimum of 2 letters",
                   },
                 })}
                 name="name"
@@ -119,22 +84,14 @@ const AddClass = () => {
               ) : null}
               <br />
               <br />
-              <FormControl>
-                <FormHelperText>Start Date</FormHelperText>
-                <TextField
-                  type="date"
-                  id="startingDate"
-                  name="startingDate"
-                  inputRef={register({ required: "Start date is required" })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
-                  style={{ width: "12.7vw" }}
-                />
-              </FormControl>
+              <TextField
+                name="location"
+                inputRef={register({ required: "Location is required" })}
+                label="Location"
+              />
               {!empty ? (
-                errors.startDate ? (
-                  <Tooltip title={errors.startDate.message}>
+                errors.location ? (
+                  <Tooltip title={errors.location.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
@@ -148,23 +105,22 @@ const AddClass = () => {
                   </IconButton>
                 )
               ) : null}
-              <br />
-              <br />
             </div>
             <div>
               <TextField
-                id="cycleNumber"
-                name="cycleNumber"
-                type="number"
-                defaultValue={1}
+                id="contactName"
+                label="Contact Name"
                 inputRef={register({
-                  required: "Cycle number is required",
+                  pattern: {
+                    value: validNameRegex,
+                    message: "Contact name can have only letters and spaces",
+                  },
                 })}
-                label="Cycle Number"
+                name="contactName"
               />
               {!empty ? (
-                errors.cycleNumber ? (
-                  <Tooltip title={errors.cycleNumber.message}>
+                errors.contactName ? (
+                  <Tooltip title={errors.contactName.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
@@ -181,13 +137,14 @@ const AddClass = () => {
               <br />
               <br />
               <TextField
-                name="zoomLink"
-                inputRef={register({ required: "Zoom Link is required" })}
-                label="Zoom Link"
+                id="contactPosition"
+                name="contactPosition"
+                inputRef={register()}
+                label="Contact Position"
               />
               {!empty ? (
-                errors.zoomLink ? (
-                  <Tooltip title={errors.zoomLink.message}>
+                errors.contactPosition ? (
+                  <Tooltip title={errors.contactPosition.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
@@ -203,24 +160,20 @@ const AddClass = () => {
               ) : null}
               <br />
               <br />
-              <FormControl>
-                <FormHelperText>End Date</FormHelperText>
-                <TextField
-                  type="date"
-                  id="endingDate"
-                  name="endingDate"
-                  inputRef={register({
-                    required: "End date is required",
-                  })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
-                  style={{ width: "12.7vw" }}
-                />
-              </FormControl>
+              <TextField
+                id="contactNumber"
+                label="Contact Phone Number"
+                inputRef={register({
+                  pattern: {
+                    value: validPhoneNumberRegex,
+                    message: "Invalid Phone Number",
+                  },
+                })}
+                name="contactNumber"
+              />
               {!empty ? (
-                errors.endDate ? (
-                  <Tooltip title={errors.endDate.message}>
+                errors.contactNumber ? (
+                  <Tooltip title={errors.contactNumber.message}>
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
@@ -239,23 +192,23 @@ const AddClass = () => {
           <br />
 
           <TextField
-            id="additionalDetails"
+            id="description"
             multiline
             fullWidth
             rows={5}
             variant="outlined"
-            name="additionalDetails"
+            name="description"
             inputRef={register({
               maxLength: {
                 value: 500,
-                message: "Additional Details are too long",
+                message: "Description Details are too long",
               },
             })}
-            label="Additional Details"
+            label="Description"
           />
           {!empty ? (
-            errors.additionalDetails ? (
-              <Tooltip title={errors.additionalDetails.message}>
+            errors.description ? (
+              <Tooltip title={errors.description.message}>
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
@@ -273,7 +226,7 @@ const AddClass = () => {
           <br />
           <Button
             id="submitButton"
-            style={{ backgroundColor: "#2c6e3c", color: "white" }}
+            style={{ backgroundColor: "#9e9e23", color: "white" }}
             variant="contained"
             color="primary"
             type="submit"
@@ -286,4 +239,4 @@ const AddClass = () => {
   );
 };
 
-export default AddClass;
+export default AddCompany;
