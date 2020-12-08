@@ -29,6 +29,7 @@ import {
   validPhoneNumberRegex,
   onlyNumbersRegex,
 } from "../../helpers/patterns";
+import Swal from "sweetalert2";
 
 const AddCompany = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -40,8 +41,8 @@ const AddCompany = () => {
     try {
       await network.post("/api/v1/company", data);
       history.push("/company/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
