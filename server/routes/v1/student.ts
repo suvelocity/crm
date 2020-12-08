@@ -76,7 +76,7 @@ router.post("/", async (req: Request, res: Response) => {
     const studentExists = await Student.findOne({
       where: { idNumber: body.idNumber },
     });
-    if (studentExists) return res.status(400).send("Student already exists");
+    if (studentExists) return res.status(409).send("Student already exists");
     const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,

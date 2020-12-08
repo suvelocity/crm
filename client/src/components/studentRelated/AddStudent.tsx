@@ -16,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import Swal from "sweetalert2";
 import InputLabel from "@material-ui/core/InputLabel";
 import {
   GridDiv,
@@ -51,8 +52,15 @@ function AddStudent() {
     try {
       await network.post("/api/v1/student", data);
       history.push("/student/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      if (error.response.status === 409) {
+        Swal.fire({
+          title: "User with the same id already exists",
+          icon: "error",
+        });
+      } else {
+        console.log(error);
+      }
     }
   };
 
