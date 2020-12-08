@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import network from "../../helpers/network";
 import {
   Modal,
@@ -7,77 +7,17 @@ import {
   FormControl,
   InputLabel,
   Tooltip,
-  IconButton,
   Select,
   MenuItem,
   FormHelperText,
 } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
-import { ErrorOutlineOutlined } from "@material-ui/icons";
-import DoneIcon from "@material-ui/icons/Done";
 import { Center, GridDiv } from "../../styles/styledComponents";
-import { IEvent, status } from "../../typescript/interfaces";
-
-function getModalStyle() {
-  return {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    paper: {
-      position: "absolute",
-      width: "50%",
-      maxWidth: 700,
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: 7,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      outline: "none",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-      marginTop: 11,
-    },
-    button: {
-      textAlign: "center",
-      margin: 10,
-    },
-  })
-);
-
-// change this later TODO
-const statuses: status[] = [
-  "Sent CV",
-  "Phone Interview",
-  "First interview",
-  "Second interview",
-  "Third Interview",
-  "Forth interview",
-  "Home Test",
-  "Hired",
-  "Rejected",
-  "Irrelevant",
-  "Removed Application",
-  "Position Frozen",
-  "Canceled",
-];
+import { IEvent } from "../../typescript/interfaces";
+import { ActionBtn, ErrorBtn } from "../formRelated";
+//TODO change this later
+import { statuses } from "../../helpers";
 
 function NewEventModal({
   studentId,
@@ -93,7 +33,7 @@ function NewEventModal({
   const [open, setOpen] = useState<boolean>(false);
   const { register, handleSubmit, errors, control } = useForm();
 
-  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
+  const empty = Object.keys(errors).length === 0;
 
   const handleOpen = () => {
     setOpen(true);
@@ -145,35 +85,27 @@ function NewEventModal({
                       ))}
                     </Select>
                   }
-                  name="status"
+                  name='status'
                   rules={{ required: "Event is required" }}
                   control={control}
-                  defaultValue=""
+                  defaultValue=''
                 />
               </FormControl>
               {!empty ? (
                 errors.status ? (
                   <Tooltip title={errors.status.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineOutlined
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
+                    <ErrorBtn />
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
               <FormHelperText>Date</FormHelperText>
               <TextField
-                type="date"
-                id="date"
-                name="date"
+                type='date'
+                id='date'
+                name='date'
                 inputRef={register({ required: "Event date is required" })}
                 defaultValue={`${new Date().getFullYear()}-${
                   new Date().getMonth() + 1
@@ -183,17 +115,10 @@ function NewEventModal({
               {!empty ? (
                 errors.date ? (
                   <Tooltip title={errors.date.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineOutlined
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
+                    <ErrorBtn />
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
@@ -202,10 +127,10 @@ function NewEventModal({
               <TextField
                 multiline
                 rows={4}
-                id="comment"
-                name="comment"
-                label="Comment"
-                variant="outlined"
+                id='comment'
+                name='comment'
+                label='Comment'
+                variant='outlined'
                 fullWidth
                 inputRef={register({
                   maxLength: { value: 250, message: "Comment too long" },
@@ -214,29 +139,21 @@ function NewEventModal({
               {!empty ? (
                 errors.comment ? (
                   <Tooltip title={errors.comment.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineOutlined
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
+                    <ErrorBtn />
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
           </GridDiv>
-          <br />
-          <br />
+          {generateBrs(2)}
           <Center>
             <Button
-              type="submit"
+              type='submit'
               className={classes.button}
-              variant="contained"
-              color="primary"
+              variant='contained'
+              color='primary'
             >
               Add
             </Button>
@@ -251,8 +168,8 @@ function NewEventModal({
       <Button
         // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
         style={{ display: "block", margin: "4vh auto" }}
-        variant="contained"
-        color="primary"
+        variant='contained'
+        color='primary'
         onClick={handleOpen}
       >
         Change Process Status
@@ -265,3 +182,54 @@ function NewEventModal({
 }
 
 export default NewEventModal;
+
+function getModalStyle() {
+  return {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      position: "absolute",
+      width: "50%",
+      maxWidth: 700,
+      minWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 7,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      outline: "none",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexShrink: 0,
+      fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
+    },
+    secondaryHeading: {
+      fontSize: theme.typography.pxToRem(15),
+      color: theme.palette.text.secondary,
+      marginTop: 11,
+    },
+    button: {
+      textAlign: "center",
+      margin: 10,
+    },
+  })
+);
+
+const generateBrs = (num: number): JSX.Element[] => {
+  const arrOfSpaces = [];
+  for (let i = 0; i < num; i++) {
+    arrOfSpaces.push(<br />);
+  }
+  return arrOfSpaces;
+};
