@@ -1,14 +1,15 @@
 import { Request, Response , Router } from "express";
+import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
-import { Student, Job, Event, Class, Mentor, Meeting } from "../../../models";
-import { IMentor } from "../../../types";
+import { Student, Mentor, Meeting } from "../../../models";
+import { IDeshbord } from "../../../types";
 
 const router = Router();
 
 // get class deshbord table:
 router.get('/class/:id', async (req: Request, res: Response) => {
     try{
-        const classTableData:any[] = await Student.findAll({
+        const classTableData:IDeshbord[] = await Student.findAll({
             attributes:["id", "firstName", "lastName"],
             where:{classId:req.params.id},
             include:[
@@ -17,7 +18,7 @@ router.get('/class/:id', async (req: Request, res: Response) => {
                 },
                 {
                     model: Meeting,
-                    attributes:["mentorId", "date"],
+                    attributes:["date"],
                 }
             ]
         });
@@ -31,7 +32,7 @@ router.get('/class/:id', async (req: Request, res: Response) => {
 // get student meets:
 router.get('/student/:id', async (req: Request, res: Response) => {
     try{
-        const studentMeets:any[] = await Student.findOne({
+        const studentMeets:IDeshbord = await Student.findOne({
             attributes:["id", "firstName", "lastName"],
             where:{id:req.params.id},
             include:[
@@ -51,8 +52,33 @@ router.get('/student/:id', async (req: Request, res: Response) => {
     }
 })
 
-
 // post new meet:
+router.post('/', async (req: Request, res: Response) => {
+    const {error} = meetingSchema.validate(req.body);
+    try{
+        const {studentId, date, place} = req.body;
+        const { mentorId } = await Student.findOne({
+            where: {id:studentId},
+            attributes: ["mentorId"]
+        }) 
+        const meeting = {
+            mentorId,
+            studentId,
+            date: new Date(date),
+            place,
+            created_at: new Date(),
+            updated_at: new Date()
+        }
+        const newMeeting:any = await Meeting.create(meeting);
+        res.json(newMeeting);
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+})
+
+// update meeting
+
+// delete meeting
 
 
 module.exports = router;
