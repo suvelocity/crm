@@ -65,5 +65,11 @@ export interface IDeshbord {
   firstName:string;
   lastName:string;
   Mentor:IMentor;
-  Meetings:meeting[]
+  Meetings:meeting[];
+}
+export interface IMeeting {
+  id?: number;
+  mentorId:number;
+  studentId:number;
+  place:string;
 }
