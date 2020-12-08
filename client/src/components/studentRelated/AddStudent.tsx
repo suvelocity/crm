@@ -92,9 +92,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.firstName ? (
-                  <Tooltip title={errors.firstName.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.firstName.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -118,9 +116,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.lastName ? (
-                  <Tooltip title={errors.lastName.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.lastName.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -148,9 +144,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.idNumber ? (
-                  <Tooltip title={errors.idNumber.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.idNumber.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -170,9 +164,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.email ? (
-                  <Tooltip title={errors.email.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.email.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -192,9 +184,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.phone ? (
-                  <Tooltip title={errors.phone.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.phone.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -210,9 +200,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.languages ? (
-                  <Tooltip title={errors.languages.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.languages.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -243,9 +231,7 @@ function AddStudent() {
               </FormControl>
               {!empty ? (
                 errors.classId ? (
-                  <Tooltip title={errors.classId.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.classId.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -259,9 +245,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.address ? (
-                  <Tooltip title={errors.address.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.address.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -281,9 +265,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.age ? (
-                  <Tooltip title={errors.age.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.age.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -297,9 +279,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.maritalStatus ? (
-                  <Tooltip title={errors.maritalStatus.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.maritalStatus.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -321,9 +301,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.children ? (
-                  <Tooltip title={errors.children.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.children.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -339,9 +317,7 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.citizenship ? (
-                  <Tooltip title={errors.citizenship.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.citizenship.message} />
                 ) : (
                   <ActionBtn />
                 )

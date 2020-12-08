@@ -56,8 +56,8 @@ const AddJob = () => {
           <GridDiv repeatFormula="1fr 0.5fr 3fr">
             <div>
               <FormControl
-                style={{ minWidth: 200 }}
-                error={Boolean(errors.company)}
+                style={{ minWidth: 255 }}
+                error={Boolean(errors.companyId)}
               >
                 <InputLabel>Please select a company</InputLabel>
                 <Controller
@@ -79,10 +79,8 @@ const AddJob = () => {
                 />
               </FormControl>
               {!empty ? (
-                errors.company ? (
-                  <Tooltip title={errors.company.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                errors.companyId ? (
+                  <ErrorBtn tooltipTitle={errors.companyId.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -107,9 +105,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.position ? (
-                  <Tooltip title={errors.position.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.position.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -135,9 +131,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.location ? (
-                  <Tooltip title={errors.location.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.location.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -152,9 +146,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.contact ? (
-                  <Tooltip title={errors.contact.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.contact.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -181,9 +173,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.description ? (
-                  <Tooltip title={errors.description.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.description.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -207,9 +197,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.requirements ? (
-                  <Tooltip title={errors.requirements.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.requirements.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -233,9 +221,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.additionalDetails ? (
-                  <Tooltip title={errors.additionalDetails.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
                 ) : (
                   <ActionBtn />
                 )

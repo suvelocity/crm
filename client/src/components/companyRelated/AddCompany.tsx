@@ -16,20 +16,9 @@ import {
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
 import { ICompany } from "../../typescript/interfaces";
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@material-ui/core";
-import {
-  validEmailRegex,
-  validNameRegex,
-  validPhoneNumberRegex,
-  onlyNumbersRegex,
-} from "../../helpers/patterns";
+import { validNameRegex, validPhoneNumberRegex } from "../../helpers/patterns";
 import Swal from "sweetalert2";
+import { ErrorBtn, ActionBtn } from "../formRelated";
 
 const AddCompany = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -69,18 +58,9 @@ const AddCompany = () => {
               />
               {!empty ? (
                 errors.name ? (
-                  <Tooltip title={errors.name.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.name.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
@@ -101,9 +81,7 @@ const AddCompany = () => {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
@@ -130,9 +108,7 @@ const AddCompany = () => {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
@@ -154,9 +130,7 @@ const AddCompany = () => {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
@@ -183,9 +157,7 @@ const AddCompany = () => {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
