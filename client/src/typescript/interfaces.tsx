@@ -18,19 +18,10 @@ export interface IStudent {
   additionalDetails: string;
   Events: IEvent[];
 }
-export interface ICompany {
-  id?: number;
-  name: string;
-  contactName: string;
-  contactNumber: string;
-  contactEmail: string;
-  location: string;
-  ScaleUpContact: string;
-  jobs: Pick<IJob, "id">;
-}
+
 export interface IJob {
   id?: number;
-  company: string;
+  Company: ICompany;
   position: string;
   requirements: string;
   location: string;
@@ -41,7 +32,7 @@ export interface IJob {
 }
 
 export interface IClass {
-  id: number;
+  id?: number;
   course: string;
   name: string;
   startingDate: string;
@@ -50,6 +41,17 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
+}
+
+export interface ICompany {
+  id?: number;
+  name: string;
+  contactPosition?: string;
+  contactName?: string;
+  contactNumber?: string;
+  location: string;
+  description?: string;
+  Jobs: IJob[];
 }
 
 export type status =

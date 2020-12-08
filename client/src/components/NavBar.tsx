@@ -9,6 +9,7 @@ import {
 import { Menu } from "@material-ui/icons";
 import PeopleIcon from "@material-ui/icons/People";
 import WorkIcon from "@material-ui/icons/Work";
+import BusinessIcon from "@material-ui/icons/Business";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
 import ClassIcon from "@material-ui/icons/Class";
@@ -47,20 +48,26 @@ function NavAppBar() {
         <StyledDrawer>
           <StyledLink to="/student/all">
             <DrawerItem onClick={() => setOpen(false)}>
-              All students
+              Students
               <PeopleIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
           <StyledLink to="/job/all">
             <DrawerItem onClick={() => setOpen(false)}>
-              All Jobs
+              Jobs
               <WorkIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
           <StyledLink to="/class/all">
             <DrawerItem onClick={() => setOpen(false)}>
-              All Classes
+              Classes
               <ClassIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/company/all">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Companies
+              <BusinessIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
         </StyledDrawer>

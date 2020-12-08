@@ -1,6 +1,6 @@
 export interface IJob {
   id?: number;
-  company: string;
+  companyId: number;
   position: string;
   requirements: string;
   location: string;
@@ -45,4 +45,15 @@ export interface IEvent {
   studentId: number;
   jobId: number;
   status: string;
+  comment?: string;
+}
+
+export interface ICompany {
+  id?: number;
+  name: string;
+  contactPosition?: string;
+  contactName?: string;
+  contactNumber?: string;
+  location: string;
+  description?: string;
 }

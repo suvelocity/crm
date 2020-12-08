@@ -27,7 +27,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
-import BusinessIcon from "@material-ui/icons/Business";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -241,9 +241,11 @@ function SingleStudent() {
                   <StyledDiv repeatFormula='0.5fr 1.5fr 1.5fr 2fr'>
                     <WorkIcon />
                     <StyledSpan weight='bold'>
-                      {capitalize(event.Job!.position)}
+                      {capitalize(event.Job?.position)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(event.Job!.company)}</StyledSpan>
+                    <StyledSpan>
+                      {capitalize(event.Job?.Company.name)}
+                    </StyledSpan>
                     <StyledSpan>{`${capitalize(
                       event.status
                     )}, as of ${formatToIsraeliDate(event.date)}`}</StyledSpan>

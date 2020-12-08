@@ -134,9 +134,9 @@ function SingleJob() {
             <List>
               <SingleListItem
                 primary='Company'
-                secondary={capitalize(job?.company)}
+                secondary={capitalize(job?.Company.name)}
               >
-                <LocationCityIcon />
+                <BusinessIcon />
               </SingleListItem>
             </List>
             {/* Company */}

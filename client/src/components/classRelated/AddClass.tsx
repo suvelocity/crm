@@ -1,10 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import network from "../../helpers/network";
-import {
-  Done as DoneIcon,
-  ErrorOutline as ErrorOutlineIcon,
-} from "@material-ui/icons";
+import { ErrorOutline as ErrorOutlineIcon } from "@material-ui/icons";
 import {
   Wrapper,
   TitleWrapper,
@@ -14,6 +11,8 @@ import {
   iconStyle,
   errorIconStyle,
 } from "../../styles/styledComponents";
+import { useHistory } from "react-router-dom";
+import { IClass } from "../../typescript/interfaces";
 import {
   FormControl,
   FormHelperText,
@@ -25,9 +24,9 @@ import {
   Select,
   Tooltip,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-import { IJob } from "../../typescript/interfaces";
 import { ActionBtn, ErrorBtn } from "../formRelated";
+
+const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
 
 const AddClass = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -39,7 +38,7 @@ const AddClass = () => {
     new Date().getMonth() + 1
   }-${new Date().getDate()}`;
 
-  const onSubmit = async (data: Omit<IJob, "id">) => {
+  const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
       await network.post("/api/v1/class", data);
       history.push("/class/all");
@@ -65,12 +64,11 @@ const AddClass = () => {
                 <Controller
                   as={
                     <Select>
-                      <MenuItem key='opt1' value='Cyber4s'>
-                        Cyber4s
-                      </MenuItem>
-                      <MenuItem key='opt2' value='Test'>
-                        Test
-                      </MenuItem>
+                      {courses.map((course: string, i: number) => (
+                        <MenuItem key={`opt${i}`} value={course}>
+                          {course}
+                        </MenuItem>
+                      ))}
                     </Select>
                   }
                   name='course'
