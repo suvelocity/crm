@@ -180,7 +180,7 @@ function SingleProcess() {
                     <ListItemText
                       classes={{ primary: classes.primary }}
                       primary="Company"
-                      secondary={`${job?.company}`}
+                      secondary={`${job?.Company.name}`}
                     />
                   </CenteredListItem>
                 </List>

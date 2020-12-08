@@ -8,24 +8,24 @@ import {
   Center,
   StyledSpan,
   StyledUl,
-  TableHeader,
   StyledDiv,
+  TableHeader,
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
-import WorkIcon from "@material-ui/icons/Work";
-import { IJob } from "../../typescript/interfaces";
+import { ICompany } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
+import BusinessIcon from "@material-ui/icons/Business";
 import { capitalize } from "../../helpers/general";
 
-function AllJobs() {
-  const [jobs, setJobs] = useState<IJob[]>([]);
+function AllCompanies() {
+  const [companies, setCompanies] = useState<ICompany[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/job/all");
-      setJobs(data);
+      const { data } = await network.get("/api/v1/company/all");
+      setCompanies(data);
       setLoading(false);
     })();
   }, []);
@@ -34,42 +34,42 @@ function AllJobs() {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1 color="#9e9e23">All Companies</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to="/company/add">
           <Button
-            style={{ backgroundColor: "#bb4040", color: "white" }}
             variant="contained"
+            style={{ backgroundColor: "#9e9e23", color: "white" }}
           >
-            Add Job
+            Add Class
           </Button>
         </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
-          {jobs && (
+          {companies && (
             <li>
               <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
-                <WorkIcon />
-                <StyledSpan weight="bold">Position</StyledSpan>
-                <StyledSpan weight="bold">Company</StyledSpan>
+                <BusinessIcon />
+                <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Location</StyledSpan>
+                <StyledSpan weight="bold">Contact Name</StyledSpan>
               </TableHeader>
             </li>
           )}
-          {jobs &&
-            jobs.map((job) => (
+          {companies &&
+            companies.map((company) => (
               <li>
-                <StyledLink to={`/job/${job.id}`} color="black">
+                <StyledLink to={`/company/${company.id}`} color="black">
                   <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
-                    <WorkIcon />
+                    <BusinessIcon />
                     <StyledSpan weight="bold">
-                      {capitalize(job.position)}
+                      {capitalize(company.name)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(job.Company.name)}</StyledSpan>
-                    <StyledSpan>{job.location}</StyledSpan>
+                    <StyledSpan>{capitalize(company.location)}</StyledSpan>
+                    <StyledSpan>{company.contactName}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>
@@ -80,4 +80,4 @@ function AllJobs() {
   );
 }
 
-export default AllJobs;
+export default AllCompanies;

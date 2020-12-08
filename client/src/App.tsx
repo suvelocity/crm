@@ -10,7 +10,10 @@ import AllJobs from "./components/jobRelated/AllJobs";
 import NavBar from "./components/NavBar";
 import AllClasses from "./components/classRelated/AllClasses";
 import SingleClass from "./components/classRelated/SingleClass";
+import AllCompanies from "./components/companyRelated/AllCompanies";
+import SingleCompany from "./components/companyRelated/SingleCompany";
 import SingleProcess from "./components/processRelated/SingleProcess";
+import AddCompany from "./components/companyRelated/AddCompany";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 
@@ -23,6 +26,15 @@ function App() {
           <Switch>
             <Route exact path="/">
               <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
+            </Route>
+            <Route exact path="/company/add">
+              <AddCompany />
+            </Route>
+            <Route exact path="/company/all">
+              <AllCompanies />
+            </Route>
+            <Route exact path="/company/:id">
+              <SingleCompany />
             </Route>
             <Route exact path="/process/:studentId/:jobId">
               <SingleProcess />
