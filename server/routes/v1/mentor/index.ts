@@ -9,17 +9,18 @@ const unknownEndpoint = (req: Request, res: Response) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 
-// get all the mentors:
-router.get("/all", async (req: Request, res: Response) => {
-    try {
-      const mentors: IMentor[] = await Mentor.findAll();
-      res.json(mentors);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+router.use("/meeting", require("./meeting"));
 
-router.use("/meetinng", require("./meeting"));
+// get all the mentors:
+// router.get("/all", async (req: Request, res: Response) => {
+//     try {
+//       const mentors: IMentor[] = await Mentor.findAll();
+//       res.json(mentors);
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   });
+
 
 router.use(unknownEndpoint);
 module.exports = router;
