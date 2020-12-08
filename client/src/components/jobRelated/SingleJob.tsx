@@ -93,8 +93,8 @@ function SingleJob() {
   useEffect(() => {
     try {
       getJob();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [id]);
@@ -113,17 +113,17 @@ function SingleJob() {
   const tableRepeatFormula = "0.7fr 1.5fr 1fr 1.5fr 3fr";
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
               <SingleListItem
-                primary='Position'
+                primary="Position"
                 secondary={capitalize(job?.position)}
               >
                 <PostAddIcon />
@@ -133,7 +133,7 @@ function SingleJob() {
             </List>
             <List>
               <SingleListItem
-                primary='Company'
+                primary="Company"
                 secondary={capitalize(job?.Company.name)}
               >
                 <BusinessIcon />
@@ -142,7 +142,7 @@ function SingleJob() {
             {/* Company */}
             <List>
               <SingleListItem
-                primary='Location'
+                primary="Location"
                 secondary={capitalize(job?.location)}
               >
                 <BusinessIcon />
@@ -151,7 +151,7 @@ function SingleJob() {
             <List>
               {/* Location */}
               <SingleListItem
-                primary='Contact'
+                primary="Contact"
                 secondary={capitalize(job?.contact)}
               >
                 <PersonIcon />
@@ -166,7 +166,7 @@ function SingleJob() {
                 <DescriptionIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Description'
+                primary="Description"
                 secondary={capitalize(job?.description)}
               />
             </MultilineListItem>
@@ -178,7 +178,7 @@ function SingleJob() {
                 <PlaylistAddCheckIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Requirements'
+                primary="Requirements"
                 secondary={capitalize(job?.requirements)}
               />
             </MultilineListItem>
@@ -190,7 +190,7 @@ function SingleJob() {
                 <ContactSupportIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Additional Details'
+                primary="Additional Details"
                 secondary={capitalize(job?.additionalDetails)}
               />
             </MultilineListItem>
@@ -198,10 +198,10 @@ function SingleJob() {
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width='65%'>
+      <Wrapper width="65%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Applicants In Process</H1>
+            <H1 color="#bb4040">Applicants In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -212,10 +212,10 @@ function SingleJob() {
                 {/* <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr"> */}
                 <TableHeader repeatFormula={tableRepeatFormula}>
                   <PersonIcon />
-                  <StyledSpan weight='bold'>Name</StyledSpan>
-                  <StyledSpan weight='bold'>Class</StyledSpan>
-                  <StyledSpan weight='bold'>Email</StyledSpan>
-                  <StyledSpan weight='bold'>Status</StyledSpan>
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Class</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Status</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -223,12 +223,12 @@ function SingleJob() {
               eventsToMap.map((event: IEvent) => (
                 <li key={event.Student?.id}>
                   <StyledLink
-                    color='black'
+                    color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
                     <StyledDiv repeatFormula={tableRepeatFormula}>
                       <PersonIcon />
-                      <StyledSpan weight='bold'>
+                      <StyledSpan weight="bold">
                         {capitalize(event.Student?.firstName)}{" "}
                         {capitalize(event.Student?.lastName)}
                       </StyledSpan>

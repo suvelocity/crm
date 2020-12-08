@@ -20,6 +20,7 @@ import {
 import { Loading } from "react-loading-wrapper";
 import { SingleListItem } from "../tableRelated";
 import "react-loading-wrapper/dist/index.css";
+import Swal from "sweetalert2";
 
 function ApplyForJobModal({
   currentStudents,
@@ -49,8 +50,8 @@ function ApplyForJobModal({
           )
         );
       })();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   }, [currentStudents]);
 
@@ -79,8 +80,8 @@ function ApplyForJobModal({
           setLoading(false);
           handleClose();
         }, 1000);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     } else {
       handleClose();
@@ -108,12 +109,12 @@ function ApplyForJobModal({
                 <Accordion key={student.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label='Expand'
-                    aria-controls='additional-actions2-content'
-                    id='additional-actions2-header'
+                    aria-label="Expand"
+                    aria-controls="additional-actions2-content"
+                    id="additional-actions2-header"
                   >
                     <FormControlLabel
-                      aria-label='Acknowledge'
+                      aria-label="Acknowledge"
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -123,7 +124,7 @@ function ApplyForJobModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=''
+                      label=""
                     />
                     <Typography className={classes.heading}>
                       {student.firstName} {student.lastName}
@@ -132,27 +133,27 @@ function ApplyForJobModal({
                   <AccordionDetails>
                     <List dense>
                       <SingleListItem
-                        primary='Name'
+                        primary="Name"
                         secondary={student.firstName + " " + student.lastName}
                       />
                       <SingleListItem
-                        primary='Email'
+                        primary="Email"
                         secondary={student.email}
                       />
                       <SingleListItem
-                        primary='Phone Number'
+                        primary="Phone Number"
                         secondary={student.phone}
                       />
                       <ListItem>
                         <ListItemText
-                          primary='Course'
+                          primary="Course"
                           secondary={student.Class?.name}
                         />
                       </ListItem>
                       {student.Events.length > 0 && (
                         <ListItem>
                           <ListItemText
-                            primary='Applied Jobs'
+                            primary="Applied Jobs"
                             secondary={
                               <>
                                 {student.Events.map((event: IEvent) => (
@@ -173,7 +174,7 @@ function ApplyForJobModal({
               <Button
                 style={{ backgroundColor: "#bb4040", color: "white" }}
                 className={classes.button}
-                color='primary'
+                color="primary"
                 onClick={handleSubmit}
               >
                 Apply
@@ -191,7 +192,7 @@ function ApplyForJobModal({
     <>
       <Button
         style={{ backgroundColor: "#bb4040", color: "white" }}
-        variant='contained'
+        variant="contained"
         onClick={handleOpen}
       >
         Assign a Student

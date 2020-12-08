@@ -18,6 +18,7 @@ import { IEvent } from "../../typescript/interfaces";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 //TODO change this later
 import { statuses } from "../../helpers";
+import Swal from "sweetalert2";
 
 function NewEventModal({
   studentId,
@@ -57,7 +58,7 @@ function NewEventModal({
       add(newEvent);
       handleClose();
     } catch (error) {
-      console.log(error);
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -85,10 +86,10 @@ function NewEventModal({
                       ))}
                     </Select>
                   }
-                  name='status'
+                  name="status"
                   rules={{ required: "Event is required" }}
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                 />
               </FormControl>
               {!empty ? (
@@ -103,9 +104,9 @@ function NewEventModal({
               {generateBrs(2)}
               <FormHelperText>Date</FormHelperText>
               <TextField
-                type='date'
-                id='date'
-                name='date'
+                type="date"
+                id="date"
+                name="date"
                 inputRef={register({ required: "Event date is required" })}
                 defaultValue={`${new Date().getFullYear()}-${
                   new Date().getMonth() + 1
@@ -127,10 +128,10 @@ function NewEventModal({
               <TextField
                 multiline
                 rows={4}
-                id='comment'
-                name='comment'
-                label='Comment'
-                variant='outlined'
+                id="comment"
+                name="comment"
+                label="Comment"
+                variant="outlined"
                 fullWidth
                 inputRef={register({
                   maxLength: { value: 250, message: "Comment too long" },
@@ -150,10 +151,10 @@ function NewEventModal({
           {generateBrs(2)}
           <Center>
             <Button
-              type='submit'
+              type="submit"
               className={classes.button}
-              variant='contained'
-              color='primary'
+              variant="contained"
+              color="primary"
             >
               Add
             </Button>
@@ -168,8 +169,8 @@ function NewEventModal({
       <Button
         // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
         style={{ display: "block", margin: "4vh auto" }}
-        variant='contained'
-        color='primary'
+        variant="contained"
+        color="primary"
         onClick={handleOpen}
       >
         Change Process Status

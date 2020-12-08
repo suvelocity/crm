@@ -21,6 +21,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import WorkIcon from "@material-ui/icons/Work";
 import { SingleCenteredListItem } from "../tableRelated";
+import Swal from "sweetalert2";
 
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
@@ -46,8 +47,8 @@ function SingleProcess() {
         ).sort(sortByDate);
         setEvents(filteredEvents);
         setLoading(false);
-      } catch (e) {
-        console.log(e.message);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     })();
   }, []);
@@ -59,7 +60,7 @@ function SingleProcess() {
   const classesType = { primary: classes.primary };
 
   return (
-    <Wrapper width='90%'>
+    <Wrapper width="90%">
       <Center>
         <TitleWrapper>
           <H1>Process Time Line</H1>
@@ -68,7 +69,7 @@ function SingleProcess() {
       <br />
       <Loading loading={loading} size={30}>
         <GridDiv>
-          <Wrapper padding='10px' backgroundColor='#fafafa'>
+          <Wrapper padding="10px" backgroundColor="#fafafa">
             <PersonIcon style={personIconStyle} />
             <Center>
               <H2>Student</H2>
@@ -76,36 +77,36 @@ function SingleProcess() {
                 <List dense>
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Name'
+                    primary="Name"
                     secondary={`${student?.firstName} ${student?.lastName}`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Email'
+                    primary="Email"
                     secondary={`${student?.email}`}
                   />
                 </List>
                 <List dense>
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Class'
+                    primary="Class"
                     secondary={`${student?.Class.name}`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Phone'
+                    primary="Phone"
                     secondary={`${student?.phone}`}
                   />
                 </List>
               </GridDiv>
               <ListItemText
                 classes={classesType}
-                primary='Course'
+                primary="Course"
                 secondary={`${student?.Class.course}`}
               />
             </Center>
           </Wrapper>
-          <Wrapper padding='10px' backgroundColor='#fafafa'>
+          <Wrapper padding="10px" backgroundColor="#fafafa">
             <WorkIcon style={workIconStyle} />
             <Center>
               <H2>Job</H2>
@@ -113,24 +114,24 @@ function SingleProcess() {
                 <List dense>
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Position'
+                    primary="Position"
                     secondary={`${job?.position}`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Company'
+                    primary="Company"
                     secondary={`${job?.Company.name}`}
                   />
                 </List>
                 <List dense>
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Location'
+                    primary="Location"
                     secondary={`${job?.location}`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
-                    primary='Contact'
+                    primary="Contact"
                     secondary={`${job?.contact}`}
                   />
                 </List>
@@ -140,7 +141,7 @@ function SingleProcess() {
               <ListItemText
                 style={{ width: "95%", margin: "0 auto" }}
                 classes={classesType}
-                primary='Requirements'
+                primary="Requirements"
                 secondary={`${job?.requirements}`}
               />
             </MultilineListItem>

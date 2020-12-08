@@ -30,6 +30,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize, formatPhone } from "../../helpers/general";
+import Swal from "sweetalert2";
 
 function SingleCompany() {
   const [company, setCompany] = useState<ICompany | null>();
@@ -47,8 +48,8 @@ function SingleCompany() {
   useEffect(() => {
     try {
       getCompany();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [getCompany]);
