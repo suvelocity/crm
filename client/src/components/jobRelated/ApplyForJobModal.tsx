@@ -157,7 +157,8 @@ function ApplyForJobModal({
                               <>
                                 {student.Events.map((event: IEvent) => (
                                   <p key={event.Job?.id}>
-                                    {event.Job?.position} {event.Job?.company}
+                                    {event.Job?.position}{" "}
+                                    {event.Job?.Company.name}
                                   </p>
                                 ))}
                               </>

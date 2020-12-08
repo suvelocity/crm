@@ -1,5 +1,5 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useMemo, useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import network from "../../helpers/network";
 import { TextField, Button, Tooltip } from "@material-ui/core";
 import {
@@ -10,12 +10,16 @@ import {
   GridDiv,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
-import { IJob } from "../../typescript/interfaces";
-import { validNameRegex } from "../../helpers";
-import { ActionBtn, ErrorBtn } from "../formRelated";
+import { IJob, ICompany } from "../../typescript/interfaces";
+import { validNameRegex } from "../../helpers/patterns";
+import { FormControl, MenuItem, Select } from "@material-ui/core";
+import { ErrorBtn, ActionBtn } from "../formRelated";
 
 const AddJob = () => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, control } = useForm();
+  const [companies, setCompanies] = useState<Pick<ICompany, "id" | "name">[]>(
+    []
+  );
   const history = useHistory();
 
   const empty = Object.keys(errors).length === 0;
@@ -29,6 +33,18 @@ const AddJob = () => {
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await network.get("/api/v1/company/all");
+      setCompanies(
+        data.map((company: ICompany) => ({
+          name: company.name,
+          id: company.id,
+        }))
+      );
+    })();
+  }, []);
+
   return (
     <Wrapper width='80%'>
       <Center>
@@ -38,23 +54,29 @@ const AddJob = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv repeatFormula='1fr 0.5fr 3fr'>
             <div>
-              <TextField
-                id='company'
-                label='Company'
-                name='company'
-                fullWidth
-                inputRef={register({
-                  required: "Company is required",
-                  pattern: {
-                    value: validNameRegex,
-                    message: "Company name can have only letters and spaces",
-                  },
-                  minLength: {
-                    value: 3,
-                    message: "First name needs to have a minimum of 3 letters",
-                  },
-                })}
-              />
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.company)}
+              >
+                <InputLabel>Please select a company</InputLabel>
+                <Controller
+                  as={
+                    <Select>
+                      {companies.map(
+                        (company: Pick<ICompany, "id" | "name">) => (
+                          <MenuItem key={`opt${company.id}`} value={company.id}>
+                            {company.name}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  }
+                  name='companyId'
+                  rules={{ required: "Company is required" }}
+                  control={control}
+                  defaultValue=''
+                />
+              </FormControl>
               {!empty ? (
                 errors.company ? (
                   <Tooltip title={errors.company.message}>

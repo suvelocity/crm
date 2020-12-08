@@ -118,7 +118,7 @@ function ApplyStudentModal({
                       {job.position}
                     </Typography>
                     <Typography className={classes.secondaryHeading}>
-                      {job.company}
+                      {job.Company.name}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>

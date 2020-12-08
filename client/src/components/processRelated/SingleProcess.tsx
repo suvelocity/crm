@@ -119,7 +119,7 @@ function SingleProcess() {
                   <SingleCenteredListItem
                     classes={classesType}
                     primary='Company'
-                    secondary={`${job?.company}`}
+                    secondary={`${job?.Company.name}`}
                   />
                 </List>
                 <List dense>
