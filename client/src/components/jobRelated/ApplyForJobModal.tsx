@@ -1,59 +1,25 @@
 import React, { useState, useEffect } from "react";
 import network from "../../helpers/network";
-import { Modal, Button } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import { IStudent, IEvent } from "../../typescript/interfaces";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  CircularProgress,
+  ListItemText,
+  ListItem,
+  FormControlLabel,
+  Checkbox,
+  List,
+  Typography,
+  Modal,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@material-ui/core";
 import { Loading } from "react-loading-wrapper";
+import { SingleListItem } from "../tableRelated";
 import "react-loading-wrapper/dist/index.css";
-
-function getModalStyle() {
-  return {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    paper: {
-      position: "absolute",
-      width: "50%",
-      maxWidth: 700,
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: 7,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      outline: "none",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    button: {
-      textAlign: "center",
-      margin: 10,
-    },
-  })
-);
 
 function ApplyForJobModal({
   currentStudents,
@@ -142,12 +108,12 @@ function ApplyForJobModal({
                 <Accordion key={student.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
+                    aria-label='Expand'
+                    aria-controls='additional-actions2-content'
+                    id='additional-actions2-header'
                   >
                     <FormControlLabel
-                      aria-label="Acknowledge"
+                      aria-label='Acknowledge'
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -157,7 +123,7 @@ function ApplyForJobModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=""
+                      label=''
                     />
                     <Typography className={classes.heading}>
                       {student.firstName} {student.lastName}
@@ -165,34 +131,28 @@ function ApplyForJobModal({
                   </AccordionSummary>
                   <AccordionDetails>
                     <List dense>
+                      <SingleListItem
+                        primary='Name'
+                        secondary={student.firstName + " " + student.lastName}
+                      />
+                      <SingleListItem
+                        primary='Email'
+                        secondary={student.email}
+                      />
+                      <SingleListItem
+                        primary='Phone Number'
+                        secondary={student.phone}
+                      />
                       <ListItem>
                         <ListItemText
-                          primary="Name"
-                          secondary={student.firstName + " " + student.lastName}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Email"
-                          secondary={student.email}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Phone Number"
-                          secondary={student.phone}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Course"
+                          primary='Course'
                           secondary={student.Class?.name}
                         />
                       </ListItem>
                       {student.Events.length > 0 && (
                         <ListItem>
                           <ListItemText
-                            primary="Applied Jobs"
+                            primary='Applied Jobs'
                             secondary={
                               <>
                                 {student.Events.map((event: IEvent) => (
@@ -212,7 +172,7 @@ function ApplyForJobModal({
               <Button
                 style={{ backgroundColor: "#bb4040", color: "white" }}
                 className={classes.button}
-                color="primary"
+                color='primary'
                 onClick={handleSubmit}
               >
                 Apply
@@ -230,7 +190,7 @@ function ApplyForJobModal({
     <>
       <Button
         style={{ backgroundColor: "#bb4040", color: "white" }}
-        variant="contained"
+        variant='contained'
         onClick={handleOpen}
       >
         Assign a Student
@@ -243,3 +203,41 @@ function ApplyForJobModal({
 }
 
 export default ApplyForJobModal;
+
+function getModalStyle() {
+  return {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      position: "absolute",
+      width: "50%",
+      maxWidth: 700,
+      minWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 7,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      outline: "none",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexShrink: 0,
+      fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
+    },
+    button: {
+      textAlign: "center",
+      margin: 10,
+    },
+  })
+);

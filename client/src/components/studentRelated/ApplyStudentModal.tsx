@@ -16,49 +16,7 @@ import { IJob, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-
-function getModalStyle() {
-  return {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    paper: {
-      position: "absolute",
-      width: "50%",
-      maxWidth: 700,
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: 7,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      outline: "none",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-      marginTop: 11,
-    },
-    button: {
-      textAlign: "center",
-      margin: 10,
-    },
-  })
-);
+import { SingleListItem } from "../tableRelated";
 
 function ApplyStudentModal({
   currentJobs,
@@ -139,12 +97,12 @@ function ApplyStudentModal({
                 <Accordion key={job.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
+                    aria-label='Expand'
+                    aria-controls='additional-actions2-content'
+                    id='additional-actions2-header'
                   >
                     <FormControlLabel
-                      aria-label="Acknowledge"
+                      aria-label='Acknowledge'
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -154,7 +112,7 @@ function ApplyStudentModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=""
+                      label=''
                     />
                     <Typography className={classes.heading}>
                       {job.position}
@@ -165,21 +123,17 @@ function ApplyStudentModal({
                   </AccordionSummary>
                   <AccordionDetails>
                     <List>
+                      <SingleListItem
+                        primary='Requirements'
+                        secondary={job.requirements}
+                      />
+                      <SingleListItem
+                        primary='Location'
+                        secondary={job.location}
+                      />
                       <ListItem>
                         <ListItemText
-                          primary="Requirements"
-                          secondary={job.requirements}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Location"
-                          secondary={job.location}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Students"
+                          primary='Applied Students'
                           secondary={
                             <>
                               {job.Events.map((event: IEvent) => (
@@ -198,8 +152,8 @@ function ApplyStudentModal({
               ))}
               <Button
                 className={classes.button}
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={handleSubmit}
               >
                 Apply
@@ -215,7 +169,7 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button variant='contained' color='primary' onClick={handleOpen}>
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
@@ -226,3 +180,46 @@ function ApplyStudentModal({
 }
 
 export default ApplyStudentModal;
+
+function getModalStyle() {
+  return {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      position: "absolute",
+      width: "50%",
+      maxWidth: 700,
+      minWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 7,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      outline: "none",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexShrink: 0,
+      fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
+    },
+    secondaryHeading: {
+      fontSize: theme.typography.pxToRem(15),
+      color: theme.palette.text.secondary,
+      marginTop: 11,
+    },
+    button: {
+      textAlign: "center",
+      margin: 10,
+    },
+  })
+);
