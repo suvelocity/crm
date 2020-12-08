@@ -1,3 +1,5 @@
+import { string } from "joi";
+
 export interface IJob {
   id?: number;
   company: string;
@@ -54,4 +56,14 @@ export interface IMentor {
   phone: string;
   address: string;
   job: string;
+}
+
+type meeting = {date: string}
+
+export interface IDeshbord {
+  id?: number;
+  firstName:string;
+  lastName:string;
+  Mentor:IMentor;
+  Meetings:meeting[]
 }

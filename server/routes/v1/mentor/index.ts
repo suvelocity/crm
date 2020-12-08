@@ -12,14 +12,14 @@ const unknownEndpoint = (req: Request, res: Response) => {
 router.use("/meeting", require("./meeting"));
 
 // get all the mentors:
-// router.get("/all", async (req: Request, res: Response) => {
-//     try {
-//       const mentors: IMentor[] = await Mentor.findAll();
-//       res.json(mentors);
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-//   });
+router.get("/all", async (req: Request, res: Response) => {
+    try {
+      const mentors: IMentor[] = await Mentor.findAll();
+      res.json(mentors);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
 
 router.use(unknownEndpoint);
