@@ -11,6 +11,7 @@ const unknownEndpoint = (req: Request, res: Response) => {
 
 router.use("/meeting", require("./meeting"));
 router.use("/classes", require("./classes"));
+router.use("/mentor", require("./mentor"));
 
 // get all the mentors:
 router.get("/all", async (req: Request, res: Response) => {
