@@ -94,3 +94,30 @@ export interface SelectInputs {
   filterBy: string;
   possibleValues: string[];
 }
+
+export interface IMentor {
+  id?: number;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  job: string;
+}
+
+export interface MentorClassDashboard {
+  id?: number;
+  firstName:string;
+  lastName:string;
+  Class: Partial<IClass>;
+  Mentor: IMentor;
+  Meetings: Partial<IMeeting>[];
+};
+
+export interface IMeeting {
+  id?: number;
+  date:string;
+  mentorId:number;
+  studentId:number;
+  place:string;
+};
