@@ -16,6 +16,7 @@ router.get("/all", async (req: Request, res: Response) => {
           model: Job,
         },
       ],
+      orderBy: ["date", "DESC"],
     });
     res.json(events);
   } catch (error) {
