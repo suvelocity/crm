@@ -19,6 +19,7 @@ import { ICompany } from "../../typescript/interfaces";
 import { validNameRegex, validPhoneNumberRegex } from "../../helpers/patterns";
 import Swal from "sweetalert2";
 import { ErrorBtn, ActionBtn } from "../formRelated";
+import GoogleMaps from "../GeoSearch";
 
 const AddCompany = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -39,14 +40,14 @@ const AddCompany = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#a3a365">Add Company</H1>
+          <H1 color='#a3a365'>Add Company</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
             <div>
               <TextField
-                id="name"
-                label="Name"
+                id='name'
+                label='Name'
                 inputRef={register({
                   required: "Company name is required",
                   minLength: {
@@ -54,7 +55,7 @@ const AddCompany = () => {
                     message: "Company needs to have a minimum of 2 letters",
                   },
                 })}
-                name="name"
+                name='name'
               />
               {!empty ? (
                 errors.name ? (
@@ -65,10 +66,13 @@ const AddCompany = () => {
               ) : null}
               <br />
               <br />
-              <TextField
-                name="location"
-                inputRef={register({ required: "Location is required" })}
-                label="Location"
+              <GoogleMaps
+                id='location'
+                name='location'
+                inputRef={register({
+                  required: "Location is required",
+                })}
+                label='Location'
               />
               {!empty ? (
                 errors.location ? (
@@ -76,7 +80,7 @@ const AddCompany = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
@@ -87,15 +91,15 @@ const AddCompany = () => {
             </div>
             <div>
               <TextField
-                id="contactName"
-                label="Contact Name"
+                id='contactName'
+                label='Contact Name'
                 inputRef={register({
                   pattern: {
                     value: validNameRegex,
                     message: "Contact name can have only letters and spaces",
                   },
                 })}
-                name="contactName"
+                name='contactName'
               />
               {!empty ? (
                 errors.contactName ? (
@@ -103,7 +107,7 @@ const AddCompany = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
@@ -114,10 +118,10 @@ const AddCompany = () => {
               <br />
               <br />
               <TextField
-                id="contactPosition"
-                name="contactPosition"
+                id='contactPosition'
+                name='contactPosition'
                 inputRef={register()}
-                label="Contact Position"
+                label='Contact Position'
               />
               {!empty ? (
                 errors.contactPosition ? (
@@ -125,7 +129,7 @@ const AddCompany = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
@@ -136,15 +140,15 @@ const AddCompany = () => {
               <br />
               <br />
               <TextField
-                id="contactNumber"
-                label="Contact Phone Number"
+                id='contactNumber'
+                label='Contact Phone Number'
                 inputRef={register({
                   pattern: {
                     value: validPhoneNumberRegex,
                     message: "Invalid Phone Number",
                   },
                 })}
-                name="contactNumber"
+                name='contactNumber'
               />
               {!empty ? (
                 errors.contactNumber ? (
@@ -152,7 +156,7 @@ const AddCompany = () => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color="error"
+                        color='error'
                       />
                     </IconButton>
                   </Tooltip>
@@ -165,19 +169,19 @@ const AddCompany = () => {
           <br />
 
           <TextField
-            id="description"
+            id='description'
             multiline
             fullWidth
             rows={5}
-            variant="outlined"
-            name="description"
+            variant='outlined'
+            name='description'
             inputRef={register({
               maxLength: {
                 value: 500,
                 message: "Description Details are too long",
               },
             })}
-            label="Description"
+            label='Description'
           />
           {!empty ? (
             errors.description ? (
@@ -185,24 +189,24 @@ const AddCompany = () => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color="error"
+                    color='error'
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
+                <DoneIcon color='action' />
               </IconButton>
             )
           ) : null}
           <br />
           <br />
           <Button
-            id="submitButton"
+            id='submitButton'
             style={{ backgroundColor: "#a3a365", color: "white" }}
-            variant="contained"
-            color="primary"
-            type="submit"
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Submit
           </Button>

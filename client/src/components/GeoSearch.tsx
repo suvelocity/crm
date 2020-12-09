@@ -43,7 +43,7 @@ interface PlaceType {
   };
 }
 
-export default function GoogleMaps() {
+export default function GoogleMaps(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState<PlaceType | null>(null);
   const [inputValue, setInputValue] = React.useState("");
@@ -53,7 +53,7 @@ export default function GoogleMaps() {
   if (typeof window !== "undefined" && !loaded.current) {
     if (!document.querySelector("#google-maps")) {
       loadScript(
-        "https://maps.googleapis.com/maps/api/js?key=AIzaSyBwRp1e12ec1vOTtGiA4fcCt2sCUS78UYc&libraries=places",
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAYrQivO0_dnlbZodljVnzmxvQy0piYbpg&libraries=places",
         document.querySelector("head"),
         "google-maps"
       );
@@ -117,8 +117,11 @@ export default function GoogleMaps() {
 
   return (
     <Autocomplete
-      id='google-map-demo'
-      style={{ width: 300 }}
+      id={"google-map-demo"}
+      style={{
+        width: props.width ? props.width : 200,
+        margin: "0 auto",
+      }}
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -137,10 +140,10 @@ export default function GoogleMaps() {
       }}
       renderInput={(params) => (
         <TextField
+          name={props.name}
+          inputRef={props.inputRef}
+          label={props.label}
           {...params}
-          label='Add a location'
-          variant='outlined'
-          fullWidth
         />
       )}
       renderOption={(option) => {
@@ -153,7 +156,6 @@ export default function GoogleMaps() {
             match.offset + match.length,
           ])
         );
-
         return (
           <Grid container alignItems='center'>
             <Grid item>
