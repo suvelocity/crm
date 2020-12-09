@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 //@ts-ignore
-import { Student, Job, Event, Class, Mentor } from "../../../models";
+import { Student, Class, Mentor } from "../../../models";
+import {studentMentorIdPut} from "../../../validations"
 import { IMentor } from "../../../types";
 import sequelize from "sequelize"
 
@@ -29,7 +30,7 @@ router.get("/without", async (req: Request, res: Response) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
 // add mentor project to class: 
 router.put("/:id", async (req: Request, res: Response) => {
     try {
@@ -38,6 +39,22 @@ router.put("/:id", async (req: Request, res: Response) => {
         });
   if (updated[0] === 1) return res.json({ message: "mentor project started" });
   res.status(404).json({ error: "class not found" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+// add mentor to student: 
+router.put("/student/:id", async (req: Request, res: Response) => {
+    try {
+        const { error } = studentMentorIdPut.validate(req.body);
+        if (error) return res.status(400).json(error);
+        const {mentorId} = req.body
+        const updated = await Student.update({mentorId:mentorId}, {
+            where: { id: req.params.id },
+        });
+  if (updated[0] === 1) return res.json({ message: "added mentor to the student" });
+  res.status(404).json({ error: "student not found" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
