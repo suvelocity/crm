@@ -96,5 +96,6 @@ export const meetingSchema = Joi.object({
 
 export const meetingSchemaToPut = Joi.object({
   place: Joi.string().allow(null, ""),
-  date: Joi.string()
+  date: Joi.date().min(new Date()).allow(null, "")
 })
+
