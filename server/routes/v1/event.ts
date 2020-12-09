@@ -47,14 +47,28 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/delete", async (req, res) => {
+router.patch("/delete-process", async (req, res) => {
   try {
     const studentId: string = req.body.studentId;
     const jobId = req.body.jobId;
     const deleted: any = await Event.destroy({
       where: { studentId, jobId },
     });
-    if (deleted) return res.json({ message: "Event deleted" });
+    if (deleted) return res.json({ message: "Process deleted" }).status(204);
+    return res.status(404).json({ error: "Process not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.patch("/delete", async (req, res) => {
+  try {
+    const eventId: string = req.body.eventId;
+    console.log(req.body);
+    const deleted: any = await Event.destroy({
+      where: { id: eventId },
+    });
+    if (deleted) return res.json({ message: "Event deleted" }).status(204);
     return res.status(404).json({ error: "Event not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });
