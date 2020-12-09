@@ -95,4 +95,13 @@ export const mentorSchema = Joi.object({
   phone: Joi.string().required(),
   address: Joi.string().required(),
   job: Joi.string().allow(null, ""),
-})
+});
+
+export const mentorSchemaToPut = Joi.object({
+  name: Joi.string().allow(null, ""),
+  company: Joi.string().allow(null, ""),
+  email: Joi.string().allow(null, ""),
+  phone: Joi.string().allow(null, ""),
+  address: Joi.string().allow(null, ""),
+  job: Joi.string().allow(null, ""),
+});
