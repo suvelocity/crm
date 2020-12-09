@@ -38,4 +38,24 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// post new mentor:
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const { error } = mentorSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.message });
+    const { name, company, email, phone, address, job } = req.body;
+    const newMentor: IMentor = await Mentor.create({
+      name,
+      company,
+      email,
+      phone,
+      address,
+      job,
+    });
+    res.json(newMentor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
