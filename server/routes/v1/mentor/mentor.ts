@@ -73,4 +73,18 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// delete meeting
+router.patch('/delete', async (req, res) => {
+  try {
+    const { mentorId } = req.body;
+    const deleted: any = await Mentor.destroy({
+      where: { id: mentorId },
+    });
+    if (deleted) return res.json({ message: 'Mentor deleted' });
+    return res.status(404).json({ error: 'Mentor not found' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
