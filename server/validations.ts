@@ -87,3 +87,12 @@ export const studentSchemaToPut = Joi.object({
   languages: Joi.string().allow(null, ""),
   citizenship: Joi.string().allow(null, ""),
 });
+
+export const mentorSchema = Joi.object({
+  name: Joi.string().required(),
+  company: Joi.string().allow(null, ""),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  address: Joi.string().required(),
+  job: Joi.string().allow(null, ""),
+})
