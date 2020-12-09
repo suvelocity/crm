@@ -66,9 +66,11 @@ const ClassDashboard: React.FC = () => {
               <li>
                 <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
                   <ClassIcon />
-                  <StyledSpan weight="bold">
-                    {capitalize(row.Mentor.name)}
-                  </StyledSpan>
+                  <StyledLink to={`/mentor/${row.id}`} color="black">
+                    <StyledSpan weight="bold">
+                      {capitalize(row.Mentor.name)}
+                    </StyledSpan>
+                  </StyledLink>
                   <StyledSpan>{row.Mentor.company}</StyledSpan>
                   <StyledSpan>{row.Mentor.email}</StyledSpan>
                   <StyledSpan>{row.Mentor.job}</StyledSpan>
@@ -78,8 +80,13 @@ const ClassDashboard: React.FC = () => {
                   <StyledSpan>
                     {row.Meetings &&
                       row.Meetings.map((meet, i) => {
+                        let color: string =
+                          meet.date &&
+                          new Date(meet.date).getTime() > Date.now()
+                            ? "red"
+                            : "green";
                         return (
-                          <div>
+                          <div style={{ color: color }}>
                             {meet.date &&
                               `${i + 1} - ${meet.date.slice(0, 10)}`}
                           </div>

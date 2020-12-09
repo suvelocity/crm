@@ -23,7 +23,7 @@ const MentorClasses: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/class/all");
+    const { data } = await network.get("/api/v1/mentor/classes/with");
     setClasses(data);
     setLoading(false);
   }, []);
@@ -47,7 +47,7 @@ const MentorClasses: React.FC = () => {
             All Mentors
           </Button>
         </StyledLink>
-        <StyledLink to="/mentor/all">
+        <StyledLink to="/mentor/new">
           <Button
             variant="contained"
             style={{
