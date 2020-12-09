@@ -46,6 +46,11 @@ function NewEventModal({
 
   // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
   const submitStatus = async (data: IEvent) => {
+    if (data.status === "Hired") {
+      handleClose();
+      const procceed: boolean = await promptAreYouSure();
+      if (!procceed) return;
+    }
     data.studentId = studentId;
     data.jobId = jobId;
     try {
@@ -60,6 +65,22 @@ function NewEventModal({
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
+  };
+
+  const promptAreYouSure: () => Promise<boolean> = async () => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text:
+        "Changing status to 'hired' will automaticaly cancel all other applicants and the rest of this student jobs.\nThis is ireversible!",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#2fa324",
+      confirmButtonText: "Hire!",
+    }).then((result) => {
+      if (result.isConfirmed) return true;
+      return false;
+    });
   };
 
   const body = (

@@ -1,8 +1,13 @@
 import { Router, Request, Response } from "express";
+import { stat } from "fs";
+import {
+  cancelAllJobsOfStudent,
+  cancelAllApplicantsForJob,
+} from "../../helper";
 const router = Router();
 //@ts-ignore
-import { Event, Student, Job } from "../../models";
-import { IEvent } from "../../types";
+import { Event, Student, Job, Company } from "../../models";
+import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 
 router.get("/all", async (req: Request, res: Response) => {
@@ -34,6 +39,22 @@ router.post("/", async (req: Request, res: Response) => {
       date,
     });
     if (error) return res.status(400).json({ error: error.message });
+    if (status === "Hired") {
+      //TODO fix types
+      const job: IJob = (
+        await Job.findByPk(jobId, {
+          include: [{ model: Company, attributes: ["name"] }],
+        })
+      ).toJSON();
+      const student: IStudent = (await Job.findByPk(studentId)).toJSON();
+      console.log(student);
+      //@ts-ignore
+      const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
+      const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
+
+      cancelAllJobsOfStudent(studentId, jobId, studentMsg, date);
+      cancelAllApplicantsForJob(jobId, studentId, jobMsg, date);
+    }
     const event: IEvent = await Event.create({
       studentId,
       jobId,
