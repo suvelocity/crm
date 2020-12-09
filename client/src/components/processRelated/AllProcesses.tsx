@@ -24,11 +24,11 @@ function AllProcesses() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get("/api/v1/event/all");
-      const sortedData = data.sort(
-        (a: IEvent, b: IEvent) =>
-          new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      );
+      const { data: sortedData } = await network.get("/api/v1/event/all");
+      // const sortedData = data.sort(
+      //   (a: IEvent, b: IEvent) =>
+      //     new Date(b.date).valueOf() - new Date(a.date).valueOf()
+      // );
       const processesData: IEvent[] = [];
       sortedData.forEach((event: IEvent) => {
         if (
@@ -47,20 +47,11 @@ function AllProcesses() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#cf8f18">All Processes</H1>
+          <H1 color='#cf8f18'>All Processes</H1>
         </TitleWrapper>
-        <br />
-        <StyledLink to="/job/add">
-          <Button
-            style={{ backgroundColor: "#cf8f18", color: "white" }}
-            variant="contained"
-          >
-            Add Job
-          </Button>
-        </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
@@ -69,10 +60,10 @@ function AllProcesses() {
             <li>
               <TableHeader>
                 <TimelineIcon />
-                <StyledSpan weight="bold">Student</StyledSpan>
-                <StyledSpan weight="bold">Job</StyledSpan>
-                <StyledSpan weight="bold">Status</StyledSpan>
-                <StyledSpan weight="bold">Date</StyledSpan>
+                <StyledSpan weight='bold'>Student</StyledSpan>
+                <StyledSpan weight='bold'>Job</StyledSpan>
+                <StyledSpan weight='bold'>Status</StyledSpan>
+                <StyledSpan weight='bold'>Date</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -81,11 +72,11 @@ function AllProcesses() {
               <li>
                 <StyledLink
                   to={`/process/${process.Student!.id}/${process.Job!.id}`}
-                  color="black"
+                  color='black'
                 >
                   <StyledDiv>
                     <TimelineIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {capitalize(process.Student!.firstName)}{" "}
                       {capitalize(process.Student!.lastName)}
                     </StyledSpan>
