@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 //@ts-ignore
 import { Mentor, Student, Meeting } from '../../../models';
-import { mentorSchema } from '../../../validations';
+import { mentorSchema, mentorSchemaToPut } from '../../../validations';
 import { IMentor } from '../../../types';
 
 const router = Router();
@@ -38,7 +38,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// post new mentor:
+// Post new mentor
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { error } = mentorSchema.validate(req.body);
@@ -53,6 +53,21 @@ router.post('/', async (req: Request, res: Response) => {
       job,
     });
     res.json(newMentor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Edit exist mentor
+router.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const { error } = mentorSchemaToPut.validate(req.body);
+    if (error) return res.status(400).json({ error: error.message });
+    const updated = await Mentor.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updated[0] === 1) return res.json({ message: 'Mentor updated' });
+    res.status(404).json({ error: 'Mentor not found' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
