@@ -17,4 +17,25 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+// Get all information about specific mentor
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const mentor: any[] = await Mentor.findAll({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: Student,
+        },
+        {
+          model: Meeting,
+        },
+      ],
+    });
+
+    res.json(mentor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
