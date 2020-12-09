@@ -11,37 +11,57 @@ import {
   TableHeader,
   StyledDiv,
 } from "../../styles/styledComponents";
-import Button from "@material-ui/core/Button";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import { IEvent } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { capitalize, formatToIsraeliDate } from "../../helpers/general";
+import { Button, TextField } from "@material-ui/core";
+import PDFLink from "./PDFLink";
 
 function AllProcesses() {
   const [processes, setProcesses] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [filteredProcesses, setFilteredProcesses] = useState<IEvent[]>([]);
+  const [filterInput, setFilterInput] = useState<string>("");
+  const [click, setClick] = useState<boolean>(false);
+
+  const handleFilter = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ): void => {
+    const input = e.target.value;
+    setClick(false);
+    setFilterInput(input);
+
+    const newProcessesArr = [];
+    for (let process of processes) {
+      let bool = false;
+      const arrOfProcessesValue = [
+        `${process.Student!.firstName} ${process.Student!.lastName}`,
+        process.Job!.position,
+        process.status,
+        formatToIsraeliDate(process.date),
+      ];
+      for (let value of arrOfProcessesValue) {
+        if (
+          typeof value === "string" &&
+          value.toLowerCase().includes(input.toLowerCase())
+        ) {
+          bool = true;
+        }
+      }
+      if (bool) {
+        newProcessesArr.push(process);
+      }
+    }
+    setFilteredProcesses(newProcessesArr);
+  };
 
   useEffect(() => {
     (async () => {
-      const { data: sortedData } = await network.get("/api/v1/event/all");
-      // const sortedData = data.sort(
-      //   (a: IEvent, b: IEvent) =>
-      //     new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      // );
-      const processesData: IEvent[] = [];
-      sortedData.forEach((event: IEvent) => {
-        if (
-          processesData.findIndex(
-            (process: IEvent) =>
-              process.Student!.id === event.Student!.id &&
-              process.Job!.id === event.Job!.id
-          ) === -1
-        ) {
-          processesData.push(event);
-        }
-      });
-      setProcesses(processesData);
+      const { data } = await network.get("/api/v1/event/allProcesses");
+      setProcesses(data);
+      setFilteredProcesses(data);
       setLoading(false);
     })();
   }, []);
@@ -54,9 +74,22 @@ function AllProcesses() {
         </TitleWrapper>
       </Center>
       <br />
+      <Center>
+        <TextField
+          variant='outlined'
+          value={filterInput}
+          label='Search process'
+          onChange={(e) => handleFilter(e)}
+        />
+      </Center>
+      <Button variant='outlined' onClick={() => setClick((prev) => !prev)}>
+        Prepare PDF
+      </Button>
+      {click && <PDFLink data={filteredProcesses} />}
+      <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
-          {processes && (
+          {filteredProcesses && (
             <li>
               <TableHeader>
                 <TimelineIcon />
@@ -67,8 +100,8 @@ function AllProcesses() {
               </TableHeader>
             </li>
           )}
-          {processes &&
-            processes.map((process) => (
+          {filteredProcesses &&
+            filteredProcesses.map((process) => (
               <li>
                 <StyledLink
                   to={`/process/${process.Student!.id}/${process.Job!.id}`}
