@@ -29,6 +29,7 @@ import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
+import languages from "../../helpers/languages.json";
 
 function AddStudent() {
   const { register, handleSubmit, errors, control } = useForm();
@@ -51,6 +52,8 @@ function AddStudent() {
   const empty = Object.keys(errors).length === 0;
 
   const onSubmit = async (data: IStudent) => {
+    //@ts-ignore
+    data.languages = data.languages.join(", ");
     try {
       await network.post("/api/v1/student", data);
       history.push("/student/all");
@@ -191,14 +194,33 @@ function AddStudent() {
                 )
               ) : null}
               <br />
-              <TextField
-                id='languages'
-                name='languages'
-                inputRef={register({
-                  required: "Languages is required",
-                })}
-                label='Languages'
-              />
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.classId)}
+              >
+                <InputLabel>Languages</InputLabel>
+                <Controller
+                  as={
+                    <Select multiple displayEmpty>
+                      {Object.keys(languages).map((key: string) => (
+                        <MenuItem
+                          //@ts-ignore
+                          key={languages[key].name}
+                          //@ts-ignore
+                          value={languages[key].name}
+                        >
+                          {/* @ts-ignore */}
+                          {languages[key].nativeName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name='languages'
+                  rules={{ required: "Languages is required" }}
+                  control={control}
+                  defaultValue={[]}
+                />
+              </FormControl>
               {!empty ? (
                 errors.languages ? (
                   <ErrorBtn tooltipTitle={errors.languages.message} />
