@@ -37,7 +37,8 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  margin: 5% auto;
+  margin: ${(props: { margin: string }) =>
+    props.margin ? props.margin : "5% auto"};
   width: 80%;
   padding: ${(props: { padding: string }) =>
     props.padding ? props.padding : "40px"};
@@ -75,6 +76,7 @@ export const RemoveJobButton = styled(DeleteIcon)`
 
 export const GridDiv = styled.div`
   display: grid;
+  width: 95%;
   grid-template-columns: ${(props: { repeatFormula: string }) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
 `;

@@ -29,7 +29,12 @@ import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
-
+interface Props {
+  student?: IStudent;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
 function AddStudent() {
   const { register, handleSubmit, errors, control } = useForm();
   const [classes, setClasses] = useState<IClass[]>([]);

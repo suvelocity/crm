@@ -2,6 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Modal from '@material-ui/core/Modal';
+import EditIcon from '@material-ui/icons/Edit';
+import AddJob from './AddJob';
 import {
   H1,
   Wrapper,
@@ -37,6 +40,7 @@ import { capitalize, formatToIsraeliDate } from "../../helpers";
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
 
@@ -63,6 +67,11 @@ function SingleJob() {
     setLoading(false);
   }, [id, setJob, setLoading, setEventsToMap]);
 
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getJob();
+  }
   const removeStudents = useCallback(
     async (
       studentId: number,
@@ -120,6 +129,8 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+        <div style={{display:'flex', justifyContent: 'space-between'}}>
+          <div>
           <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
               <SingleListItem
@@ -134,7 +145,7 @@ function SingleJob() {
             <List>
               <SingleListItem
                 primary="Company"
-                secondary={capitalize(job?.Company.name)}
+                secondary={capitalize(job?.Company?.name)}
               >
                 <BusinessIcon />
               </SingleListItem>
@@ -159,7 +170,6 @@ function SingleJob() {
               {/* Contact */}
             </List>
           </GridDiv>
-          <br />
           {job?.description && (
             <MultilineListItem>
               <ListItemIcon>
@@ -195,6 +205,20 @@ function SingleJob() {
               />
             </MultilineListItem>
           )}
+          </div>
+          <div style={{cursor: "pointer" }} onClick={() => setModalState(true)}><EditIcon /></div>
+          </div>
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {
+              !job?<div>oops</div>:
+              <AddJob handleClose={handleClose} update={true} job={job} header='Edit Job'/>
+            }
+          </Modal>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
