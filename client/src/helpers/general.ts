@@ -1,5 +1,6 @@
 import { status } from "../typescript/interfaces";
 import { IStudent } from "../typescript/interfaces";
+import Cookies from "js-cookie";
 
 export const searchResults = (search: string | number, array: IStudent[]) => {
   return array.filter((student: IStudent) => {
@@ -9,7 +10,8 @@ export const searchResults = (search: string | number, array: IStudent[]) => {
     );
   });
 };
-export default searchResults;
+
+export const getRefreshToken = () => Cookies.get("refreshToken");
 
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
