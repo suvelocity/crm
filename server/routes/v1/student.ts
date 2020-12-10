@@ -123,8 +123,10 @@ router.post("/", async (req: Request, res: Response) => {
     if (user) {
       transporter.sendMail(
         mailOptions(body.email, password),
-        function (error: string) {
+        function (error: Error | null) {
           if (error) {
+            console.log(error);
+
             console.log("Mail not sent");
           }
         }

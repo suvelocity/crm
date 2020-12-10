@@ -10,12 +10,12 @@ const unknownEndpoint = (req: Request, res: Response) => {
 };
 
 router.use("/auth", require("./auth"));
-
-router.use("/class", checkToken, require("./class"));
-router.use("/job", checkToken, require("./job"));
-router.use("/student", checkToken, require("./student"));
-router.use("/event", checkToken, require("./event"));
-router.use("/company", checkToken, require("./company"));
+router.use(checkToken);
+router.use("/class", require("./class"));
+router.use("/job", require("./job"));
+router.use("/student", require("./student"));
+router.use("/event", require("./event"));
+router.use("/company", require("./company"));
 
 router.use(unknownEndpoint);
 module.exports = router;

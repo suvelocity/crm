@@ -96,3 +96,31 @@ export interface SelectInputs {
   filterBy: string;
   possibleValues: string[];
 }
+
+export interface IUser {
+  id?: number;
+  userType: string;
+  firstName?: string;
+  lastName?: string;
+  idNumber?: string;
+  email?: string;
+  phone?: string;
+  Class?: IClass;
+  address?: string;
+  age?: number;
+  maritalStatus?: string;
+  children?: number;
+  academicBackground?: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
+  additionalDetails?: string;
+  Events?: IEvent[];
+}
+
+export interface IUserSignIn {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
