@@ -1,46 +1,79 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 //@ts-ignore
-import { User, RefreshToken } from "../../models";
+import { User, RefreshToken, Student } from "../../models";
 import bcrypt from "bcryptjs";
 
 require("dotenv").config();
 
 const router = Router();
 
+const fifteenMinutes = Math.floor(Date.now() / 1000) + 15 * 60;
+const oneDay = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+
 router.post("/token", async (req: Request, res: Response) => {
-  const { refreshToken, email } = req.body;
+  const { refreshToken, remembered } = req.body;
   if (!refreshToken) return res.status(400).json({ error: "No refresh token" });
   try {
-    const token = await RefreshToken.findOne({
+    const { token } = await RefreshToken.findOne({
       where: { token: refreshToken },
     });
     if (!token)
       return res.status(404).json({ error: "Refresh token not found" });
-    const data = { email, exp: Math.floor(Date.now() / 1000) + 15 * 60 };
-    const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET);
-    res.cookie("accessToken", accessToken);
-    res.send(true);
+    jwt.verify(
+      token,
+      process.env.REFRESH_TOKEN_SECRET!,
+      async (err: Error | null, decoded: any) => {
+        if (err) {
+          console.log(err);
+
+          return res.status(403).json({ error: "Not authorized" });
+        }
+        const data = decoded;
+        data.exp = fifteenMinutes;
+        const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET!);
+        res.cookie("accessToken", accessToken);
+        if (remembered) {
+          const student = await Student.findOne({
+            where: { email: decoded.email },
+          });
+          if (student) {
+            return res.json({ ...student, userType: decoded.type });
+          }
+        }
+        res.json({ userType: decoded.type });
+      }
+    );
   } catch (err) {
     res.json({ error: err.message }).status(500);
   }
 });
 
-router.post("signIn", async (req: Request, res: Response) => {
-  const { username, password, rememberMe } = req.body;
+router.post("/signin", async (req: Request, res: Response) => {
+  const { email, password, rememberMe } = req.body;
   try {
     const user = await User.findOne({
-      where: { username },
+      where: { email },
     });
     if (!user) return res.json(404).json({ error: "User not found" });
     if (!bcrypt.compareSync(password, user.password))
       return res.json(400).json({ error: "Wrong password" });
-    const exp =
-      Math.floor(Date.now() / 1000) + 24 * 60 * 60 * (rememberMe ? 365 : 1);
-    const data = { email: username, exp };
-    const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET);
+    const exp = oneDay * (rememberMe ? 365 : 1);
+    const accessTokenExp = fifteenMinutes;
+    const data = { email, type: user.type, exp };
+    const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET!);
+    const accessToken = jwt.sign(
+      { ...data, exp: accessTokenExp },
+      process.env.ACCESS_TOKEN_SECRET!
+    );
+    await RefreshToken.create({ token: refreshToken });
     res.cookie("refreshToken", refreshToken);
-    res.sendStatus(204);
+    res.cookie("accessToken", accessToken);
+    const student = await Student.findByPk(user.relatedId);
+    if (student) {
+      return res.json({ ...student, userType: user.type });
+    }
+    res.json({ userType: "admin" });
   } catch (err) {
     res.json({ error: err.message });
   }
@@ -61,4 +94,4 @@ router.post("signOut", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+module.exports = router;
