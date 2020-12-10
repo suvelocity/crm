@@ -57,15 +57,13 @@ jobs:
       run: CI=false INLINE_RUNTIME_CHUNK=false npm run build
       working-directory: ./client
 
-    # # Enable When using ENV_FILE Secret
-    # - name: Create .env file from Secret
-    #   run: |
-    #     file=".env"
-    #     echo "$ENV_FILE" > $file
+    # Enable When using ENV_FILE Secret
+    - name: Create .env file from Secret
+      run: echo "$ENV_FILE" > .env
 
-    # # Enable When using ENV_FILE Secret
-    # - name: Send .env File
-    #   run: gcloud compute scp .env --zone $GCE_INSTANCE_ZONE $GCE_INSTANCE:~
+    # Enable When using ENV_FILE Secret
+    - name: Send .env File
+      run: gcloud compute scp .env --zone $GCE_INSTANCE_ZONE $GCE_INSTANCE:~
 
     # Build the Docker image
     - name: Build image
@@ -75,10 +73,15 @@ jobs:
     - name: Publish image
       run: make push
 
+    # ONLY first time setup
+    # Initialize Envoironment in Gcloud Instance
+    - name: Initialize volumes, network and other Containers that don't change
+      run: make initialize
+
     # Deploy Container to Gcloud Instance
     - name: deploy
       run: make deploy
 
-    # # Enable When using ENV_FILE Secret
-    # - name: Remove .env File
-    #   run: make remove-env
+    # Enable When using ENV_FILE Secret
+    - name: Remove .env File
+      run: make remove-env
