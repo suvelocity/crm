@@ -6,11 +6,12 @@ import Dashboard from '../components/classroomRelated/dashboard/Dashboard';
 import Lessons from '../components/classroomRelated/lessons/Lessons';
 import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/Tasks';
-
+import ClassRoomNavBar from '../components/ClassRoomNavBar';
 export function StudentRoutes() {
   return (
     <>
       <ErrorBoundary>
+        <ClassRoomNavBar/>
         <Switch>
           <Route exact path="/">
           <Dashboard />

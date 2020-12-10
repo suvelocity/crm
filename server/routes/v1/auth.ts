@@ -5,7 +5,7 @@ import { User, RefreshToken, Student,Teacher } from "../../models";
 import bcrypt from "bcryptjs";
 
 require("dotenv").config();
-
+               
 const router = Router();
 
 const fifteenMinutes = () => Math.floor(Date.now() / 1000) + 15 * 60;
@@ -54,8 +54,10 @@ router.post("/signin", async (req: Request, res: Response) => {
       where: { email },
     });
     if (!user) return res.json(404).json({ error: "User not found" });
-    if (!bcrypt.compareSync(password, user.password))
+    if (!bcrypt.compareSync(password, user.password)){
       return res.status(400).json({ error: "Wrong password" });
+
+    }
     const exp = oneDay() * (rememberMe ? 365 : 1);
     const accessTokenExp = fifteenMinutes();
     const data = { email, type: user.type, exp };
@@ -67,16 +69,25 @@ router.post("/signin", async (req: Request, res: Response) => {
     await RefreshToken.create({ token: refreshToken });
     res.cookie("refreshToken", refreshToken);
     res.cookie("accessToken", accessToken);
-    const student = await Student.findByPk(user.relatedId);
-    if (student) {
-      return res.json({ ...student, userType: user.type });
-    }
-    const teacher = await Teacher.findByPk(user.relatedId);
-    if (teacher) {
-      return res.json({ ...teacher, userType: user.type });
+    switch(user.type){
+      case 'student':
+      const student = await Student.findByPk(user.relatedId);
+      if (student) {
+        return res.json({ ...student, userType: user.type });
+      }
+        return res.status(400).json({error:'student not found'})
+      case 'teacher':
+        const teacher = await Teacher.findByPk(user.relatedId);
+        if (teacher) {
+        return res.status(400).json({ ...teacher, userType: user.type });
+      }
+        return res.json({error:'teacher not found'})
+      case 'admin':
+        return res.json({ userType: "admin" });
+      default :
+        return res.status(400).json({error:'not found'})
     }
     
-    res.json({ userType: "admin" });
   } catch (err) {
     res.json({ error: err.message });
   }

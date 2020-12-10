@@ -7,11 +7,13 @@ import Lessons from '../components/classroomRelated/lessons/Lessons';
 import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/Tasks';
 import Teacher from '../components/classroomRelated/teacher/Teacher';
+import ClassRoomNavBar from '../components/ClassRoomNavBar';
 
 export default function TeacherRoutes() {
   return (
     <>
       <ErrorBoundary>
+        <ClassRoomNavBar/>
         <Switch>
           <Route exact path="/">
           <Dashboard />

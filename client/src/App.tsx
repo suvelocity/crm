@@ -36,6 +36,8 @@ function App() {
   const getRoutes = () => {
     if (loading) return <Loading fullPage loading={true} />;
     if (!user) return <PublicRoutes />;
+    console.log(user);
+    
     switch (user.userType) {
       case "admin":
         return <AdminRoutes />;
