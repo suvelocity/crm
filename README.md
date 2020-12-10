@@ -5,6 +5,10 @@ deployment on cloud: http://35.226.223.57:8080/
 ## TOC
 - [Setup](#Setup)
 - [Contributing](#Contributing)
+
+## Stack
+- Front end: React TypeScript
+- Back end: NodeJs(Express) TypeScript MySQL(ORM:[Sequelize](https://sequelize.org/master/index.html))
 ## Setup
 1. Clone the repo to your machine
 
@@ -41,6 +45,7 @@ REACT_APP_API_KEY="" // google api key for location services
 ```
 - If you have changed `PORT` in the server [`.env`](server/example.env), you need to change the `proxy` property in the client [`package.json`](client/package.json) 
 4. Run `npm start` to start react in development mode
+5. To log into the service oyu need credentials, contact your local admin to get them 
 ## Contributing
 1. Decide on the feature you are working on 
 
