@@ -14,6 +14,8 @@ import { IJob, ICompany } from "../../typescript/interfaces";
 import { validNameRegex } from "../../helpers/patterns";
 import { FormControl, MenuItem, Select } from "@material-ui/core";
 import { ErrorBtn, ActionBtn } from "../formRelated";
+import Swal from "sweetalert2";
+import GoogleMaps from "../GeoSearch";
 
 const AddJob = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -28,8 +30,8 @@ const AddJob = () => {
     try {
       await network.post("/api/v1/job", data);
       history.push("/job/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -55,8 +57,8 @@ const AddJob = () => {
           <GridDiv repeatFormula='1fr 0.5fr 3fr'>
             <div>
               <FormControl
-                style={{ minWidth: 200 }}
-                error={Boolean(errors.company)}
+                style={{ minWidth: 255 }}
+                error={Boolean(errors.companyId)}
               >
                 <InputLabel>Please select a company</InputLabel>
                 <Controller
@@ -78,10 +80,8 @@ const AddJob = () => {
                 />
               </FormControl>
               {!empty ? (
-                errors.company ? (
-                  <Tooltip title={errors.company.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                errors.companyId ? (
+                  <ErrorBtn tooltipTitle={errors.companyId.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -98,51 +98,37 @@ const AddJob = () => {
                     message: "Position can have only letters and spaces",
                   },
                   minLength: {
-                    value: 6,
-                    message: "Position needs to have a minimum of 3 letters",
+                    value: 2,
+                    message: "Position needs to have a minimum of 2 letters",
                   },
                 })}
                 name='position'
               />
               {!empty ? (
                 errors.position ? (
-                  <Tooltip title={errors.position.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.position.message} />
                 ) : (
                   <ActionBtn />
                 )
               ) : null}
               {generateBrs(3)}
-              <TextField
+              <GoogleMaps
                 id='location'
                 name='location'
-                fullWidth
                 inputRef={register({
                   required: "Location is required",
-                  pattern: {
-                    value: validNameRegex,
-                    message:
-                      "Company location can contain only letters and spaces",
-                  },
-                  minLength: {
-                    value: 3,
-                    message: "First name needs to have a minimum of 4 letters",
-                  },
                 })}
+                width='100%'
                 label='Location'
               />
               {!empty ? (
                 errors.location ? (
-                  <Tooltip title={errors.location.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.location.message} />
                 ) : (
                   <ActionBtn />
                 )
               ) : null}
-              {generateBrs(3)}
-
+              {generateBrs(2)}
               <TextField
                 name='contact'
                 fullWidth
@@ -151,9 +137,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.contact ? (
-                  <Tooltip title={errors.contact.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.contact.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -180,9 +164,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.description ? (
-                  <Tooltip title={errors.description.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.description.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -206,9 +188,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.requirements ? (
-                  <Tooltip title={errors.requirements.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.requirements.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -232,9 +212,7 @@ const AddJob = () => {
               />
               {!empty ? (
                 errors.additionalDetails ? (
-                  <Tooltip title={errors.additionalDetails.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
                 ) : (
                   <ActionBtn />
                 )

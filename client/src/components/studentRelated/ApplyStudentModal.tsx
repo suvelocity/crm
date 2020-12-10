@@ -17,6 +17,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { SingleListItem } from "../tableRelated";
+import Swal from "sweetalert2";
 
 function ApplyStudentModal({
   currentJobs,
@@ -40,8 +41,8 @@ function ApplyStudentModal({
         const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
         setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
       })();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   }, [currentJobs]);
 
@@ -70,8 +71,8 @@ function ApplyStudentModal({
           setLoading(false);
           handleClose();
         }, 1000);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     } else {
       handleClose();
@@ -97,12 +98,12 @@ function ApplyStudentModal({
                 <Accordion key={job.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-label='Expand'
-                    aria-controls='additional-actions2-content'
-                    id='additional-actions2-header'
+                    aria-label="Expand"
+                    aria-controls="additional-actions2-content"
+                    id="additional-actions2-header"
                   >
                     <FormControlLabel
-                      aria-label='Acknowledge'
+                      aria-label="Acknowledge"
                       onClick={(event) => event.stopPropagation()}
                       onFocus={(event) => event.stopPropagation()}
                       control={
@@ -112,7 +113,7 @@ function ApplyStudentModal({
                           onChange={handleCheckBoxOnChange}
                         />
                       }
-                      label=''
+                      label=""
                     />
                     <Typography className={classes.heading}>
                       {job.position}
@@ -124,16 +125,16 @@ function ApplyStudentModal({
                   <AccordionDetails>
                     <List>
                       <SingleListItem
-                        primary='Requirements'
+                        primary="Requirements"
                         secondary={job.requirements}
                       />
                       <SingleListItem
-                        primary='Location'
+                        primary="Location"
                         secondary={job.location}
                       />
                       <ListItem>
                         <ListItemText
-                          primary='Applied Students'
+                          primary="Applied Students"
                           secondary={
                             <>
                               {job.Events.map((event: IEvent) => (
@@ -152,8 +153,8 @@ function ApplyStudentModal({
               ))}
               <Button
                 className={classes.button}
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 onClick={handleSubmit}
               >
                 Apply
@@ -169,7 +170,7 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant='contained' color='primary' onClick={handleOpen}>
+      <Button variant="contained" color="primary" onClick={handleOpen}>
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>

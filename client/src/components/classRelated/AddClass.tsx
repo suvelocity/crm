@@ -1,15 +1,12 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import network from "../../helpers/network";
-import { ErrorOutline as ErrorOutlineIcon } from "@material-ui/icons";
 import {
   Wrapper,
   TitleWrapper,
   H1,
   Center,
   GridDiv,
-  iconStyle,
-  errorIconStyle,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
 import { IClass } from "../../typescript/interfaces";
@@ -20,11 +17,10 @@ import {
   MenuItem,
   Button,
   TextField,
-  IconButton,
   Select,
-  Tooltip,
 } from "@material-ui/core";
 import { ActionBtn, ErrorBtn } from "../formRelated";
+import Swal from "sweetalert2";
 
 const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
 
@@ -34,16 +30,18 @@ const AddClass = () => {
 
   const empty = Object.keys(errors).length === 0;
 
-  const defaultDateValue = `${new Date().getFullYear()}-${
-    new Date().getMonth() + 1
-  }-${new Date().getDate()}`;
+  const defaultDateValue = `${new Date().getFullYear()}-${(
+    "0" +
+    (new Date().getMonth() + 1)
+  ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+  console.log(defaultDateValue);
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
       await network.post("/api/v1/class", data);
       history.push("/class/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -79,15 +77,12 @@ const AddClass = () => {
               </FormControl>
               {!empty ? (
                 errors.course ? (
-                  <Tooltip title={errors.course.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.course.message} />
                 ) : (
                   <ActionBtn />
                 )
               ) : null}
               {generateBrs(2)}
-
               <TextField
                 id='name'
                 label='Name'
@@ -102,9 +97,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.name ? (
-                  <Tooltip title={errors.name.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.name.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -124,9 +117,7 @@ const AddClass = () => {
               </FormControl>
               {!empty ? (
                 errors.startDate ? (
-                  <Tooltip title={errors.startDate.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.startDate.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -146,9 +137,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.cycleNumber ? (
-                  <Tooltip title={errors.cycleNumber.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.cycleNumber.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -162,11 +151,7 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.zoomLink ? (
-                  <Tooltip title={errors.zoomLink.message}>
-                    <IconButton style={iconStyle}>
-                      <ErrorOutlineIcon style={errorIconStyle} color='error' />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.company.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -181,17 +166,13 @@ const AddClass = () => {
                   inputRef={register({
                     required: "End date is required",
                   })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
+                  defaultValue={defaultDateValue}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
               {!empty ? (
                 errors.endDate ? (
-                  <Tooltip title={errors.endDate.message}>
-                    <ErrorBtn />
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.endDate.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -216,9 +197,7 @@ const AddClass = () => {
           />
           {!empty ? (
             errors.additionalDetails ? (
-              <Tooltip title={errors.additionalDetails.message}>
-                <ErrorBtn />
-              </Tooltip>
+              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
             ) : (
               <ActionBtn />
             )

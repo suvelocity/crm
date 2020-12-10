@@ -30,6 +30,7 @@ import LocationCityIcon from "@material-ui/icons/LocationCity";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize, formatPhone } from "../../helpers/general";
+import Swal from "sweetalert2";
 
 function SingleCompany() {
   const [company, setCompany] = useState<ICompany | null>();
@@ -47,29 +48,29 @@ function SingleCompany() {
   useEffect(() => {
     try {
       getCompany();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [getCompany]);
 
   return (
     <>
-      <Wrapper width="80%">
+      <Wrapper width='80%'>
         <Center>
           <TitleWrapper>
-            <H1 color="#9e9e23">Company Info</H1>
+            <H1 color='#a3a365'>Company Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatingFormula="1fr 1fr">
+          <GridDiv repeatingFormula='1fr 1fr'>
             <List>
               <ListItem>
                 <ListItemIcon>
                   <ClassIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Name"
+                  primary='Name'
                   secondary={capitalize(company?.name)}
                 />
               </ListItem>
@@ -79,7 +80,7 @@ function SingleCompany() {
                   <LocationCityIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="location"
+                  primary='location'
                   secondary={capitalize(company?.location)}
                 />
               </ListItem>
@@ -89,7 +90,7 @@ function SingleCompany() {
                   <RotateLeftIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Contact Name"
+                  primary='Contact Name'
                   secondary={
                     company?.contactName
                       ? capitalize(company.contactName)
@@ -105,7 +106,7 @@ function SingleCompany() {
                   <ClassIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Contact Number"
+                  primary='Phone Number'
                   secondary={
                     company?.contactNumber ? company.contactNumber : "None"
                   }
@@ -117,7 +118,7 @@ function SingleCompany() {
                   <CalendarTodayIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Contact Position"
+                  primary='Contact Position'
                   secondary={
                     company?.contactPosition
                       ? capitalize(company?.contactPosition)
@@ -141,7 +142,7 @@ function SingleCompany() {
                 <ContactSupportIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Description"
+                primary='Description'
                 secondary={capitalize(company?.description)}
               />
             </MultilineListItem>
@@ -149,10 +150,10 @@ function SingleCompany() {
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width="50%">
+      <Wrapper width='50%'>
         <Center>
           <TitleWrapper>
-            <H1 color={"#9e9e23"}>Jobs</H1>
+            <H1 color={"#a3a365"}>Jobs</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -160,21 +161,21 @@ function SingleCompany() {
           <StyledUl>
             {company?.Jobs && (
               <li>
-                <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                <TableHeader repeatFormula='1fr 2.5fr 2.5fr 1fr'>
                   <PersonIcon />
-                  <StyledSpan weight="bold">Position</StyledSpan>
-                  <StyledSpan weight="bold">Location</StyledSpan>
-                  <StyledSpan weight="bold">Contact</StyledSpan>
+                  <StyledSpan weight='bold'>Position</StyledSpan>
+                  <StyledSpan weight='bold'>Location</StyledSpan>
+                  <StyledSpan weight='bold'>Contact</StyledSpan>
                 </TableHeader>
               </li>
             )}
             {company?.Jobs &&
               company?.Jobs!.map((job: Omit<IJob, "Company">) => (
                 <li key={job.id}>
-                  <StyledLink color="black" to={`/job/${job.id}`}>
-                    <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                  <StyledLink color='black' to={`/job/${job.id}`}>
+                    <StyledDiv repeatFormula='1fr 2.5fr 2.5fr 1fr'>
                       <PersonIcon />
-                      <StyledSpan weight="bold">
+                      <StyledSpan weight='bold'>
                         {capitalize(job.position)}
                       </StyledSpan>
                       <StyledSpan>{capitalize(job.location)}</StyledSpan>
