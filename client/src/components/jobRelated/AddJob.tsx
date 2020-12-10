@@ -121,7 +121,6 @@ const AddJob = () => {
                 width='100%'
                 label='Location'
               />
-
               {!empty ? (
                 errors.location ? (
                   <ErrorBtn tooltipTitle={errors.location.message} />
@@ -130,7 +129,6 @@ const AddJob = () => {
                 )
               ) : null}
               {generateBrs(2)}
-
               <TextField
                 name='contact'
                 fullWidth
