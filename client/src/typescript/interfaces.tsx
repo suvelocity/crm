@@ -103,7 +103,9 @@ export interface IMentor {
   phone: string;
   address: string;
   job: string;
-}
+  available: boolean;
+  gender: string;
+};
 
 export interface MentorClassDashboard {
   id?: number;
