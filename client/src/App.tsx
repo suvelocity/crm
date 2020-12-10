@@ -6,6 +6,7 @@ import axios from "axios";
 import { IUser } from "./typescript/interfaces";
 //@ts-ignore
 import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+import TeacherRoutes from './routes/TeacherRoutes'
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 
@@ -41,6 +42,8 @@ function App() {
         return <AdminRoutes />;
       case "student":
         return <StudentRoutes />;
+        case "teacher":
+        return <TeacherRoutes />;
     }
   };
 

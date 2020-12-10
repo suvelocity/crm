@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
   AppBar,
   Toolbar,
@@ -8,12 +8,13 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import SignOutButton from "./auth/SignOutButton";
-import PeopleIcon from "@material-ui/icons/People";
-import WorkIcon from "@material-ui/icons/Work";
-import BusinessIcon from "@material-ui/icons/Business";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
-import ClassIcon from "@material-ui/icons/Class";
+import SchoolIcon from '@material-ui/icons/School';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import TodayIcon from '@material-ui/icons/Today';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
+import StreetviewIcon from '@material-ui/icons/Streetview';
 function NavAppBar() {
   const [open, setOpen] = useState(false);
 
@@ -34,7 +35,7 @@ function NavAppBar() {
             <Menu />
           </IconButton>
           <StyledLink to='/student/all'>
-            <Typography variant='h4'>CRM</Typography>
+            <Typography variant='h4'>Classroom</Typography>
           </StyledLink>
         </Toolbar>
       </AppBar>
@@ -46,30 +47,39 @@ function NavAppBar() {
         }}
       >
         <StyledDrawer>
-          <StyledLink to='/student/all'>
+          <StyledLink to="/">
             <DrawerItem onClick={() => setOpen(false)}>
-              Students
-              <PeopleIcon style={{ position: "absolute", right: 10 }} />
+              Dashboard
+              <DashboardIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/job/all'>
+          <StyledLink to="/lessons">
             <DrawerItem onClick={() => setOpen(false)}>
-              Jobs
-              <WorkIcon style={{ position: "absolute", right: 10 }} />
+              Lessons
+              <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/class/all'>
+          <StyledLink to="/schedhule">
             <DrawerItem onClick={() => setOpen(false)}>
-              Classes
-              <ClassIcon style={{ position: "absolute", right: 10 }} />
+            Schedhule
+              <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/company/all'>
+          <StyledLink to="/tasks">
             <DrawerItem onClick={() => setOpen(false)}>
-              Companies
-              <BusinessIcon style={{ position: "absolute", right: 10 }} />
+            Tasks
+              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+            <hr />
+          </StyledLink>
+          {/* condition ifuser is teacher return this */}
+          <StyledLink to="/teacher">
+            <DrawerItem onClick={() => setOpen(false)}>
+            Teacher
+              <StreetviewIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
+          {/* Amit stuff from here above */}
         </StyledDrawer>
       </Drawer>
     </div>

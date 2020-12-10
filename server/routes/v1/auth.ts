@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 //@ts-ignore
-import { User, RefreshToken, Student } from "../../models";
+import { User, RefreshToken, Student,Teacher } from "../../models";
 import bcrypt from "bcryptjs";
 
 require("dotenv").config();
@@ -73,6 +73,11 @@ router.post("/signin", async (req: Request, res: Response) => {
     if (student) {
       return res.json({ ...student, userType: user.type });
     }
+    const teacher = await Teacher.findByPk(user.relatedId);
+    if (teacher) {
+      return res.json({ ...teacher, userType: user.type });
+    }
+    
     res.json({ userType: "admin" });
   } catch (err) {
     res.json({ error: err.message });

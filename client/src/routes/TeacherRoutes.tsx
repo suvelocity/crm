@@ -6,8 +6,9 @@ import Dashboard from '../components/classroomRelated/dashboard/Dashboard';
 import Lessons from '../components/classroomRelated/lessons/Lessons';
 import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/Tasks';
+import Teacher from '../components/classroomRelated/teacher/Teacher';
 
-export function StudentRoutes() {
+export default function TeacherRoutes() {
   return (
     <>
       <ErrorBoundary>
@@ -24,6 +25,9 @@ export function StudentRoutes() {
           </Route>
           <Route path="/tasks">
             <Tasks />
+          </Route>
+          <Route path="/teacher">
+            <Teacher />
           </Route>
           <Route path="*">
             <div>404 Not Found</div>

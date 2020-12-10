@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
+      this.hasMany(models.TaskofStudent, {
+        foreignKey: "userId",
+      });
       this.belongsTo(models.Class, {
         foreignKey: "classId",
       });
