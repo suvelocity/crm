@@ -28,6 +28,8 @@ function NewClassMentorProject() {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/class/byId/${id}`
     );
+    console.log(data);
+    
     setCls(data);
     setLoading(false);
   }, [id, setLoading, setCls]);
@@ -53,7 +55,7 @@ function NewClassMentorProject() {
 
   return (
     <div style={{display:"flex"}}>
-      <Wrapper width="30%">
+      <Wrapper width="40%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Students In Class</H1>
@@ -64,7 +66,7 @@ function NewClassMentorProject() {
           <StyledUl>
             {cls?.Students && (
               <li>
-                <TableHeader repeatFormula="0.5fr 1fr 1fr 1.5fr">
+                <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr">
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Address</StyledSpan>
@@ -76,14 +78,14 @@ function NewClassMentorProject() {
               cls?.Students!.map((student: Omit<IStudent, "Class">) => (
                 <li key={student.id}>
                   <StyledLink color="black" to={`/student/${student.id}`}>
-                    <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr">
+                    <StyledDiv repeatFormula="0.4fr 1fr 1fr 1.5fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">
                         {capitalize(student.firstName)}{" "}
                         {capitalize(student.lastName)}
                       </StyledSpan>
-                      <StyledSpan>{student.email}</StyledSpan>
-                      <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
+                      <StyledSpan>{student.address}</StyledSpan>
+                      <StyledSpan>{}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>
@@ -92,7 +94,7 @@ function NewClassMentorProject() {
         </Loading>
       </Wrapper>
 
-      <Wrapper width="50%">
+      <Wrapper width="40%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Available Mentors</H1>
