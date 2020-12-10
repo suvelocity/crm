@@ -10,13 +10,18 @@ export default function SignOutButton({ style = {} }) {
   const { setUser } = useContext(AuthContext);
   const history = useHistory();
   const signout = async () => {
-    await network.post("/api/v1/auth/signout", {
-      refreshToken: getRefreshToken(),
-    });
-    Cookies.remove("refreshToken");
-    Cookies.remove("accessToken");
-    setUser(null);
-    history.push("/");
+    try {
+      const refreshToken = getRefreshToken();
+      Cookies.remove("refreshToken");
+      Cookies.remove("accessToken");
+      await network.post("/api/v1/auth/signout", {
+        refreshToken,
+      });
+      setUser(null);
+      history.push("/");
+    } catch (e) {
+      console.log(e.message);
+    }
   };
   return (
     <div onClick={signout}>
