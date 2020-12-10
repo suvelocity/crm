@@ -110,3 +110,26 @@ export const StyledUl = styled.ul`
 export const MultilineListItem = styled(ListItem)`
   white-space: pre-wrap;
 `;
+
+export const StyledSelect = styled.select`
+  width: 100%;
+  min-width: 50px;
+  max-width: 300px;
+  border: 1px solid yellowgreen;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background-color: #fff;
+  align-items: center;
+  position: relative;
+
+  ::after {
+    width: 0.8em;
+    height: 0.5em;
+    background-color: #fff;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    justify-self: end;
+  }
+`;

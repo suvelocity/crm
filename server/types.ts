@@ -59,11 +59,13 @@ export interface IMentor {
 }
 
 type meeting = {date: string}
+// type class = {name: string, cycleNumber: number}
 
 export interface IDeshbord {
   id?: number;
   firstName:string;
   lastName:string;
+  // Class: class;
   Mentor:IMentor;
   Meetings:meeting[];
 }
