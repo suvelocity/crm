@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
+const { REACT_APP_API_KEY } = process.env;
 
 function loadScript(src: string, position: HTMLElement | null, id: string) {
   if (!position) {
@@ -49,11 +50,11 @@ export default function GoogleMaps(props: any) {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<PlaceType[]>([]);
   const loaded = React.useRef(false);
-
+  console.log(REACT_APP_API_KEY);
   if (typeof window !== "undefined" && !loaded.current) {
     if (!document.querySelector("#google-maps")) {
       loadScript(
-        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAYrQivO0_dnlbZodljVnzmxvQy0piYbpg&libraries=places",
+        `https://maps.googleapis.com/maps/api/js?key=${REACT_APP_API_KEY}&libraries=places`,
         document.querySelector("head"),
         "google-maps"
       );
@@ -157,7 +158,7 @@ export default function GoogleMaps(props: any) {
           ])
         );
         return (
-          <Grid container alignItems='center'>
+          <Grid container alignItems="center">
             <Grid item>
               <LocationOnIcon className={classes.icon} />
             </Grid>
@@ -170,7 +171,7 @@ export default function GoogleMaps(props: any) {
                   {part.text}
                 </span>
               ))}
-              <Typography variant='body2' color='textSecondary'>
+              <Typography variant="body2" color="textSecondary">
                 {option.structured_formatting.secondary_text}
               </Typography>
             </Grid>
