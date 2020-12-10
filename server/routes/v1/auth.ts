@@ -67,11 +67,18 @@ router.post("/signin", async (req: Request, res: Response) => {
     await RefreshToken.create({ token: refreshToken });
     res.cookie("refreshToken", refreshToken);
     res.cookie("accessToken", accessToken);
-    const student = await Student.findByPk(user.relatedId);
-    if (student) {
-      return res.json({ ...student, userType: user.type });
+    switch (user.type) {
+      case "student":
+        const student = await Student.findByPk(user.relatedId);
+        if (student) {
+          return res.json({ ...student, userType: user.type });
+        }
+        return res.status(400).json({ error: "Student not found" });
+      case "admin":
+        return res.json({ userType: "admin" });
+      default:
+        return res.status(400).json({ error: "Unknown user type" });
     }
-    res.json({ userType: "admin" });
   } catch (err) {
     res.json({ error: err.message });
   }
