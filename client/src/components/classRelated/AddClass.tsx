@@ -34,7 +34,6 @@ const AddClass = () => {
     "0" +
     (new Date().getMonth() + 1)
   ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
-  console.log(defaultDateValue);
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
@@ -49,7 +48,7 @@ const AddClass = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='#2c6e3c'>Add Class</H1>
+          <H1 color="#2c6e3c">Add Class</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -69,10 +68,10 @@ const AddClass = () => {
                       ))}
                     </Select>
                   }
-                  name='course'
+                  name="course"
                   rules={{ required: "Course is required" }}
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                 />
               </FormControl>
               {!empty ? (
@@ -84,8 +83,8 @@ const AddClass = () => {
               ) : null}
               {generateBrs(2)}
               <TextField
-                id='name'
-                label='Name'
+                id="name"
+                label="Name"
                 inputRef={register({
                   required: "Class title is required",
                   minLength: {
@@ -93,7 +92,7 @@ const AddClass = () => {
                     message: "Class needs to have a minimum of 2 letters",
                   },
                 })}
-                name='name'
+                name="name"
               />
               {!empty ? (
                 errors.name ? (
@@ -107,9 +106,9 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>Start Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='startingDate'
-                  name='startingDate'
+                  type="date"
+                  id="startingDate"
+                  name="startingDate"
                   inputRef={register({ required: "Start date is required" })}
                   defaultValue={defaultDateValue}
                   style={{ width: "12.7vw" }}
@@ -126,14 +125,14 @@ const AddClass = () => {
             </div>
             <div>
               <TextField
-                id='cycleNumber'
-                name='cycleNumber'
-                type='number'
+                id="cycleNumber"
+                name="cycleNumber"
+                type="number"
                 defaultValue={1}
                 inputRef={register({
                   required: "Cycle number is required",
                 })}
-                label='Cycle Number'
+                label="Cycle Number"
               />
               {!empty ? (
                 errors.cycleNumber ? (
@@ -145,9 +144,9 @@ const AddClass = () => {
               {generateBrs(2)}
 
               <TextField
-                name='zoomLink'
+                name="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
-                label='Zoom Link'
+                label="Zoom Link"
               />
               {!empty ? (
                 errors.zoomLink ? (
@@ -160,9 +159,9 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>End Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='endingDate'
-                  name='endingDate'
+                  type="date"
+                  id="endingDate"
+                  name="endingDate"
                   inputRef={register({
                     required: "End date is required",
                   })}
@@ -181,19 +180,19 @@ const AddClass = () => {
           </GridDiv>
           {generateBrs(1)}
           <TextField
-            id='additionalDetails'
+            id="additionalDetails"
             multiline
             fullWidth
             rows={5}
-            variant='outlined'
-            name='additionalDetails'
+            variant="outlined"
+            name="additionalDetails"
             inputRef={register({
               maxLength: {
                 value: 500,
                 message: "Additional Details are too long",
               },
             })}
-            label='Additional Details'
+            label="Additional Details"
           />
           {!empty ? (
             errors.additionalDetails ? (
@@ -204,11 +203,11 @@ const AddClass = () => {
           ) : null}
           {generateBrs(2)}
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>

@@ -25,8 +25,8 @@ function App() {
         } else {
           setUser(userData);
         }
-      } catch (e) {
-        console.log(e.response.data.error);
+      } catch (error) {
+        console.log(error.response.data.error);
       }
       setLoading(false);
     })();
