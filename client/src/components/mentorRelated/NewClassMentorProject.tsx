@@ -120,6 +120,37 @@ function NewClassMentorProject() {
     }
   };
 
+  const resetMentors = (mentorizeClass: IClass | undefined) => {
+    const mentorizeStudents: Omit<IStudent, "Class">[] = mentorizeClass!.Students;
+    const backToMentors: IMentor[] = [];
+    for (let i = 0; i < mentorizeStudents.length; i++) {
+      if (mentorizeStudents[i].mentor && !(mentorizeStudents[i].mentorId)) {
+        backToMentors.push(mentorizeStudents[i].mentor!);
+        delete mentorizeStudents[i].mentor;
+      }
+    }
+    setMentors(backToMentors.concat(mentors));
+    setCls(mentorizeClass);
+  };
+
+  const assignMentors = (mentorizeClass: IClass | undefined) => {
+    const mentorNeededCount: number = mentorizeClass!.Students.filter(student => !(student.mentor || student.mentorId)).length;
+    console.log(mentorNeededCount)
+    if (mentorNeededCount <= mentors.length) {
+      let mentorsCount: number = 0
+      for (let i = 0; i < mentorizeClass!.Students.length; i++) {
+        const student = mentorizeClass!.Students[i]
+        if (student.mentorId || student.mentor) continue;
+        else {
+          student.mentor = mentors[mentorsCount];
+          mentorsCount++   
+        }
+      }
+      setMentors(mentors.slice(-(mentors.length - mentorsCount)));
+      setCls(mentorizeClass);
+    } else console.log("not enough mentors");
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <DragDropContext onDragEnd={onDropLeftEnd}>
@@ -139,6 +170,8 @@ function NewClassMentorProject() {
                 >
                   create
                 </Button>
+                <Button onClick={() => assignMentors(cls)}>Generate</Button>
+                <Button onClick={() => resetMentors(cls)}>Reset</Button>
               </H1>
             </TitleWrapper>
             <div style={{ color: "red" }}>{error}</div>
