@@ -24,7 +24,12 @@ import { ActionBtn, ErrorBtn } from "../formRelated";
 import Swal from "sweetalert2";
 
 const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
-
+interface Props {
+  class?: IClass;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
 const AddClass = () => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
