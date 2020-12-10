@@ -5,7 +5,7 @@ require("dotenv").config();
 export function checkToken(req: Request, res: Response, next: NextFunction) {
   let token: string | undefined | string[] = req.headers.authorization;
   if (!token || Array.isArray(token))
-    return res.status(400).json({ error: "No token send" });
+    return res.status(400).json({ error: "No token sent" });
   token = token.split(" ")[1];
   jwt.verify(
     token,
