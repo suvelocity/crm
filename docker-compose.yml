@@ -30,7 +30,7 @@ services:
       networks: 
         - crm-network
       environment:
-        REACT_APP_API_KEY: AIzaSyAYrQivO0_dnlbZodljVnzmxvQy0piYbpg
+        REACT_APP_API_KEY: API_KEY
         MYSQL_USER: root
         MYSQL_PASSWORD: password
         MYSQL_DATABASE: database_development
