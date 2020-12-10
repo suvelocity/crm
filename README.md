@@ -5,6 +5,11 @@ deployment on cloud: http://35.226.223.57:8080/
 ## TOC
 - [Setup](#Setup)
 - [Contributing](#Contributing)
+- [Database Tables](#database-tables)
+
+## Stack
+- Front end: React TypeScript
+- Back end: NodeJs(Express) TypeScript MySQL(ORM:[Sequelize](https://sequelize.org/master/index.html))
 ## Setup
 1. Clone the repo to your machine
 
@@ -44,6 +49,7 @@ REACT_APP_API_KEY="" // google api key for location services
 - If you have changed `PORT` in the server [`.env`](server/example.env), you need to change the `proxy` property in the client [`package.json`](client/package.json) 
 
 4. Run `npm start` to start react in development mode
+5. To log into the service oyu need credentials, contact your local admin to get them 
 
 ## Contributing
 1. Decide on the feature you are working on 
@@ -62,3 +68,31 @@ REACT_APP_API_KEY="" // google api key for location services
 
 1. Once the PR is merged, the branch may be deleted. 
 
+## Database Tables
+If you need to create a [new table](#new-table) or [modify an existing one](#modifying), always consult @Alonbru.  
+you'll need to create a new migration or model, then [migrate](#migration) them to the DB.
+### new table:
+To create a new table, first create a new **model**:  
+ ```cmd
+ npx sequelize model:create --name <model name> --attributes <attribute>:<type>,<attribute>:<type>,<attribute>:<type> --underscored true
+ ``` 
+ This generates a new **model** in the [models](server/models) dir, and a **migration** in the [migrations](server/migrations) dir.
+ - Using `--underscored true` makes the timestamp columns (createdAt,updatedAt) to be `camelCased` in the model but `snake_cased` in the migration and table (created_at,updated_at).   
+ Sadly it does not work for all the column names, so you'll have to go and change them manually to be underscored in the migration. [this extension](https://marketplace.visualstudio.com/items?itemName=wmaurer.change-case) can help with that.
+ - [more options](pics/cli-model-options.png)
+
+
+ <!-- 
+ may need more rules to add:
+ paranoid
+ table name
+  -->
+### modifying:
+To add new columns to an existing table create new **migration**. a use:
+ ```cmd
+ npx sequelize migration:create --name <model name> --underscored true
+```  
+then edit the new migration to add the columns you need.
+
+### migration
+once the migrations are ready, use `npx sequelize db:migrate` to migrate all new changes to the DB. 
