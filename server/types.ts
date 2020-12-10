@@ -56,6 +56,8 @@ export interface IMentor {
   phone: string;
   address: string;
   job: string;
+  available: boolean;
+  gender: string;
 }
 
 type meeting = {date: string}
