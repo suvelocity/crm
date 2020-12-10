@@ -8,19 +8,19 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      lessonId: {
+      lesson_id: {
         type: Sequelize.INTEGER,
       },
-      externalId: {
+      external_id: {
         type: Sequelize.INTEGER,
       },
-      externalLink: {
+      external_link: {
         type: Sequelize.STRING,
       },
-      createdBy: {
+      created_by: {
         type: Sequelize.INTEGER,
       },
-      endDate: {
+      end_date: {
         type: Sequelize.DATE,
       },
       type: {
@@ -29,12 +29,15 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deleted_at: {
         type: Sequelize.DATE,
       },
     });

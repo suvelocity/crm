@@ -32,18 +32,16 @@ function App() {
       setLoading(false);
     })();
   }, []);
-
+  
   const getRoutes = () => {
     if (loading) return <Loading fullPage loading={true} />;
-    if (!user) return <PublicRoutes />;
-    console.log(user);
-    
+    if (!user) return <PublicRoutes />; 
     switch (user.userType) {
       case "admin":
         return <AdminRoutes />;
       case "student":
         return <StudentRoutes />;
-        case "teacher":
+      case "teacher":
         return <TeacherRoutes />;
     }
   };

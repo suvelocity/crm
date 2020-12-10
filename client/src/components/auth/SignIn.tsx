@@ -28,6 +28,7 @@ export function SignIn() {
           rememberMe,
         };
         const { data } = await network.post("/api/v1/auth/signin", userData);
+        console.log(data);
         if (data.userType) {
           if (data.dataValues) {
             setUser({ ...data.dataValues, userType: data.userType });
@@ -35,6 +36,7 @@ export function SignIn() {
             setUser(data);
           }
         }
+
       }
     } catch (error) {
       console.log(error.response.data);

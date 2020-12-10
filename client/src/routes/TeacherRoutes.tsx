@@ -15,9 +15,6 @@ export default function TeacherRoutes() {
       <ErrorBoundary>
         <ClassRoomNavBar/>
         <Switch>
-          <Route exact path="/">
-          <Dashboard />
-          </Route>
           
           <Route path="/lessons">
             <Lessons />
@@ -30,6 +27,9 @@ export default function TeacherRoutes() {
           </Route>
           <Route path="/teacher">
             <Teacher />
+          </Route>
+          <Route path="/">
+          <Dashboard />
           </Route>
           <Route path="*">
             <div>404 Not Found</div>

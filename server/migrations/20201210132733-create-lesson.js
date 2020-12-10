@@ -1,42 +1,45 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Lessons', {
+    await queryInterface.createTable("Lessons", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      classId: {
-        type: Sequelize.INTEGER
+      class_id: {
+        type: Sequelize.INTEGER,
       },
       title: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       body: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       resouce: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
-      zoomLink: {
-        type: Sequelize.STRING
+      zoom_link: {
+        type: Sequelize.STRING,
       },
-      createdBy: {
-        type: Sequelize.INTEGER
+      created_by: {
+        type: Sequelize.INTEGER,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
+      deleted_at: {
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Lessons');
-  }
+    await queryInterface.dropTable("Lessons");
+  },
 };
