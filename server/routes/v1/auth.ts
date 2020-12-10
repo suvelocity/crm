@@ -8,8 +8,8 @@ require("dotenv").config();
 
 const router = Router();
 
-const fifteenMinutes = Math.floor(Date.now() / 1000) + 15 * 60;
-const oneDay = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+const fifteenMinutes = () => Math.floor(Date.now() / 1000) + 15 * 60;
+const oneDay = () => Math.floor(Date.now() / 1000) + 24 * 60 * 60;
 
 router.post("/token", async (req: Request, res: Response) => {
   const { refreshToken, remembered } = req.body;
@@ -25,12 +25,10 @@ router.post("/token", async (req: Request, res: Response) => {
       process.env.REFRESH_TOKEN_SECRET!,
       async (err: Error | null, decoded: any) => {
         if (err) {
-          console.log(err);
-
-          return res.status(403).json({ error: "Not authorized" });
+          return res.status(401).json({ error: "Not authorized" });
         }
-        const data = decoded;
-        data.exp = fifteenMinutes;
+        const data = { ...decoded, exp: fifteenMinutes() };
+        delete data.iat;
         const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET!);
         res.cookie("accessToken", accessToken);
         if (remembered) {
@@ -45,7 +43,7 @@ router.post("/token", async (req: Request, res: Response) => {
       }
     );
   } catch (err) {
-    res.json({ error: err.message }).status(500);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -58,8 +56,8 @@ router.post("/signin", async (req: Request, res: Response) => {
     if (!user) return res.json(404).json({ error: "User not found" });
     if (!bcrypt.compareSync(password, user.password))
       return res.status(400).json({ error: "Wrong password" });
-    const exp = oneDay * (rememberMe ? 365 : 1);
-    const accessTokenExp = fifteenMinutes;
+    const exp = oneDay() * (rememberMe ? 365 : 1);
+    const accessTokenExp = fifteenMinutes();
     const data = { email, type: user.type, exp };
     const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET!);
     const accessToken = jwt.sign(

@@ -7,13 +7,14 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   if (!token || Array.isArray(token))
     return res.status(400).json({ error: "No token send" });
   token = token.split(" ")[1];
+  console.log(token);
   jwt.verify(
     token,
     process.env.ACCESS_TOKEN_SECRET!,
     (err: Error | null, decoded: any) => {
       //TODO change
       if (err) {
-        return res.status(403).json({ error: "Not authorized" });
+        return res.status(403).json({ error: err });
       }
       //@ts-ignore
       req.user = decoded;

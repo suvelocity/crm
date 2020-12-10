@@ -20,12 +20,10 @@ function App() {
           refreshToken: getRefreshToken(),
           remembered: true,
         });
-        if (!userData.error) {
-          if (userData.dataValues) {
-            setUser({ ...userData.dataValues, userType: userData.userType });
-          } else {
-            setUser(userData);
-          }
+        if (userData.dataValues) {
+          setUser({ ...userData.dataValues, userType: userData.userType });
+        } else {
+          setUser(userData);
         }
       } catch (e) {
         console.log(e.response.data.error);
@@ -33,6 +31,7 @@ function App() {
       setLoading(false);
     })();
   }, []);
+
   const getRoutes = () => {
     if (loading) return <Loading fullPage loading={true} />;
     if (!user) return <PublicRoutes />;
