@@ -25,6 +25,7 @@ function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const { id } = useParams();
 
   const getClass = useCallback(async () => {
@@ -54,7 +55,6 @@ function NewClassMentorProject() {
   }, [getClass, getMentors]);
 
   const onDropLeftEnd = (result: any) => {
-    console.log(result);
     const { source, destination } = result;
     if (!destination) return;
     if (source.droppableId === destination.droppableId) {
@@ -74,8 +74,9 @@ function NewClassMentorProject() {
         result.source.index,
         1
       );
-      const prevMentor: IMentor | null = itemsStudents[parseInt(destination.droppableId)]
-        .mentor!;
+      const prevMentor: IMentor | null = itemsStudents[
+        parseInt(destination.droppableId)
+      ].mentor!;
       if (prevMentor) {
         itemsMentor.push(prevMentor);
       }
@@ -97,6 +98,28 @@ function NewClassMentorProject() {
     setCls(newCls);
   };
 
+  const createProgram = async () => {
+    try {
+      if (!cls!.Students.every((student) => student.mentor)){
+        return setError("* all students must have mentor");
+      }
+      cls!.Students.forEach(
+        async (student: Omit<IStudent, "Class">, i: number) => {
+          if (student.mentor) {
+            const res = await network.put(
+              `/api/v1/mentor/classes/student/${student.id}`,
+              { mentorId: student.mentor.id }
+            );
+          }
+        }
+      );
+      const result = await network.put(`/api/v1/mentor/classes/${id}`);
+      window.location.href = "/mentor";
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <DragDropContext onDragEnd={onDropLeftEnd}>
@@ -107,6 +130,7 @@ function NewClassMentorProject() {
                 Students In Class
                 <Button
                   variant="contained"
+                  onClick={createProgram}
                   style={{
                     backgroundColor: "#2c6e3c",
                     color: "white",
@@ -117,6 +141,7 @@ function NewClassMentorProject() {
                 </Button>
               </H1>
             </TitleWrapper>
+            <div style={{ color: "red" }}>{error}</div>
           </Center>
           <br />
           <Loading loading={loading} size={30}>

@@ -47,12 +47,12 @@ router.put("/:id", async (req: Request, res: Response) => {
 // add mentor to student: 
 router.put("/student/:id", async (req: Request, res: Response) => {
     try {
-        const { error } = studentMentorIdPut.validate(req.body);
+        const { error } = studentMentorIdPut.validate(req.body);       
         if (error) return res.status(400).json(error);
         const {mentorId} = req.body
         const updated = await Student.update({mentorId:mentorId}, {
             where: { id: req.params.id },
-        });
+        });        
   if (updated[0] === 1) return res.json({ message: "added mentor to the student" });
   res.status(404).json({ error: "student not found" });
     } catch (error) {
