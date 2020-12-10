@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { AxiosResponse } from "axios";
 import { IEvent } from "../../typescript/interfaces";
 import {
   TimelineItem,
@@ -20,11 +21,46 @@ import {
 import styled from "styled-components";
 import UpdateIcon from "@material-ui/icons/Update";
 import { CheckCircleOutline } from "@material-ui/icons";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Swal from "sweetalert2";
+import network from "../../helpers/network";
 
-function EventsLog({ events }: { events: IEvent[] }) {
+function EventsLog({
+  events,
+  remove,
+}: {
+  events: IEvent[];
+  remove: (eventId: number) => void;
+}) {
   const classes = useStyles();
+
+  const deleteEvent = async (eventId: number) => {
+    try {
+      await network.patch("/api/v1/event/delete", { eventId });
+      Swal.fire("Success!", "", "success");
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
+    }
+  };
+
+  const promptDeleteModal: (eventId: number) => void = (eventId: number) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Deleting an event is ireversible!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteEvent(eventId).then((_) => remove(eventId));
+      }
+    });
+  };
+
   return (
-    <Timeline align='alternate'>
+    <Timeline align="alternate">
       {events.map((event: IEvent, i: number, arr) => (
         <TimelineItem className={classes.timellineItem}>
           <TimelineOppositeContent>
@@ -43,6 +79,7 @@ function EventsLog({ events }: { events: IEvent[] }) {
             <Paper className={classes.ticket}>
               <TicketHeader>{capitalize(event.status)}</TicketHeader>
               <Typography>{capitalize(event.comment)}</Typography>
+              <DeleteIcon onClick={() => promptDeleteModal(event.id!)} />
             </Paper>
           </TimelineContent>
         </TimelineItem>

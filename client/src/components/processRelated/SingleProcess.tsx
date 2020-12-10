@@ -57,6 +57,18 @@ function SingleProcess() {
     const sortedEvents = events?.concat(newEvent).sort(sortByDate);
     setEvents(sortedEvents);
   };
+
+  const removeFromEventLog: (eventId: number) => void = (eventId: number) => {
+    const index: number | undefined = events?.findIndex(
+      (event: IEvent) => event.id === eventId
+    );
+    if (!index) {
+      Swal.fire("Error occured", " event not found", "error");
+      return;
+    }
+    const updated = events?.slice(0, index).concat(events.slice(index + 1));
+    setEvents(updated);
+  };
   const classesType = { primary: classes.primary };
 
   return (
@@ -147,12 +159,13 @@ function SingleProcess() {
             </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
-            {job?.id && student?.id && events && <EventLog events={events} />}
+            {job?.id && student?.id && events && (
+              <EventLog events={events} remove={removeFromEventLog} />
+            )}
           </div>
         </GridDiv>
       </Loading>
       <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
-      {/* need to figure out how to refresh data after new event is added + fix button position */}
     </Wrapper>
   );
 }

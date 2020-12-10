@@ -70,6 +70,7 @@ export type status =
   | "Canceled";
 
 export interface IEvent {
+  id?: number;
   status: status;
   studentId?: number;
   jobId?: number;
