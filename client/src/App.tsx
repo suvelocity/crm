@@ -14,6 +14,7 @@ import AllCompanies from "./components/companyRelated/AllCompanies";
 import SingleCompany from "./components/companyRelated/SingleCompany";
 import SingleProcess from "./components/processRelated/SingleProcess";
 import AddCompany from "./components/companyRelated/AddCompany";
+import Classroom from './components/classroomRelated/Classroom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 
@@ -66,6 +67,10 @@ function App() {
             <Route exact path="/student/:id">
               <SingleStudent />
             </Route>
+            <Route exact path="/classroom">
+              <Classroom />
+            </Route>
+            
             <Route path="*">
               <div>404 Not Found</div>
             </Route>

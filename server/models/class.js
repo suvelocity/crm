@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Student, {
         foreignKey: "classId",
       });
+      this.hasMany(models.Lesson, {
+        foreignKey: "classId",
+      });
+      this.hasMany(models.Notice, {
+        foreignKey: "classId",
+      });
     }
   }
   Class.init(

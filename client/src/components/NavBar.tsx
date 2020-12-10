@@ -13,7 +13,11 @@ import BusinessIcon from "@material-ui/icons/Business";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
 import ClassIcon from "@material-ui/icons/Class";
-
+import SchoolIcon from '@material-ui/icons/School';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import TodayIcon from '@material-ui/icons/Today';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
+import StreetviewIcon from '@material-ui/icons/Streetview';
 function NavAppBar() {
   const [open, setOpen] = useState(false);
 
@@ -70,6 +74,39 @@ function NavAppBar() {
               <BusinessIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
+          {/* Amit stuff from here bellow */}
+          <hr />
+          <StyledLink to="/classroom/dashboard">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Dashboard
+              <DashboardIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/classroom/lessons">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Lessons
+              <SchoolIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/classroom/schedhule">
+            <DrawerItem onClick={() => setOpen(false)}>
+            Schedhule
+              <TodayIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/classroom/tasks">
+            <DrawerItem onClick={() => setOpen(false)}>
+            Tasks
+              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/classroom/teacher">
+            <DrawerItem onClick={() => setOpen(false)}>
+            Teacher
+              <StreetviewIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          {/* Amit stuff from here above */}
         </StyledDrawer>
       </Drawer>
     </div>
