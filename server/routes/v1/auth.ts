@@ -57,7 +57,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     });
     if (!user) return res.json(404).json({ error: "User not found" });
     if (!bcrypt.compareSync(password, user.password))
-      return res.json(400).json({ error: "Wrong password" });
+      return res.status(400).json({ error: "Wrong password" });
     const exp = oneDay * (rememberMe ? 365 : 1);
     const accessTokenExp = fifteenMinutes;
     const data = { email, type: user.type, exp };
