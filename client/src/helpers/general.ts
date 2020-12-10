@@ -1,3 +1,16 @@
+import { status } from "../typescript/interfaces";
+import { IStudent } from "../typescript/interfaces";
+
+export const searchResults = (search: string | number, array: IStudent[]) => {
+  return array.filter((student: IStudent) => {
+    const values = Object.values(student);
+    return values.some((keyVal: string | number) =>
+      !keyVal ? false : keyVal.toString().includes(search.toString())
+    );
+  });
+};
+export default searchResults;
+
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
   if (isNaN(+phoneNumber)) return phoneNumber;
@@ -7,6 +20,29 @@ export const formatPhone = (phoneNumber: string | undefined) => {
   newArr.splice(7, 0, "-");
   return newArr.join("");
 };
+
+export const onTheSameDay = (day1: number, day2: number) => {
+  const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
+  const Day = 1000 * 60 * 60 * 24;
+  const diffLessThanDay = Math.abs(day1 - day2) < Day;
+  return sameDayNumber && diffLessThanDay;
+};
+
+export const statuses: status[] = [
+  "Sent CV",
+  "Phone Interview",
+  "First interview",
+  "Second interview",
+  "Third Interview",
+  "Forth interview",
+  "Home Test",
+  "Hired",
+  "Rejected",
+  "Irrelevant",
+  "Removed Application",
+  "Position Frozen",
+  "Canceled",
+];
 
 export function capitalize(s: string | undefined) {
   if (s) {

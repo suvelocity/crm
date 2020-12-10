@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Student, Job, Event, Class } from "../../models";
-import { IStudent, IJob, IClass } from "../../types";
+import { Student, Class } from "../../models";
+import { IClass } from "../../types";
 
 import { classSchema, classSchemaToPut } from "../../validations";
 router.get("/all", async (req: Request, res: Response) => {
@@ -15,8 +15,8 @@ router.get("/all", async (req: Request, res: Response) => {
       ],
     });
     res.json(classes);
-  } catch (err) {
-    res.status(500).send("error occurred");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -30,9 +30,9 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
       ],
     });
     if (selectedClass) return res.json(selectedClass);
-    res.status(404).send("Class not found");
-  } catch (err) {
-    res.status(500).send("error occurred");
+    res.status(404).json({ error: "Class not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -48,41 +48,43 @@ router.post("/", async (req: Request, res: Response) => {
       zoomLink: body.zoomLink,
       additionalDetails: body.additionalDetails,
     };
-    const { value, error } = classSchema.validate(newClass);
-    if (error) return res.status(400).json(error);
+    const { error } = classSchema.validate(newClass);
+    if (error) return res.status(400).json({ error: error.message });
     const createdClass: IClass = await Class.create(newClass);
     res.json(createdClass);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("error occurred");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { value, error } = classSchemaToPut.validate(req.body);
-    if (error) return res.status(400).json(error);
+    if (error) return res.status(400).json({ error: error.message });
     const updated = await Class.update(req.body, {
       where: { id: req.params.id },
     });
-    if (updated[0] === 1) return res.json({ msg: "Class updated" });
-    res.status(404).send("Class not found");
-  } catch (e) {
-    res.status(500).send("error occurred");
+    if (updated[0] === 1) return res.json({ message: "Class updated" });
+    res.status(404).json({ error: "Class not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const deleted = await Class.destroy({
-      where: { id: req.params.id },
+      where: { id },
     });
     if (deleted === 0) {
       return res.status(404).send("Class not found");
+    } else {
+      await Student.destroy({ where: { classId: id } });
+      res.json({ message: "Class deleted" });
     }
-    res.json({ msg: "Class deleted" });
-  } catch (e) {
-    res.status(500).send("error occurred");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

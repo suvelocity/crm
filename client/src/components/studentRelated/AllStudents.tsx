@@ -11,51 +11,19 @@ import {
   StyledUl,
   StyledDiv,
 } from "../../styles/styledComponents";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import PersonIcon from "@material-ui/icons/Person";
-import { IStudent, IClass, IEvent } from "../../typescript/interfaces";
+import {
+  IStudent,
+  IEvent,
+  filterStudentObject,
+  SelectInputs,
+} from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
-import searchResults from "../../functions/searchStudents";
-
-import { SelectInputs } from "../FiltersComponents";
 import { FiltersComponents } from "../FiltersComponents";
-import { capitalize } from "../../helpers/general";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-  })
-);
-
-type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
-
-export interface filterStudentObject {
-  Class: string;
-  Course: string;
-  JobStatus: string;
-  Name: string;
-}
-export interface Name {
-  firstName: string;
-  lastName: string;
-}
-const onTheSameDay = (day1: number, day2: number) => {
-  const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
-  const Day = 1000 * 60 * 60 * 24;
-  const diffLessThanDay = Math.abs(day1 - day2) < Day;
-  return sameDayNumber && diffLessThanDay;
-};
+import { capitalize, onTheSameDay } from "../../helpers/general";
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
@@ -72,14 +40,12 @@ function AllStudents() {
       Name: "",
     }
   );
-  const classes = useStyles();
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
     type JobEvents = { [id: string]: { time: number; status: string } };
     let jobs: JobEvents = {};
     for (let i = 0; i < events.length; i++) {
       const id: number = events[i].Job!.id!;
       const eventTime = new Date(events[i].date);
-      console.log(events[i].status, eventTime);
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
@@ -125,12 +91,12 @@ function AllStudents() {
       );
       setFilterOptionsArray([
         {
-          filterBy: "Class",
-          possibleValues: newClassNames,
-        },
-        {
           filterBy: "Course",
           possibleValues: newCourseNames,
+        },
+        {
+          filterBy: "Class",
+          possibleValues: newClassNames,
         },
         {
           filterBy: "Job Status",
@@ -150,6 +116,7 @@ function AllStudents() {
       setFilteredStudents(students);
     }
   }, [students]);
+
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
       const classCondition = !filterAttributes.Class
@@ -167,8 +134,9 @@ function AllStudents() {
         : filterAttributes.JobStatus === "None"
         ? jobless
         : recentJobStatus.includes(filterAttributes.JobStatus);
-      const firstName = filterAttributes.Name.split(" ")[0];
-      const lastName = filterAttributes.Name.split(" ")[1];
+      const names = filterAttributes.Name.split(" ");
+      const firstName = names[0];
+      const lastName = names[1];
       const firstNameCondition = !firstName
         ? true
         : student.firstName === firstName;
@@ -189,7 +157,7 @@ function AllStudents() {
   }, [filterAttributes]);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
@@ -202,8 +170,8 @@ function AllStudents() {
             callbackFunction={setFilterAttributes}
             widthPercent={75}
           />
-          <StyledLink to="/student/add">
-            <Button variant="contained" color="primary">
+          <StyledLink to='/student/add'>
+            <Button variant='contained' color='primary'>
               Add Student
             </Button>
           </StyledLink>
@@ -216,20 +184,20 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight="bold">Name</StyledSpan>
-                <StyledSpan weight="bold">Class</StyledSpan>
-                <StyledSpan weight="bold">Email</StyledSpan>
-                <StyledSpan weight="bold">Phone</StyledSpan>
+                <StyledSpan weight='bold'>Name</StyledSpan>
+                <StyledSpan weight='bold'>Class</StyledSpan>
+                <StyledSpan weight='bold'>Email</StyledSpan>
+                <StyledSpan weight='bold'>Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
           {filteredStudents &&
             filteredStudents.map((student) => (
               <li>
-                <StyledLink color="black" to={`/student/${student?.id}`}>
+                <StyledLink color='black' to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
                     </StyledSpan>

@@ -1,13 +1,12 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-
 import network from "../../helpers/network";
 import {
   validEmailRegex,
   validNameRegex,
   validPhoneNumberRegex,
   onlyNumbersRegex,
-} from "../../helpers/patterns";
+} from "../../helpers";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
@@ -17,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import Swal from "sweetalert2";
 import InputLabel from "@material-ui/core/InputLabel";
 import {
   GridDiv,
@@ -27,6 +27,8 @@ import {
 } from "../../styles/styledComponents";
 import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
+import { ActionBtn, ErrorBtn } from "../formRelated";
+import GoogleMaps from "../GeoSearch";
 
 function AddStudent() {
   const { register, handleSubmit, errors, control } = useForm();
@@ -40,20 +42,27 @@ function AddStudent() {
           "/api/v1/class/all"
         );
         setClasses(data);
-      } catch (e) {
-        alert(e);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     })();
   }, [setClasses]);
 
-  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
+  const empty = Object.keys(errors).length === 0;
 
   const onSubmit = async (data: IStudent) => {
     try {
       await network.post("/api/v1/student", data);
       history.push("/student/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      if (error.response.status === 409) {
+        Swal.fire({
+          title: "User with the same id already exists",
+          icon: "error",
+        });
+      } else {
+        Swal.fire("Error Occurred", error.message, "error");
+      }
     }
   };
 
@@ -67,8 +76,8 @@ function AddStudent() {
           <GridDiv>
             <div>
               <TextField
-                id="firstName"
-                name="firstName"
+                id='firstName'
+                name='firstName'
                 inputRef={register({
                   required: "First name is required",
                   pattern: {
@@ -80,28 +89,19 @@ function AddStudent() {
                     message: "First name needs to be a minimum of 2 letters",
                   },
                 })}
-                label="First Name"
+                label='First Name'
               />
               {!empty ? (
                 errors.firstName ? (
-                  <Tooltip title={errors.firstName.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.firstName.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="lastName"
-                name="lastName"
+                id='lastName'
+                name='lastName'
                 inputRef={register({
                   required: "Last name is required",
                   pattern: {
@@ -113,28 +113,19 @@ function AddStudent() {
                     message: "Last name needs to be a minimum of 2 letters",
                   },
                 })}
-                label="Last Name"
+                label='Last Name'
               />
               {!empty ? (
                 errors.lastName ? (
-                  <Tooltip title={errors.lastName.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.lastName.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="idNumber"
-                name="idNumber"
+                id='idNumber'
+                name='idNumber'
                 inputRef={register({
                   required: "ID number is required",
                   minLength: {
@@ -150,29 +141,20 @@ function AddStudent() {
                     message: "ID can have only numbers",
                   },
                 })}
-                label="ID Number"
+                label='ID Number'
               />
               {!empty ? (
                 errors.idNumber ? (
-                  <Tooltip title={errors.idNumber.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.idNumber.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="email"
-                label="Email"
-                name="email"
+                id='email'
+                label='Email'
+                name='email'
                 inputRef={register({
                   required: "Email is required",
                   pattern: {
@@ -183,76 +165,48 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.email ? (
-                  <Tooltip title={errors.email.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.email.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="phone"
-                name="phone"
+                id='phone'
+                name='phone'
                 inputRef={register({
                   required: "Phone is required",
                   pattern: {
                     value: validPhoneNumberRegex,
-                    message: "invalid phone number",
+                    message: "Invalid phone number",
                   },
                 })}
-                label="Phone Number"
+                label='Phone Number'
               />
               {!empty ? (
                 errors.phone ? (
-                  <Tooltip title={errors.phone.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.phone.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="languages"
-                name="languages"
+                id='languages'
+                name='languages'
                 inputRef={register({
                   required: "Languages is required",
                 })}
-                label="Languages"
+                label='Languages'
               />
               {!empty ? (
                 errors.languages ? (
-                  <Tooltip title={errors.languages.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.languages.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
             </div>
             <div>
               <FormControl
@@ -270,55 +224,36 @@ function AddStudent() {
                       ))}
                     </Select>
                   }
-                  name="classId"
+                  name='classId'
                   rules={{ required: "Class is required" }}
                   control={control}
-                  defaultValue=""
+                  defaultValue=''
                 />
               </FormControl>
               {!empty ? (
                 errors.classId ? (
-                  <Tooltip title={errors.classId.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.classId.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
-              <TextField
-                id="address"
-                name="address"
-                inputRef={register({ required: "Address is required" })}
-                label="Address"
-              />
               {!empty ? (
                 errors.address ? (
-                  <Tooltip title={errors.address.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.address.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
+              <GoogleMaps
+                id='address'
+                name='address'
+                inputRef={register({ required: "Address is required" })}
+                label='Address'
+              />
               <TextField
-                id="age"
-                name="age"
+                id='age'
+                name='age'
                 inputRef={register({
                   required: "Age is required",
                   pattern: {
@@ -326,53 +261,35 @@ function AddStudent() {
                     message: "Age needs to be a number",
                   },
                 })}
-                label="Age"
+                label='Age'
               />
               {!empty ? (
                 errors.age ? (
-                  <Tooltip title={errors.age.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.age.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="maritalStatus"
-                name="maritalStatus"
+                id='maritalStatus'
+                name='maritalStatus'
                 inputRef={register({ required: "Marital status is required" })}
-                label="Marital Status"
+                label='Marital Status'
               />
               {!empty ? (
                 errors.maritalStatus ? (
-                  <Tooltip title={errors.maritalStatus.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.maritalStatus.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="children"
-                name="children"
-                type="number"
-                label="Number of children"
+                id='children'
+                name='children'
+                type='number'
+                label='Number of children'
                 defaultValue={0}
                 inputRef={register({
                   min: {
@@ -384,102 +301,82 @@ function AddStudent() {
               />
               {!empty ? (
                 errors.children ? (
-                  <Tooltip title={errors.children.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.children.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
               <br />
               <TextField
-                id="citizenship"
-                name="citizenship"
+                id='citizenship'
+                name='citizenship'
                 inputRef={register({
                   required: "Citizenship is required",
                 })}
-                label="Citizenship"
+                label='Citizenship'
               />
               {!empty ? (
                 errors.citizenship ? (
-                  <Tooltip title={errors.citizenship.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.citizenship.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
           </GridDiv>
-          <br />
-          <br />
+          {generateBrs(2)}
+
           <TextField
-            id="militaryService"
+            id='militaryService'
             multiline
             fullWidth
             rows={4}
-            variant="outlined"
-            name="militaryService"
+            variant='outlined'
+            name='militaryService'
             inputRef={register()}
-            label="Military Service"
+            label='Military Service'
           />
-          <br />
-          <br />
+          {generateBrs(2)}
+
           <TextField
-            id="workExperience"
+            id='workExperience'
             multiline
             fullWidth
             rows={4}
-            variant="outlined"
-            name="workExperience"
+            variant='outlined'
+            name='workExperience'
             inputRef={register()}
-            label="Work Experience"
+            label='Work Experience'
           />
-          <br />
-          <br />{" "}
+          {generateBrs(2)}
+
           <TextField
-            id="academicBackground"
+            id='academicBackground'
             multiline
             fullWidth
             rows={4}
-            variant="outlined"
-            name="academicBackground"
+            variant='outlined'
+            name='academicBackground'
             inputRef={register()}
-            label="Academic Background"
+            label='Academic Background'
           />
-          <br />
-          <br />
+          {generateBrs(2)}
           <TextField
-            id="additionalDetails"
+            id='additionalDetails'
             multiline
             fullWidth
             rows={4}
-            variant="outlined"
-            name="additionalDetails"
+            variant='outlined'
+            name='additionalDetails'
             inputRef={register()}
-            label="Additional Details"
+            label='Additional Details'
           />
-          <br />
-          <br />
+          {generateBrs(2)}
           <Button
-            id="submitButton"
-            variant="contained"
-            color="primary"
-            type="submit"
+            id='submitButton'
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Submit
           </Button>
@@ -490,3 +387,11 @@ function AddStudent() {
 }
 
 export default AddStudent;
+
+const generateBrs = (num: number): JSX.Element[] => {
+  const arrOfSpaces = [];
+  for (let i = 0; i < num; i++) {
+    arrOfSpaces.push(<br />);
+  }
+  return arrOfSpaces;
+};
