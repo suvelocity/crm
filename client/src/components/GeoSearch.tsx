@@ -50,7 +50,6 @@ export default function GoogleMaps(props: any) {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<PlaceType[]>([]);
   const loaded = React.useRef(false);
-  console.log(REACT_APP_API_KEY);
   if (typeof window !== "undefined" && !loaded.current) {
     if (!document.querySelector("#google-maps")) {
       loadScript(
