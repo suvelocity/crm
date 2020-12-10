@@ -34,13 +34,17 @@ EMAIL_PASSWORD=""
 ### client
 1. Run `cd client; npm install` to install frontend dependencies
 
-1. Create a backend `.env` file. An [example](client/example.env) is provided.
+1. Create a client `.env` file. An [example](client/example.env) is provided.
+
 1. Edit `.env`, add what you need.
 ```js
 REACT_APP_API_KEY="" // google api key for location services
 ```
+
 - If you have changed `PORT` in the server [`.env`](server/example.env), you need to change the `proxy` property in the client [`package.json`](client/package.json) 
+
 4. Run `npm start` to start react in development mode
+
 ## Contributing
 1. Decide on the feature you are working on 
 
