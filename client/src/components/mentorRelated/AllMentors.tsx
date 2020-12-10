@@ -12,6 +12,7 @@ import {
   StyledDiv,
 } from '../../styles/styledComponents';
 import PersonIcon from '@material-ui/icons/Person';
+import Button from "@material-ui/core/Button";
 import { IMentor } from '../../typescript/interfaces';
 import { Loading } from 'react-loading-wrapper';
 import 'react-loading-wrapper/dist/index.css';
@@ -24,19 +25,6 @@ function AllMentors() {
   useEffect(() => {
     (async () => {
       const { data } = await network.get('/api/v1/mentor/mentor');
-      //   const newClassNames: string[] = Array.from(
-      //     new Set(data.map((mentor: IMentor) => mentor.name))
-      //   );
-      //   const newCourseNames: string[] = Array.from(
-      //     new Set(data.map((student: IStudent) => student.Class.course))
-      //   );
-      //   const newFullNames: string[] = Array.from(
-      //     new Set(
-      //       data.map(
-      //         (student: IStudent) => student.firstName + " " + student.lastName
-      //       )
-      //     )
-      //   );
       setMentors(data);
       setLoading(false);
     })();
@@ -49,7 +37,7 @@ function AllMentors() {
           <H1 color='#2c6e3c'>All Mentors</H1>
         </TitleWrapper>
         <br />
-        {/* <StyledLink to="/mentor/new">
+        <StyledLink to="/mentor/add">
           <Button
             variant="contained"
             style={{
@@ -58,16 +46,16 @@ function AllMentors() {
               marginLeft: 10,
             }}
           >
-            new project
+            new mentor
           </Button>
-        </StyledLink> */}
+        </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
           {mentors && (
             <li>
-              <TableHeader>
+              <TableHeader repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
                 <PersonIcon />
                 <StyledSpan weight='bold'>Name</StyledSpan>
                 <StyledSpan weight='bold'>Company</StyledSpan>
@@ -84,12 +72,10 @@ function AllMentors() {
             mentors.map((mentor) => (
               <li>
                 <StyledLink color='black' to={`/mentor/${mentor?.id}`}>
-                  <StyledDiv>
+                  <StyledDiv repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
                     <PersonIcon />
                     <StyledSpan weight='bold'>
                       {capitalize(mentor.name)}
-                      {/* &nbsp; */}
-                      {/* {capitalize(student.lastName)} */}
                     </StyledSpan>
                     <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
                     <StyledSpan>{mentor.email}</StyledSpan>
