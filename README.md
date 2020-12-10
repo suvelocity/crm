@@ -1,14 +1,21 @@
 # CRM
-Project management for courses and beyond.
+Project management for courses and beyond.  
 deployment on cloud: http://35.226.223.57:8080/
-## setup
-1. clone the repo to your machine
-2. go to the project directory
+ 
+## TOC
+- [Setup](#Setup)
+- [Contributing](#Contributing)
+## Setup
+1. Clone the repo to your machine
+
+2. Go to the project directory
 ### server
-3. run `cd server; npm install` to install backend dependencies. This could take a bit of time, you may use it to call you mom.
-2. create a schema in mySQL (Docker/local), call it what you like (defaults to "crm")
-1. create a backend `.env` file. An [example](server/example.env) is provided.
-1. Edit `.env`, add the required data for your db.
+1. Run `cd server; npm install` to install backend dependencies.  
+This could take a bit of time, you may use it to call you mother, she worries.
+
+2. Create a schema in mySQL (Docker/local), call it what you like (defaults to "crm")
+1. Create a backend `.env` file. An [example](server/example.env) file is provided.
+1. Edit `.env`.
 ```js
 PORT = 8080 // the port the server will run on
 MYSQL_USER = "<DB user>" // defaults to "root"
@@ -18,18 +25,36 @@ MYSQL_HOST = "127.0.0.1" // default localhost, depends if you run your db on a D
 NODE_ENV = "development"
 ACCESS_TOKEN_SECRET="<your secret>" 
 REFRESH_TOKEN_SECRET="<another secret>" // strings used in token creation
-EMAIL_USER=""
+EMAIL_USER="" // mail used to send user confirmation messages
 EMAIL_PASSWORD=""
 
 ```
-7. run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation. 
-1. run `npm run dev` to start the server in dev mode (nodemon hot reload)
+5. Run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation. 
+1. Run `npm run dev` to start the server in dev mode (nodemon hot reload)
 ### client
-1. run `cd client; npm install` to install frontend dependencies
-1. 
-## developing
-1. Start a new branch with a descriptive name
-    - good name - `message system`   
-    - bad name - `Shahar-cool-branch-2`   
-2. 
+1. Run `cd client; npm install` to install frontend dependencies
+
+1. Create a backend `.env` file. An [example](client/example.env) is provided.
+1. Edit `.env`, add what you need.
+```js
+REACT_APP_API_KEY="" // google api key for location services
+```
+- If you have changed `PORT` in the server [`.env`](server/example.env), you need to change the `proxy` property in the client [`package.json`](client/package.json) 
+4. Run `npm start` to start react in development mode
+## Contributing
+1. Decide on the feature you are working on 
+
+1. Start a new branch with a nice descriptive name
+    - **good name**: `add-message-system`   
+    - **bad name**: `Shahar-cool-branch-23`   
+
+2. Develop the feature. Try to only work on one feature in a branch for ease of merging.
+
+1. When you have finished work on your feature, create a PR to **dev** and stop working on the branch.
+
+1. If you need the new feature to continue, branch out from your branch and continue in that branch. Else - just start a new branch
+
+1. Alert @AlonBru that you have finished work and expect some questions about it
+
+1. Once the PR is merged, the branch may be deleted. 
 
