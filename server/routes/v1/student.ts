@@ -126,7 +126,6 @@ router.post("/", async (req: Request, res: Response) => {
         function (error: Error | null) {
           if (error) {
             console.log(error);
-
             console.log("Mail not sent");
           }
         }

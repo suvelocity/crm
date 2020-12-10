@@ -16,14 +16,15 @@ network.interceptors.response.use(
   async (error) => {
     const status = error.response ? error.response.status : null;
     const originalRequest = error.config;
-
     if (status === 403) {
       try {
-        await network.post("/api/v1/auth/token", { token: getRefreshToken() });
+        await network.post("/api/v1/auth/token", {
+          refreshToken: getRefreshToken(),
+        });
         const data = await network(originalRequest);
         return data;
-      } catch (e) {
-        throw e;
+      } catch (err) {
+        throw err;
       }
     } else {
       throw error;

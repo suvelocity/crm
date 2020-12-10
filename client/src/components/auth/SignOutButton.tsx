@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import network from "../../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../../helpers";
-//@ts-ignore
+
 export default function SignOutButton({ style = {} }) {
   //@ts-ignore
   const { setUser } = useContext(AuthContext);
