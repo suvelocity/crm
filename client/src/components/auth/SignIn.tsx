@@ -27,8 +27,7 @@ export function SignIn() {
           password,
           rememberMe,
         };
-        console.log(userData);
-        const { data } = await network.post("/api/v1/auth/signIn", userData);
+        const { data } = await network.post("/api/v1/auth/signin", userData);
         if (data.userType) {
           if (data.dataValues) {
             setUser({ ...data.dataValues, userType: data.userType });
@@ -47,7 +46,7 @@ export function SignIn() {
       <Center>
         <TitleWrapper>
           {" "}
-          <H1 color='#a3a365'>Log In </H1>
+          <H1 color="#a3a365">Log In </H1>
         </TitleWrapper>
 
         <form onSubmit={handleSubmit}>
@@ -56,24 +55,28 @@ export function SignIn() {
               setEmail(e.target.value)
             }
             value={email}
-            type='email'
-            placeholder='Enter email...'
+            type="email"
+            placeholder="Enter email..."
           />
+          <br />
           <input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
             value={password}
-            type='password'
-            placeholder='Enter password...'
+            type="password"
+            placeholder="Enter password..."
           />
+          <br />
+          <label>Remember Me</label>
           <input
-            type='checkbox'
+            type="checkbox"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setRememberMe((prev: boolean) => !prev)
             }
           />
-          <button type='submit'>Submit</button>
+          <br />
+          <button type="submit">Submit</button>
         </form>
       </Center>
     </Wrapper>
