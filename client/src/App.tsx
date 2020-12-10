@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AuthContext } from "./helpers";
-import Cookies from "js-cookie";
+import { AuthContext, getRefreshToken } from "./helpers";
 import axios from "axios";
 import { IUser } from "./typescript/interfaces";
 //@ts-ignore
@@ -14,8 +13,6 @@ function App() {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const getRefreshToken = () => Cookies.get("refreshToken");
-
   useEffect(() => {
     (async () => {
       try {
@@ -24,7 +21,11 @@ function App() {
           remembered: true,
         });
         if (!userData.error) {
-          setUser(userData);
+          if (userData.dataValues) {
+            setUser({ ...userData.dataValues, userType: userData.userType });
+          } else {
+            setUser(userData);
+          }
         }
       } catch (e) {
         console.log(e.response.data.error);
@@ -32,7 +33,6 @@ function App() {
       setLoading(false);
     })();
   }, []);
-
   const getRoutes = () => {
     if (loading) return <Loading fullPage loading={true} />;
     if (!user) return <PublicRoutes />;

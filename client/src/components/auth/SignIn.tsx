@@ -29,11 +29,12 @@ export function SignIn() {
         };
         console.log(userData);
         const { data } = await network.post("/api/v1/auth/signIn", userData);
-        console.log("====================================");
-        console.log(data);
-        console.log("====================================");
         if (data.userType) {
-          setUser(data);
+          if (data.dataValues) {
+            setUser({ ...data.dataValues, userType: data.userType });
+          } else {
+            setUser(data);
+          }
         }
       }
     } catch (error) {

@@ -1,10 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { getRefreshToken } from "../helpers";
 
 const network = axios.create();
 
 const getAccessToken = () => Cookies.get("accessToken");
-const getRefreshToken = () => Cookies.get("refreshToken");
 
 network.interceptors.request.use((config) => {
   config.headers.authorization = `bearer ${getAccessToken()}`;

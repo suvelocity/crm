@@ -79,12 +79,12 @@ router.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
-router.post("signOut", async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
+router.post("/signout", async (req: Request, res: Response) => {
+  const { refreshToken: token } = req.body;
   try {
     const deletedToken = await RefreshToken.destroy({
       where: {
-        refreshToken,
+        token,
       },
     });
     if (deletedToken) return res.json({ success: true });
