@@ -11,6 +11,10 @@ import NavBar from "./components/NavBar";
 import AllClasses from "./components/classRelated/AllClasses";
 import SingleClass from "./components/classRelated/SingleClass";
 import SingleProcess from "./components/processRelated/SingleProcess";
+import MentorClasses from "./components/mentorRelated/MentorClasses";
+import ClassDashboard from "./components/mentorRelated/ClassDashboard";
+import NewProject from "./components/mentorRelated/NewProject";
+import NewClassMentorProject from "./components/mentorRelated/NewClassMentorProject";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 
@@ -53,6 +57,18 @@ function App() {
             </Route>
             <Route exact path="/student/:id">
               <SingleStudent />
+            </Route>
+            <Route exact path="/mentor">
+              <MentorClasses />
+            </Route>
+            <Route exact path="/mentor/new">
+              <NewProject />
+            </Route>
+            <Route exact path="/mentor/new/:id">
+              <NewClassMentorProject />
+            </Route>
+            <Route exact path="/mentor/class/:id">
+              <ClassDashboard />
             </Route>
             <Route path="*">
               <div>404 Not Found</div>

@@ -1,7 +1,7 @@
 import { Request, Response , Router } from "express";
 import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
-import { Student, Mentor, Meeting } from "../../../models";
+import { Student, Mentor, Meeting, Class} from "../../../models";
 import { IDeshbord, IMeeting } from "../../../types";
 
 const router = Router();
@@ -13,6 +13,10 @@ router.get('/class/:id', async (req: Request, res: Response) => {
             attributes:["id", "firstName", "lastName"],
             where:{classId:req.params.id},
             include:[
+                {
+                    model: Class,
+                    attributes: ["name", "cycleNumber"]
+                },
                 {
                     model: Mentor,
                 },
