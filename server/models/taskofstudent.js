@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   TaskofStudent.init(
     {
-      classId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
       taskId: DataTypes.INTEGER,
       type: DataTypes.STRING,
