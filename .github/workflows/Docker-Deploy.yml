@@ -74,9 +74,9 @@ jobs:
       run: make push
 
     # ONLY first time setup
-    # Initialize Envoironment in Gcloud Instance
-    - name: Initialize volumes, network and other Containers that don't change
-      run: make initialize
+    # # Initialize Envoironment in Gcloud Instance
+    # - name: Initialize volumes, network and other Containers that don't change
+    #   run: make initialize
 
     # Deploy Container to Gcloud Instance
     - name: deploy
