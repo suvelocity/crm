@@ -15,13 +15,15 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import TodayIcon from '@material-ui/icons/Today';
 import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import StreetviewIcon from '@material-ui/icons/Streetview';
-function NavAppBar() {
+import {AuthContext} from '../helpers'
+import { IUser } from '../typescript/interfaces';
+function ClassRoomNavBar() {
+      //@ts-ignore
+  const {user} = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-
   const handleDrawer = () => {
     setOpen(true);
   };
-
   return (
     <div>
       <AppBar position='static'>
@@ -34,7 +36,7 @@ function NavAppBar() {
           >
             <Menu />
           </IconButton>
-          <StyledLink to='/student/all'>
+          <StyledLink to='/'>
             <Typography variant='h4'>Classroom</Typography>
           </StyledLink>
         </Toolbar>
@@ -70,16 +72,19 @@ function NavAppBar() {
             Tasks
               <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-            <hr />
-          </StyledLink>
-          {/* condition ifuser is teacher return this */}
+          
+      {(user.userType=='teacher')&&
           <StyledLink to="/teacher">
             <DrawerItem onClick={() => setOpen(false)}>
             Teacher
               <StreetviewIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          {/* Amit stuff from here above */}
+      }
+        </StyledLink>
+          <DrawerItem onClick={() => setOpen(false)}>
+          <SignOutButton style={{ position: "absolute", right: 10 }}/>
+            </DrawerItem>
         </StyledDrawer>
       </Drawer>
     </div>
@@ -107,4 +112,4 @@ const StyledDrawer = styled.div`
   overflow: hidden;
 `;
 
-export default NavAppBar;
+export default ClassRoomNavBar;
