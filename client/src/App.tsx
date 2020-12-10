@@ -1,82 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import AddStudent from "./components/studentRelated/AddStudent";
-import AllStudents from "./components/studentRelated/AllStudents";
-import SingleStudent from "./components/studentRelated/SingleStudent";
-import AddJob from "./components/jobRelated/AddJob";
-import AddClass from "./components/classRelated/AddClass";
-import SingleJob from "./components/jobRelated/SingleJob";
-import AllJobs from "./components/jobRelated/AllJobs";
-import NavBar from "./components/NavBar";
-import AllClasses from "./components/classRelated/AllClasses";
-import SingleClass from "./components/classRelated/SingleClass";
-import AllCompanies from "./components/companyRelated/AllCompanies";
-import SingleCompany from "./components/companyRelated/SingleCompany";
-import SingleProcess from "./components/processRelated/SingleProcess";
-import AddCompany from "./components/companyRelated/AddCompany";
-import Classroom from './components/classroomRelated/Classroom';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ErrorBoundary from "./helpers/ErrorBoundary";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthContext, getRefreshToken } from "./helpers";
+import axios from "axios";
+import { IUser } from "./typescript/interfaces";
+//@ts-ignore
+import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
 
 function App() {
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data: userData } = await axios.post("/api/v1/auth/token", {
+          refreshToken: getRefreshToken(),
+          remembered: true,
+        });
+        if (!userData.error) {
+          if (userData.dataValues) {
+            setUser({ ...userData.dataValues, userType: userData.userType });
+          } else {
+            setUser(userData);
+          }
+        }
+      } catch (e) {
+        console.log(e.response.data.error);
+      }
+      setLoading(false);
+    })();
+  }, []);
+  const getRoutes = () => {
+    if (loading) return <Loading fullPage loading={true} />;
+    if (!user) return <PublicRoutes />;
+    switch (user.userType) {
+      case "admin":
+        return <AdminRoutes />;
+      case "student":
+        return <StudentRoutes />;
+    }
+  };
+
+  const values = { user, setUser };
   return (
     <>
-      <Router>
-        <NavBar />
-        <ErrorBoundary>
-          <Switch>
-            <Route exact path="/">
-              <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
-            </Route>
-            <Route exact path="/company/add">
-              <AddCompany />
-            </Route>
-            <Route exact path="/company/all">
-              <AllCompanies />
-            </Route>
-            <Route exact path="/company/:id">
-              <SingleCompany />
-            </Route>
-            <Route exact path="/process/:studentId/:jobId">
-              <SingleProcess />
-            </Route>
-            <Route exact path="/class/add">
-              <AddClass />
-            </Route>
-            <Route exact path="/class/all">
-              <AllClasses />
-            </Route>
-            <Route exact path="/class/:id">
-              <SingleClass />
-            </Route>
-            <Route exact path="/job/all">
-              <AllJobs />
-            </Route>
-            <Route exact path="/job/add">
-              <AddJob />
-            </Route>
-            <Route exact path="/job/:id">
-              <SingleJob />
-            </Route>
-            <Route exact path="/student/add">
-              <AddStudent />
-            </Route>
-            <Route exact path="/student/all">
-              <AllStudents />
-            </Route>
-            <Route exact path="/student/:id">
-              <SingleStudent />
-            </Route>
-            <Route exact path="/classroom">
-              <Classroom />
-            </Route>
-            
-            <Route path="*">
-              <div>404 Not Found</div>
-            </Route>
-          </Switch>
-        </ErrorBoundary>
-      </Router>
+      <AuthContext.Provider value={values}>
+        <Router>{getRoutes()}</Router>
+      </AuthContext.Provider>
     </>
   );
 }

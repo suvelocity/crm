@@ -57,3 +57,11 @@ export interface ICompany {
   location: string;
   description?: string;
 }
+
+export interface IUser {
+  id?: number;
+  email: string;
+  password: string;
+  type: string;
+  relatedId?: number;
+}

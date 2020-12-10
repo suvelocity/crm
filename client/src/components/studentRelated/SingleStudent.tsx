@@ -96,25 +96,25 @@ function SingleStudent() {
   useEffect(() => {
     try {
       getStudent();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, []);
 
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
             <H1>Student Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula='1fr 1fr 1fr'>
+          <GridDiv repeatFormula="1fr 1fr 1fr">
             <List>
               <SingleListItem
-                primary='Name'
+                primary="Name"
                 secondary={
                   capitalize(student?.firstName) +
                   " " +
@@ -123,16 +123,16 @@ function SingleStudent() {
               >
                 <PersonIcon />
               </SingleListItem>
-              <SingleListItem primary='Email' secondary={student?.email}>
+              <SingleListItem primary="Email" secondary={student?.email}>
                 <EmailIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Phone Number'
+                primary="Phone Number"
                 secondary={formatPhone(student?.phone)}
               >
                 <PhoneIcon />
               </SingleListItem>
-              <SingleListItem primary='ID Number' secondary={student?.idNumber}>
+              <SingleListItem primary="ID Number" secondary={student?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
               {student?.militaryService && (
@@ -141,33 +141,33 @@ function SingleStudent() {
                     <TrackChangesIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary='Military Service'
+                    primary="Military Service"
                     secondary={capitalize(student?.militaryService)}
                   />
                 </MultilineListItem>
               )}
             </List>
             <List>
-              <SingleListItem primary='Age' secondary={student?.age}>
+              <SingleListItem primary="Age" secondary={student?.age}>
                 <DateRangeIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Address'
+                primary="Address"
                 secondary={capitalize(student?.address)}
               >
                 <BusinessIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Marital Status'
+                primary="Marital Status"
                 secondary={capitalize(student?.maritalStatus)}
               >
                 <FavoriteIcon />
               </SingleListItem>
-              <SingleListItem primary='Children' secondary={student?.children}>
+              <SingleListItem primary="Children" secondary={student?.children}>
                 <ChildFriendlyIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Work Experience'
+                primary="Work Experience"
                 secondary={capitalize(student?.workExperience)}
               >
                 <WorkIcon />
@@ -175,19 +175,19 @@ function SingleStudent() {
             </List>
             <List>
               <SingleListItem
-                primary='Citizenships'
+                primary="Citizenships"
                 secondary={capitalize(student?.citizenship)}
               >
                 <LanguageIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Languages'
+                primary="Languages"
                 secondary={capitalize(student?.languages)}
               >
                 <TranslateIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Course'
+                primary="Course"
                 secondary={capitalize(student?.Class.name)}
               >
                 <ClassIcon />
@@ -198,7 +198,7 @@ function SingleStudent() {
                     <AccountBalanceIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary='Academic Background'
+                    primary="Academic Background"
                     secondary={capitalize(student?.academicBackground)}
                   />
                 </MultilineListItem>
@@ -209,7 +209,7 @@ function SingleStudent() {
                     <ContactSupportIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary='Additional Details'
+                    primary="Additional Details"
                     secondary={capitalize(student?.additionalDetails)}
                   />
                 </MultilineListItem>
@@ -218,7 +218,7 @@ function SingleStudent() {
           </GridDiv>
         </Loading>
       </Wrapper>
-      <Wrapper width='65%'>
+      <Wrapper width="65%">
         <Center>
           <TitleWrapper>
             <H1>Job Applications</H1>
@@ -226,21 +226,21 @@ function SingleStudent() {
         </Center>
         <Loading loading={loading} size={30}>
           <StyledUl>
-            <TableHeader repeatFormula='0.5fr 1.5fr 1.5fr 2fr'>
+            <TableHeader repeatFormula="0.5fr 1.5fr 1.5fr 2fr">
               <WorkIcon />
-              <StyledSpan weight='bold'>Position</StyledSpan>
-              <StyledSpan weight='bold'>Company</StyledSpan>
-              <StyledSpan weight='bold'>Status</StyledSpan>
+              <StyledSpan weight="bold">Position</StyledSpan>
+              <StyledSpan weight="bold">Company</StyledSpan>
+              <StyledSpan weight="bold">Status</StyledSpan>
             </TableHeader>
             {eventsToMap.map((event: IEvent) => (
               <li>
                 <StyledLink
-                  color='black'
+                  color="black"
                   to={`/process/${student?.id}/${event.Job?.id}`}
                 >
-                  <StyledDiv repeatFormula='0.5fr 1.5fr 1.5fr 2fr'>
+                  <StyledDiv repeatFormula="0.5fr 1.5fr 1.5fr 2fr">
                     <WorkIcon />
-                    <StyledSpan weight='bold'>
+                    <StyledSpan weight="bold">
                       {capitalize(event.Job?.position)}
                     </StyledSpan>
                     <StyledSpan>

@@ -105,3 +105,8 @@ export const companySchemaToPut = Joi.object({
   contactNumber: Joi.string().allow(null, ""),
   contactPosition: Joi.string().allow(null, ""),
 });
+
+export const signInSchema = Joi.object({
+  username: Joi.string().email().required(),
+  password: Joi.string().required(),
+});

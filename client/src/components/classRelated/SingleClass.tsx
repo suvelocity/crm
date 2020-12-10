@@ -31,6 +31,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IStudent, IClass } from "../../typescript/interfaces";
 import { capitalize, formatToIsraeliDate, formatPhone } from "../../helpers";
+import Swal from "sweetalert2";
 
 function SingleClass() {
   const [cls, setCls] = useState<IClass | null>();
@@ -48,34 +49,34 @@ function SingleClass() {
   useEffect(() => {
     try {
       getClass();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [getClass]);
 
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#2c6e3c'>Class Info</H1>
+            <H1 color="#2c6e3c">Class Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatingFormula='1fr 1fr'>
+          <GridDiv repeatingFormula="1fr 1fr">
             <List>
-              <SingleListItem primary='Name' secondary={capitalize(cls?.name)}>
+              <SingleListItem primary="Name" secondary={capitalize(cls?.name)}>
                 <ClassIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Starting Date'
+                primary="Starting Date"
                 secondary={formatToIsraeliDate(cls?.startingDate!)}
               >
                 <CalendarTodayIcon />
               </SingleListItem>
               <SingleListItem
-                primary='Cycle Number'
+                primary="Cycle Number"
                 secondary={cls?.cycleNumber}
               >
                 <CalendarTodayIcon />
@@ -83,7 +84,7 @@ function SingleClass() {
             </List>
             <List>
               <SingleListItem
-                primary='Course'
+                primary="Course"
                 secondary={capitalize(cls?.course)}
               >
                 <CalendarTodayIcon />
@@ -94,11 +95,11 @@ function SingleClass() {
                   <CalendarTodayIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary='Ending Date'
+                  primary="Ending Date"
                   secondary={formatToIsraeliDate(cls?.endingDate!)}
                 />
               </ListItem>
-              <SingleListItem primary='Zoom Link' secondary={cls?.zoomLink}>
+              <SingleListItem primary="Zoom Link" secondary={cls?.zoomLink}>
                 <LinkIcon />
               </SingleListItem>
             </List>
@@ -106,7 +107,7 @@ function SingleClass() {
           {cls?.additionalDetails && (
             <MultilineListItem>
               <SingleListItem
-                primary='Additional Details'
+                primary="Additional Details"
                 secondary={capitalize(cls?.additionalDetails)}
               >
                 <ContactSupportIcon />
@@ -115,7 +116,7 @@ function SingleClass() {
           )}
         </Loading>
       </Wrapper>
-      <Wrapper width='50%'>
+      <Wrapper width="50%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Students In Class</H1>
@@ -128,19 +129,19 @@ function SingleClass() {
               <li>
                 <TableHeader repeatFormula={repeatFormula}>
                   <PersonIcon />
-                  <StyledSpan weight='bold'>Name</StyledSpan>
-                  <StyledSpan weight='bold'>Email</StyledSpan>
-                  <StyledSpan weight='bold'>Phone</StyledSpan>
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Phone</StyledSpan>
                 </TableHeader>
               </li>
             )}
             {cls?.Students &&
               cls?.Students!.map((student: Omit<IStudent, "Class">) => (
                 <li key={student.id}>
-                  <StyledLink color='black' to={`/student/${student.id}`}>
+                  <StyledLink color="black" to={`/student/${student.id}`}>
                     <StyledDiv repeatFormula={repeatFormula}>
                       <PersonIcon />
-                      <StyledSpan weight='bold'>
+                      <StyledSpan weight="bold">
                         {capitalize(student.firstName)}{" "}
                         {capitalize(student.lastName)}
                       </StyledSpan>

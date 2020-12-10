@@ -1,8 +1,19 @@
 import { Router, Response, Request } from "express";
 //@ts-ignore
-import { Student, Company, Job, Event, Class } from "../../models";
+import { Student, Company, Job, Event, Class, User } from "../../models";
 import { IStudent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
+import transporter from "../../mail";
+import generatePassword from "password-generator";
+import bcrypt from "bcryptjs";
+
+const mailOptions = (to: string, password: string) => ({
+  from: process.env.EMAIL_USER,
+  to: to,
+  subject: "Welcome to CRM",
+  text: `You can login with:\nUsername: ${to}\nPassword: ${password}`,
+});
+
 const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
@@ -96,8 +107,31 @@ router.post("/", async (req: Request, res: Response) => {
       citizenship: body.citizenship,
     };
     const { value, error } = studentSchema.validate(newStudent);
+
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
+    const password = generatePassword(12, false);
+
+    const hash = bcrypt.hashSync(password, 10);
+    const userToCreate = {
+      email: body.email,
+      relatedId: student.id,
+      password: hash,
+      type: "student",
+    };
+    const user = await User.create(userToCreate);
+    if (user) {
+      transporter.sendMail(
+        mailOptions(body.email, password),
+        function (error: Error | null) {
+          if (error) {
+            console.log(error);
+
+            console.log("Mail not sent");
+          }
+        }
+      );
+    }
     res.json(student);
   } catch (error) {
     res.status(500).json({ error: error.message });
