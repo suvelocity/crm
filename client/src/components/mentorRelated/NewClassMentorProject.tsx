@@ -55,7 +55,7 @@ function NewClassMentorProject() {
 
   return (
     <div style={{display:"flex"}}>
-      <Wrapper width="30%">
+      <Wrapper width="40%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Students In Class</H1>
@@ -94,7 +94,7 @@ function NewClassMentorProject() {
         </Loading>
       </Wrapper>
 
-      <Wrapper width="50%">
+      <Wrapper width="40%">
         <Center>
           <TitleWrapper>
             <H1 color={"#2c6e3c"}>Available Mentors</H1>
