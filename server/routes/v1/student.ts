@@ -1,8 +1,7 @@
 import { Router, Response, Request } from "express";
-import { where } from "sequelize/types";
 //@ts-ignore
-import { Student, Job, Event, Class } from "../../models";
-import { IStudent, IJob } from "../../types";
+import { Student, Company, Job, Event, Class } from "../../models";
+import { IStudent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 const router = Router();
 
@@ -15,6 +14,12 @@ router.get("/all", async (req: Request, res: Response) => {
           include: [
             {
               model: Job,
+              include: [
+                {
+                  model: Company,
+                  attributes: ["name"],
+                },
+              ],
             },
           ],
           attributes: ["status", "date", "comment"],
@@ -25,8 +30,8 @@ router.get("/all", async (req: Request, res: Response) => {
       ],
     });
     res.json(students);
-  } catch (err) {
-    res.status(500).send(err.message);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -40,6 +45,12 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
           include: [
             {
               model: Job,
+              include: [
+                {
+                  model: Company,
+                  attributes: ["name"],
+                },
+              ],
             },
           ],
           attributes: ["status", "date", "comment"],
@@ -54,8 +65,8 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
     } else {
       return res.status(404).send("student does not exist");
     }
-  } catch (err) {
-    res.status(500).send(err.message);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -65,7 +76,7 @@ router.post("/", async (req: Request, res: Response) => {
     const studentExists = await Student.findOne({
       where: { idNumber: body.idNumber },
     });
-    if (studentExists) return res.status(400).send("Student already exists");
+    if (studentExists) return res.status(409).send("Student already exists");
     const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,
@@ -88,35 +99,37 @@ router.post("/", async (req: Request, res: Response) => {
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
     res.json(student);
-  } catch (err) {
-    res.status(500).send(err.message);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 router.put("/:id", async (req: Request, res: Response) => {
-  const { value, error } = studentSchema.validate(req.body);
+  const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
     const updated = await Student.update(req.body, {
       where: { id: req.params.id },
     });
-    if (updated[0] === 1) return res.json({ msg: "Student updated" });
-    res.status(404).send("Student not found");
-  } catch (e) {
-    res.status(500).send(e.message);
+    if (updated[0] === 1) return res.json({ message: "Student updated" });
+    res.status(404).json({ error: "Student not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const deleted = await Student.destroy({
-      where: { id: req.params.id },
+      where: { id },
     });
-    if (deleted === 0) return res.status(404).send("Student not found");
-    await Event.destroy({ where: { studentId: req.params.id } });
-    res.json({ msg: "Student deleted" });
-  } catch (e) {
-    res.status(500).send("error occurred");
+    if (deleted === 0)
+      return res.status(404).json({ message: "Student not found" });
+    await Event.destroy({ where: { studentId: id } });
+    res.json({ message: "Student deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

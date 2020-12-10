@@ -2,11 +2,8 @@
 // import * as React from 'react';
 import React from "react";
 import { MenuItem, Select, InputLabel, FormControl } from "@material-ui/core";
-import { filterStudentObject } from "./studentRelated/AllStudents";
-export interface SelectInputs {
-  filterBy: string;
-  possibleValues: string[];
-}
+import { filterStudentObject, SelectInputs } from "../typescript/interfaces";
+
 interface Props {
   array: SelectInputs[];
   callbackFunction: Function;

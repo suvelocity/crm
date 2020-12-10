@@ -18,19 +18,10 @@ export interface IStudent {
   additionalDetails: string;
   Events: IEvent[];
 }
-export interface ICompany {
-  id?: number;
-  name: string;
-  contactName: string;
-  contactNumber: string;
-  contactEmail: string;
-  location: string;
-  ScaleUpContact: string;
-  jobs: Pick<IJob, "id">;
-}
+
 export interface IJob {
   id?: number;
-  company: string;
+  Company: ICompany;
   position: string;
   requirements: string;
   location: string;
@@ -41,7 +32,7 @@ export interface IJob {
 }
 
 export interface IClass {
-  id: number;
+  id?: number;
   course: string;
   name: string;
   startingDate: string;
@@ -52,10 +43,56 @@ export interface IClass {
   Students: Omit<IStudent, "Class">[];
 }
 
+export interface ICompany {
+  id?: number;
+  name: string;
+  contactPosition?: string;
+  contactName?: string;
+  contactNumber?: string;
+  location: string;
+  description?: string;
+  Jobs: IJob[];
+}
+
+export type status =
+  | "Sent CV"
+  | "Phone Interview"
+  | "First interview"
+  | "Second interview"
+  | "Third Interview"
+  | "Forth interview"
+  | "Home Test"
+  | "Hired"
+  | "Rejected"
+  | "Irrelevant"
+  | "Removed Application"
+  | "Position Frozen"
+  | "Canceled";
+
 export interface IEvent {
-  status: string;
-  comment: string;
+  status: status;
+  studentId?: number;
+  jobId?: number;
+  comment?: string;
   date: string;
   Student?: IStudent;
   Job?: IJob;
+}
+
+type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
+
+export interface filterStudentObject {
+  Class: string;
+  Course: string;
+  JobStatus: string;
+  Name: string;
+}
+export interface Name {
+  firstName: string;
+  lastName: string;
+}
+
+export interface SelectInputs {
+  filterBy: string;
+  possibleValues: string[];
 }
