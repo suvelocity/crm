@@ -106,6 +106,7 @@ export const mentorSchema = Joi.object({
   phone: Joi.string().required(),
   address: Joi.string().required(),
   job: Joi.string().allow(null, ""),
+  available: Joi.boolean().allow(null, ""),
 });
 
 export const mentorSchemaToPut = Joi.object({
@@ -115,7 +116,9 @@ export const mentorSchemaToPut = Joi.object({
   phone: Joi.string().allow(null, ""),
   address: Joi.string().allow(null, ""),
   job: Joi.string().allow(null, ""),
+  available: Joi.boolean().allow(null, ""),
 });
+
 export const studentMentorIdPut = Joi.object({
   MentorId: Joi.number().allow(null, ""),
 });
