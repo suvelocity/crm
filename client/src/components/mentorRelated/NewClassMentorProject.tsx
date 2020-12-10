@@ -64,7 +64,7 @@ function NewClassMentorProject() {
       setMentors(itemsMentor);
     } else if (
       source.droppableId === "mentors" &&
-      destination.droppableId === "students"
+      destination.droppableId !== "students"
     ) {
       const itemsMentor: IMentor[] = Array.from(mentors || []);
       const itemsStudents: Omit<IStudent, "Class">[] = Array.from(
@@ -74,12 +74,12 @@ function NewClassMentorProject() {
         result.source.index,
         1
       );
-      const prevMentor: IMentor | null =
-        itemsStudents[destination.index].mentor!;
+      const prevMentor: IMentor | null = itemsStudents[parseInt(destination.droppableId)]
+        .mentor!;
       if (prevMentor) {
         itemsMentor.push(prevMentor);
       }
-      itemsStudents[destination.index].mentor = reorderedMentor;
+      itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
       const newCls: IClass | undefined = cls;
       newCls!.Students = itemsStudents;
       setCls(newCls);
@@ -88,7 +88,7 @@ function NewClassMentorProject() {
   };
 
   const removeMentor = (mentor: IMentor, i: number) => {
-    console.log("delete")
+    console.log("delete");
     const newMentors: IMentor[] = Array.from(mentors);
     newMentors.push(mentor);
     setMentors(newMentors);
@@ -103,7 +103,19 @@ function NewClassMentorProject() {
         <Wrapper width="40%">
           <Center>
             <TitleWrapper>
-              <H1 color={"#2c6e3c"}>Students In Class</H1>
+              <H1 color={"#2c6e3c"}>
+                Students In Class
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#2c6e3c",
+                    color: "white",
+                    marginLeft: 10,
+                  }}
+                >
+                  create
+                </Button>
+              </H1>
             </TitleWrapper>
           </Center>
           <br />
@@ -132,7 +144,7 @@ function NewClassMentorProject() {
                         </StyledSpan>
                         <StyledSpan>{student.address}</StyledSpan>
                         <StyledSpan>
-                          <Droppable droppableId="students">
+                          <Droppable droppableId={`${i}`}>
                             {(provided) => (
                               <div
                                 {...provided.droppableProps}
@@ -141,11 +153,11 @@ function NewClassMentorProject() {
                                 {student.mentor && (
                                   <StyledSpan>
                                     {capitalize(student.mentor.name)}
-                                    <Button onClick={() =>
+                                    <Button
+                                      onClick={() =>
                                         removeMentor(student.mentor!, i)
                                       }
-                                      
-                                    > 
+                                    >
                                       <DeleteIcon />
                                     </Button>
                                   </StyledSpan>
@@ -195,8 +207,11 @@ function NewClassMentorProject() {
                               {...provided.dragHandleProps}
                             >
                               <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr">
-                                <StyledLink to={`/mento/${mentor.id}`} color="black">
-                                <PersonIcon/>
+                                <StyledLink
+                                  to={`/mento/${mentor.id}`}
+                                  color="black"
+                                >
+                                  <PersonIcon />
                                 </StyledLink>
                                 <StyledSpan weight="bold">
                                   {capitalize(mentor.name)}
