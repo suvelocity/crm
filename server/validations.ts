@@ -120,5 +120,5 @@ export const mentorSchemaToPut = Joi.object({
 });
 
 export const studentMentorIdPut = Joi.object({
-  MentorId: Joi.number().allow(null, ""),
+  mentorId: Joi.number(),
 });
