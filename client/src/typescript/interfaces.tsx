@@ -16,6 +16,8 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   additionalDetails: string;
+  mentorId: number | null;
+  mentor?: IMentor | null
   Events: IEvent[];
 }
 export interface ICompany {

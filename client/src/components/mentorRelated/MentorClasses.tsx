@@ -30,7 +30,7 @@ const MentorClasses: React.FC = () => {
 
   useEffect(() => {
     getClasses();
-  }, []);
+  }, [getClasses]);
 
   return (
     <Wrapper width="80%">
