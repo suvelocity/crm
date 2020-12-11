@@ -38,7 +38,7 @@ function NewClassMentorProject() {
 
   const getMentors = useCallback(async () => {
     const { data }: { data: IMentor[] } = await network.get(
-      `/api/v1/mentor/mentor`
+      `/api/v1/M/mentor`
     );
     setMentors(data);
     setLoading(false);
@@ -107,13 +107,13 @@ function NewClassMentorProject() {
         async (student: Omit<IStudent, "Class">, i: number) => {
           if (student.mentor) {
             const res = await network.put(
-              `/api/v1/mentor/classes/student/${student.id}`,
+              `/api/v1/M/classes/student/${student.id}`,
               { mentorId: student.mentor.id }
             );
           }
         }
       );
-      const result = await network.put(`/api/v1/mentor/classes/${id}`);
+      const result = await network.put(`/api/v1/M/classes/${id}`);
       window.location.href = "/mentor";
     } catch (err) {
       console.log(err);

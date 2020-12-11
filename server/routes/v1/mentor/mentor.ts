@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 //@ts-ignore
-import { Mentor, Student, Meeting } from '../../../models';
+import { Mentor, Student, Meeting,Class } from '../../../models';
 import { mentorSchema, mentorSchemaToPut } from '../../../validations';
 import { IMentor } from '../../../types';
 
@@ -25,6 +25,12 @@ router.get('/:id', async (req: Request, res: Response) => {
       include: [
         {
           model: Student,
+          include: [
+            {
+              model:Class,
+              attributes: ["name","cycleNumber"]
+            }
+          ]
         },
         {
           model: Meeting,
