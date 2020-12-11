@@ -17,6 +17,7 @@ router.use("/student", require("./student"));
 router.use("/event", require("./event"));
 router.use("/company", require("./company"));
 // classroom routes
+router.use("/lesson", require("./lesson"));
 
 router.use(unknownEndpoint);
 module.exports = router;
