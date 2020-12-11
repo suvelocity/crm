@@ -9,13 +9,14 @@ import Tasks from '../components/classroomRelated/tasks/Tasks';
 import Teacher from '../components/classroomRelated/teacher/Teacher';
 import ClassRoomNavBar from '../components/ClassRoomNavBar';
 
+
 export default function TeacherRoutes() {
   return (
-    <>
-      <ErrorBoundary>
+    <ErrorBoundary>
         <ClassRoomNavBar/>
+      <div id='classroom-container' style={{display:"flex"}} >
+        <div id='interface-container' style={{flexGrow: 1,marginLeft:220,padding:20}}>
         <Switch>
-          
           <Route path="/lessons">
             <Lessons />
           </Route>
@@ -35,7 +36,8 @@ export default function TeacherRoutes() {
             <div>404 Not Found</div>
           </Route>
         </Switch>
+        </div>
+  </div>
       </ErrorBoundary>
-  </>
   );
 }

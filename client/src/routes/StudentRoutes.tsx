@@ -7,16 +7,17 @@ import Lessons from '../components/classroomRelated/lessons/Lessons';
 import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/Tasks';
 import ClassRoomNavBar from '../components/ClassRoomNavBar';
+
 export function StudentRoutes() {
   return (
     <>
       <ErrorBoundary>
         <ClassRoomNavBar/>
+        <div style={{flexGrow: 1}}>
         <Switch>
           <Route exact path="/">
           <Dashboard />
           </Route>
-          
           <Route path="/lessons">
             <Lessons />
           </Route>
@@ -30,6 +31,7 @@ export function StudentRoutes() {
             <div>404 Not Found</div>
           </Route>
         </Switch>
+        </div>
       </ErrorBoundary>
   </>
   );
