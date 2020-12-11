@@ -105,6 +105,9 @@ export interface IMentor {
   phone: string;
   address: string;
   job: string;
+  gender:string;
+  Students?: Partial<IStudent>[];
+  Meetings?: Partial<IMeeting>[];
 }
 
 export interface MentorClassDashboard {

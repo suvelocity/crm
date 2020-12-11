@@ -25,9 +25,11 @@ import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IEvent } from "../../typescript/interfaces";
+import { IStudent, IMentor, IEvent } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import BusinessIcon from "@material-ui/icons/Business";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import WcIcon from "@material-ui/icons/Wc";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -41,56 +43,17 @@ import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 
 function SingleMentor() {
-  const [student, setStudent] = useState<IStudent | null>();
+  const [mentor, setMentor] = useState<IMentor[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
 
   const getStudent = useCallback(async () => {
-    const { data }: { data: IStudent } = await network.get(
-      `/api/v1/student/byId/${id}`
+    const { data }: { data: IMentor[] } = await network.get(
+      `/api/v1/M/mentor/${id}`
     );
-    const uniqueJobs: IEvent[] = [];
-    const sortedEvents = data.Events.sort(
-      (e1: IEvent, e2: IEvent) =>
-        new Date(e2.date).valueOf() - new Date(e1.date).valueOf()
-    );
-    sortedEvents.forEach((event: IEvent) => {
-      if (!uniqueJobs.find((ev: IEvent) => ev.Job!.id === event.Job!.id)) {
-        uniqueJobs.push(event);
-      }
-    });
-    setEventsToMap(uniqueJobs);
-    setStudent(data);
+    setMentor(data);
     setLoading(false);
-  }, [id, setStudent, setLoading, setEventsToMap]);
-
-  const removeJob = useCallback(
-    async (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      jobId: number
-    ) => {
-      e.stopPropagation();
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: { isConfirmed: boolean }) => {
-        if (result.isConfirmed) {
-          await network.patch("/api/v1/event/delete", {
-            studentId: student?.id!,
-            jobId,
-          });
-          getStudent();
-        }
-      });
-    },
-    [setStudent, id, student, getStudent]
-  );
+  }, [id, setMentor, setLoading]);
 
   useEffect(() => {
     try {
@@ -106,176 +69,118 @@ function SingleMentor() {
       <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1>Student Info</H1>
+            <H1>Mentor Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <GridDiv repeatFormula="1fr 1fr 1fr">
-            <List>
-              {/* {Name} */}
-              <ListItem>
-                <ListItemIcon>
-                  <PersonIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Name"
-                  secondary={
-                    capitalize(student?.firstName) +
-                    " " +
-                    capitalize(student?.lastName)
-                  }
-                />
-              </ListItem>
-              {/* Email */}
-              <ListItem>
-                <ListItemIcon>
-                  <EmailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Email" secondary={student?.email} />
-              </ListItem>
-              {/* Phone number */}
-              <ListItem>
-                <ListItemIcon>
-                  <PhoneIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Phone Number"
-                  secondary={formatPhone(student?.phone)}
-                />
-              </ListItem>
-              {/* Id number */}
-              <ListItem>
-                <ListItemIcon>
-                  <DialpadIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="ID Number"
-                  secondary={student?.idNumber}
-                />
-              </ListItem>
-              {/* Military Service */}
-              {student?.militaryService && (
-                <MultilineListItem>
+          {mentor && mentor[0] && (
+            <GridDiv repeatFormula="1fr 1fr 1fr">
+              <List>
+                {/* {Name} */}
+                <ListItem>
                   <ListItemIcon>
-                    <TrackChangesIcon />
+                    <PersonIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Military Service"
-                    secondary={capitalize(student?.militaryService)}
+                    primary="Name"
+                    secondary={capitalize(mentor[0]?.name)}
                   />
-                </MultilineListItem>
-              )}
-            </List>
-            <List>
-              {/* Age */}
-              <ListItem>
-                <ListItemIcon>
-                  <DateRangeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Age" secondary={student?.age} />
-              </ListItem>
-              {/* Address */}
-              <ListItem>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Address"
-                  secondary={capitalize(student?.address)}
-                />
-              </ListItem>
-              {/* Marital Status */}
-              <ListItem>
-                <ListItemIcon>
-                  <FavoriteIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Marital Status"
-                  secondary={capitalize(student?.maritalStatus)}
-                />
-              </ListItem>
-              {/* Children */}
-              <ListItem>
-                <ListItemIcon>
-                  <ChildFriendlyIcon />{" "}
-                </ListItemIcon>
-                <ListItemText
-                  primary="Children"
-                  secondary={student?.children}
-                />
-              </ListItem>
-              {/* Work Experience */}
-              <ListItem>
-                <ListItemIcon>
-                  <WorkIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Work Experience"
-                  secondary={capitalize(student?.workExperience)}
-                />
-              </ListItem>
-            </List>
-            <List>
-              {/* Citizenships */}
-              <ListItem>
-                <ListItemIcon>
-                  <LanguageIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Citizenships"
-                  secondary={capitalize(student?.citizenship)}
-                />
-              </ListItem>
-              {/* Languages */}
-              <ListItem>
-                <ListItemIcon>
-                  <TranslateIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Languages"
-                  secondary={capitalize(student?.languages)}
-                />
-              </ListItem>
-              {/* Course */}
-              <ListItem>
-                <ListItemIcon>
-                  <ClassIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Course"
-                  secondary={capitalize(student?.Class.name)}
-                />
-              </ListItem>
-              {/* Academib Background */}
-              {student?.academicBackground && (
-                <MultilineListItem>
+                </ListItem>
+                {/* Email */}
+                <ListItem>
                   <ListItemIcon>
-                    <AccountBalanceIcon />
+                    <EmailIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Email" secondary={mentor[0]?.email} />
+                </ListItem>
+                {/* Phone number */}
+                <ListItem>
+                  <ListItemIcon>
+                    <PhoneIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Academic Background"
-                    secondary={capitalize(student?.academicBackground)}
+                    primary="Phone Number"
+                    secondary={formatPhone(mentor[0]?.phone)}
                   />
-                </MultilineListItem>
-              )}
-
-              {/* Additional Details */}
-              {student?.additionalDetails && (
-                <MultilineListItem>
+                </ListItem>
+                {/* Id number */}
+                <ListItem>
                   <ListItemIcon>
-                    <ContactSupportIcon />
+                    <DialpadIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ID Number" secondary={mentor[0]?.id} />
+                </ListItem>
+              </List>
+              <List>
+                {/* Address */}
+                <ListItem>
+                  <ListItemIcon>
+                    <BusinessIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Additional Details"
-                    secondary={capitalize(student?.additionalDetails)}
+                    primary="Address"
+                    secondary={capitalize(mentor[0]?.address)}
                   />
-                </MultilineListItem>
-              )}
-            </List>
-          </GridDiv>
+                </ListItem>
+                {/* company */}
+                <ListItem>
+                  <ListItemIcon>
+                    <WorkIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Company"
+                    secondary={capitalize(mentor[0]?.company)}
+                  />
+                </ListItem>
+                {/* job */}
+                <ListItem>
+                  <ListItemIcon>
+                    <WorkIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Job"
+                    secondary={capitalize(mentor[0]?.job)}
+                  />
+                </ListItem>
+              </List>
+              <List>
+                {/* gender */}
+                <ListItem>
+                  <ListItemIcon>
+                    <WcIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Gender"
+                    secondary={capitalize(mentor[0]?.gender)}
+                  />
+                </ListItem>
+                {/* Students */}
+                {mentor[0]?.Students && (
+                  <ListItem>
+                    <ListItemIcon>
+                      <AssignmentIndIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Students"
+                      secondary={mentor[0]?.Students.map((student) => {
+                        return (
+                          capitalize(student.firstName) +
+                          " " +
+                          capitalize(student.lastName) +
+                          " - " +
+                          capitalize(student.Class!.name) +
+                          ":" +
+                          capitalize(`${student.Class!.cycleNumber}`)
+                        );
+                      })}
+                    />
+                  </ListItem>
+                )}
+              </List>
+            </GridDiv>
+          )}
         </Loading>
       </Wrapper>
-
     </>
   );
 }
