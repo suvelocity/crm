@@ -23,7 +23,7 @@ const MentorClasses: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/mentor/classes/with");
+    const { data } = await network.get("/api/v1/M/classes/with");
     setClasses(data);
     setLoading(false);
   }, []);

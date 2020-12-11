@@ -10,7 +10,7 @@ router.use("/class", require("./class"));
 router.use("/job", require("./job"));
 router.use("/student", require("./student"));
 router.use("/event", require("./event"));
-router.use("/mentor", require("./mentor"));
+router.use("/M", require("./mentor"));
 
 router.use(unknownEndpoint);
 module.exports = router;

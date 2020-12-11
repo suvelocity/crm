@@ -15,6 +15,7 @@ import MentorClasses from "./components/mentorRelated/MentorClasses";
 import ClassDashboard from "./components/mentorRelated/ClassDashboard";
 import NewProject from "./components/mentorRelated/NewProject";
 import NewClassMentorProject from "./components/mentorRelated/NewClassMentorProject";
+import SingleMentor from "./components/mentorRelated/SingleMentor";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ErrorBoundary from "./helpers/ErrorBoundary";
 import AllMentors from "./components/mentorRelated/AllMentors";
@@ -67,6 +68,9 @@ function App() {
             </Route>
             <Route exact path="/mentor/new">
               <NewProject />
+            </Route>
+            <Route exact path="/mentor/:id">
+              <SingleMentor />
             </Route>
             <Route exact path="/mentor/new/:id">
               <NewClassMentorProject />

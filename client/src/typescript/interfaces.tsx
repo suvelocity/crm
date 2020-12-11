@@ -107,7 +107,9 @@ export interface IMentor {
   job: string;
   available: boolean;
   gender: string;
-};
+  Students?: Partial<IStudent>[];
+  Meetings?: Partial<IMeeting>[];
+}
 
 export interface MentorClassDashboard {
   id?: number;
