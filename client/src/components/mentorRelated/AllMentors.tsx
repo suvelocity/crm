@@ -24,7 +24,7 @@ function AllMentors() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get('/api/v1/mentor/mentor');
+      const { data } = await network.get('/api/v1/M/mentor');
       setMentors(data);
       setLoading(false);
     })();
