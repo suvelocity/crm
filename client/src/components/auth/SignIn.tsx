@@ -32,26 +32,36 @@ export function SignIn() {
         };
         const { data } = await network.post("/api/v1/auth/signin", userData);
         const decoded = jwt.decode(getRefreshToken());
-        jwt.verify(
-          getRefreshToken()!,
-          REACT_APP_REFRESH_TOKEN_SECRET!,
-          (err, decoded) => {
-            if (err) {
-              return;
-            }
-            //@ts-ignore
-            if (decoded && decoded.type! === data.userType) {
-              if (data.dataValues) {
-                setUser({
-                  ...data.dataValues,
-                  userType: data.userType,
-                });
-              } else {
-                setUser(data);
-              }
-            }
+        if (decoded && decoded.type! === data.userType) {
+          if (data.dataValues) {
+            setUser({
+              ...data.dataValues,
+              userType: data.userType,
+            });
+          } else {
+            setUser(data);
           }
-        );
+        }
+        // jwt.verify(
+        //   getRefreshToken()!,
+        //   REACT_APP_REFRESH_TOKEN_SECRET!,
+        //   (err, decoded) => {
+        //     if (err) {
+        //       return;
+        //     }
+        //     //@ts-ignore
+        //     if (decoded && decoded.type! === data.userType) {
+        //       if (data.dataValues) {
+        //         setUser({
+        //           ...data.dataValues,
+        //           userType: data.userType,
+        //         });
+        //       } else {
+        //         setUser(data);
+        //       }
+        //     }
+        //   }
+        // );
       }
     } catch (error) {
       console.log(error.response.data);
