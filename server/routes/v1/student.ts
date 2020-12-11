@@ -1,11 +1,15 @@
 import { Router, Response, Request } from "express";
 //@ts-ignore
 import { Student, Company, Job, Event, Class, User } from "../../models";
-import { IStudent } from "../../types";
+import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
+import { getQuery } from "../../helper";
+
+// const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
+const publicFields: string[] = Object.keys(PublicFieldsEnum);
 
 const mailOptions = (to: string, password: string) => ({
   from: process.env.EMAIL_USER,
@@ -17,29 +21,20 @@ const mailOptions = (to: string, password: string) => ({
 const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
+  //@ts-ignore
+  const fields: string[] = req.query.fields?.split(",");
+  const onlyActive: boolean = Boolean(req.query.onlyactive);
+  const omitRelations: boolean = Boolean(req.query.omitrelations);
+
+  console.log(omitRelations + " " + onlyActive);
+  //@ts-ignore
+  const filteredFields: PublicFields[] = fields?.filter((field: string) =>
+    publicFields.includes(field)
+  );
+
   try {
-    const students: IStudent[] = await Student.findAll({
-      include: [
-        {
-          model: Event,
-          include: [
-            {
-              model: Job,
-              include: [
-                {
-                  model: Company,
-                  attributes: ["name"],
-                },
-              ],
-            },
-          ],
-          attributes: ["status", "date", "comment"],
-        },
-        {
-          model: Class,
-        },
-      ],
-    });
+    const query = getQuery(filteredFields, omitRelations, onlyActive);
+    const students: IStudent[] = await Student.findAll(query);
     res.json(students);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -49,28 +44,8 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const student: IStudent | null = await Student.findByPk(id, {
-      include: [
-        {
-          model: Event,
-          include: [
-            {
-              model: Job,
-              include: [
-                {
-                  model: Company,
-                  attributes: ["name"],
-                },
-              ],
-            },
-          ],
-          attributes: ["id", "status", "date", "comment"],
-        },
-        {
-          model: Class,
-        },
-      ],
-    });
+    const student: IStudent | null = await Student.findByPk(id, getQuery());
+
     if (student) {
       return res.json(student);
     } else {
@@ -105,6 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
+      fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
 
