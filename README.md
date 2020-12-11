@@ -73,6 +73,8 @@ REACT_APP_API_KEY = ""; // google api key for location services
 
 1. Develop the feature. Try to only work on one feature in a branch for ease of merging.
 
+1. commit often, and name the commits descriptively
+
 1. When you have finished work on your feature, create a PR to **dev** and stop working on the branch.
 
 1. If you need the new feature to continue, branch out from your branch and continue in that branch. Else - just start a new branch
