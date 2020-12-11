@@ -22,7 +22,7 @@ const NewProject: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/mentor/classes/without");
+    const { data } = await network.get("/api/v1/M/classes/without");
     setClasses(data);
     setLoading(false);
   }, []);
