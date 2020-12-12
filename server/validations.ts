@@ -67,6 +67,7 @@ export const studentSchema = Joi.object({
   workExperience: Joi.string().allow(null, ""),
   languages: Joi.string().required(),
   citizenship: Joi.string().required(),
+  fccaccount: Joi.string().max(30).allow(null, ""),
 });
 
 export const studentSchemaToPut = Joi.object({
@@ -86,6 +87,7 @@ export const studentSchemaToPut = Joi.object({
   workExperience: Joi.string().allow(null, ""),
   languages: Joi.string().allow(null, ""),
   citizenship: Joi.string().allow(null, ""),
+  fccaccount: Joi.string().max(30).allow(null, ""),
 });
 
 export const companySchema = Joi.object({
@@ -104,4 +106,9 @@ export const companySchemaToPut = Joi.object({
   contactName: Joi.string().allow(null, ""),
   contactNumber: Joi.string().allow(null, ""),
   contactPosition: Joi.string().allow(null, ""),
+});
+
+export const signInSchema = Joi.object({
+  username: Joi.string().email().required(),
+  password: Joi.string().required(),
 });

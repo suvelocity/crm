@@ -1,34 +1,40 @@
 import { Router, Response, Request } from "express";
 //@ts-ignore
-import { Student, Company, Job, Event, Class } from "../../models";
-import { IStudent } from "../../types";
+import { Student, Company, Job, Event, Class, User } from "../../models";
+import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
+import transporter from "../../mail";
+import generatePassword from "password-generator";
+import bcrypt from "bcryptjs";
+import { getQuery } from "../../helper";
+
+// const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
+const publicFields: string[] = Object.keys(PublicFieldsEnum);
+
+const mailOptions = (to: string, password: string) => ({
+  from: process.env.EMAIL_USER,
+  to: to,
+  subject: "Welcome to CRM",
+  text: `You can login with:\nUsername: ${to}\nPassword: ${password}`,
+});
+
 const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
+  //@ts-ignore
+  const fields: string[] = req.query.fields?.split(",");
+  const onlyActive: boolean = Boolean(req.query.onlyactive);
+  const omitRelations: boolean = Boolean(req.query.omitrelations);
+
+  console.log(omitRelations + " " + onlyActive);
+  //@ts-ignore
+  const filteredFields: PublicFields[] = fields?.filter((field: string) =>
+    publicFields.includes(field)
+  );
+
   try {
-    const students: IStudent[] = await Student.findAll({
-      include: [
-        {
-          model: Event,
-          include: [
-            {
-              model: Job,
-              include: [
-                {
-                  model: Company,
-                  attributes: ["name"],
-                },
-              ],
-            },
-          ],
-          attributes: ["status", "date", "comment"],
-        },
-        {
-          model: Class,
-        },
-      ],
-    });
+    const query = getQuery(filteredFields, omitRelations, onlyActive);
+    const students: IStudent[] = await Student.findAll(query);
     res.json(students);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -38,28 +44,8 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const student: IStudent | null = await Student.findByPk(id, {
-      include: [
-        {
-          model: Event,
-          include: [
-            {
-              model: Job,
-              include: [
-                {
-                  model: Company,
-                  attributes: ["name"],
-                },
-              ],
-            },
-          ],
-          attributes: ["status", "date", "comment"],
-        },
-        {
-          model: Class,
-        },
-      ],
-    });
+    const student: IStudent | null = await Student.findByPk(id, getQuery());
+
     if (student) {
       return res.json(student);
     } else {
@@ -94,10 +80,33 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
+      fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
+
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
+    const password = generatePassword(12, false);
+
+    const hash = bcrypt.hashSync(password, 10);
+    const userToCreate = {
+      email: body.email,
+      relatedId: student.id,
+      password: hash,
+      type: "student",
+    };
+    const user = await User.create(userToCreate);
+    if (user) {
+      transporter.sendMail(
+        mailOptions(body.email, password),
+        function (error: Error | null) {
+          if (error) {
+            console.log(error);
+            console.log("Mail not sent");
+          }
+        }
+      );
+    }
     res.json(student);
   } catch (error) {
     res.status(500).json({ error: error.message });
