@@ -104,7 +104,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {

@@ -89,7 +89,8 @@ const AddJob = (props:Props) => {
                   name='companyId'
                   rules={{ required: "Company is required" }}
                   control={control}
-                  defaultValue='company'
+                  // defaultValue='Microsoft'
+                  defaultValue={props.job? props.job.Company.id : ''}
                 />
               </FormControl>
               {!empty ? (
