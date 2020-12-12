@@ -72,6 +72,7 @@ function SingleJob() {
     setLoading(true);
     getJob();
   }
+  
   const removeStudents = useCallback(
     async (
       studentId: number,
@@ -88,7 +89,7 @@ function SingleJob() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          await network.patch("/api/v1/event/delete", {
+          await network.put("/api/v1/event/delete", {
             studentId,
             jobId: job?.id,
           });
@@ -211,6 +212,7 @@ function SingleJob() {
           <Modal
             open={modalState}
             onClose={() => setModalState(false)}
+            style={{overflow: 'scroll'}}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
