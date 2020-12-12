@@ -18,7 +18,6 @@ import {
   Button,
   TextField,
   Select,
-  Tooltip,
 } from "@material-ui/core";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import Swal from "sweetalert2";
@@ -40,7 +39,6 @@ const AddClass = (props: Props) => {
     "0" +
     (new Date().getMonth() + 1)
   ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
-  console.log(defaultDateValue);
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {

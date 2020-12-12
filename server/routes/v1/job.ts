@@ -51,7 +51,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "date", "comment"],
+          attributes: ["id", "status", "date", "comment"],
         },
         {
           model: Company,
