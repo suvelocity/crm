@@ -15,6 +15,7 @@ import { validNameRegex } from "../../helpers/patterns";
 import { FormControl, MenuItem, Select } from "@material-ui/core";
 import { ErrorBtn, ActionBtn } from "../formRelated";
 import Swal from "sweetalert2";
+import GoogleMaps from "../GeoSearch";
 
 const AddJob = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -47,13 +48,13 @@ const AddJob = () => {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">Add Job</H1>
+          <H1 color='#bb4040'>Add Job</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <GridDiv repeatFormula="1fr 0.5fr 3fr">
+          <GridDiv repeatFormula='1fr 0.5fr 3fr'>
             <div>
               <FormControl
                 style={{ minWidth: 255 }}
@@ -72,10 +73,10 @@ const AddJob = () => {
                       )}
                     </Select>
                   }
-                  name="companyId"
+                  name='companyId'
                   rules={{ required: "Company is required" }}
                   control={control}
-                  defaultValue=""
+                  defaultValue=''
                 />
               </FormControl>
               {!empty ? (
@@ -87,8 +88,8 @@ const AddJob = () => {
               ) : null}
               {generateBrs(3)}
               <TextField
-                id="position"
-                label="Position"
+                id='position'
+                label='Position'
                 fullWidth
                 inputRef={register({
                   required: "Position title is required",
@@ -97,11 +98,11 @@ const AddJob = () => {
                     message: "Position can have only letters and spaces",
                   },
                   minLength: {
-                    value: 6,
-                    message: "Position needs to have a minimum of 3 letters",
+                    value: 2,
+                    message: "Position needs to have a minimum of 2 letters",
                   },
                 })}
-                name="position"
+                name='position'
               />
               {!empty ? (
                 errors.position ? (
@@ -111,24 +112,16 @@ const AddJob = () => {
                 )
               ) : null}
               {generateBrs(3)}
-              <TextField
-                id="location"
-                name="location"
-                fullWidth
+              <GoogleMaps
+                id='location'
+                name='location'
                 inputRef={register({
                   required: "Location is required",
-                  pattern: {
-                    value: validNameRegex,
-                    message:
-                      "Company location can contain only letters and spaces",
-                  },
-                  minLength: {
-                    value: 3,
-                    message: "First name needs to have a minimum of 4 letters",
-                  },
                 })}
-                label="Location"
+                width='100%'
+                label='Location'
               />
+
               {!empty ? (
                 errors.location ? (
                   <ErrorBtn tooltipTitle={errors.location.message} />
@@ -136,13 +129,13 @@ const AddJob = () => {
                   <ActionBtn />
                 )
               ) : null}
-              {generateBrs(3)}
+              {generateBrs(2)}
 
               <TextField
-                name="contact"
+                name='contact'
                 fullWidth
                 inputRef={register({ required: "Contact is required" })}
-                label="Contact"
+                label='Contact'
               />
               {!empty ? (
                 errors.contact ? (
@@ -160,8 +153,8 @@ const AddJob = () => {
                 multiline
                 fullWidth
                 rows={3}
-                variant="outlined"
-                name="description"
+                variant='outlined'
+                name='description'
                 inputRef={register({
                   required: "Description is required",
                   maxLength: {
@@ -169,7 +162,7 @@ const AddJob = () => {
                     message: "Description are too long",
                   },
                 })}
-                label="Description"
+                label='Description'
               />
               {!empty ? (
                 errors.description ? (
@@ -180,12 +173,12 @@ const AddJob = () => {
               ) : null}
               {generateBrs(2)}
               <TextField
-                id="requirements"
+                id='requirements'
                 multiline
                 fullWidth
                 rows={5}
-                variant="outlined"
-                name="requirements"
+                variant='outlined'
+                name='requirements'
                 inputRef={register({
                   required: "Requirements are required",
                   maxLength: {
@@ -193,7 +186,7 @@ const AddJob = () => {
                     message: "Requirements are too long",
                   },
                 })}
-                label="Job Requirements"
+                label='Job Requirements'
               />
               {!empty ? (
                 errors.requirements ? (
@@ -205,19 +198,19 @@ const AddJob = () => {
               {generateBrs(2)}
 
               <TextField
-                id="additionalDetails"
+                id='additionalDetails'
                 multiline
                 fullWidth
                 rows={3}
-                variant="outlined"
-                name="additionalDetails"
+                variant='outlined'
+                name='additionalDetails'
                 inputRef={register({
                   maxLength: {
                     value: 500,
                     message: "Additional Details are too long",
                   },
                 })}
-                label="Additional Details"
+                label='Additional Details'
               />
               {!empty ? (
                 errors.additionalDetails ? (
@@ -231,11 +224,11 @@ const AddJob = () => {
           </GridDiv>
 
           <Button
-            id="submitButton"
+            id='submitButton'
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
-            color="primary"
-            type="submit"
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Submit
           </Button>

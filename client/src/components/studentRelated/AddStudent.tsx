@@ -29,6 +29,7 @@ import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import languages from "../../helpers/languages.json";
+import GoogleMaps from "../GeoSearch";
 
 function AddStudent() {
   const { register, handleSubmit, errors, control } = useForm();
@@ -259,12 +260,6 @@ function AddStudent() {
                 )
               ) : null}
               <br />
-              <TextField
-                id="address"
-                name="address"
-                inputRef={register({ required: "Address is required" })}
-                label="Address"
-              />
               {!empty ? (
                 errors.address ? (
                   <ErrorBtn tooltipTitle={errors.address.message} />
@@ -272,7 +267,12 @@ function AddStudent() {
                   <ActionBtn />
                 )
               ) : null}
-              <br />
+              <GoogleMaps
+                id="address"
+                name="address"
+                inputRef={register({ required: "Address is required" })}
+                label="Address"
+              />
               <TextField
                 id="age"
                 name="age"

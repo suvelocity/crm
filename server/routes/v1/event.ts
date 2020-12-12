@@ -21,8 +21,40 @@ router.get("/all", async (req: Request, res: Response) => {
           model: Job,
         },
       ],
+      order: [["date", "DESC"]],
     });
     res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/allProcesses", async (req: Request, res: Response) => {
+  try {
+    const events: IEvent[] = await Event.findAll({
+      include: [
+        {
+          model: Student,
+        },
+        {
+          model: Job,
+        },
+      ],
+      order: [["date", "DESC"]],
+    });
+    const processesData: any[] = [];
+    events.forEach((event: any) => {
+      if (
+        processesData.findIndex(
+          (process: any) =>
+            process.Student!.id === event.Student!.id &&
+            process.Job!.id === event.Job!.id
+        ) === -1
+      ) {
+        processesData.push(event);
+      }
+    });
+    res.json(processesData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
