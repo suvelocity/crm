@@ -40,7 +40,7 @@ const ClassDashboard: React.FC = () => {
         <TitleWrapper>
           <Loading loading={loading} size={30}>
             {tabelsData[0] && (
-              <H1 color="#2c6e3c">{`${tabelsData[0].Class.name} - ${tabelsData[0].Class.cycleNumber}`}</H1>
+              <H1 color="#c47dfa">{`${tabelsData[0].Class.name} - ${tabelsData[0].Class.cycleNumber}`}</H1>
             )}
           </Loading>
         </TitleWrapper>

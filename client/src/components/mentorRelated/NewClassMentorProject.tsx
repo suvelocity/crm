@@ -157,13 +157,13 @@ function NewClassMentorProject() {
         <Wrapper width="40%">
           <Center>
             <TitleWrapper>
-              <H1 color={"#2c6e3c"}>
+              <H1 color={"#c47dfa"}>
                 Students In Class
                 <Button
                   variant="contained"
                   onClick={createProgram}
                   style={{
-                    backgroundColor: "#2c6e3c",
+                    backgroundColor: "#c47dfa",
                     color: "white",
                     marginLeft: 10,
                   }}
@@ -237,7 +237,7 @@ function NewClassMentorProject() {
         <Wrapper width="40%">
           <Center>
             <TitleWrapper>
-              <H1 color={"#2c6e3c"}>Available Mentors</H1>
+              <H1 color={"#c47dfa"}>Available Mentors</H1>
             </TitleWrapper>
           </Center>
           <br />
