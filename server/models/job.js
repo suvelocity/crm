@@ -9,14 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Event, {
-        foreignKey: "jobId",
+        foreignKey: "relatedId",
+      });
+      this.belongsTo(models.Company, {
+        foreignKey: "companyId",
+        onDelete: "cascade",
+        hooks: true,
       });
     }
   }
   Job.init(
     {
       position: DataTypes.STRING,
-      company: DataTypes.STRING,
+      companyId: DataTypes.INTEGER,
       description: DataTypes.STRING,
       contact: DataTypes.STRING,
       location: DataTypes.STRING,

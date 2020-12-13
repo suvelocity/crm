@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   MultilineListItem,
 } from "../../styles/styledComponents";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
@@ -18,19 +16,12 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
 import EventLog from "./EventLog";
 import styled from "styled-components";
-import NewEventModal from "../NewEventModal";
-import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
+import NewEventModal from "./NewEventModal";
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import WorkIcon from "@material-ui/icons/Work";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    primary: {
-      fontWeight: "bold",
-      fontSize: "1.1em",
-    },
-  })
-);
+import { SingleCenteredListItem } from "../tableRelated";
+import Swal from "sweetalert2";
 
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
@@ -54,12 +45,10 @@ function SingleProcess() {
         const filteredEvents = studentData?.Events.filter(
           (event: IEvent) => event.Job?.id === jobData.id
         ).sort(sortByDate);
-        // console.log(student?.Events);
-        // console.log(filteredEvents);
         setEvents(filteredEvents);
         setLoading(false);
-      } catch (e) {
-        console.log(e.message);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     })();
   }, []);
@@ -68,7 +57,20 @@ function SingleProcess() {
     const sortedEvents = events?.concat(newEvent).sort(sortByDate);
     setEvents(sortedEvents);
   };
-  console.log(student);
+
+  const removeFromEventLog: (eventId: number) => void = (eventId: number) => {
+    const index: number | undefined = events?.findIndex(
+      (event: IEvent) => event.id === eventId
+    );
+    if (!index) {
+      Swal.fire("Error occurred", " event not found", "error");
+      return;
+    }
+    const updated = events?.slice(0, index).concat(events.slice(index + 1));
+    setEvents(updated);
+  };
+  const classesType = { primary: classes.primary };
+
   return (
     <Wrapper width="90%">
       <Center>
@@ -80,159 +82,135 @@ function SingleProcess() {
       <Loading loading={loading} size={30}>
         <GridDiv>
           <Wrapper padding="10px" backgroundColor="#fafafa">
-            <PersonIcon
-              style={{
-                position: "absolute",
-                backgroundColor: "#3f51b5",
-                color: "white",
-                borderRadius: "50%",
-                padding: "8px",
-                fontSize: "3em",
-                transform: "translate(-25px,-25px)",
-              }}
-            />
+            <PersonIcon style={personIconStyle} />
             <Center>
-              <h2
-                style={{
-                  margin: "5px auto",
-                  backgroundColor: "#3f51b5",
-                  borderRadius: "15px",
-                  color: "white",
-                  width: "fit-content",
-                  padding: "5px 20px",
-                }}
-              >
-                Student
-              </h2>
+              <H2>Student</H2>
               <GridDiv>
                 <List dense>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Name"
-                      secondary={`${student?.firstName} ${student?.lastName}`}
-                    />
-                  </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Email"
-                      secondary={`${student?.email}`}
-                    />
-                  </CenteredListItem>
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Name"
+                    secondary={`${student?.firstName} ${student?.lastName}`}
+                  />
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Email"
+                    secondary={`${student?.email}`}
+                  />
                 </List>
                 <List dense>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Class"
-                      secondary={`${student?.Class.name}`}
-                    />
-                  </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Phone"
-                      secondary={`${student?.phone}`}
-                    />
-                  </CenteredListItem>
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Class"
+                    secondary={`${student?.Class.name}`}
+                  />
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Phone"
+                    secondary={`${student?.phone}`}
+                  />
                 </List>
               </GridDiv>
               <ListItemText
-                classes={{ primary: classes.primary }}
+                classes={classesType}
                 primary="Course"
                 secondary={`${student?.Class.course}`}
               />
             </Center>
           </Wrapper>
           <Wrapper padding="10px" backgroundColor="#fafafa">
-            <WorkIcon
-              style={{
-                position: "absolute",
-                backgroundColor: "#3f51b5",
-                color: "white",
-                borderRadius: "50%",
-                padding: "8px",
-                fontSize: "3em",
-                transform: "translate(-25px,-25px)",
-              }}
-            />
+            <WorkIcon style={workIconStyle} />
             <Center>
-              <h2
-                style={{
-                  margin: "5px auto",
-                  backgroundColor: "#3f51b5",
-                  borderRadius: "15px",
-                  color: "white",
-                  width: "fit-content",
-                  padding: "5px 20px",
-                }}
-              >
-                Job
-              </h2>
+              <H2>Job</H2>
               <GridDiv>
                 <List dense>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Position"
-                      secondary={`${job?.position}`}
-                    />
-                  </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Company"
-                      secondary={`${job?.company}`}
-                    />
-                  </CenteredListItem>
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Position"
+                    secondary={`${job?.position}`}
+                  />
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Company"
+                    secondary={`${job?.Company.name}`}
+                  />
                 </List>
                 <List dense>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Location"
-                      secondary={`${job?.location}`}
-                    />
-                  </CenteredListItem>
-                  <CenteredListItem>
-                    <ListItemText
-                      classes={{ primary: classes.primary }}
-                      primary="Contact"
-                      secondary={`${job?.contact}`}
-                    />
-                  </CenteredListItem>
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Location"
+                    secondary={`${job?.location}`}
+                  />
+                  <SingleCenteredListItem
+                    classes={classesType}
+                    primary="Contact"
+                    secondary={`${job?.contact}`}
+                  />
                 </List>
               </GridDiv>
             </Center>
             <MultilineListItem>
               <ListItemText
                 style={{ width: "95%", margin: "0 auto" }}
-                classes={{ primary: classes.primary }}
+                classes={classesType}
                 primary="Requirements"
                 secondary={`${job?.requirements}`}
               />
             </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
-            {job?.id && student?.id && events && <EventLog events={events} />}
+            {job?.id && student?.id && events && (
+              <EventLog events={events} remove={removeFromEventLog} />
+            )}
           </div>
         </GridDiv>
       </Loading>
       <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
-
-      {/* need to figure out how to refresh data after new event is added + fix button position */}
     </Wrapper>
   );
 }
 
-const CenteredListItem = styled(ListItem)`
-  text-align: center;
-`;
+export default SingleProcess;
 
 function sortByDate(event1: IEvent, event2: IEvent) {
   // helper function to sort events by date
   return new Date(event1.date).getTime() - new Date(event2.date).getTime();
 }
 
-export default SingleProcess;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    primary: {
+      fontWeight: "bold",
+      fontSize: "1.1em",
+    },
+  })
+);
+
+const personIconStyle: any = {
+  position: "absolute",
+  backgroundColor: "#3f51b5",
+  color: "white",
+  borderRadius: "50%",
+  padding: "8px",
+  fontSize: "3em",
+  transform: "translate(-25px,-25px)",
+};
+
+const workIconStyle: any = {
+  position: "absolute",
+  backgroundColor: "#3f51b5",
+  color: "white",
+  borderRadius: "50%",
+  padding: "8px",
+  fontSize: "3em",
+  transform: "translate(-25px,-25px)",
+};
+
+const H2 = styled.h2`
+  margin: 5px auto;
+  background-color: #3f51b5;
+  border-radius: 15px;
+  color: white;
+  width: fit-content;
+  padding: 5px 20px;
+`;
