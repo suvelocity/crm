@@ -51,7 +51,6 @@ function Notices() {
     }
     //eslint-disable-next-line
   }, []);
-  console.log(user);
   return (
     <>
       <Loading size={30} loading={loading}>
