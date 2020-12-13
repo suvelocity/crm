@@ -5,6 +5,6 @@ export const lightTheme = {
     font: "black",
     addItem: "#FFFFFF",
     divider: "black",
-    task: "#F5F5F5",
+    accordion: "#F5F5F5",
   },
 };
