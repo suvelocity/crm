@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import EmailIcon from "@material-ui/icons/Email";
+import Modal from "@material-ui/core/Modal";
+import EditIcon from "@material-ui/icons/Edit";
+import AddJob from "./AddJob";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   Center,
-  RemoveJobButton,
   GridDiv,
   StyledSpan,
   TableHeader,
@@ -17,67 +17,33 @@ import {
   StyledDiv,
   StyledLink,
   MultilineListItem,
+  EditDiv,
 } from "../../styles/styledComponents";
-import { formatPhone } from "../../helpers/general";
-
-import PersonIcon from "@material-ui/icons/Person";
-import PhoneIcon from "@material-ui/icons/Phone";
-import DialpadIcon from "@material-ui/icons/Dialpad";
-import SubjectIcon from "@material-ui/icons/Subject";
-import ClassIcon from "@material-ui/icons/Class";
+import { SingleListItem } from "../tableRelated";
+import {
+  Person as PersonIcon,
+  Description as DescriptionIcon,
+  ContactSupport as ContactSupportIcon,
+  PlaylistAddCheck as PlaylistAddCheckIcon,
+  Business as BusinessIcon,
+  LocationCity as LocationCityIcon,
+  PostAdd as PostAddIcon,
+} from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
-import EventLog from "../processRelated/EventLog";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IJob, IEvent } from "../../typescript/interfaces";
-import DateRangeIcon from "@material-ui/icons/DateRange";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import BusinessIcon from "@material-ui/icons/Business";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import { IJob, IEvent } from "../../typescript/interfaces";
 import ApplyForJobModal from "./ApplyForJobModal";
-import IconButton from "@material-ui/core/IconButton";
 import Swal from "sweetalert2";
-import DescriptionIcon from "@material-ui/icons/Description";
-import NewEventModal from "../NewEventModal";
-import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import { formatToIsraeliDate } from "../../helpers/general";
-import { capitalize } from "../../helpers/general";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginLeft: 10,
-      marginTop: 3,
-    },
-    iconButton: {
-      fontSize: theme.typography.pxToRem(10),
-      padding: 0,
-      marginLeft: "auto",
-    },
-  })
-);
+import { capitalize, formatToIsraeliDate } from "../../helpers";
 
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-  const classes = useStyles();
 
   const getJob = useCallback(async () => {
     const { data }: { data: IJob } = await network.get(
@@ -102,6 +68,12 @@ function SingleJob() {
     setLoading(false);
   }, [id, setJob, setLoading, setEventsToMap]);
 
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getJob();
+  };
+
   const removeStudents = useCallback(
     async (
       studentId: number,
@@ -118,7 +90,7 @@ function SingleJob() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          await network.patch("/api/v1/event/delete", {
+          await network.put("/api/v1/event/delete", {
             studentId,
             jobId: job?.id,
           });
@@ -132,8 +104,8 @@ function SingleJob() {
   useEffect(() => {
     try {
       getJob();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [id]);
@@ -149,7 +121,7 @@ function SingleJob() {
     setEventsToMap(sortedEvents);
   };
 
-  console.log(job);
+  const tableRepeatFormula = "0.7fr 1.5fr 1fr 1.5fr 3fr";
   return (
     <>
       <Wrapper width="80%">
@@ -159,57 +131,48 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+          <EditDiv onClick={() => setModalState(true)}>
+            <EditIcon />
+          </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <PostAddIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Position"
-                  secondary={capitalize(job?.position)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Position"
+                secondary={capitalize(job?.position)}
+              >
+                <PostAddIcon />
+              </SingleListItem>
+
               {/* Position */}
             </List>
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <LocationCityIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Company"
-                  secondary={capitalize(job?.company)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Company"
+                secondary={capitalize(job?.Company?.name)}
+              >
+                <BusinessIcon />
+              </SingleListItem>
             </List>
             {/* Company */}
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Location"
-                  secondary={capitalize(job?.location)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Location"
+                secondary={capitalize(job?.location)}
+              >
+                <BusinessIcon />
+              </SingleListItem>
             </List>
             <List>
               {/* Location */}
-              <ListItem>
-                <ListItemIcon>
-                  <PersonIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Contact"
-                  secondary={capitalize(job?.contact)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Contact"
+                secondary={capitalize(job?.contact)}
+              >
+                <PersonIcon />
+              </SingleListItem>
               {/* Contact */}
             </List>
           </GridDiv>
-          <br />
           {job?.description && (
             <MultilineListItem>
               <ListItemIcon>
@@ -245,6 +208,24 @@ function SingleJob() {
               />
             </MultilineListItem>
           )}
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            style={{ overflow: "scroll" }}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {!job ? (
+              <div>oops</div>
+            ) : (
+              <AddJob
+                handleClose={handleClose}
+                update={true}
+                job={job}
+                header="Edit Job"
+              />
+            )}
+          </Modal>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
@@ -260,7 +241,7 @@ function SingleJob() {
             {eventsToMap && (
               <li>
                 {/* <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr"> */}
-                <TableHeader repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
+                <TableHeader repeatFormula={tableRepeatFormula}>
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Class</StyledSpan>
@@ -276,7 +257,7 @@ function SingleJob() {
                     color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
-                    <StyledDiv repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
+                    <StyledDiv repeatFormula={tableRepeatFormula}>
                       <PersonIcon />
                       <StyledSpan weight="bold">
                         {capitalize(event.Student?.firstName)}{" "}
@@ -287,7 +268,7 @@ function SingleJob() {
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>{`${capitalize(
-                        event.status
+                        event.eventName
                       )}, as of ${formatToIsraeliDate(
                         event.date
                       )}`}</StyledSpan>

@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       cycleNumber: DataTypes.INTEGER,
       zoomLink: DataTypes.STRING,
       additionalDetails: DataTypes.STRING,
+      mentorProject: DataTypes.BOOLEAN,
     },
     {
       sequelize,
