@@ -38,6 +38,12 @@ router.post("/token", async (req: Request, res: Response) => {
           if (student) {
             return res.json({ ...student, userType: decoded.type });
           }
+          const teacher = await Teacher.findOne({
+            where: { email: decoded.email },
+          });
+          if (teacher) {
+            return res.json({ ...teacher, userType: decoded.type });
+          }
         }
         res.json({ userType: decoded.type });
       }

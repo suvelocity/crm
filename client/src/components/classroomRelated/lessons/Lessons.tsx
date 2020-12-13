@@ -73,9 +73,6 @@ export default function Lessons() {
       return [];
     }
   };
-  console.log("====================================");
-  console.log(user);
-  console.log("====================================");
   useEffect(() => {
     (async () => {
       const allLessons = await fetchClassLessons();
