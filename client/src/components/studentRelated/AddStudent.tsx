@@ -28,8 +28,8 @@ import {
 import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
-import languages from "../../helpers/languages.json";
 import GoogleMaps from "../GeoSearch";
+import languages from "../../helpers/languages.json";
 
 function AddStudent() {
   const { register, handleSubmit, errors, control } = useForm();

@@ -84,8 +84,8 @@ router.post("/", async (req: Request, res: Response) => {
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
       const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
-      cancelAllJobsOfStudent(studentId, jobId, studentMsg, date);
-      cancelAllApplicantsForJob(jobId, studentId, jobMsg, date);
+      cancelAllJobsOfStudent(studentId, parseInt(jobId), studentMsg, date);
+      cancelAllApplicantsForJob(jobId, parseInt(studentId), jobMsg, date);
     }
     const event: IEvent = await Event.create({
       studentId,
