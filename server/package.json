@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "npx sequelize db:migrate",
     "spinup": "npx sequelize db:migrate && npm run dev",
+    "fetch" : "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all",
     "dev": "nodemon -r dotenv/config index.ts"
   },
   "keywords": [],
