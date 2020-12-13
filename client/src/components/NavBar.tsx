@@ -18,6 +18,7 @@ import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../helpers";
+import SignOutButton from "../components/auth/SignOutButton";
 
 function NavAppBar() {
   const [open, setOpen] = useState(false);
@@ -39,60 +40,60 @@ function NavAppBar() {
 
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position='static'>
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
-            color="inherit"
-            edge="start"
-            aria-label="menu"
+            color='inherit'
+            edge='start'
+            aria-label='menu'
           >
             <Menu />
           </IconButton>
-          <StyledLink to="/student/all">
-            <Typography variant="h4">CRM</Typography>
+          <StyledLink to='/student/all'>
+            <Typography variant='h4'>CRM</Typography>
           </StyledLink>
         </Toolbar>
       </AppBar>
       <Drawer
-        anchor="left"
+        anchor='left'
         open={open}
         onClose={() => {
           setOpen(false);
         }}
       >
         <StyledDrawer>
-          <StyledLink to="/student/all">
+          <StyledLink to='/student/all'>
             <DrawerItem onClick={() => setOpen(false)}>
               Students
               <PeopleIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/job/all">
+          <StyledLink to='/job/all'>
             <DrawerItem onClick={() => setOpen(false)}>
               Jobs
               <WorkIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/class/all">
+          <StyledLink to='/class/all'>
             <DrawerItem onClick={() => setOpen(false)}>
               Classes
               <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/mentor">
+          <StyledLink to='/mentor'>
             <DrawerItem onClick={() => setOpen(false)}>
               Mentors
               <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/company/all">
+          <StyledLink to='/company/all'>
             <DrawerItem onClick={() => setOpen(false)}>
               Companies
               <BusinessIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/process/all">
+          <StyledLink to='/process/all'>
             <DrawerItem onClick={() => setOpen(false)}>
               Processes
               <TimelineIcon style={{ position: "absolute", right: 10 }} />
@@ -103,6 +104,9 @@ function NavAppBar() {
             <ExitToAppIcon style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
         </StyledDrawer>
+        <DrawerItem onClick={() => setOpen(false)}>
+          <SignOutButton />
+        </DrawerItem>
       </Drawer>
     </div>
   );
