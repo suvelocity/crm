@@ -125,4 +125,12 @@ export interface IUserSignIn {
   rememberMe: boolean;
 }
 
+export interface INotice {
+  id?: number;
+  classId:number,
+  type:"regular"|"important"|"critical",
+  body:string,
+  createdBy:number,
+}
+
 export type ThemeType = "dark" | "light";
