@@ -71,6 +71,43 @@ export interface IUser {
   relatedId?: number;
 }
 
+export interface ILesson {
+  id?: number;
+  classId: number;
+  title: string;
+  body: string;
+  resource?: string;
+  zoomLink?: string;
+  createdBy: number;
+}
+
+export interface INotice {
+  id?: number;
+  classId: number;
+  type: string;
+  body: string;
+  createdBy: number;
+}
+
+export interface ITask {
+  id?: number;
+  lessonId: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  status: string;
+  body: string;
+}
+
+export interface ITaskofStudent {
+  id?: number;
+  userId: number;
+  taskId: number;
+  type: string;
+  status: string;
+}
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
