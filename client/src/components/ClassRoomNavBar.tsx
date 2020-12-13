@@ -56,32 +56,32 @@ return (
       >
         <StyledDrawer>
           <StyledLink to="/">
-            <DrawerItem >
+            <DrawerItem onClick={() => setOpen(false)} >
               Dashboard
               <DashboardIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
           <StyledLink to="/lessons">
-            <DrawerItem >
+            <DrawerItem onClick={() => setOpen(false)} >
               Lessons
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
           <StyledLink to="/schedhule">
-            <DrawerItem >
+            <DrawerItem onClick={() => setOpen(false)}>
             Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
           <StyledLink to="/tasks">
-            <DrawerItem >
+            <DrawerItem onClick={() => setOpen(false)} >
             Tasks
               <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           
       {(user.userType=='teacher')&&
           <StyledLink to="/teacher">
-            <DrawerItem >
+            <DrawerItem onClick={() => setOpen(false)}>
             Teacher
               <StreetviewIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
