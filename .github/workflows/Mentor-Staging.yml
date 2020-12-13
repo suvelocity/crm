@@ -3,16 +3,16 @@ name: Build and Deploy to Google Compute Engine
 on:
   push:
     branches:
-    - gcloud # specify the branch you want the deploy to take place from
+    - mentor-staging # specify the branch you want the deploy to take place from
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GCE_INSTANCE: crm-docker   # TODO: name your instance
+  GCE_INSTANCE: crm--mentor-staging   # TODO: name your instance
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone if needed
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }} # The service account user you created
   DB_PASS: ${{ secrets.DB_PASS }}
   DB_USER: ${{ secrets.DB_USER }}
-  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_HOST: ${{ secrets.DB_HOST_INNER }}
   DB_NAME: ${{ secrets.DB_NAME }}
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   SERVER_PORT: 8080 # the port your server is running on
@@ -73,10 +73,10 @@ jobs:
     - name: Publish image
       run: make push
 
-    # # ONLY first time setup
-    # # Initialize Envoironment in Gcloud Instance
-    # - name: Initialize volumes, network and other Containers that don't change
-    #   run: make initialize
+    # ONLY first time setup
+    # Initialize Envoironment in Gcloud Instance
+    - name: Initialize volumes, network and other Containers that don't change
+      run: make initialize
 
     # Deploy Container to Gcloud Instance
     - name: deploy
