@@ -11,7 +11,11 @@ const router = Router();
 router.get("/with", async (req: Request, res: Response) => {
     try {
       const classes: IMentor[] = await Class.findAll({
-          where:{mentorProject: true}
+        where: { mentorProject: true },
+        include: {
+          model: Student,
+          attributes: ['mentorId']
+        }
       });
       res.json(classes);
     } catch (error) {
