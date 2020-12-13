@@ -11,6 +11,7 @@ import {
   StyledDiv,
   TableHeader,
 } from "../../styles/styledComponents";
+import { Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { IClass, MentorClassDashboard } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
@@ -64,36 +65,51 @@ const ClassDashboard: React.FC = () => {
           {tabelsData &&
             tabelsData.map((row) => (
               <li>
-                <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
-                  <ClassIcon />
-                  <StyledLink to={`/mentor/${row.id}`} color="black">
-                    <StyledSpan weight="bold">
-                      {capitalize(row.Mentor.name)}
+                {row.Mentor ? (
+                  <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
+                    <ClassIcon />
+
+                    <StyledLink to={`/mentor/${row.id}`} color="black">
+                      <StyledSpan weight="bold">
+                        {capitalize(row.Mentor.name)}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>{row.Mentor.company}</StyledSpan>
+                    <StyledSpan>{row.Mentor.email}</StyledSpan>
+                    <StyledSpan>{row.Mentor.job}</StyledSpan>
+                    <StyledLink to={`/student/${row.id}`} color="black">
+                      <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>
+                      {row.Meetings &&
+                        row.Meetings.map((meet, i) => {
+                          let color: string =
+                            meet.date &&
+                            new Date(meet.date).getTime() > Date.now()
+                              ? "red"
+                              : "green";
+                          return (
+                            <div style={{ color: color }}>
+                              {meet.date &&
+                                `${i + 1} - ${meet.date.slice(0, 10)}`}
+                            </div>
+                          );
+                        })}
                     </StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>{row.Mentor.company}</StyledSpan>
-                  <StyledSpan>{row.Mentor.email}</StyledSpan>
-                  <StyledSpan>{row.Mentor.job}</StyledSpan>
-                  <StyledLink to={`/student/${row.id}`} color="black">
-                    <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>
-                    {row.Meetings &&
-                      row.Meetings.map((meet, i) => {
-                        let color: string =
-                          meet.date &&
-                          new Date(meet.date).getTime() > Date.now()
-                            ? "red"
-                            : "green";
-                        return (
-                          <div style={{ color: color }}>
-                            {meet.date &&
-                              `${i + 1} - ${meet.date.slice(0, 10)}`}
-                          </div>
-                        );
-                      })}
-                  </StyledSpan>
-                </StyledDiv>
+                  </StyledDiv>
+                ) : (
+                  <StyledDiv repeatFormula="0.5fr 1fr 2fr 1fr ">
+                    <ClassIcon />
+                    <StyledLink to={`/mentor/new/${id}`} color= 'black'>
+                      <Button style={{backgroundColor: 'red'}}>Get Mentor</Button>
+                      </StyledLink>
+                      <div>--------</div>
+                    <StyledLink to={`/student/${row.id}`} color="black">
+                      <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
+                      </StyledLink>
+
+                  </StyledDiv>
+                )}
               </li>
             ))}
         </StyledUl>

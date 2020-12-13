@@ -32,6 +32,8 @@ const MentorClasses: React.FC = () => {
     getClasses();
   }, [getClasses]);
 
+  console.log(classes)
+
   return (
     <Wrapper width="80%">
       <Center>
@@ -75,7 +77,7 @@ const MentorClasses: React.FC = () => {
           )}
           {classes &&
             classes.map((cls) => (
-              <li>
+              <li style={{backgroundColor: cls.Students && (cls.Students.some(student => !student.mentorId)) ? 'red' : 'primary'}} >
                 <StyledLink to={`/mentor/class/${cls.id}`} color="black">
                   <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
                     <ClassIcon />
@@ -86,6 +88,7 @@ const MentorClasses: React.FC = () => {
                     <StyledSpan>{cls.cycleNumber}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
+                
               </li>
             ))}
         </StyledUl>

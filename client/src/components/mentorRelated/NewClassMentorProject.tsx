@@ -21,12 +21,15 @@ import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
 import { capitalize } from "../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory } from "react-router-dom";
+import SimpleModal from "./Modal";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
 
@@ -34,14 +37,13 @@ function NewClassMentorProject() {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/class/byId/${id}`
     );
+    data.Students = data.Students.filter(student => !student.mentorId)
     setCls(data);
     setLoading(false);
   }, [id, setLoading, setCls]);
 
   const getMentors = useCallback(async () => {
-    const { data }: { data: IMentor[] } = await network.get(
-      `/api/v1/M/mentor`
-    );
+    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
     setMentors(data);
     setLoading(false);
   }, []);
@@ -100,10 +102,59 @@ function NewClassMentorProject() {
     setCls(newCls);
   };
 
+  const saveMentor = async (student: Omit<IStudent, "Class">) => {
+    try {
+      await network.put(`/api/v1/M/classes/student/${student.id}`, {
+        mentorId: student.mentor!.id,
+      });
+    } catch {
+      return student.firstName + student.lastName;
+    }
+  };
+
   const createProgram = async () => {
     try {
-      if (!cls!.Students.every((student) => student.mentor)){
-        return setError("* all students must have mentor");
+      const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
+      const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
+      if (dontHaveMentor.length > 0) {
+        const newError = `${dontHaveMentor.length} students in this class not linked to a mentor`
+        setModalBody(
+          <div>
+            <div style={{ color: "red", fontWeight: "bold" }}>{newError}</div>
+            <StyledSpan>{`Would you like to link ${newMentorsToDb.length} students anyway?`}</StyledSpan>
+            <div>
+              <Button
+                style={{ backgroundColor: "green" }}
+                onClick={() =>
+                  newMentorsToDb.forEach((student: Omit<IStudent, "Class">) => {
+                    saveMentor(student).then(() =>
+                      setModalBody(
+                        <div
+                          style={{ color: "green" }}
+                        >{`${newMentorsToDb.length} students have new mentors!`}</div>
+                      )
+                    );
+                  })
+                }
+              >
+                Continue
+              </Button>
+              <Button
+                style={{ backgroundColor: "red" }}
+                onClick={() => setModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        );
+        setModalOpen(true);
+        await network.put(`/api/v1/M/classes/${id}`);
+        window.location.href = "/mentor";
+      } else {
+        newMentorsToDb.forEach(async student => { if (student.mentorId !== student.mentor?.id) { await saveMentor(student) } })
+        await network.put(`/api/v1/M/classes/${id}`);
+        window.location.href = "/mentor";
       }
       cls!.Students.forEach(
         async (student: Omit<IStudent, "Class">, i: number) => {
@@ -117,16 +168,18 @@ function NewClassMentorProject() {
       );
       const result = await network.put(`/api/v1/M/classes/${id}`);
       history.push("/mentor");
+
     } catch (err) {
       console.log(err);
     }
   };
 
   const resetMentors = (mentorizeClass: IClass | undefined) => {
-    const mentorizeStudents: Omit<IStudent, "Class">[] = mentorizeClass!.Students;
+    const mentorizeStudents: Omit<IStudent, "Class">[] = mentorizeClass!
+      .Students;
     const backToMentors: IMentor[] = [];
     for (let i = 0; i < mentorizeStudents.length; i++) {
-      if (mentorizeStudents[i].mentor && !(mentorizeStudents[i].mentorId)) {
+      if (mentorizeStudents[i].mentor && !mentorizeStudents[i].mentorId) {
         backToMentors.push(mentorizeStudents[i].mentor!);
         delete mentorizeStudents[i].mentor;
       }
@@ -136,16 +189,18 @@ function NewClassMentorProject() {
   };
 
   const assignMentors = (mentorizeClass: IClass | undefined) => {
-    const mentorNeededCount: number = mentorizeClass!.Students.filter(student => !(student.mentor || student.mentorId)).length;
-    console.log(mentorNeededCount)
+    const mentorNeededCount: number = mentorizeClass!.Students.filter(
+      (student) => !(student.mentor || student.mentorId)
+    ).length;
+    console.log(mentorNeededCount);
     if (mentorNeededCount <= mentors.length) {
-      let mentorsCount: number = 0
+      let mentorsCount: number = 0;
       for (let i = 0; i < mentorizeClass!.Students.length; i++) {
-        const student = mentorizeClass!.Students[i]
+        const student = mentorizeClass!.Students[i];
         if (student.mentorId || student.mentor) continue;
         else {
           student.mentor = mentors[mentorsCount];
-          mentorsCount++   
+          mentorsCount++;
         }
       }
       setMentors(mentors.slice(-(mentors.length - mentorsCount)));
@@ -292,6 +347,11 @@ function NewClassMentorProject() {
           </Loading>
         </Wrapper>
       </DragDropContext>
+      <SimpleModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        modalBody={modalBody}
+      />
     </div>
   );
 }
