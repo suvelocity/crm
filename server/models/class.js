@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Notice, {
         foreignKey: "classId",
       });
+      this.hasMany(models.TeacherofClass, {
+        foreignKey: "classId",
+      });
     }
   }
   Class.init(

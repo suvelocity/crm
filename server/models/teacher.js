@@ -17,15 +17,15 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Task, {
         foreignKey: "createdBy",
       });
+      this.hasMany(models.TeacherofClass, {
+        foreignKey: "teacherId",
+      });
     }
   }
   Teacher.init(
     {
-      classId: DataTypes.INTEGER,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
-      email: DataTypes.STRING,
-      classId: DataTypes.INTEGER,
     },
     {
       sequelize,
