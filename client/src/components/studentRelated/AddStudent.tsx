@@ -30,8 +30,13 @@ import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
 import languages from "../../helpers/languages.json";
-
-function AddStudent() {
+interface Props {
+  student?: IStudent;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+function AddStudent(props: Props) {
   const { register, handleSubmit, errors, control } = useForm();
   const [classes, setClasses] = useState<IClass[]>([]);
   const history = useHistory();
@@ -55,8 +60,14 @@ function AddStudent() {
     //@ts-ignore
     data.languages = data.languages.join(", ");
     try {
-      await network.post("/api/v1/student", data);
-      history.push("/student/all");
+      if(props.update && props.student) {
+        await network.patch(`/api/v1/student/${props.student.id}`, data);
+        props.handleClose&& props.handleClose() 
+        // history.push(`/company/${props.company.id}`);
+      }else{
+        await network.post("/api/v1/student", data);
+        history.push("/student/all");
+      }
     } catch (error) {
       if (error.response.status === 409) {
         Swal.fire({
@@ -73,7 +84,7 @@ function AddStudent() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1>Add Student</H1>
+          <H1>{props.header? props.header : 'Add Student'}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -81,6 +92,7 @@ function AddStudent() {
               <TextField
                 id='firstName'
                 name='firstName'
+                defaultValue={props.student? props.student.firstName : ''}
                 inputRef={register({
                   required: "First name is required",
                   pattern: {
@@ -105,6 +117,7 @@ function AddStudent() {
               <TextField
                 id='lastName'
                 name='lastName'
+                defaultValue={props.student? props.student.lastName : ''}
                 inputRef={register({
                   required: "Last name is required",
                   pattern: {
@@ -129,6 +142,7 @@ function AddStudent() {
               <TextField
                 id='idNumber'
                 name='idNumber'
+                defaultValue={props.student? props.student.idNumber : ''}
                 inputRef={register({
                   required: "ID number is required",
                   minLength: {
@@ -158,6 +172,7 @@ function AddStudent() {
                 id='email'
                 label='Email'
                 name='email'
+                defaultValue={props.student? props.student.email : ''}
                 inputRef={register({
                   required: "Email is required",
                   pattern: {
@@ -177,6 +192,7 @@ function AddStudent() {
               <TextField
                 id='phone'
                 name='phone'
+                defaultValue={props.student? props.student.phone : ''}
                 inputRef={register({
                   required: "Phone is required",
                   pattern: {
@@ -217,8 +233,8 @@ function AddStudent() {
                   }
                   name='languages'
                   rules={{ required: "Languages is required" }}
+                  defaultValue={props.student? props.student.languages : []}
                   control={control}
-                  defaultValue={[]}
                 />
               </FormControl>
               {!empty ? (
@@ -249,8 +265,8 @@ function AddStudent() {
                   name='classId'
                   rules={{ required: "Class is required" }}
                   control={control}
-                  defaultValue=''
-                />
+                  defaultValue={props.student? props.student.Class.id : ''}
+                  />
               </FormControl>
               {!empty ? (
                 errors.classId ? (
@@ -270,12 +286,14 @@ function AddStudent() {
               <GoogleMaps
                 id='address'
                 name='address'
+                defaultValue={props.student? props.student.address : ''}
                 inputRef={register({ required: "Address is required" })}
                 label='Address'
               />
               <TextField
                 id='age'
                 name='age'
+                defaultValue={props.student? props.student.age : ''}
                 inputRef={register({
                   required: "Age is required",
                   pattern: {
@@ -296,6 +314,7 @@ function AddStudent() {
               <TextField
                 id='maritalStatus'
                 name='maritalStatus'
+                defaultValue={props.student? props.student.maritalStatus : ''}
                 inputRef={register({ required: "Marital status is required" })}
                 label='Marital Status'
               />
@@ -312,7 +331,7 @@ function AddStudent() {
                 name='children'
                 type='number'
                 label='Number of children'
-                defaultValue={0}
+                defaultValue={props.student? props.student.children : 0}
                 inputRef={register({
                   min: {
                     value: 0,
@@ -332,6 +351,7 @@ function AddStudent() {
               <TextField
                 id='citizenship'
                 name='citizenship'
+                defaultValue={props.student? props.student.citizenship : ''}
                 inputRef={register({
                   required: "Citizenship is required",
                 })}
@@ -351,6 +371,7 @@ function AddStudent() {
           <TextField
             id='militaryService'
             multiline
+            defaultValue={props.student? props.student.militaryService : ''}
             fullWidth
             rows={4}
             variant='outlined'
@@ -364,6 +385,7 @@ function AddStudent() {
             id='workExperience'
             multiline
             fullWidth
+            defaultValue={props.student? props.student.workExperience : ''}
             rows={4}
             variant='outlined'
             name='workExperience'
@@ -376,6 +398,7 @@ function AddStudent() {
             id='academicBackground'
             multiline
             fullWidth
+            defaultValue={props.student? props.student.academicBackground : ''}
             rows={4}
             variant='outlined'
             name='academicBackground'
@@ -387,6 +410,7 @@ function AddStudent() {
             id='additionalDetails'
             multiline
             fullWidth
+            defaultValue={props.student? props.student.additionalDetails : ''}
             rows={4}
             variant='outlined'
             name='additionalDetails'

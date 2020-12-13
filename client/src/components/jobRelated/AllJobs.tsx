@@ -69,7 +69,7 @@ function AllJobs() {
                     <StyledSpan weight='bold'>
                       {capitalize(job.position)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(job.Company.name)}</StyledSpan>
+                    <StyledSpan>{capitalize(job.Company?.name)}</StyledSpan>
                     <StyledSpan>{job.location}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
