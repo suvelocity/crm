@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
 import { IUser } from "../../../typescript/interfaces";
-import Notices from "./Notices"
+import Notices from "./Notices";
 import {
   H1,
   Wrapper,
@@ -15,12 +15,13 @@ import {
   TableHeader,
   repeatFormula,
 } from "../../../styles/styledComponents";
+
 export default function Dashboard() {
   //@ts-ignore
   const { user } = useContext(AuthContext);
   return (
     <DashboardContainer>
-      <Notices/>
+      <Notices />
     </DashboardContainer>
   );
 }
