@@ -113,6 +113,9 @@ const ClassDashboard: React.FC = () => {
               </li>
             ))}
         </StyledUl>
+        <Button style={{backgroundColor: 'red'}} onClick={async () => {
+          await network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length }).catch((e) => console.log(e.message))
+        }}>End Program</Button>
       </Loading>
     </Wrapper>
   );
