@@ -6,6 +6,7 @@ module.exports = {
       "Mentors",
       [
         {
+          id:1,
           name: "Guy Galil",
           company: "ibm",
           email: "example@gmail.com",
@@ -17,6 +18,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:2,
           name: "Tomer Bab",
           company: "apple",
           email: "example1@gmail.com",
@@ -28,6 +30,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:3,
           name: "Gal Cohen",
           company: "intel",
           email: "example5@gmail.com",
@@ -39,6 +42,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:4,
           name: "Yosi Cohen",
           company: "Google",
           email: "example2@gmail.com",
@@ -50,6 +54,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:5,
           name: "Matan Green",
           company: "Google",
           email: "example6@gmail.com",
