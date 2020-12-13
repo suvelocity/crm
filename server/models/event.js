@@ -8,10 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // Job related
       this.belongsTo(models.Job, {
         foreignKey: "relatedId",
-        onDelete: "cascade",
-        hooks: true,
       });
       this.belongsTo(models.Student, {
         foreignKey: "userId",
