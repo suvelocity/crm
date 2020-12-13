@@ -23,8 +23,13 @@ import { ActionBtn, ErrorBtn } from "../formRelated";
 import Swal from "sweetalert2";
 
 const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
-
-const AddClass = () => {
+interface Props {
+  cls?: IClass;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+const AddClass = (props: Props) => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -34,22 +39,27 @@ const AddClass = () => {
     "0" +
     (new Date().getMonth() + 1)
   ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
-  console.log(defaultDateValue);
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
-      await network.post("/api/v1/class", data);
-      history.push("/class/all");
+      if(props.update && props.cls) {
+        await network.patch(`/api/v1/class/${props.cls.id}`, data);
+        props.handleClose&& props.handleClose() 
+        // history.push(`/company/${props.company.id}`);
+      }else{
+        await network.post("/api/v1/class", data);
+        history.push("/class/all");
+      }
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
-
+  
   return (
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='#2c6e3c'>Add Class</H1>
+          <H1 color="#2c6e3c">{props.header? props.header : 'Add Class'}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -69,10 +79,10 @@ const AddClass = () => {
                       ))}
                     </Select>
                   }
-                  name='course'
+                  name="course"
                   rules={{ required: "Course is required" }}
                   control={control}
-                  defaultValue=''
+                  defaultValue={props.cls? props.cls.course : ''}
                 />
               </FormControl>
               {!empty ? (
@@ -84,8 +94,9 @@ const AddClass = () => {
               ) : null}
               {generateBrs(2)}
               <TextField
-                id='name'
-                label='Name'
+                id="name"
+                label="Name"
+                defaultValue={props.cls? props.cls.name : ''}
                 inputRef={register({
                   required: "Class title is required",
                   minLength: {
@@ -93,7 +104,7 @@ const AddClass = () => {
                     message: "Class needs to have a minimum of 2 letters",
                   },
                 })}
-                name='name'
+                name="name"
               />
               {!empty ? (
                 errors.name ? (
@@ -107,11 +118,11 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>Start Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='startingDate'
-                  name='startingDate'
+                  type="date"
+                  id="startingDate"
+                  name="startingDate"
+                  defaultValue={props.cls? props.cls.startingDate.slice(0,10) : defaultDateValue}
                   inputRef={register({ required: "Start date is required" })}
-                  defaultValue={defaultDateValue}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
@@ -126,14 +137,14 @@ const AddClass = () => {
             </div>
             <div>
               <TextField
-                id='cycleNumber'
-                name='cycleNumber'
-                type='number'
-                defaultValue={1}
+                id="cycleNumber"
+                name="cycleNumber"
+                type="number"
+                defaultValue={props.cls? props.cls.cycleNumber : 1}
                 inputRef={register({
                   required: "Cycle number is required",
                 })}
-                label='Cycle Number'
+                label="Cycle Number"
               />
               {!empty ? (
                 errors.cycleNumber ? (
@@ -145,9 +156,10 @@ const AddClass = () => {
               {generateBrs(2)}
 
               <TextField
-                name='zoomLink'
+                name="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
-                label='Zoom Link'
+                label="Zoom Link"
+                defaultValue={props.cls? props.cls.zoomLink : ''}
               />
               {!empty ? (
                 errors.zoomLink ? (
@@ -160,13 +172,13 @@ const AddClass = () => {
               <FormControl>
                 <FormHelperText>End Date</FormHelperText>
                 <TextField
-                  type='date'
-                  id='endingDate'
-                  name='endingDate'
+                  type="date"
+                  id="endingDate"
+                  name="endingDate"
+                  defaultValue={props.cls? props.cls.endingDate.slice(0,10) : defaultDateValue}
                   inputRef={register({
                     required: "End date is required",
                   })}
-                  defaultValue={defaultDateValue}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
@@ -181,19 +193,20 @@ const AddClass = () => {
           </GridDiv>
           {generateBrs(1)}
           <TextField
-            id='additionalDetails'
+            id="additionalDetails"
             multiline
             fullWidth
+            defaultValue={props.cls? props.cls.additionalDetails : ''}
             rows={5}
-            variant='outlined'
-            name='additionalDetails'
+            variant="outlined"
+            name="additionalDetails"
             inputRef={register({
               maxLength: {
                 value: 500,
                 message: "Additional Details are too long",
               },
             })}
-            label='Additional Details'
+            label="Additional Details"
           />
           {!empty ? (
             errors.additionalDetails ? (
@@ -204,11 +217,11 @@ const AddClass = () => {
           ) : null}
           {generateBrs(2)}
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>
