@@ -4,6 +4,7 @@ import { Student, Class, Mentor } from "../../../models";
 import {studentMentorIdPut} from "../../../validations"
 import { IMentor } from "../../../types";
 import sequelize from "sequelize"
+import { Console } from "console";
 
 const router = Router();
 
@@ -46,7 +47,27 @@ router.put("/:id", async (req: Request, res: Response) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  });
+});
+  
+router.put("/end/:id", async (req: Request, res: Response) => {
+  try {
+    const students : number = parseInt(req.body.students)
+      const classUpdated = await Class.update({mentorProject: false}, {
+          where: { id: req.params.id },
+      });
+    const studentUpdated = await Student.update({ mentorId: null }, {
+      where: {
+        classId: req.params.id
+      }
+    });
+    console.log
+    (students)
+    if (classUpdated[0] === 1 && studentUpdated[0] === students) return res.json({ message: "mentor project ended" })
+    res.status(404).json({ error: "class not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
   
 // add mentor to student: 
 router.put("/student/:id", async (req: Request, res: Response) => {
@@ -62,7 +83,8 @@ router.put("/student/:id", async (req: Request, res: Response) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  });
+});
 
+  
 
 module.exports = router;

@@ -37,7 +37,7 @@ function NewClassMentorProject() {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/class/byId/${id}`
     );
-    data.Students = data.Students.filter(student => !student.mentorId)
+    data.Students = data.Students.filter((student) => !student.mentorId);
     setCls(data);
     setLoading(false);
   }, [id, setLoading, setCls]);
@@ -117,7 +117,7 @@ function NewClassMentorProject() {
       const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
       const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
       if (dontHaveMentor.length > 0) {
-        const newError = `${dontHaveMentor.length} students in this class not linked to a mentor`
+        const newError = `${dontHaveMentor.length} students in this class not linked to a mentor`;
         setModalBody(
           <div>
             <div style={{ color: "red", fontWeight: "bold" }}>{newError}</div>
@@ -127,12 +127,15 @@ function NewClassMentorProject() {
                 style={{ backgroundColor: "green" }}
                 onClick={() =>
                   newMentorsToDb.forEach((student: Omit<IStudent, "Class">) => {
-                    saveMentor(student).then(() =>
+                    saveMentor(student).then(async () => {
                       setModalBody(
                         <div
                           style={{ color: "green" }}
                         >{`${newMentorsToDb.length} students have new mentors!`}</div>
-                      )
+                      );
+                      await network.put(`/api/v1/M/classes/${id}`);
+                      history.push('/mentor')
+                    }
                     );
                   })
                 }
@@ -149,26 +152,15 @@ function NewClassMentorProject() {
           </div>
         );
         setModalOpen(true);
-        await network.put(`/api/v1/M/classes/${id}`);
-        window.location.href = "/mentor";
       } else {
-        newMentorsToDb.forEach(async student => { if (student.mentorId !== student.mentor?.id) { await saveMentor(student) } })
-        await network.put(`/api/v1/M/classes/${id}`);
-        window.location.href = "/mentor";
-      }
-      cls!.Students.forEach(
-        async (student: Omit<IStudent, "Class">, i: number) => {
-          if (student.mentor) {
-            const res = await network.put(
-              `/api/v1/M/classes/student/${student.id}`,
-              { mentorId: student.mentor.id }
-            );
+        newMentorsToDb.forEach(async (student) => {
+          if (student.mentorId !== student.mentor?.id) {
+            await saveMentor(student);
           }
-        }
-      );
-      const result = await network.put(`/api/v1/M/classes/${id}`);
-      history.push("/mentor");
-
+        });
+        await network.put(`/api/v1/M/classes/${id}`);
+        history.push("/mentor");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -323,7 +315,7 @@ function NewClassMentorProject() {
                             >
                               <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr">
                                 <StyledLink
-                                  to={`/mento/${mentor.id}`}
+                                  to={`/mentor/${mentor.id}`}
                                   color="black"
                                 >
                                   <PersonIcon />
