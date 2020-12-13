@@ -73,13 +73,16 @@ router.put("/:id", async (req: Request, res: Response) => {
 
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const deleted = await Class.destroy({
-      where: { id: req.params.id },
+      where: { id },
     });
     if (deleted === 0) {
       return res.status(404).send("Class not found");
+    } else {
+      await Student.destroy({ where: { classId: id } });
+      res.json({ message: "Class deleted" });
     }
-    res.json({ message: "Class deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

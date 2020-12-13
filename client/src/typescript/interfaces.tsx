@@ -20,19 +20,10 @@ export interface IStudent {
   mentor?: IMentor | null
   Events: IEvent[];
 }
-export interface ICompany {
-  id?: number;
-  name: string;
-  contactName: string;
-  contactNumber: string;
-  contactEmail: string;
-  location: string;
-  ScaleUpContact: string;
-  jobs: Pick<IJob, "id">;
-}
+
 export interface IJob {
   id?: number;
-  company: string;
+  Company: ICompany;
   position: string;
   requirements: string;
   location: string;
@@ -43,7 +34,7 @@ export interface IJob {
 }
 
 export interface IClass {
-  id: number;
+  id?: number;
   course: string;
   name: string;
   startingDate: string;
@@ -52,6 +43,17 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
+}
+
+export interface ICompany {
+  id?: number;
+  name: string;
+  contactPosition?: string;
+  contactName?: string;
+  contactNumber?: string;
+  location: string;
+  description?: string;
+  Jobs: IJob[];
 }
 
 export type status =
@@ -70,6 +72,7 @@ export type status =
   | "Canceled";
 
 export interface IEvent {
+  id?: number;
   status: status;
   studentId?: number;
   jobId?: number;
@@ -127,3 +130,30 @@ export interface IMeeting {
   studentId:number;
   place:string;
 };
+export interface IUser {
+  id?: number;
+  userType: string;
+  firstName?: string;
+  lastName?: string;
+  idNumber?: string;
+  email?: string;
+  phone?: string;
+  Class?: IClass;
+  address?: string;
+  age?: number;
+  maritalStatus?: string;
+  children?: number;
+  academicBackground?: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
+  additionalDetails?: string;
+  Events?: IEvent[];
+}
+
+export interface IUserSignIn {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
