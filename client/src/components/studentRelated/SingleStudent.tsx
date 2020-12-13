@@ -279,7 +279,7 @@ function SingleStudent() {
                       {capitalize(event.Job?.Company.name)}
                     </StyledSpan>
                     <StyledSpan>{`${capitalize(
-                      event.status
+                      event.eventName
                     )}, as of ${formatToIsraeliDate(event.date)}`}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>

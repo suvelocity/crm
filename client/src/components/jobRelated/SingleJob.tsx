@@ -268,7 +268,7 @@ function SingleJob() {
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>{`${capitalize(
-                        event.status
+                        event.eventName
                       )}, as of ${formatToIsraeliDate(
                         event.date
                       )}`}</StyledSpan>

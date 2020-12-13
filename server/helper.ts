@@ -30,7 +30,7 @@ export const cancelAllJobsOfStudent: (
       include: [
         {
           model: Event,
-          attributes: ["jobId"],
+          attributes: ["relatedId"],
         },
       ],
       attributes: ["firstName", "lastName", "idNumber", "id"],
@@ -45,11 +45,18 @@ export const cancelAllJobsOfStudent: (
     await Promise.all(
       jobIds.map((jobId: number) =>
         Event.create({
-          studentId,
-          jobId,
-          status: "Canceled",
+          // studentId,
+          // jobId,
+          // status: "Canceled",
           comment,
           date,
+          ///////
+          userId: studentId,
+          relatedId: jobId,
+          type: "jobs",
+          // date: new Date().setHours(0, 0, 0, 0),
+          eventName: "Canceled",
+          entry: { comment },
         })
       )
     );
@@ -75,7 +82,7 @@ export const cancelAllApplicantsForJob: (
       include: [
         {
           model: Event,
-          attributes: ["studentId"],
+          attributes: ["userId"],
         },
       ],
       // attributes: []
@@ -92,11 +99,19 @@ export const cancelAllApplicantsForJob: (
     await Promise.all(
       studentsIds.map((studentId: number) =>
         Event.create({
-          studentId,
-          jobId,
-          status: "Canceled",
-          comment,
+          // studentId,
+          // jobId,
+          // status: "Canceled",
+          // comment,
           date,
+          //////
+
+          userId: studentId,
+          relatedId: jobId,
+          type: "jobs",
+          // date: new Date().setHours(0, 0, 0, 0),
+          eventName: "Canceled",
+          entry: { comment },
         })
       )
     );
@@ -173,7 +188,6 @@ export const getQuery: (
           ],
         },
       ],
-      attributes: ["id", "status", "date", "comment"],
     };
 
     include.push(includeEvents);

@@ -49,7 +49,7 @@ function AllStudents() {
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       } else if (
         eventTime.getTime() > jobs[`job${id}`].time ||
@@ -57,7 +57,7 @@ function AllStudents() {
       ) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       }
     }
@@ -157,7 +157,7 @@ function AllStudents() {
   }, [filterAttributes]);
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
@@ -170,8 +170,8 @@ function AllStudents() {
             callbackFunction={setFilterAttributes}
             widthPercent={75}
           />
-          <StyledLink to='/student/add'>
-            <Button variant='contained' color='primary'>
+          <StyledLink to="/student/add">
+            <Button variant="contained" color="primary">
               Add Student
             </Button>
           </StyledLink>
@@ -184,20 +184,20 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight='bold'>Name</StyledSpan>
-                <StyledSpan weight='bold'>Class</StyledSpan>
-                <StyledSpan weight='bold'>Email</StyledSpan>
-                <StyledSpan weight='bold'>Phone</StyledSpan>
+                <StyledSpan weight="bold">Name</StyledSpan>
+                <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Email</StyledSpan>
+                <StyledSpan weight="bold">Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
           {filteredStudents &&
             filteredStudents.map((student) => (
               <li>
-                <StyledLink color='black' to={`/student/${student?.id}`}>
+                <StyledLink color="black" to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
-                    <StyledSpan weight='bold'>
+                    <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
                     </StyledSpan>

@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Job, {
-        foreignKey: "jobId",
+        foreignKey: "relatedId",
         onDelete: "cascade",
         hooks: true,
       });
@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Event.init(
     {
-      eventName:DataTypes.STRING,
-      type:DataTypes.STRING,
+      eventName: DataTypes.STRING,
+      type: DataTypes.STRING,
       userId: DataTypes.INTEGER,
       relatedId: DataTypes.INTEGER,
       entry: DataTypes.JSON,
