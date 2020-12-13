@@ -10,13 +10,14 @@ import {
   StyledUl,
   StyledDiv,
   TableHeader,
+  repeatFormula,
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
 import { IClass } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
-import { capitalize } from "../../helpers/general";
+import { capitalize } from "../../helpers";
 
 function AllClasses() {
   const [classes, setClasses] = useState<IClass[]>([]);
@@ -31,15 +32,15 @@ function AllClasses() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">All Classes</H1>
+          <H1 color='#2c6e3c'>All Classes</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/class/add">
+        <StyledLink to='/class/add'>
           <Button
-            variant="contained"
+            variant='contained'
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
           >
             Add Class
@@ -51,21 +52,21 @@ function AllClasses() {
         <StyledUl>
           {classes && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+              <TableHeader repeatFormula={repeatFormula}>
                 <ClassIcon />
-                <StyledSpan weight="bold">Name</StyledSpan>
-                <StyledSpan weight="bold">Course</StyledSpan>
-                <StyledSpan weight="bold">Cycle number</StyledSpan>
+                <StyledSpan weight='bold'>Name</StyledSpan>
+                <StyledSpan weight='bold'>Course</StyledSpan>
+                <StyledSpan weight='bold'>Cycle number</StyledSpan>
               </TableHeader>
             </li>
           )}
           {classes &&
             classes.map((cls) => (
               <li>
-                <StyledLink to={`/class/${cls.id}`} color="black">
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                <StyledLink to={`/class/${cls.id}`} color='black'>
+                  <StyledDiv repeatFormula={repeatFormula}>
                     <ClassIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {capitalize(cls.name)}
                     </StyledSpan>
                     <StyledSpan>{capitalize(cls.course)}</StyledSpan>

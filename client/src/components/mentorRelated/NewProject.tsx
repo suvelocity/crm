@@ -22,7 +22,7 @@ const NewProject: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/mentor/classes/without");
+    const { data } = await network.get("/api/v1/M/classes/without");
     setClasses(data);
     setLoading(false);
   }, []);
@@ -35,7 +35,7 @@ const NewProject: React.FC = () => {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">Select Class To Start Mentor Project</H1>
+          <H1 color="#c47dfa">Select Class To Start Mentor Project</H1>
         </TitleWrapper>
       </Center>
       <br />
