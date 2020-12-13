@@ -12,7 +12,8 @@ import {
   StyledDiv,
 } from '../../styles/styledComponents';
 import PersonIcon from '@material-ui/icons/Person';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
 import { IMentor } from '../../typescript/interfaces';
 import { Loading } from 'react-loading-wrapper';
 import 'react-loading-wrapper/dist/index.css';
@@ -30,6 +31,13 @@ function AllMentors() {
     })();
   }, []);
 
+  const changeAvailabilityOfMentor = async (id: number | undefined, currentAvailability: boolean): Promise<void> => {
+    if (id) {
+        await network.put(`/api/v1/mentor/${id}`, {available: !currentAvailability})
+        console.log(`availability changed! from ${currentAvailability} to ${!currentAvailability}`)
+    }
+  };
+
   return (
     <Wrapper width='80%'>
       <Center>
@@ -37,12 +45,12 @@ function AllMentors() {
           <H1 color='#2c6e3c'>All Mentors</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/mentor/add">
+        <StyledLink to='/mentor/add'>
           <Button
-            variant="contained"
+            variant='contained'
             style={{
-              backgroundColor: "#2c6e3c",
-              color: "white",
+              backgroundColor: '#2c6e3c',
+              color: 'white',
               marginLeft: 10,
             }}
           >
@@ -82,7 +90,16 @@ function AllMentors() {
                     <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
                     <StyledSpan>{mentor.address}</StyledSpan>
                     <StyledSpan>{mentor.job}</StyledSpan>
-                    <StyledSpan>{mentor.available ? 'yes' : 'no'}</StyledSpan>
+                    {/* <StyledSpan>{mentor.available ? 'yes' : 'no'}</StyledSpan> */}
+                    <StyledSpan>
+                      <Switch
+                        checked={mentor.available}
+                        onChange={() => changeAvailabilityOfMentor(mentor?.id, mentor.available)}
+                        color='primary'
+                        name='checkedB'
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                      />
+                    </StyledSpan>
                     <StyledSpan>{mentor.gender}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
