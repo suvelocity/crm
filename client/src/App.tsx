@@ -39,6 +39,7 @@ function App() {
           remembered: true,
         });
         const decoded = jwt.decode(getRefreshToken());
+        //@ts-ignore
         if (decoded && decoded.type! === userData.userType) {
           if (userData.dataValues) {
             setUser({
