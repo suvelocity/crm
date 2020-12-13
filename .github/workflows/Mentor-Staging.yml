@@ -1,4 +1,4 @@
-name: Build and Deploy to Google Compute Engine
+name: Build And Deploy Mentors Staging
 
 on:
   push:
