@@ -37,9 +37,9 @@ jobs:
     - name: Configure Docker to use gcloud command-line
       run: gcloud --quiet auth configure-docker
 
-    # Create a new instance -> MARK IT OUT AFTER FIRST DEPLOY
-    - name: Create Instance 
-      run: make create
+    # # Create a new instance -> MARK IT OUT AFTER FIRST DEPLOY
+    # - name: Create Instance 
+    #   run: make create
 
     # Create Rule To allow access to the port your app is running on.
 
