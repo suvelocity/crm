@@ -12,7 +12,7 @@ import {
   TableHeader,
 } from "../../styles/styledComponents";
 import { Button } from "@material-ui/core";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { IClass, MentorClassDashboard } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -23,6 +23,7 @@ const ClassDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [tabelsData, setTabelData] = useState<MentorClassDashboard[]>([]);
   const { id } = useParams();
+  const history = useHistory();
 
   const getTableData = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/meeting/class/${id}`);
@@ -113,8 +114,11 @@ const ClassDashboard: React.FC = () => {
               </li>
             ))}
         </StyledUl>
-        <Button style={{backgroundColor: 'red'}} onClick={async () => {
-          await network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length }).catch((e) => console.log(e.message))
+        <Button style={{backgroundColor: 'red'}} onClick={() => {
+          network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length })
+            .then(() => {
+              history.push('/mentor')
+          }).catch((e) => console.log(e.message))
         }}>End Program</Button>
       </Loading>
     </Wrapper>
