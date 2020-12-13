@@ -7,14 +7,13 @@ import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces"; //todo add interface
+import { ILesson } from "../../../typescript/interfaces";
 import Lesson from "./Lesson";
 import TextField from "@material-ui/core/TextField";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState<boolean>(false);
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
