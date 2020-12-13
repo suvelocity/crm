@@ -25,10 +25,7 @@ export default function Lesson({
             {"#" + (index + 1) + " " + lesson.title}
           </StyledSummery>
           <hr />
-          <StyledDetails>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </StyledDetails>
+          <StyledDetails>{lesson.body}</StyledDetails>
         </StyledAccordion>
       </div>
     </LessonContainer>
@@ -37,7 +34,7 @@ export default function Lesson({
 
 const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 const StyledAccordion = styled(Accordion)`
