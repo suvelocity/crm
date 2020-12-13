@@ -21,27 +21,39 @@ import { IUser } from '../typescript/interfaces';
 
 
 
-
 function ClassRoomNavBar() {
+  const [open, setOpen] = useState(false);
+
+  const handleDrawer = () => {
+    setOpen(true);
+  };
       //@ts-ignore
   const {user} = useContext(AuthContext);
   console.log(user);
   
 return (
-    <div style={{display:"flex"}}>
-      <AppBar position='static' style={{zIndex:1201}} >
+    <div>
+      <AppBar position='static'>
         <Toolbar>
+          <IconButton
+            onClick={handleDrawer}
+            color='inherit'
+            edge='start'
+            aria-label='menu'
+          >
+            <Menu />
+          </IconButton>
             <Typography variant='h4'>Classroom</Typography>
             <Typography variant='h6' style={{ position: "absolute", right: 10 }}>username placeholder</Typography>
         </Toolbar>
       </AppBar>
-      <div >
       <Drawer
-      style={{flexShrink:0}}
-         variant="permanent"
-        // anchor='left'
+        anchor='left'
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
       >
-        <Toolbar/>
         <StyledDrawer>
           <StyledLink to="/">
             <DrawerItem >
@@ -82,7 +94,7 @@ return (
         </StyledDrawer>
       </Drawer>
       </div>
-    </div>
+
   );
 }
 

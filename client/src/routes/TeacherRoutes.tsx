@@ -14,8 +14,8 @@ export default function TeacherRoutes() {
   return (
     <ErrorBoundary>
         <ClassRoomNavBar/>
-      <div id='classroom-container' style={{display:"flex"}} >
-        <div id='interface-container' style={{flexGrow: 1,marginLeft:220,padding:20}}>
+      {/* <div id='classroom-container' style={{display:"flex"}} > */}
+        <div id='interface-container' style={{flexGrow: 1,padding:20}}>
         <Switch>
           <Route path="/lessons">
             <Lessons />
@@ -37,7 +37,7 @@ export default function TeacherRoutes() {
           </Route>
         </Switch>
         </div>
-  </div>
+  {/* </div> */}
       </ErrorBoundary>
   );
 }
