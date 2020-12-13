@@ -10,39 +10,23 @@ import {
   TitleWrapper,
   Center,
   GridDiv,
-  StyledLink,
-  StyledDiv,
-  TableHeader,
-  StyledSpan,
-  StyledUl,
-  MultilineListItem,
 } from "../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
-import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IMentor, IEvent } from "../../typescript/interfaces";
-import DateRangeIcon from "@material-ui/icons/DateRange";
+import { IMentor } from "../../typescript/interfaces";
 import BusinessIcon from "@material-ui/icons/Business";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import WcIcon from "@material-ui/icons/Wc";
-import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import LanguageIcon from "@material-ui/icons/Language";
-import TranslateIcon from "@material-ui/icons/Translate";
-import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import WorkIcon from "@material-ui/icons/Work";
-import TrackChangesIcon from "@material-ui/icons/TrackChanges";
 import { capitalize } from "../../helpers/general";
-import Swal from "sweetalert2";
-import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
+import { formatPhone } from "../../helpers/general";
 
-function SingleMentor() {
+const SingleMentor: React.FC = () => {
   const [mentor, setMentor] = useState<IMentor[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
@@ -163,15 +147,13 @@ function SingleMentor() {
                     <ListItemText
                       primary="Students"
                       secondary={mentor[0]?.Students.map((student) => {
-                        return (
-                          capitalize(student.firstName) +
-                          " " +
-                          capitalize(student.lastName) +
-                          " - " +
-                          capitalize(student.Class!.name) +
-                          ":" +
-                          capitalize(`${student.Class!.cycleNumber}`)
-                        );
+                        return `
+                          ${capitalize(student.firstName)} ${capitalize(
+                          student.lastName
+                        )} - ${capitalize(student.Class!.name)}:${capitalize(
+                          `${student.Class!.cycleNumber}`
+                        )} \n
+                          `;
                       })}
                     />
                   </ListItem>
@@ -183,6 +165,6 @@ function SingleMentor() {
       </Wrapper>
     </>
   );
-}
+};
 
 export default SingleMentor;
