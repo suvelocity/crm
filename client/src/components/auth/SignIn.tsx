@@ -31,6 +31,7 @@ export function SignIn() {
           rememberMe,
         };
         const { data } = await network.post("/api/v1/auth/signin", userData);
+        //@ts-ignore
         const decoded = jwt.decode(getRefreshToken());
         if (decoded && decoded.type! === data.userType) {
           if (data.dataValues) {
