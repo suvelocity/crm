@@ -1,93 +1,77 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import AddStudent from "./components/studentRelated/AddStudent";
-import AllStudents from "./components/studentRelated/AllStudents";
-import SingleStudent from "./components/studentRelated/SingleStudent";
-import AddJob from "./components/jobRelated/AddJob";
-import AddClass from "./components/classRelated/AddClass";
-import SingleJob from "./components/jobRelated/SingleJob";
-import AllJobs from "./components/jobRelated/AllJobs";
-import NavBar from "./components/NavBar";
-import AllClasses from "./components/classRelated/AllClasses";
-import SingleClass from "./components/classRelated/SingleClass";
-import SingleProcess from "./components/processRelated/SingleProcess";
-import MentorClasses from "./components/mentorRelated/MentorClasses";
-import ClassDashboard from "./components/mentorRelated/ClassDashboard";
-import NewProject from "./components/mentorRelated/NewProject";
-import NewClassMentorProject from "./components/mentorRelated/NewClassMentorProject";
-import AddMentor from "./components/mentorRelated/AddMentor";
-import SingleMentor from "./components/mentorRelated/SingleMentor";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ErrorBoundary from "./helpers/ErrorBoundary";
-import AllMentors from "./components/mentorRelated/AllMentors";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthContext, getRefreshToken } from "./helpers";
+import axios from "axios";
+import { IUser } from "./typescript/interfaces";
+//@ts-ignore
+import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
+import jwt from "jsonwebtoken";
+const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 
 function App() {
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    (async () => {
+      try {
+        if (!getRefreshToken()) {
+          setLoading(false);
+          return;
+        }
+        const { data: userData } = await axios.post("/api/v1/auth/token", {
+          refreshToken: getRefreshToken(),
+          remembered: true,
+        });
+        jwt.verify(
+          getRefreshToken()!,
+          REACT_APP_REFRESH_TOKEN_SECRET!,
+          (err, decoded) => {
+            if (err) {
+              setLoading(false);
+              return;
+            }
+            //@ts-ignore
+            if (decoded && decoded.type! === userData.userType) {
+              if (userData.dataValues) {
+                setUser({
+                  ...userData.dataValues,
+                  userType: userData.userType,
+                });
+              } else {
+                setUser(userData);
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.log(error.response.data.error);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const getRoutes = () => {
+    if (loading) return <Loading fullPage loading={true} />;
+    if (!user) return <PublicRoutes />;
+    switch (user.userType) {
+      case "admin":
+        return <AdminRoutes />;
+      case "student":
+        return <StudentRoutes />;
+      default:
+        return <PublicRoutes />;
+    }
+  };
+
+  const values = { user, setUser };
   return (
     <>
-      <Router>
-        <NavBar />
-        <ErrorBoundary>
-          <Switch>
-            <Route exact path="/">
-              <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
-            </Route>
-            <Route exact path="/process/:studentId/:jobId">
-              <SingleProcess />
-            </Route>
-            <Route exact path="/class/add">
-              <AddClass />
-            </Route>
-            <Route exact path="/class/all">
-              <AllClasses />
-            </Route>
-            <Route exact path="/class/:id">
-              <SingleClass />
-            </Route>
-            <Route exact path="/job/all">
-              <AllJobs />
-            </Route>
-            <Route exact path="/job/add">
-              <AddJob />
-            </Route>
-            <Route exact path="/job/:id">
-              <SingleJob />
-            </Route>
-            <Route exact path="/student/add">
-              <AddStudent />
-            </Route>
-            <Route exact path="/student/all">
-              <AllStudents />
-            </Route>
-            <Route exact path="/student/:id">
-              <SingleStudent />
-            </Route>
-            <Route exact path="/mentor">
-              <MentorClasses />
-            </Route>
-            <Route exact path="/mentor/all">
-              <AllMentors />
-            </Route>
-            <Route exact path="/mentor/new">
-              <NewProject />
-            </Route>
-            <Route exact path="/mentor/add">
-              <AddMentor/>
-            </Route>
-            <Route exact path="/mentor/:id">
-              <SingleMentor />
-            </Route>
-            <Route exact path="/mentor/new/:id">
-              <NewClassMentorProject />
-            </Route>
-            <Route exact path="/mentor/class/:id">
-              <ClassDashboard />
-            </Route>
-            <Route path="*">
-              <div>404 Not Found</div>
-            </Route>
-          </Switch>
-        </ErrorBoundary>
-      </Router>
+      <AuthContext.Provider value={values}>
+        <Router>{getRoutes()}</Router>
+      </AuthContext.Provider>
     </>
   );
 }

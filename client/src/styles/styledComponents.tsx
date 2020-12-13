@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { ListItem } from "@material-ui/core";
 
+export const errorIconStyle = { width: "30px", height: "30px" };
+
+export const iconStyle = { cursor: "default" };
+
+export const repeatFormula = "1fr 2.5fr 2.5fr 1fr";
+
 export const H1 = styled.h1`
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
