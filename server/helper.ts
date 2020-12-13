@@ -110,6 +110,7 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   array: number[],
   exclude: number[]
 ) => {
+  console.log(exclude);
   //@ts-ignore
   return array.filter(
     (elem: number, i: number) =>
