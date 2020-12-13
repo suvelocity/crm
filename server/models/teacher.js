@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Notice, {
-        foreignKey: "userId",
+        foreignKey: "createdBy",
       });
       this.hasMany(models.Lesson, {
         foreignKey: "createdBy",
