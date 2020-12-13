@@ -31,10 +31,14 @@ function AllMentors() {
     })();
   }, []);
 
-  const changeAvailabilityOfMentor = async (id: number | undefined, currentAvailability: boolean): Promise<void> => {
+  const changeAvailabilityOfMentor = async (
+    id: number | undefined,
+    currentAvailability: boolean
+  ): Promise<void> => {
     if (id) {
-        await network.put(`/api/v1/mentor/${id}`, {available: !currentAvailability})
-        console.log(`availability changed! from ${currentAvailability} to ${!currentAvailability}`)
+      await network.put(`/api/v1/M/mentor/${id}`, {
+        available: !currentAvailability,
+      });
     }
   };
 
@@ -49,8 +53,8 @@ function AllMentors() {
           <Button
             variant='contained'
             style={{
-              backgroundColor: "#c47dfa",
-              color: "white",
+              backgroundColor: '#c47dfa',
+              color: 'white',
               marginLeft: 10,
             }}
           >
@@ -90,11 +94,15 @@ function AllMentors() {
                     <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
                     <StyledSpan>{mentor.address}</StyledSpan>
                     <StyledSpan>{mentor.job}</StyledSpan>
-                    {/* <StyledSpan>{mentor.available ? 'yes' : 'no'}</StyledSpan> */}
                     <StyledSpan>
                       <Switch
                         checked={mentor.available}
-                        onChange={() => changeAvailabilityOfMentor(mentor?.id, mentor.available)}
+                        onChange={() =>
+                          changeAvailabilityOfMentor(
+                            mentor?.id,
+                            mentor.available
+                          )
+                        }
                         color='primary'
                         name='checkedB'
                         inputProps={{ 'aria-label': 'primary checkbox' }}
