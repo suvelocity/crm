@@ -14,16 +14,18 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       this.belongsTo(models.Student, {
-        foreignKey: "studentId",
+        foreignKey: "userId",
       });
     }
   }
   Event.init(
     {
-      studentId: DataTypes.INTEGER,
-      jobId: DataTypes.INTEGER,
-      status: DataTypes.STRING,
-      comment: DataTypes.STRING,
+      eventName:DataTypes.STRING,
+      type:DataTypes.STRING,
+      userId: DataTypes.INTEGER,
+      relatedId: DataTypes.INTEGER,
+      entry: DataTypes.JSON,
+      creatorId: DataTypes.INTEGER,
       date: DataTypes.DATE,
     },
     {
