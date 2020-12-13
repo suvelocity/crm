@@ -36,13 +36,13 @@ const MentorClasses: React.FC = () => {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">Mentor Management</H1>
+          <H1 color="#c47dfa">Mentor Management</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/mentor/all">
           <Button
             variant="contained"
-            style={{ backgroundColor: "#2c6e3c", color: "white" }}
+            style={{ backgroundColor: "#c47dfa", color: "white" }}
           >
             All Mentors
           </Button>
@@ -51,7 +51,7 @@ const MentorClasses: React.FC = () => {
           <Button
             variant="contained"
             style={{
-              backgroundColor: "#2c6e3c",
+              backgroundColor: "#c47dfa",
               color: "white",
               marginLeft: 10,
             }}

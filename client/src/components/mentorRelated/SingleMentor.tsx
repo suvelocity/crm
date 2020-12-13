@@ -69,7 +69,7 @@ function SingleMentor() {
       <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1>Mentor Info</H1>
+            <H1 color={"#c47dfa"}>Mentor Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
