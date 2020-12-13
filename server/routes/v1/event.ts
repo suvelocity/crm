@@ -13,7 +13,7 @@ import { eventsSchema } from "../../validations";
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const events: IEvent[] = await Event.findAll({
-      where:{type:'jobs'},
+      where: { type: "jobs" },
       include: [
         {
           model: Student,
@@ -33,7 +33,7 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/allProcesses", async (req: Request, res: Response) => {
   try {
     const events: IEvent[] = await Event.findAll({
-      where:{type:'jobs'},
+      where: { type: "jobs" },
       include: [
         {
           model: Student,
@@ -79,13 +79,23 @@ router.post("/", async (req: Request, res: Response) => {
           include: [{ model: Company, attributes: ["name"] }],
         })
       ).toJSON();
-      const student: IStudent = (await Job.findByPk(userId)).toJSON();
+      const student: IStudent = (await Student.findByPk(userId)).toJSON();
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
       const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
-      cancelAllJobsOfStudent(userId, parseInt(relatedId), studentMsg, date);
-      cancelAllApplicantsForJob(relatedId, parseInt(userId), jobMsg, date);
+      cancelAllJobsOfStudent(
+        parseInt(userId),
+        parseInt(relatedId),
+        studentMsg,
+        date
+      );
+      cancelAllApplicantsForJob(
+        parseInt(relatedId),
+        parseInt(userId),
+        jobMsg,
+        date
+      );
     }
     const event: IEvent = await Event.create({
       userId,
@@ -103,10 +113,10 @@ router.post("/", async (req: Request, res: Response) => {
 router.patch("/delete-process", async (req, res) => {
   // FIX
   try {
-    const studentId: string = req.body.studentId;
-    const jobId = req.body.jobId;
+    const userId: string = req.body.userId;
+    const relatedId = req.body.relatedId;
     const deleted: any = await Event.destroy({
-      where: { studentId, jobId },
+      where: { userId, relatedId },
     });
     if (deleted) return res.json({ message: "Process deleted" });
     return res.status(404).json({ error: "Process not found" });
@@ -118,7 +128,6 @@ router.patch("/delete-process", async (req, res) => {
 router.patch("/delete", async (req, res) => {
   try {
     const eventId: string = req.body.eventId;
-    console.log(req.body);
     const deleted: any = await Event.destroy({
       where: { id: eventId },
     });

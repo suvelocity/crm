@@ -55,6 +55,7 @@ function NewEventModal({
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
     delete data.comment;
+    console.log(data);
     try {
       const {
         data: newEvent,
@@ -73,7 +74,7 @@ function NewEventModal({
     return Swal.fire({
       title: "Are you sure?",
       text:
-        "Changing status to 'hired' will automaticaly cancel all other applicants and the rest of this student jobs.\nThis is ireversible!",
+        "Changing status to 'hired' will automatically cancel all other applicants and the rest of this student jobs.\nThis is irreversible!",
       icon: "warning",
       showCancelButton: true,
       cancelButtonColor: "#3085d6",
