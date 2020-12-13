@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,16 +10,14 @@ import { Menu } from "@material-ui/icons";
 import SignOutButton from "./auth/SignOutButton";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
-import SchoolIcon from '@material-ui/icons/School';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import TodayIcon from '@material-ui/icons/Today';
-import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
-import StreetviewIcon from '@material-ui/icons/Streetview';
-import {AuthContext} from '../helpers'
-import PeopleIcon from "@material-ui/icons/People";
-import { IUser } from '../typescript/interfaces';
-
-
+import SchoolIcon from "@material-ui/icons/School";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import TodayIcon from "@material-ui/icons/Today";
+import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
+import StreetviewIcon from "@material-ui/icons/Streetview";
+import { AuthContext } from "../helpers";
+import { ThemeContext } from "../helpers";
+import DarkModeToggle from "react-dark-mode-toggle";
 
 function ClassRoomNavBar() {
   const [open, setOpen] = useState(false);
@@ -27,11 +25,23 @@ function ClassRoomNavBar() {
   const handleDrawer = () => {
     setOpen(true);
   };
-      //@ts-ignore
-  const {user} = useContext(AuthContext);
-  console.log(user);
-  
-return (
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  //@ts-ignore
+  const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
+
+  const handleChangeTheme = () => {
+    const isDark = currentTheme === "dark";
+    if (isDark) {
+      setCurrentTheme("light");
+      localStorage.setItem("theme", "light");
+    } else {
+      setCurrentTheme("dark");
+      localStorage.setItem("theme", "dark");
+    }
+  };
+
+  return (
     <div>
       <AppBar position='static'>
         <Toolbar>
@@ -43,8 +53,15 @@ return (
           >
             <Menu />
           </IconButton>
-            <Typography variant='h4'>Classroom</Typography>
-            <Typography variant='h6' style={{ position: "absolute", right: 10 }}>username placeholder</Typography>
+          <Typography variant='h4'>Classroom</Typography>
+          <DarkModeToggle
+            onChange={handleChangeTheme}
+            checked={currentTheme === "dark"}
+            size={50}
+          />
+          <Typography variant='h6' style={{ position: "absolute", right: 10 }}>
+            username placeholder
+          </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -55,46 +72,45 @@ return (
         }}
       >
         <StyledDrawer>
-          <StyledLink to="/">
-            <DrawerItem >
+          <StyledLink to='/'>
+            <DrawerItem>
               Dashboard
               <DashboardIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/lessons">
-            <DrawerItem >
+          <StyledLink to='/lessons'>
+            <DrawerItem>
               Lessons
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/schedhule">
-            <DrawerItem >
-            Schedhule
+          <StyledLink to='/schedhule'>
+            <DrawerItem>
+              Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/tasks">
-            <DrawerItem >
-            Tasks
+          <StyledLink to='/tasks'>
+            <DrawerItem>
+              Tasks
               <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          
-      {(user.userType=='teacher')&&
-          <StyledLink to="/teacher">
-            <DrawerItem >
-            Teacher
-              <StreetviewIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
+
+            {user.userType == "teacher" && (
+              <StyledLink to='/teacher'>
+                <DrawerItem>
+                  Teacher
+                  <StreetviewIcon style={{ position: "absolute", right: 10 }} />
+                </DrawerItem>
+              </StyledLink>
+            )}
           </StyledLink>
-      }
-        </StyledLink>
-          <DrawerItem style={{alignContent:'flex-end'}}>
-          <SignOutButton style={{ position: "absolute", right: 10 }}/>
-            </DrawerItem>
+          <DrawerItem style={{ alignContent: "flex-end" }}>
+            <SignOutButton style={{ position: "absolute", right: 10 }} />
+          </DrawerItem>
         </StyledDrawer>
       </Drawer>
-      </div>
-
+    </div>
   );
 }
 
@@ -113,7 +129,7 @@ const DrawerItem = styled.div`
 `;
 
 const StyledDrawer = styled.div`
-   background-color: #3f51b5; 
+  background-color: #3f51b5;
   /* background-image:url('../media/scaleup.jpeg'); */
 
   background-position: center;
