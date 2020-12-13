@@ -1,3 +1,5 @@
+import { Model } from "sequelize/types";
+
 export interface IJob {
   id?: number;
   companyId: number;
@@ -27,6 +29,7 @@ export interface IStudent {
   workExperience: string;
   languages: string;
   citizenship: string;
+  fccAccount: string;
 }
 
 export interface IClass {
@@ -56,4 +59,27 @@ export interface ICompany {
   contactNumber?: string;
   location: string;
   description?: string;
+}
+
+export interface IUser {
+  id?: number;
+  email: string;
+  password: string;
+  type: string;
+  relatedId?: number;
+}
+
+export interface SeqInclude {
+  model: Model;
+  attributes?: string[];
+  include?: SeqInclude[];
+  where?: {};
+}
+
+export type PublicFields = "firstname" | "lastname" | "fcc";
+
+export enum PublicFieldsEnum {
+  firstname = "first_name",
+  lastname = "last_name",
+  fcc = "fcc_account",
 }

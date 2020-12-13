@@ -82,10 +82,10 @@ function AllProcesses() {
           onChange={(e) => handleFilter(e)}
         />
       </Center>
-      <Button variant='outlined' onClick={() => setClick((prev) => !prev)}>
+      {/* <Button variant='outlined' onClick={() => setClick((prev) => !prev)}>
         Prepare PDF
       </Button>
-      {click && <PDFLink data={filteredProcesses} />}
+      {click && <PDFLink data={filteredProcesses} />} */}
       <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
