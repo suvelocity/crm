@@ -12,8 +12,8 @@ env:
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }} # The service account user you created
   DB_PASS: ${{ secrets.DB_PASS }}
   DB_USER: ${{ secrets.DB_USER }}
-  DB_HOST: ${{ secrets.DB_HOST_INNER }}
-  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_NAME: ${{ secrets.DB_NAME_STAGING }}
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
   SERVER_PORT: 8080 # the port your server is running on
@@ -81,9 +81,9 @@ jobs:
       run: make push
 
     # ONLY first time setup
-    # Initialize Envoironment in Gcloud Instance
-    - name: Initialize volumes, network and other Containers that don't change
-      run: make initialize
+    # # Initialize Envoironment in Gcloud Instance
+    # - name: Initialize volumes, network and other Containers that don't change
+    #   run: make initialize
 
     # Deploy Container to Gcloud Instance
     - name: deploy
