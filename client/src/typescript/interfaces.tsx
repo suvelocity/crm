@@ -124,3 +124,5 @@ export interface IUserSignIn {
   password: string;
   rememberMe: boolean;
 }
+
+export type ThemeType = "dark" | "light";
