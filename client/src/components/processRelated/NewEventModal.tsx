@@ -45,9 +45,17 @@ function NewEventModal({
   };
 
   // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
-  const submitStatus = async (data: IEvent) => {
-    data.studentId = studentId;
-    data.jobId = jobId;
+  const submitStatus = async (data: any) => {
+    if (data.eventName === "Hired") {
+      handleClose();
+      const proceed: boolean = await promptAreYouSure();
+      if (!proceed) return;
+    }
+    data.userId = studentId;
+    data.relatedId = jobId;
+    data.entry = { comment: data.comment };
+    delete data.comment;
+    console.log(data);
     try {
       const {
         data: newEvent,
@@ -60,6 +68,22 @@ function NewEventModal({
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
+  };
+
+  const promptAreYouSure: () => Promise<boolean> = async () => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text:
+        "Changing status to 'hired' will automatically cancel all other applicants and the rest of this student jobs.\nThis is irreversible!",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#2fa324",
+      confirmButtonText: "Hire!",
+    }).then((result) => {
+      if (result.isConfirmed) return true;
+      return false;
+    });
   };
 
   const body = (
@@ -86,15 +110,15 @@ function NewEventModal({
                       ))}
                     </Select>
                   }
-                  name="status"
+                  name="eventName"
                   rules={{ required: "Event is required" }}
                   control={control}
                   defaultValue=""
                 />
               </FormControl>
               {!empty ? (
-                errors.status ? (
-                  <ErrorBtn tooltipTitle={errors.status.message} />
+                errors.eventName ? (
+                  <ErrorBtn tooltipTitle={errors.eventName.message} />
                 ) : (
                   <ActionBtn />
                 )

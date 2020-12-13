@@ -16,6 +16,8 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   additionalDetails: string;
+  mentorId: number | null;
+  mentor?: IMentor | null;
   Events: IEvent[];
 }
 
@@ -70,10 +72,11 @@ export type status =
   | "Canceled";
 
 export interface IEvent {
-  status: status;
-  studentId?: number;
-  jobId?: number;
-  comment?: string;
+  id?: number;
+  eventName: status;
+  userId?: number;
+  relatedId?: number;
+  entry?: { [key: string]: any };
   date: string;
   Student?: IStudent;
   Job?: IJob;
@@ -96,3 +99,93 @@ export interface SelectInputs {
   filterBy: string;
   possibleValues: string[];
 }
+
+export interface IMentor {
+  id?: number;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  job: string;
+  available: boolean;
+  gender: string;
+  Students?: Partial<IStudent>[];
+  Meetings?: Partial<IMeeting>[];
+}
+
+export interface MentorClassDashboard {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  Class: Partial<IClass>;
+  Mentor: IMentor;
+  Meetings: Partial<IMeeting>[];
+}
+
+export interface IMeeting {
+  id?: number;
+  date: string;
+  mentorId: number;
+  studentId: number;
+  place: string;
+}
+export interface IUser {
+  id?: number;
+  userType: string;
+  firstName?: string;
+  lastName?: string;
+  idNumber?: string;
+  email?: string;
+  phone?: string;
+  Class?: IClass;
+  address?: string;
+  age?: number;
+  maritalStatus?: string;
+  children?: number;
+  academicBackground?: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
+  additionalDetails?: string;
+  Events?: IEvent[];
+}
+
+export interface IUserSignIn {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+export interface INotice {
+  id?: number;
+  classId: number;
+  type: "regular" | "important" | "critical";
+  body: string;
+  createdBy: number;
+}
+
+export interface ILesson {
+  id?: number;
+  classId: number;
+  title: string;
+  body: string;
+  resource?: string;
+  zoomLink?: string;
+  createdBy: number;
+}
+
+export interface ITask {
+  id?: number;
+  lessonId: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  status: string;
+  body: string;
+}
+
+export type ThemeType = "dark" | "light";

@@ -1,81 +1,98 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import AddStudent from "./components/studentRelated/AddStudent";
-import AllStudents from "./components/studentRelated/AllStudents";
-import SingleStudent from "./components/studentRelated/SingleStudent";
-import AddJob from "./components/jobRelated/AddJob";
-import AddClass from "./components/classRelated/AddClass";
-import SingleJob from "./components/jobRelated/SingleJob";
-import AllJobs from "./components/jobRelated/AllJobs";
-import NavBar from "./components/NavBar";
-import AllClasses from "./components/classRelated/AllClasses";
-import SingleClass from "./components/classRelated/SingleClass";
-import AllCompanies from "./components/companyRelated/AllCompanies";
-import SingleCompany from "./components/companyRelated/SingleCompany";
-import SingleProcess from "./components/processRelated/SingleProcess";
-import AddCompany from "./components/companyRelated/AddCompany";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ErrorBoundary from "./helpers/ErrorBoundary";
-import AllProcesses from "./components/processRelated/AllProcesses";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthContext, getRefreshToken, theme, ThemeContext } from "./helpers";
+import axios from "axios";
+import { IUser, ThemeType } from "./typescript/interfaces";
+//@ts-ignore
+import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+import TeacherRoutes from "./routes/TeacherRoutes";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
+import { ThemeProvider } from "styled-components";
+import jwt from "jsonwebtoken";
+const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 
 function App() {
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentTheme, setCurrentTheme] = useState("light");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const previousTheme = localStorage.getItem("theme");
+        if (previousTheme) {
+          setCurrentTheme(previousTheme);
+        } else {
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            //check default theme of the user
+            setCurrentTheme("dark");
+          }
+        }
+        if (!getRefreshToken()) {
+          setLoading(false);
+          return;
+        }
+        const { data: userData } = await axios.post("/api/v1/auth/token", {
+          refreshToken: getRefreshToken(),
+          remembered: true,
+        });
+        const decoded = jwt.decode(getRefreshToken());
+        //@ts-ignore
+        if (decoded && decoded.type! === userData.userType) {
+          if (userData.dataValues) {
+            setUser({
+              ...userData.dataValues,
+              userType: userData.userType,
+            });
+          } else {
+            setUser(userData);
+          }
+        }
+      } catch (error) {
+        console.log(error.response.data.error);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const getRoutes = () => {
+    if (loading) return <Loading fullPage loading={true} />;
+    if (!user) return <PublicRoutes />;
+    switch (user.userType) {
+      case "admin":
+        return <AdminRoutes />;
+      case "student":
+        return (
+          <ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>
+            {/* @ts-ignore*/}
+            <ThemeProvider theme={() => theme(currentTheme)}>
+              <StudentRoutes />;
+            </ThemeProvider>
+          </ThemeContext.Provider>
+        );
+
+      case "teacher":
+        return (
+          <ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>
+            {/* @ts-ignore*/}
+            <ThemeProvider theme={() => theme(currentTheme)}>
+              <TeacherRoutes />
+            </ThemeProvider>
+          </ThemeContext.Provider>
+        );
+      default:
+        return <PublicRoutes />;
+    }
+  };
+
+  const values = { user, setUser };
   return (
     <>
-      <Router>
-        <NavBar />
-        <ErrorBoundary>
-          <Switch>
-            <Route exact path="/">
-              <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
-            </Route>
-            <Route exact path="/company/add">
-              <AddCompany />
-            </Route>
-            <Route exact path="/company/all">
-              <AllCompanies />
-            </Route>
-            <Route exact path="/company/:id">
-              <SingleCompany />
-            </Route>
-            <Route exact path="/process/all">
-              <AllProcesses />
-            </Route>
-            <Route exact path="/process/:studentId/:jobId">
-              <SingleProcess />
-            </Route>
-            <Route exact path="/class/add">
-              <AddClass />
-            </Route>
-            <Route exact path="/class/all">
-              <AllClasses />
-            </Route>
-            <Route exact path="/class/:id">
-              <SingleClass />
-            </Route>
-            <Route exact path="/job/all">
-              <AllJobs />
-            </Route>
-            <Route exact path="/job/add">
-              <AddJob />
-            </Route>
-            <Route exact path="/job/:id">
-              <SingleJob />
-            </Route>
-            <Route exact path="/student/add">
-              <AddStudent />
-            </Route>
-            <Route exact path="/student/all">
-              <AllStudents />
-            </Route>
-            <Route exact path="/student/:id">
-              <SingleStudent />
-            </Route>
-            <Route path="*">
-              <div>404 Not Found</div>
-            </Route>
-          </Switch>
-        </ErrorBoundary>
-      </Router>
+      <AuthContext.Provider value={values}>
+        <Router>{getRoutes()}</Router>
+      </AuthContext.Provider>
     </>
   );
 }
