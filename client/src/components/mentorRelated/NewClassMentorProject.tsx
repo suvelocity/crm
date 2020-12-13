@@ -20,6 +20,7 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
 import { capitalize } from "../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useHistory } from "react-router-dom";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
@@ -27,6 +28,7 @@ function NewClassMentorProject() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const { id } = useParams();
+  const history = useHistory();
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
@@ -114,7 +116,7 @@ function NewClassMentorProject() {
         }
       );
       const result = await network.put(`/api/v1/M/classes/${id}`);
-      window.location.href = "/mentor";
+      history.push("/mentor");
     } catch (err) {
       console.log(err);
     }
