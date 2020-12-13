@@ -26,6 +26,8 @@ import {
 } from "../../styles/styledComponents";
 import { IMentor } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
+import GoogleMaps from "../GeoSearch";
+
 
 const AddMentor: React.FC = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -179,11 +181,12 @@ const AddMentor: React.FC = () => {
               <br />
             </div>
             <div>
-              <TextField
-                id="address"
-                name="address"
+              <GoogleMaps
+                id='address'
+                name='address'
+                // defaultValue={props.student? props.student.address : ''}
                 inputRef={register({ required: "Address is required" })}
-                label="Address"
+                label='Address'
               />
               {!empty ? (
                 errors.address ? (
