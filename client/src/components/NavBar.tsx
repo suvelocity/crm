@@ -72,8 +72,8 @@ function NavAppBar() {
           </StyledLink>
         </StyledDrawer>
         <DrawerItem onClick={() => setOpen(false)}>
-        <SignOutButton/>
-            </DrawerItem>
+          <SignOutButton />
+        </DrawerItem>
       </Drawer>
     </div>
   );
