@@ -16,6 +16,8 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   additionalDetails: string;
+  mentorId: number | null;
+  mentor?: IMentor | null
   Events: IEvent[];
 }
 
@@ -98,6 +100,36 @@ export interface SelectInputs {
   possibleValues: string[];
 }
 
+export interface IMentor {
+  id?: number;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  job: string;
+  available: boolean;
+  gender: string;
+  Students?: Partial<IStudent>[];
+  Meetings?: Partial<IMeeting>[];
+}
+
+export interface MentorClassDashboard {
+  id?: number;
+  firstName:string;
+  lastName:string;
+  Class: Partial<IClass>;
+  Mentor: IMentor;
+  Meetings: Partial<IMeeting>[];
+};
+
+export interface IMeeting {
+  id?: number;
+  date:string;
+  mentorId:number;
+  studentId:number;
+  place:string;
+};
 export interface IUser {
   id?: number;
   userType: string;

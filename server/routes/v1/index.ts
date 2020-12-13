@@ -15,6 +15,7 @@ router.use("/class", require("./class"));
 router.use("/job", require("./job"));
 router.use("/student", require("./student"));
 router.use("/event", require("./event"));
+router.use("/M", require("./mentor"));
 router.use("/company", require("./company"));
 
 router.use(unknownEndpoint);

@@ -29,6 +29,7 @@
     "lodash": "^4.17.20",
     "material-ui": "^0.20.2",
     "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.11.0",
     "react-loading-wrapper": "^1.1.2",
@@ -65,6 +66,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.0.0",
     "cypress": "^5.6.0"
   }
 }
