@@ -37,7 +37,8 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  margin: 5% auto;
+  margin: ${(props: { margin: string }) =>
+    props.margin ? props.margin : "5% auto"};
   width: 80%;
   padding: ${(props: { padding: string }) =>
     props.padding ? props.padding : "40px"};
@@ -49,6 +50,7 @@ export const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
+  position: relative;
 `;
 
 export const Center = styled.div`
@@ -75,6 +77,7 @@ export const RemoveJobButton = styled(DeleteIcon)`
 
 export const GridDiv = styled.div`
   display: grid;
+  width: 95%;
   grid-template-columns: ${(props: { repeatFormula: string }) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
 `;
@@ -115,4 +118,34 @@ export const StyledUl = styled.ul`
 
 export const MultilineListItem = styled(ListItem)`
   white-space: pre-wrap;
+`;
+
+export const StyledSelect = styled.select`
+  width: 100%;
+  min-width: 50px;
+  max-width: 300px;
+  border: 1px solid yellowgreen;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background-color: #fff;
+  align-items: center;
+  position: relative;
+
+  ::after {
+    width: 0.8em;
+    height: 0.5em;
+    background-color: #fff;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    justify-self: end;
+  }
+`;
+
+export const EditDiv = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 33px;
+  top: 25px;
 `;

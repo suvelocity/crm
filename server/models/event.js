@@ -8,22 +8,23 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // Job related
       this.belongsTo(models.Job, {
-        foreignKey: "jobId",
-        onDelete: "cascade",
-        hooks: true,
+        foreignKey: "relatedId",
       });
       this.belongsTo(models.Student, {
-        foreignKey: "studentId",
+        foreignKey: "userId",
       });
     }
   }
   Event.init(
     {
-      studentId: DataTypes.INTEGER,
-      jobId: DataTypes.INTEGER,
-      status: DataTypes.STRING,
-      comment: DataTypes.STRING,
+      eventName: DataTypes.STRING,
+      type: DataTypes.STRING,
+      userId: DataTypes.INTEGER,
+      relatedId: DataTypes.INTEGER,
+      entry: DataTypes.JSON,
+      creatorId: DataTypes.INTEGER,
       date: DataTypes.DATE,
     },
     {
