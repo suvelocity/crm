@@ -91,8 +91,8 @@ function SingleJob() {
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
           await network.put("/api/v1/event/delete", {
-            studentId,
-            jobId: job?.id,
+            userId: studentId,
+            relatedId: job?.id,
           });
           getJob();
         }
