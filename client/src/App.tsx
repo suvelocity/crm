@@ -25,27 +25,38 @@ function App() {
           refreshToken: getRefreshToken(),
           remembered: true,
         });
-        jwt.verify(
-          getRefreshToken()!,
-          REACT_APP_REFRESH_TOKEN_SECRET!,
-          (err, decoded) => {
-            if (err) {
-              setLoading(false);
-              return;
-            }
-            //@ts-ignore
-            if (decoded && decoded.type! === userData.userType) {
-              if (userData.dataValues) {
-                setUser({
-                  ...userData.dataValues,
-                  userType: userData.userType,
-                });
-              } else {
-                setUser(userData);
-              }
-            }
+        const decoded = jwt.decode(getRefreshToken());
+        if (decoded && decoded.type! === userData.userType) {
+          if (userData.dataValues) {
+            setUser({
+              ...userData.dataValues,
+              userType: userData.userType,
+            });
+          } else {
+            setUser(userData);
           }
-        );
+        }
+        // jwt.verify(
+        //   getRefreshToken()!,
+        //   REACT_APP_REFRESH_TOKEN_SECRET!,
+        //   (err, decoded) => {
+        //     if (err) {
+        //       setLoading(false);
+        //       return;
+        //     }
+        //     //@ts-ignore
+        //     if (decoded && decoded.type! === userData.userType) {
+        //       if (userData.dataValues) {
+        //         setUser({
+        //           ...userData.dataValues,
+        //           userType: userData.userType,
+        //         });
+        //       } else {
+        //         setUser(userData);
+        //       }
+        //     }
+        //   }
+        // );
       } catch (error) {
         console.log(error.response.data.error);
       }

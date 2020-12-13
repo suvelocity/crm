@@ -80,7 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
-      fccAccount: body.fccAccount,
+      // fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
 
@@ -113,7 +113,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {

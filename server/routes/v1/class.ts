@@ -57,7 +57,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   try {
     const { value, error } = classSchemaToPut.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
