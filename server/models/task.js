@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Student, {
-        foreignKey: "ceatedBy",
+        foreignKey: "createdBy",
       });
       this.belongsTo(models.Lesson, {
         foreignKey: "lessonId",
@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       endDate: DataTypes.DATE,
       type: DataTypes.STRING,
       status: DataTypes.STRING,
+      body: DataTypes.STRING,
     },
     {
       sequelize,
