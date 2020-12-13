@@ -10,6 +10,8 @@ import TeacherRoutes from "./routes/TeacherRoutes";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { ThemeProvider } from "styled-components";
+import jwt from "jsonwebtoken";
+const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 
 function App() {
   const [user, setUser] = useState<IUser | null>(null);
@@ -28,17 +30,27 @@ function App() {
             setCurrentTheme("dark");
           }
         }
+        if (!getRefreshToken()) {
+          setLoading(false);
+          return;
+        }
         const { data: userData } = await axios.post("/api/v1/auth/token", {
           refreshToken: getRefreshToken(),
           remembered: true,
         });
-        if (userData.dataValues) {
-          setUser({ ...userData.dataValues, userType: userData.userType });
-        } else {
-          setUser(userData);
+        const decoded = jwt.decode(getRefreshToken());
+        if (decoded && decoded.type! === userData.userType) {
+          if (userData.dataValues) {
+            setUser({
+              ...userData.dataValues,
+              userType: userData.userType,
+            });
+          } else {
+            setUser(userData);
+          }
         }
-      } catch (e) {
-        console.log(e.response.data.error);
+      } catch (error) {
+        console.log(error.response.data.error);
       }
       setLoading(false);
     })();
@@ -69,6 +81,8 @@ function App() {
             </ThemeProvider>
           </ThemeContext.Provider>
         );
+      default:
+        return <PublicRoutes />;
     }
   };
 

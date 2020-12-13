@@ -30,6 +30,8 @@ services:
       networks: 
         - crm-network
       environment:
+        REACT_APP_ONE: REACT_APP_ONE
+        REACT_APP_TWO: REACT_APP_TWO
         MYSQL_USER: root
         MYSQL_PASSWORD: password
         MYSQL_DATABASE: database_development

@@ -29,8 +29,14 @@ import { IStudent, IClass } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
-
-function AddStudent() {
+import languages from "../../helpers/languages.json";
+interface Props {
+  student?: IStudent;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+function AddStudent(props: Props) {
   const { register, handleSubmit, errors, control } = useForm();
   const [classes, setClasses] = useState<IClass[]>([]);
   const history = useHistory();
@@ -51,9 +57,17 @@ function AddStudent() {
   const empty = Object.keys(errors).length === 0;
 
   const onSubmit = async (data: IStudent) => {
+    //@ts-ignore
+    data.languages = data.languages.join(", ");
     try {
-      await network.post("/api/v1/student", data);
-      history.push("/student/all");
+      if (props.update && props.student) {
+        await network.patch(`/api/v1/student/${props.student.id}`, data);
+        props.handleClose && props.handleClose();
+        // history.push(`/company/${props.company.id}`);
+      } else {
+        await network.post("/api/v1/student", data);
+        history.push("/student/all");
+      }
     } catch (error) {
       if (error.response.status === 409) {
         Swal.fire({
@@ -70,14 +84,15 @@ function AddStudent() {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1>Add Student</H1>
+          <H1>{props.header ? props.header : "Add Student"}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
             <div>
               <TextField
-                id='firstName'
-                name='firstName'
+                id="firstName"
+                name="firstName"
+                defaultValue={props.student ? props.student.firstName : ""}
                 inputRef={register({
                   required: "First name is required",
                   pattern: {
@@ -89,7 +104,7 @@ function AddStudent() {
                     message: "First name needs to be a minimum of 2 letters",
                   },
                 })}
-                label='First Name'
+                label="First Name"
               />
               {!empty ? (
                 errors.firstName ? (
@@ -100,8 +115,9 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='lastName'
-                name='lastName'
+                id="lastName"
+                name="lastName"
+                defaultValue={props.student ? props.student.lastName : ""}
                 inputRef={register({
                   required: "Last name is required",
                   pattern: {
@@ -113,7 +129,7 @@ function AddStudent() {
                     message: "Last name needs to be a minimum of 2 letters",
                   },
                 })}
-                label='Last Name'
+                label="Last Name"
               />
               {!empty ? (
                 errors.lastName ? (
@@ -124,14 +140,10 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='idNumber'
-                name='idNumber'
+                id="idNumber"
+                name="idNumber"
+                defaultValue={props.student ? props.student.idNumber : ""}
                 inputRef={register({
-                  required: "ID number is required",
-                  minLength: {
-                    value: 9,
-                    message: "ID need to be 9 letters long",
-                  },
                   maxLength: {
                     value: 9,
                     message: "ID need to be 9 letters long",
@@ -141,7 +153,7 @@ function AddStudent() {
                     message: "ID can have only numbers",
                   },
                 })}
-                label='ID Number'
+                label="ID Number"
               />
               {!empty ? (
                 errors.idNumber ? (
@@ -152,9 +164,10 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='email'
-                label='Email'
-                name='email'
+                id="email"
+                label="Email"
+                name="email"
+                defaultValue={props.student ? props.student.email : ""}
                 inputRef={register({
                   required: "Email is required",
                   pattern: {
@@ -172,8 +185,9 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='phone'
-                name='phone'
+                id="phone"
+                name="phone"
+                defaultValue={props.student ? props.student.phone : ""}
                 inputRef={register({
                   required: "Phone is required",
                   pattern: {
@@ -181,7 +195,7 @@ function AddStudent() {
                     message: "Invalid phone number",
                   },
                 })}
-                label='Phone Number'
+                label="Phone Number"
               />
               {!empty ? (
                 errors.phone ? (
@@ -191,14 +205,33 @@ function AddStudent() {
                 )
               ) : null}
               <br />
-              <TextField
-                id='languages'
-                name='languages'
-                inputRef={register({
-                  required: "Languages is required",
-                })}
-                label='Languages'
-              />
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.classId)}
+              >
+                <InputLabel>Languages</InputLabel>
+                <Controller
+                  as={
+                    <Select multiple displayEmpty>
+                      {Object.keys(languages).map((key: string) => (
+                        <MenuItem
+                          //@ts-ignore
+                          key={languages[key].name}
+                          //@ts-ignore
+                          value={languages[key].name}
+                        >
+                          {/* @ts-ignore */}
+                          {languages[key].nativeName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name="languages"
+                  rules={{ required: "Languages is required" }}
+                  defaultValue={props.student ? props.student.languages : []}
+                  control={control}
+                />
+              </FormControl>
               {!empty ? (
                 errors.languages ? (
                   <ErrorBtn tooltipTitle={errors.languages.message} />
@@ -224,10 +257,10 @@ function AddStudent() {
                       ))}
                     </Select>
                   }
-                  name='classId'
+                  name="classId"
                   rules={{ required: "Class is required" }}
                   control={control}
-                  defaultValue=''
+                  defaultValue={props.student ? props.student.Class.id : ""}
                 />
               </FormControl>
               {!empty ? (
@@ -246,14 +279,16 @@ function AddStudent() {
                 )
               ) : null}
               <GoogleMaps
-                id='address'
-                name='address'
+                id="address"
+                name="address"
+                defaultValue={props.student ? props.student.address : ""}
                 inputRef={register({ required: "Address is required" })}
-                label='Address'
+                label="Address"
               />
               <TextField
-                id='age'
-                name='age'
+                id="age"
+                name="age"
+                defaultValue={props.student ? props.student.age : ""}
                 inputRef={register({
                   required: "Age is required",
                   pattern: {
@@ -261,7 +296,7 @@ function AddStudent() {
                     message: "Age needs to be a number",
                   },
                 })}
-                label='Age'
+                label="Age"
               />
               {!empty ? (
                 errors.age ? (
@@ -272,10 +307,11 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='maritalStatus'
-                name='maritalStatus'
+                id="maritalStatus"
+                name="maritalStatus"
+                defaultValue={props.student ? props.student.maritalStatus : ""}
                 inputRef={register({ required: "Marital status is required" })}
-                label='Marital Status'
+                label="Marital Status"
               />
               {!empty ? (
                 errors.maritalStatus ? (
@@ -286,11 +322,11 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='children'
-                name='children'
-                type='number'
-                label='Number of children'
-                defaultValue={0}
+                id="children"
+                name="children"
+                type="number"
+                label="Number of children"
+                defaultValue={props.student ? props.student.children : 0}
                 inputRef={register({
                   min: {
                     value: 0,
@@ -308,12 +344,13 @@ function AddStudent() {
               ) : null}
               <br />
               <TextField
-                id='citizenship'
-                name='citizenship'
+                id="citizenship"
+                name="citizenship"
+                defaultValue={props.student ? props.student.citizenship : ""}
                 inputRef={register({
                   required: "Citizenship is required",
                 })}
-                label='Citizenship'
+                label="Citizenship"
               />
               {!empty ? (
                 errors.citizenship ? (
@@ -327,56 +364,60 @@ function AddStudent() {
           {generateBrs(2)}
 
           <TextField
-            id='militaryService'
+            id="militaryService"
             multiline
+            defaultValue={props.student ? props.student.militaryService : ""}
             fullWidth
             rows={4}
-            variant='outlined'
-            name='militaryService'
+            variant="outlined"
+            name="militaryService"
             inputRef={register()}
-            label='Military Service'
+            label="Military Service"
           />
           {generateBrs(2)}
 
           <TextField
-            id='workExperience'
+            id="workExperience"
             multiline
             fullWidth
+            defaultValue={props.student ? props.student.workExperience : ""}
             rows={4}
-            variant='outlined'
-            name='workExperience'
+            variant="outlined"
+            name="workExperience"
             inputRef={register()}
-            label='Work Experience'
+            label="Work Experience"
           />
           {generateBrs(2)}
 
           <TextField
-            id='academicBackground'
+            id="academicBackground"
             multiline
             fullWidth
+            defaultValue={props.student ? props.student.academicBackground : ""}
             rows={4}
-            variant='outlined'
-            name='academicBackground'
+            variant="outlined"
+            name="academicBackground"
             inputRef={register()}
-            label='Academic Background'
+            label="Academic Background"
           />
           {generateBrs(2)}
           <TextField
-            id='additionalDetails'
+            id="additionalDetails"
             multiline
             fullWidth
+            defaultValue={props.student ? props.student.additionalDetails : ""}
             rows={4}
-            variant='outlined'
-            name='additionalDetails'
+            variant="outlined"
+            name="additionalDetails"
             inputRef={register()}
-            label='Additional Details'
+            label="Additional Details"
           />
           {generateBrs(2)}
           <Button
-            id='submitButton'
-            variant='contained'
-            color='primary'
-            type='submit'
+            id="submitButton"
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>
