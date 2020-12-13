@@ -6,13 +6,14 @@ import {
 } from "../../helper";
 const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company } from "../../models";
+import { Event, Student, Job, Company, Meeting } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const events: IEvent[] = await Event.findAll({
+      where:{type:'jobs'},
       include: [
         {
           model: Student,
@@ -32,6 +33,7 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/allProcesses", async (req: Request, res: Response) => {
   try {
     const events: IEvent[] = await Event.findAll({
+      where:{type:'jobs'},
       include: [
         {
           model: Student,
@@ -99,6 +101,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.patch("/delete-process", async (req, res) => {
+  // FIX
   try {
     const studentId: string = req.body.studentId;
     const jobId = req.body.jobId;
