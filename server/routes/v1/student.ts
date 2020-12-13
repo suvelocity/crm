@@ -80,7 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
-      fccAccount: body.fccAccount,
+      // fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
 
