@@ -10,10 +10,10 @@ module.exports = {
      */
 
     await Promise.all([
-      queryInterface.addColumn("students", "fcc_account", {
+      queryInterface.addColumn("Students", "fcc_account", {
         type: Sequelize.STRING(30),
       }),
-      queryInterface.changeColumn("students", "email", {
+      queryInterface.changeColumn("Students", "email", {
         type: Sequelize.STRING(50),
         allowNull: false,
         unique: true,
@@ -29,8 +29,8 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await Promise.all([
-      queryInterface.removeColumn("students", "fcc_account"),
-      queryInterface.changeColumn("students", "email", {
+      queryInterface.removeColumn("Students", "fcc_account"),
+      queryInterface.changeColumn("Students", "email", {
         type: Sequelize.VARCHAR(50),
       }),
     ]);

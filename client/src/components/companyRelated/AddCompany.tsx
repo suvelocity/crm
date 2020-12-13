@@ -20,8 +20,13 @@ import { validNameRegex, validPhoneNumberRegex } from "../../helpers/patterns";
 import Swal from "sweetalert2";
 import { ErrorBtn, ActionBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
-
-const AddCompany = () => {
+interface Props {
+  company?: ICompany;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+const AddCompany = (props:Props) => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -29,8 +34,14 @@ const AddCompany = () => {
 
   const onSubmit = async (data: Omit<ICompany, "id">) => {
     try {
-      await network.post("/api/v1/company", data);
-      history.push("/company/all");
+      if(props.update && props.company) {
+        await network.patch(`/api/v1/company/${props.company.id}`, data);
+        props.handleClose&& props.handleClose()
+        // history.push(`/company/${props.company.id}`);
+      }else{
+        await network.post("/api/v1/company", data);
+        history.push("/company/all");
+      }
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
@@ -40,7 +51,7 @@ const AddCompany = () => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='#a3a365'>Add Company</H1>
+          <H1 color='#a3a365'>{props.header? props.header : 'Add Company'}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -48,6 +59,7 @@ const AddCompany = () => {
               <TextField
                 id='name'
                 label='Name'
+                defaultValue={props.company? props.company.name : ''}
                 inputRef={register({
                   required: "Company name is required",
                   minLength: {
@@ -69,6 +81,7 @@ const AddCompany = () => {
               <GoogleMaps
                 id='location'
                 name='location'
+                defaultValue={props.company? props.company.location : ''}
                 inputRef={register({
                   required: "Location is required",
                 })}
@@ -93,6 +106,7 @@ const AddCompany = () => {
               <TextField
                 id='contactName'
                 label='Contact Name'
+                defaultValue={props.company? props.company.contactName : ''}
                 inputRef={register({
                   pattern: {
                     value: validNameRegex,
@@ -120,6 +134,7 @@ const AddCompany = () => {
               <TextField
                 id='contactPosition'
                 name='contactPosition'
+                defaultValue={props.company? props.company.contactPosition : ''}
                 inputRef={register()}
                 label='Contact Position'
               />
@@ -141,6 +156,7 @@ const AddCompany = () => {
               <br />
               <TextField
                 id='contactNumber'
+                defaultValue={props.company? props.company.contactNumber : ''}
                 label='Contact Phone Number'
                 inputRef={register({
                   pattern: {
@@ -174,6 +190,7 @@ const AddCompany = () => {
             fullWidth
             rows={5}
             variant='outlined'
+            defaultValue={props.company? props.company.description : ''}
             name='description'
             inputRef={register({
               maxLength: {

@@ -3,6 +3,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import AddCompany from './AddCompany';
 import {
   H1,
   Wrapper,
@@ -21,6 +22,7 @@ import ClassIcon from "@material-ui/icons/Class";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
+import Modal from '@material-ui/core/Modal';
 import "react-loading-wrapper/dist/index.css";
 import { ICompany, IJob } from "../../typescript/interfaces";
 import LinkIcon from "@material-ui/icons/Link";
@@ -28,6 +30,7 @@ import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import LocationCityIcon from "@material-ui/icons/LocationCity";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import EditIcon from '@material-ui/icons/Edit';
 import { formatToIsraeliDate } from "../../helpers/general";
 import { capitalize, formatPhone } from "../../helpers/general";
 import Swal from "sweetalert2";
@@ -35,7 +38,9 @@ import Swal from "sweetalert2";
 function SingleCompany() {
   const [company, setCompany] = useState<ICompany | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState(false);
   const { id } = useParams();
+  console.log(company)
 
   const getCompany = useCallback(async () => {
     const { data }: { data: ICompany } = await network.get(
@@ -45,6 +50,11 @@ function SingleCompany() {
     setLoading(false);
   }, [id, setLoading, setCompany]);
 
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getCompany();
+  }
   useEffect(() => {
     try {
       getCompany();
@@ -63,6 +73,7 @@ function SingleCompany() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+          <div style={{display:'flex', justifyContent: 'space-between'}}>
           <GridDiv repeatingFormula='1fr 1fr'>
             <List>
               <ListItem>
@@ -135,7 +146,6 @@ function SingleCompany() {
               </ListItem> */}
               {/* Zoom link */}
             </List>
-          </GridDiv>
           {company?.description && (
             <MultilineListItem>
               <ListItemIcon>
@@ -147,9 +157,23 @@ function SingleCompany() {
               />
             </MultilineListItem>
           )}
+          </GridDiv>
+            <div style={{cursor: "pointer" }} onClick={() => setModalState(true)}><EditIcon /></div>
+          </div>
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {
+              !company?<div>oops</div>:
+              <AddCompany handleClose={handleClose} update={true} company={company} header='Edit Company'/>
+            }
+          </Modal>
           {/* Additional Details */}
         </Loading>
-      </Wrapper>
+      </Wrapper> 
       <Wrapper width='50%'>
         <Center>
           <TitleWrapper>

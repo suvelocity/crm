@@ -97,7 +97,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   const { error } = jobSchemaToPut.validate(req.body);
   if (error) return res.status(400).json({ error: error.message });
   try {

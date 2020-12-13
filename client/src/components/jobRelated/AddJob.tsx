@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller} from "react-hook-form";
 import network from "../../helpers/network";
 import { TextField, Button, Tooltip, InputLabel } from "@material-ui/core";
 import {
@@ -16,9 +16,14 @@ import { FormControl, MenuItem, Select } from "@material-ui/core";
 import { ErrorBtn, ActionBtn } from "../formRelated";
 import Swal from "sweetalert2";
 import GoogleMaps from "../GeoSearch";
-
-const AddJob = () => {
-  const { register, handleSubmit, errors, control } = useForm();
+interface Props {
+  job?: IJob;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+const AddJob = (props:Props) => {
+  const { register, handleSubmit, setValue, errors, control } = useForm();
   const [companies, setCompanies] = useState<Pick<ICompany, "id" | "name">[]>(
     []
   );
@@ -27,9 +32,16 @@ const AddJob = () => {
   const empty = Object.keys(errors).length === 0;
 
   const onSubmit = async (data: Omit<IJob, "id">) => {
+    
     try {
-      await network.post("/api/v1/job", data);
-      history.push("/job/all");
+      if(props.update && props.job) {
+        await network.patch(`/api/v1/job/${props.job.id}`, data);
+        props.handleClose&& props.handleClose()
+        // history.push(`/company/${props.company.id}`);
+      }else{
+        await network.post("/api/v1/job", data);
+        history.push("/job/all");
+      }
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
@@ -46,12 +58,13 @@ const AddJob = () => {
       );
     })();
   }, []);
+  console.log(props)
 
   return (
     <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color='#bb4040'>Add Job</H1>
+          <H1 color='#bb4040'>{props.header? props.header : 'Add Job'}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv repeatFormula='1fr 0.5fr 3fr'>
@@ -76,7 +89,8 @@ const AddJob = () => {
                   name='companyId'
                   rules={{ required: "Company is required" }}
                   control={control}
-                  defaultValue=''
+                  // defaultValue='Microsoft'
+                  defaultValue={props.job? props.job.Company.id : ''}
                 />
               </FormControl>
               {!empty ? (
@@ -91,6 +105,7 @@ const AddJob = () => {
                 id='position'
                 label='Position'
                 fullWidth
+                defaultValue={props.job? props.job.position : ''}
                 inputRef={register({
                   required: "Position title is required",
                   pattern: {
@@ -115,6 +130,7 @@ const AddJob = () => {
               <GoogleMaps
                 id='location'
                 name='location'
+                defaultValue={props.job? props.job.location : ''}
                 inputRef={register({
                   required: "Location is required",
                 })}
@@ -132,6 +148,7 @@ const AddJob = () => {
               <TextField
                 name='contact'
                 fullWidth
+                defaultValue={props.job? props.job.contact : ''}
                 inputRef={register({ required: "Contact is required" })}
                 label='Contact'
               />
@@ -151,6 +168,7 @@ const AddJob = () => {
                 multiline
                 fullWidth
                 rows={3}
+                defaultValue={props.job? props.job.description : ''}
                 variant='outlined'
                 name='description'
                 inputRef={register({
@@ -174,6 +192,7 @@ const AddJob = () => {
                 id='requirements'
                 multiline
                 fullWidth
+                defaultValue={props.job? props.job.requirements : ''}
                 rows={5}
                 variant='outlined'
                 name='requirements'
@@ -199,6 +218,7 @@ const AddJob = () => {
                 id='additionalDetails'
                 multiline
                 fullWidth
+                defaultValue={props.job? props.job.additionalDetails : ''}
                 rows={3}
                 variant='outlined'
                 name='additionalDetails'

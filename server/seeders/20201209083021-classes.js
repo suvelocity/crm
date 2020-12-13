@@ -6,6 +6,7 @@ module.exports = {
       "Classes",
       [
         {
+          id:1,
           course: "full stack",
           name: "cyber4s",
           starting_date: new Date("2020-07-05"),
@@ -18,6 +19,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:2,
           course: "full stack",
           name: "cyber4s",
           starting_date: new Date("2020-07-05"),
@@ -30,6 +32,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:3,
           course: "full stack",
           name: "adva",
           starting_date: new Date("2020-07-05"),
@@ -42,6 +45,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          id:4,
           course: "full stack",
           name: "hackeru",
           starting_date: new Date("2020-07-05"),
