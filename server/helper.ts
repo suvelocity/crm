@@ -140,7 +140,7 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
 
 //TODO add inteface for query
 export const getQuery: (
-  specificFields?: PublicFields[] | undefined,
+  specificFields?: PublicFields[],
   omitRelations?: boolean,
   onlyActive?: boolean
 ) => any = (
@@ -172,7 +172,7 @@ export const getQuery: (
           ],
         },
       ],
-      attributes: ["status", "date", "comment"],
+      attributes: ["id", "status", "date", "comment"],
     };
 
     include.push(includeEvents);
