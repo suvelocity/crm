@@ -29,7 +29,7 @@ export interface IStudent {
   workExperience: string;
   languages: string;
   citizenship: string;
-  fccAccount: string;
+  fccAccount?: string;
 }
 
 export interface IClass {

@@ -36,6 +36,9 @@ import TranslateIcon from "@material-ui/icons/Translate";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import WorkIcon from "@material-ui/icons/Work";
 import TrackChangesIcon from "@material-ui/icons/TrackChanges";
+import Modal from '@material-ui/core/Modal';
+import EditIcon from '@material-ui/icons/Edit';
+import AddStudent from './AddStudent';
 import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
@@ -44,6 +47,7 @@ import { SingleListItem } from "../tableRelated";
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
 
@@ -65,6 +69,13 @@ function SingleStudent() {
     setStudent(data);
     setLoading(false);
   }, [id, setStudent, setLoading, setEventsToMap]);
+
+  
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getStudent();
+  }
 
   const removeJob = useCallback(
     async (
@@ -111,6 +122,8 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+        <div style={{display:'flex', justifyContent: 'space-between'}}>
+          <div>
           <GridDiv repeatFormula="1fr 1fr 1fr">
             <List>
               <SingleListItem
@@ -216,6 +229,21 @@ function SingleStudent() {
               )}
             </List>
           </GridDiv>
+            </div>
+            <div style={{cursor: "pointer" }} onClick={() => setModalState(true)}><EditIcon /></div>
+          </div>
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            style={{overflow: 'scroll'}}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {
+              !student?<div>oops</div>:
+              <AddStudent handleClose={handleClose} update={true} student={student} header='Edit Student'/>
+            }
+          </Modal>
         </Loading>
       </Wrapper>
       <Wrapper width="65%">
