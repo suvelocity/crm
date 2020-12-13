@@ -22,6 +22,7 @@ import { capitalize } from "../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory } from "react-router-dom";
 import SimpleModal from "./Modal";
+import { pairing } from "./GeoCoding";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
@@ -32,6 +33,8 @@ function NewClassMentorProject() {
   const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
+
+  console.log(pairing(cls?.Students!, []))
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
