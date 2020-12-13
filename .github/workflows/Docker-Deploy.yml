@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GCE_INSTANCE: crm-docker   # TODO: name your instance
+  GCE_INSTANCE: crm--mentor-staging   # TODO: name your instance
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone if needed
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }} # The service account user you created
   DB_PASS: ${{ secrets.DB_PASS }}
@@ -37,9 +37,9 @@ jobs:
     - name: Configure Docker to use gcloud command-line
       run: gcloud --quiet auth configure-docker
 
-    # # Create a new instance -> MARK IT OUT AFTER FIRST DEPLOY
-    # - name: Create Instance 
-    #   run: make create
+    # Create a new instance -> MARK IT OUT AFTER FIRST DEPLOY
+    - name: Create Instance 
+      run: make create
 
     # Create Rule To allow access to the port your app is running on.
 
