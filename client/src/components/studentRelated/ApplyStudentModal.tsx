@@ -16,49 +16,8 @@ import { IJob, IEvent } from "../../typescript/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-
-function getModalStyle() {
-  return {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    paper: {
-      position: "absolute",
-      width: "50%",
-      maxWidth: 700,
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: 7,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      outline: "none",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-      marginTop: 11,
-    },
-    button: {
-      textAlign: "center",
-      margin: 10,
-    },
-  })
-);
+import { SingleListItem } from "../tableRelated";
+import Swal from "sweetalert2";
 
 function ApplyStudentModal({
   currentJobs,
@@ -82,8 +41,8 @@ function ApplyStudentModal({
         const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
         setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
       })();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   }, [currentJobs]);
 
@@ -112,8 +71,8 @@ function ApplyStudentModal({
           setLoading(false);
           handleClose();
         }, 1000);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     } else {
       handleClose();
@@ -160,23 +119,19 @@ function ApplyStudentModal({
                       {job.position}
                     </Typography>
                     <Typography className={classes.secondaryHeading}>
-                      {job.company}
+                      {job.Company.name}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="Requirements"
-                          secondary={job.requirements}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Location"
-                          secondary={job.location}
-                        />
-                      </ListItem>
+                      <SingleListItem
+                        primary="Requirements"
+                        secondary={job.requirements}
+                      />
+                      <SingleListItem
+                        primary="Location"
+                        secondary={job.location}
+                      />
                       <ListItem>
                         <ListItemText
                           primary="Applied Students"
@@ -226,3 +181,46 @@ function ApplyStudentModal({
 }
 
 export default ApplyStudentModal;
+
+function getModalStyle() {
+  return {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      position: "absolute",
+      width: "50%",
+      maxWidth: 700,
+      minWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 7,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      outline: "none",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexShrink: 0,
+      fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
+    },
+    secondaryHeading: {
+      fontSize: theme.typography.pxToRem(15),
+      color: theme.palette.text.secondary,
+      marginTop: 11,
+    },
+    button: {
+      textAlign: "center",
+      margin: 10,
+    },
+  })
+);

@@ -25,7 +25,7 @@ function AllMentors() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get('/api/v1/mentor/mentor');
+      const { data } = await network.get('/api/v1/M/mentor');
       setMentors(data);
       setLoading(false);
     })();
@@ -42,15 +42,15 @@ function AllMentors() {
     <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color='#2c6e3c'>All Mentors</H1>
+          <H1 color='#c47dfa'>All Mentors</H1>
         </TitleWrapper>
         <br />
         <StyledLink to='/mentor/add'>
           <Button
             variant='contained'
             style={{
-              backgroundColor: '#2c6e3c',
-              color: 'white',
+              backgroundColor: "#c47dfa",
+              color: "white",
               marginLeft: 10,
             }}
           >

@@ -1,8 +1,8 @@
-import { string } from "joi";
+import { Model } from "sequelize/types";
 
 export interface IJob {
   id?: number;
-  company: string;
+  companyId: number;
   position: string;
   requirements: string;
   location: string;
@@ -29,6 +29,7 @@ export interface IStudent {
   workExperience: string;
   languages: string;
   citizenship: string;
+  fccAccount: string;
 }
 
 export interface IClass {
@@ -47,6 +48,40 @@ export interface IEvent {
   studentId: number;
   jobId: number;
   status: string;
+  comment?: string;
+}
+
+export interface ICompany {
+  id?: number;
+  name: string;
+  contactPosition?: string;
+  contactName?: string;
+  contactNumber?: string;
+  location: string;
+  description?: string;
+}
+
+export interface IUser {
+  id?: number;
+  email: string;
+  password: string;
+  type: string;
+  relatedId?: number;
+}
+
+export interface SeqInclude {
+  model: Model;
+  attributes?: string[];
+  include?: SeqInclude[];
+  where?: {};
+}
+
+export type PublicFields = "firstname" | "lastname" | "fcc";
+
+export enum PublicFieldsEnum {
+  firstname = "first_name",
+  lastname = "last_name",
+  fcc = "fcc_account",
 }
 export interface IMentor {
   id?: number;

@@ -10,6 +10,7 @@ import {
   StyledUl,
   TableHeader,
   StyledDiv,
+  repeatFormula,
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
 import WorkIcon from "@material-ui/icons/Work";
@@ -31,16 +32,16 @@ function AllJobs() {
   }, []);
 
   return (
-    <Wrapper width="80%">
+    <Wrapper width='80%'>
       <Center>
         <TitleWrapper>
-          <H1 color="#bb4040">All Jobs</H1>
+          <H1 color='#bb4040'>All Jobs</H1>
         </TitleWrapper>
         <br />
-        <StyledLink to="/job/add">
+        <StyledLink to='/job/add'>
           <Button
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant="contained"
+            variant='contained'
           >
             Add Job
           </Button>
@@ -51,24 +52,24 @@ function AllJobs() {
         <StyledUl>
           {jobs && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+              <TableHeader repeatFormula={repeatFormula}>
                 <WorkIcon />
-                <StyledSpan weight="bold">Position</StyledSpan>
-                <StyledSpan weight="bold">Company</StyledSpan>
-                <StyledSpan weight="bold">Location</StyledSpan>
+                <StyledSpan weight='bold'>Position</StyledSpan>
+                <StyledSpan weight='bold'>Company</StyledSpan>
+                <StyledSpan weight='bold'>Location</StyledSpan>
               </TableHeader>
             </li>
           )}
           {jobs &&
             jobs.map((job) => (
               <li>
-                <StyledLink to={`/job/${job.id}`} color="black">
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                <StyledLink to={`/job/${job.id}`} color='black'>
+                  <StyledDiv repeatFormula={repeatFormula}>
                     <WorkIcon />
-                    <StyledSpan weight="bold">
+                    <StyledSpan weight='bold'>
                       {capitalize(job.position)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(job.company)}</StyledSpan>
+                    <StyledSpan>{capitalize(job.Company.name)}</StyledSpan>
                     <StyledSpan>{job.location}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
