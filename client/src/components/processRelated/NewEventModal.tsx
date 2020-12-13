@@ -45,14 +45,16 @@ function NewEventModal({
   };
 
   // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
-  const submitStatus = async (data: IEvent) => {
-    if (data.status === "Hired") {
+  const submitStatus = async (data: any) => {
+    if (data.eventName === "Hired") {
       handleClose();
-      const procceed: boolean = await promptAreYouSure();
-      if (!procceed) return;
+      const proceed: boolean = await promptAreYouSure();
+      if (!proceed) return;
     }
-    data.studentId = studentId;
-    data.jobId = jobId;
+    data.userId = studentId;
+    data.relatedId = jobId;
+    data.entry = { comment: data.comment };
+    delete data.comment;
     try {
       const {
         data: newEvent,
@@ -107,15 +109,15 @@ function NewEventModal({
                       ))}
                     </Select>
                   }
-                  name="status"
+                  name="eventName"
                   rules={{ required: "Event is required" }}
                   control={control}
                   defaultValue=""
                 />
               </FormControl>
               {!empty ? (
-                errors.status ? (
-                  <ErrorBtn tooltipTitle={errors.status.message} />
+                errors.eventName ? (
+                  <ErrorBtn tooltipTitle={errors.eventName.message} />
                 ) : (
                   <ActionBtn />
                 )

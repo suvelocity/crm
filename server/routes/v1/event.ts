@@ -62,36 +62,34 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { jobId, status, studentId, comment, date } = req.body;
+    const { relatedId, eventName, userId, entry, date } = req.body;
     const { error } = eventsSchema.validate({
-      jobId,
-      status,
-      studentId,
-      comment,
+      relatedId,
+      eventName,
+      userId,
       date,
     });
     if (error) return res.status(400).json({ error: error.message });
-    if (status === "Hired") {
+    if (eventName === "Hired") {
       //TODO fix types
       const job: IJob = (
-        await Job.findByPk(jobId, {
+        await Job.findByPk(relatedId, {
           include: [{ model: Company, attributes: ["name"] }],
         })
       ).toJSON();
-      const student: IStudent = (await Job.findByPk(studentId)).toJSON();
-      console.log(student);
+      const student: IStudent = (await Job.findByPk(userId)).toJSON();
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
       const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
-      cancelAllJobsOfStudent(studentId, parseInt(jobId), studentMsg, date);
-      cancelAllApplicantsForJob(jobId, parseInt(studentId), jobMsg, date);
+      cancelAllJobsOfStudent(userId, parseInt(relatedId), studentMsg, date);
+      cancelAllApplicantsForJob(relatedId, parseInt(userId), jobMsg, date);
     }
     const event: IEvent = await Event.create({
-      studentId,
-      jobId,
-      status,
-      comment,
+      userId,
+      relatedId,
+      eventName,
+      entry,
       date,
     });
     return res.json(event);
@@ -107,7 +105,7 @@ router.patch("/delete-process", async (req, res) => {
     const deleted: any = await Event.destroy({
       where: { studentId, jobId },
     });
-    if (deleted) return res.json({ message: "Process deleted" }).status(204);
+    if (deleted) return res.json({ message: "Process deleted" });
     return res.status(404).json({ error: "Process not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -121,7 +119,7 @@ router.patch("/delete", async (req, res) => {
     const deleted: any = await Event.destroy({
       where: { id: eventId },
     });
-    if (deleted) return res.json({ message: "Event deleted" }).status(204);
+    if (deleted) return res.json({ message: "Event deleted" });
     return res.status(404).json({ error: "Event not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });

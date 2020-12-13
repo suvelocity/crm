@@ -21,11 +21,11 @@ export const classSchemaToPut = Joi.object({
 });
 
 export const eventsSchema = Joi.object({
-  studentId: Joi.number().required(),
-  jobId: Joi.number().required(),
-  status: Joi.string().required(),
+  userId: Joi.number().required(),
+  relatedId: Joi.number().required(),
+  eventName: Joi.string().required(),
   date: Joi.date(),
-  comment: Joi.string().allow(null, ""),
+  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
@@ -116,13 +116,13 @@ export const signInSchema = Joi.object({
 export const meetingSchema = Joi.object({
   studentId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
-  date: Joi.date().min(new Date()).allow(null, "")
-})
+  date: Joi.date().min(new Date()).allow(null, ""),
+});
 
 export const meetingSchemaToPut = Joi.object({
   place: Joi.string().allow(null, ""),
-  date: Joi.date().min(new Date()).allow(null, "")
-})
+  date: Joi.date().min(new Date()).allow(null, ""),
+});
 
 export const mentorSchema = Joi.object({
   name: Joi.string().required(),
