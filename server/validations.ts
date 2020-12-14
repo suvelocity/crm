@@ -172,6 +172,32 @@ export const mentorSchemaToPut = Joi.object({
   gender: Joi.string().allow(null, ""),
 });
 
-export const studentMentorIdPut = Joi.object({
-  mentorId: Joi.number(),
+export const mentorProgramSchema = Joi.object({
+  classId: Joi.number().required(),
+  name: Joi.string().required(),
+  open: Joi.boolean().required(),
+  startDate: Joi.date().required(),
+  endDate: Joi.date().required(),
 });
+
+export const mentorProgramSchemaToPut = Joi.object({
+  classId: Joi.number().allow(null, ""),
+  name: Joi.string().allow(null, ""),
+  open: Joi.boolean().allow(null, ""),
+  startDate: Joi.date().allow(null, ""),
+  endDate: Joi.date().allow(null, ""),
+});
+
+
+export const mentorStudentSchema = Joi.object({
+  mentorProgramId: Joi.number().required(),
+  mentorId: Joi.number().required(),
+  studentId: Joi.number().required(),
+});
+
+export const mentorStudentSchemaToPut = Joi.object({
+  mentorProgramId: Joi.number().allow(null, ""),
+  mentorId: Joi.number().allow(null, ""),
+  studentId: Joi.number().allow(null, ""),
+});
+

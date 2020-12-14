@@ -114,7 +114,7 @@ export interface IMentor {
   Meetings?: Partial<IMeeting>[];
 }
 
-export interface MentorClassDashboard {
+export interface IMentorClassDashboard {
   id?: number;
   firstName: string;
   lastName: string;
@@ -130,6 +130,16 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
+
+export interface IMentorProgram{
+  id?: number;
+  classId: number;
+  name: string;
+  open: boolean;
+  endDate: string;
+  startDate: string;
+}
+
 export interface IUser {
   id?: number;
   userType: string;

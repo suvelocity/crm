@@ -12,33 +12,33 @@ import {
   TableHeader,
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
-import { IClass, MentorClassDashboard } from "../../typescript/interfaces";
+import { IMentorProgram } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../helpers/general";
 
-const MentorClasses: React.FC = () => {
-  const [classes, setClasses] = useState<IClass[]>([]);
+const MentorPrograms: React.FC = () => {
+  const [programs, setPrograms] = useState<IMentorProgram[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/M/classes/with");
-    setClasses(data);
+  const getPrograms = useCallback(async () => {
+    const { data } = await network.get("/api/v1/M/program/all");
+    console.log(data)
+    setPrograms(data);
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    getClasses();
-  }, [getClasses]);
+    getPrograms();
+  }, [getPrograms]);
 
-  console.log(classes)
 
   return (
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#c47dfa">Mentor Management</H1>
+          <H1 color="#c47dfa">All Mentor Programs</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/mentor/all">
@@ -65,27 +65,29 @@ const MentorClasses: React.FC = () => {
       <br />
       <Loading loading={loading} size={30}>
         <StyledUl>
-          {classes && (
+          {programs && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1fr">
                 <ClassIcon />
-                <StyledSpan weight="bold">Name</StyledSpan>
-                <StyledSpan weight="bold">Course</StyledSpan>
-                <StyledSpan weight="bold">Cycle number</StyledSpan>
+                <StyledSpan weight="bold">Program Name</StyledSpan>
+                <StyledSpan weight="bold">Start Date</StyledSpan>
+                <StyledSpan weight="bold">End Date</StyledSpan>
+                <StyledSpan weight="bold">Edit</StyledSpan>
               </TableHeader>
             </li>
           )}
-          {classes &&
-            classes.map((cls) => (
-              <li style={{backgroundColor: cls.Students && (cls.Students.some(student => !student.mentorId)) ? 'red' : 'primary'}} >
-                <StyledLink to={`/mentor/class/${cls.id}`} color="black">
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+          {programs &&
+            programs.map((program,i) => (
+              <li key={i} /* style={{backgroundColor: cls.Students && (cls.Students.some(student => !student.mentorId)) ? 'red' : 'primary'}}*/>
+                <StyledLink to={`/mentor/program/${program.id}`} color="black">
+                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1fr">
                     <ClassIcon />
                     <StyledSpan weight="bold">
-                      {capitalize(cls.name)}
+                      {capitalize(program.name)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(cls.course)}</StyledSpan>
-                    <StyledSpan>{cls.cycleNumber}</StyledSpan>
+                    <StyledSpan>{new Date(program.startDate).toLocaleDateString()}</StyledSpan>
+                    <StyledSpan>{new Date(program.endDate).toLocaleDateString()}</StyledSpan>
+                    <StyledSpan><Button>Edit</Button></StyledSpan>
                   </StyledDiv>
                 </StyledLink>
                 
@@ -97,4 +99,4 @@ const MentorClasses: React.FC = () => {
   );
 };
 
-export default MentorClasses;
+export default MentorPrograms;
