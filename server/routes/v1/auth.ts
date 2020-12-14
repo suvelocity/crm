@@ -74,6 +74,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     await RefreshToken.create({ token: refreshToken });
     res.cookie("refreshToken", refreshToken);
     res.cookie("accessToken", accessToken);
+    console.log(user.type)
     switch (user.type) {
       case "student":
         const student = await Student.findByPk(user.relatedId);
