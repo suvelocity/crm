@@ -69,7 +69,14 @@ function SingleProcess() {
     const updated = events?.slice(0, index).concat(events.slice(index + 1));
     setEvents(updated);
   };
-  const classesType = { primary: classes.primary };
+  const classesType = {
+    primary: classes.primary,
+    secondary: classes.secondary,
+  };
+
+  const classesTypeRequirements = {
+    primary: classes.primaryReq,
+  };
 
   return (
     <Wrapper width="90%">
@@ -152,7 +159,7 @@ function SingleProcess() {
             <MultilineListItem>
               <ListItemText
                 style={{ width: "95%", margin: "0 auto" }}
-                classes={classesType}
+                classes={classesTypeRequirements}
                 primary="Requirements"
                 secondary={`${job?.requirements}`}
               />
@@ -180,6 +187,14 @@ function sortByDate(event1: IEvent, event2: IEvent) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     primary: {
+      fontWeight: "bold",
+      fontSize: "1.1em",
+      textAlign: "center",
+    },
+    secondary: {
+      textAlign: "center",
+    },
+    primaryReq: {
       fontWeight: "bold",
       fontSize: "1.1em",
     },

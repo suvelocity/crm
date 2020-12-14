@@ -80,6 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
         })
       ).toJSON();
       const student: IStudent = (await Student.findByPk(userId)).toJSON();
+      console.log(student);
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
       const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
