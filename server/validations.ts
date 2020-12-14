@@ -68,6 +68,7 @@ export const studentSchema = Joi.object({
   languages: Joi.string().required(),
   citizenship: Joi.string().required(),
   fccAccount: Joi.string().max(30).allow(null, ""),
+  resumeLink: Joi.string().max(500).allow(null, ""),
 });
 
 export const studentSchemaToPut = Joi.object({
@@ -88,6 +89,7 @@ export const studentSchemaToPut = Joi.object({
   languages: Joi.string().allow(null, ""),
   citizenship: Joi.string().allow(null, ""),
   fccAccount: Joi.string().max(30).allow(null, ""),
+  resumeLink: Joi.string().max(500).allow(null, ""),
 });
 
 export const companySchema = Joi.object({

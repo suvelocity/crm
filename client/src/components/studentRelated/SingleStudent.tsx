@@ -44,6 +44,7 @@ import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 import { SingleListItem } from "../tableRelated";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
@@ -149,6 +150,14 @@ function SingleStudent() {
               <SingleListItem primary="ID Number" secondary={student?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
+              {student?.resumeLink && (
+                <SingleListItem
+                  primary="Resume Link"
+                  secondary={student?.resumeLink}
+                >
+                  <PostAddIcon />
+                </SingleListItem>
+              )}
               {student?.militaryService && (
                 <MultilineListItem>
                   <ListItemIcon>

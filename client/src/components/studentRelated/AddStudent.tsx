@@ -206,7 +206,7 @@ function AddStudent(props: Props) {
               ) : null}
               <br />
               <FormControl
-                style={{ minWidth: 200 }}
+                style={{ minWidth: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Languages</InputLabel>
@@ -241,11 +241,31 @@ function AddStudent(props: Props) {
                   <ActionBtn />
                 )
               ) : null}
+              <br />
+              <TextField
+                id="resumeLink"
+                name="resumeLink"
+                defaultValue={props.student ? props.student.resumeLink : ""}
+                inputRef={register({
+                  maxLength: {
+                    value: 500,
+                    message: "Resume link needs to be 500 letters max",
+                  },
+                })}
+                label="Resume Link"
+              />
+              {!empty ? (
+                errors.resumeLink ? (
+                  <ErrorBtn tooltipTitle={errors.resumeLink.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
               {generateBrs(2)}
             </div>
             <div>
               <FormControl
-                style={{ minWidth: 200 }}
+                style={{ minWidth: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Please select a class</InputLabel>
