@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
+      this.hasMany(models.Users, {
+        foreignKey: "relatedId",
+      });
       this.belongsTo(models.Mentor, {
         foreignKey: "mentorId",
       });
