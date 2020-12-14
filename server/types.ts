@@ -109,6 +109,7 @@ export interface ITaskofStudent {
   taskId: number;
   type: string;
   status: string;
+  submitLink: string;
 }
 export interface SeqInclude {
   model: Model;

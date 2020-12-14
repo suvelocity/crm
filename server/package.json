@@ -11,6 +11,7 @@
     "start": "node build",
     "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all"
   },
+  "proxy":"http://localhost:8080",
   "keywords": [],
   "author": "",
   "license": "ISC",

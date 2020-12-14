@@ -26,6 +26,23 @@ export default function Lesson({
           </StyledSummery>
           <hr />
           <StyledDetails>{lesson.body}</StyledDetails>
+          <StyledDetails>
+            <ResourcesLinks>
+              {lesson.resource?.includes("%#splitingResource#%")
+                ? lesson.resource
+                    .split("%#splitingResource#%")
+                    .map((resource: string, index: number) => (
+                      <ResourcesLink key={index}>
+                        <Link href={resource}>{resource}</Link>
+                      </ResourcesLink>
+                    ))
+                : //@ts-ignore
+                  lesson.resource?.length > 0 && (
+                    //@ts-ignore
+                    <Link href={resource!}>{lesson.resource}</Link>
+                  )}
+            </ResourcesLinks>
+          </StyledDetails>
         </StyledAccordion>
       </div>
     </LessonContainer>
@@ -50,4 +67,23 @@ const StyledSummery = styled(AccordionSummary)`
 
 const StyledDetails = styled(AccordionDetails)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+`;
+
+const ResourcesLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const ResourcesLink = styled.div`
+  margin-top: 15px;
+`;
+
+const Link = styled.a`
+  background-color: #3f51b5;
+  text-decoration: none;
+  color:${({ theme }: { theme: any }) => theme.colors.font}};
+  border-radius: 8px;
+  padding: 5px;
+  color: white;
 `;

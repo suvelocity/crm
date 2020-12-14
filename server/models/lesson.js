@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       classId: DataTypes.INTEGER,
       title: DataTypes.STRING,
       body: DataTypes.TEXT,
-      resouce: DataTypes.TEXT,
+      resource: DataTypes.TEXT,
       zoomLink: DataTypes.STRING,
       createdBy: DataTypes.INTEGER,
     },
