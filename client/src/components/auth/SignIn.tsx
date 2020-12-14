@@ -7,6 +7,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../helpers";
 import { IUserSignIn } from "../../typescript/interfaces";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import {
   Wrapper,
   TitleWrapper,
@@ -22,6 +24,7 @@ export function SignIn() {
   //@ts-ignore
   const { setUser } = useContext(AuthContext);
   const [loginError, setLoginError] = useState();
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const empty = Object.keys(errors).length === 0;
 
@@ -54,6 +57,7 @@ export function SignIn() {
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
+            style={{ minWidth: 270 }}
             id="email"
             label="Email"
             type="email"
@@ -83,7 +87,7 @@ export function SignIn() {
           {generateBrs(2)}
           <TextField
             id="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             label="Password"
             inputRef={register({
               required: "Password is required",
@@ -95,6 +99,13 @@ export function SignIn() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
+                  <IconButton
+                    style={{ opacity: "0.7" }}
+                    onMouseDown={() => setShowPassword(true)}
+                    onMouseUp={() => setShowPassword(false)}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
                   <LockOutlinedIcon />
                 </InputAdornment>
               ),
