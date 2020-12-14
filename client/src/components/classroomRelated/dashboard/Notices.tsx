@@ -8,6 +8,7 @@ import AddNotice from "./AddNotice";
 import Button from "@material-ui/core/Button";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
+import SingleNotice from "./SingleNotice";
 
 function Notices() {
   const [notices, setNotices] = useState<INotice[] | null>();
@@ -51,13 +52,34 @@ function Notices() {
     }
     //eslint-disable-next-line
   }, []);
+
+  const deleteNotice = async (id: number) => {
+    try {
+      await network.delete(`/api/v1/notice/${id}`);
+      //todo add popup deleted susccsefuly
+      console.log(`notice ${id} deleted sucssesfuly`);
+    } catch (error) {
+      //todo error handler
+    }
+  };
+
   return (
     <>
       <Loading size={30} loading={loading}>
         <div
           className='notice-container'
-          style={{ backgroundColor: "white" }}
-        ></div>
+          // style={{ backgroundColor: "white" }}
+        >
+          {notices?.map((notice) => (
+            //@ts-ignore
+            <SingleNotice
+              notice={notice}
+              key={notice.id}
+              deleteNotice={deleteNotice}
+              userType={user.userType}
+            />
+          ))}
+        </div>
 
         {user.userType === "teacher" && (
           <div>
@@ -68,8 +90,7 @@ function Notices() {
               open={open}
               onClose={handleClose}
               aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'
-            >
+              aria-describedby='simple-modal-description'>
               {body}
             </Modal>
           </div>

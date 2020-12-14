@@ -60,7 +60,7 @@ router.put("/byid/:id", async (req: Request, res: Response) => {
 });
 
 //!paraniod didnt work here
-router.delete("/byid/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   const paramsId: string = req.params.id;
   try {
     await Notice.destroy({ where: { id: paramsId } });
