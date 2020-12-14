@@ -153,23 +153,6 @@ function ApplyForJobModal({
                           secondary={student.Class?.name}
                         />
                       </ListItem>
-                      {student.Events.length > 0 && (
-                        <ListItem>
-                          <ListItemText
-                            primary="Applied Jobs"
-                            secondary={
-                              <>
-                                {student.Events.map((event: IEvent) => (
-                                  <p key={event.Job?.id}>
-                                    {event.Job?.position}{" "}
-                                    {event.Job?.Company?.name}
-                                  </p>
-                                ))}
-                              </>
-                            }
-                          />
-                        </ListItem>
-                      )}
                     </List>
                   </AccordionDetails>
                 </Accordion>
