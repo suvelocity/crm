@@ -27,7 +27,6 @@ const ClassDashboard: React.FC = () => {
 
   const getTableData = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/meeting/class/${id}`);
-    console.log(data);
     setTabelData(data);
     setLoading(false);
   }, []);
@@ -35,6 +34,15 @@ const ClassDashboard: React.FC = () => {
   useEffect(() => {
     getTableData();
   }, []);
+
+  const endProgram = async () =>{
+    try{
+      const res = await network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length })
+      history.push('/mentor')
+    }catch(err){
+      console.error(err.message)
+    }
+  }
 
   return (
     <Wrapper width="80%">
@@ -114,12 +122,7 @@ const ClassDashboard: React.FC = () => {
               </li>
             ))}
         </StyledUl>
-        <Button style={{backgroundColor: 'red'}} onClick={() => {
-          network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length })
-            .then(() => {
-              history.push('/mentor')
-          }).catch((e) => console.log(e.message))
-        }}>End Program</Button>
+        <Button style={{backgroundColor: 'red'}} onClick={() => endProgram()}>End Program</Button>
       </Loading>
     </Wrapper>
   );

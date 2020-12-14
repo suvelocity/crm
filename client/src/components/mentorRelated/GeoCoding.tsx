@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { REACT_APP_API_KEY } from "../../secret";
 
 function GeoCoding(obj: any) : any {
-    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${obj.address.split(' ').join()}&key=${REACT_APP_API_KEY}`)
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${obj.address.split(' ').join()}&key=${process.env.REACT_APP_API_KEY}`)
         .then((x) => {
             return obj.geo = x.data.results[0].geometry.location
         })

@@ -122,7 +122,7 @@ const SingleMentor: React.FC = () => {
                     <WorkIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Job"
+                    primary="Role And Experience"
                     secondary={capitalize(mentor[0]?.job)}
                   />
                 </ListItem>
