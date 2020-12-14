@@ -1,6 +1,7 @@
 import { Model } from "sequelize/types";
 
 export interface IJob {
+  Company?: ICompany;
   id?: number;
   companyId: number;
   position: string;

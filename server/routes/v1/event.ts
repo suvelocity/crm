@@ -8,6 +8,19 @@ const router = Router();
 import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
+import transporter from "../../mail";
+
+const mailOptions = (
+  to: string,
+  job: string,
+  student: string,
+  company: string
+) => ({
+  from: process.env.EMAIL_USER,
+  to: to,
+  subject: "You Were Applied!",
+  text: `Hello ${student},\nYour CV was sent to ${company} for the position of ${job}! \nMake sure you're ready!`,
+});
 
 router.get("/all", async (req: Request, res: Response) => {
   try {
@@ -99,6 +112,31 @@ router.post("/", async (req: Request, res: Response) => {
         parseInt(userId),
         jobMsg,
         date
+      );
+    } else if (eventName === "Sent CV") {
+      const job: IJob = (
+        await Job.findByPk(relatedId, {
+          include: [{ model: Company, attributes: ["name"] }],
+        })
+      ).toJSON();
+      const student: IStudent = (
+        await Student.findByPk(userId, {
+          attributes: ["firstName", "lastName", "email"],
+        })
+      ).toJSON();
+      transporter.sendMail(
+        mailOptions(
+          student.email,
+          job.position,
+          `${student.firstName} ${student.lastName}`,
+          job.Company!.name
+        ),
+        function (error: Error | null) {
+          if (error) {
+            console.log(error);
+            console.log("Mail not sent");
+          }
+        }
       );
     }
     const event: IEvent = await Event.create({
