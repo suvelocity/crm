@@ -7,12 +7,8 @@ import {
   validPhoneNumberRegex,
   onlyNumbersRegex,
 } from "../../helpers";
-import DoneIcon from "@material-ui/icons/Done";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -30,7 +26,6 @@ import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
 import languages from "../../helpers/languages.json";
-import LanguageSelector from "../LanguageSelector";
 interface Props {
   student?: IStudent;
   header?: string;
@@ -206,19 +201,9 @@ function AddStudent(props: Props) {
                 )
               ) : null}
               <br />
-              <LanguageSelector
-                //@ts-ignore
-                id="languages"
-                name="languages"
-                defaultValue={props.student ? props.student.languages : ""}
-                inputRef={register({ required: "Languages are required" })}
-                label="Languages"
-              />
-
-              {/* 
               <FormControl
-                style={{ minWidth: 200 }}
-                error={Boolean(errors.languages)}
+                style={{ minWidth: 195 }}
+                error={Boolean(errors.classId)}
               >
                 <InputLabel>Languages</InputLabel>
                 <Controller
@@ -232,24 +217,42 @@ function AddStudent(props: Props) {
                           value={languages[key].name}
                         >
                           {/* @ts-ignore */}
-              {/* <b>{languages[key].name}</b> */}
-              {", "}
-              {/* @ts-ignore */}
-              {/* {languages[key].nativeName} */}
-              {/* </MenuItem> */}
-              {/* ))} */}
-              {/* </Select> */}
-              {/* } */}
-              {/* name="languages" */}
-              {/* rules={{ required: "Languages is required" }} */}
-              {/* defaultValue={props.student ? props.student.languages : []} */}
-              {/* control={control} */}
-              {/* /> */}
-              {/* </FormControl> */}
-
+                          {languages[key].nativeName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name="languages"
+                  rules={{ required: "Languages is required" }}
+                  defaultValue={
+                    props.student ? props.student.languages.split(", ") : []
+                  }
+                  control={control}
+                />
+              </FormControl>
               {!empty ? (
                 errors.languages ? (
                   <ErrorBtn tooltipTitle={errors.languages.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
+              <br />
+              <TextField
+                id="resumeLink"
+                name="resumeLink"
+                defaultValue={props.student ? props.student.resumeLink : ""}
+                inputRef={register({
+                  maxLength: {
+                    value: 500,
+                    message: "Resume link needs to be 500 letters max",
+                  },
+                })}
+                label="Resume Link"
+              />
+              {!empty ? (
+                errors.resumeLink ? (
+                  <ErrorBtn tooltipTitle={errors.resumeLink.message} />
                 ) : (
                   <ActionBtn />
                 )
@@ -258,7 +261,7 @@ function AddStudent(props: Props) {
             </div>
             <div>
               <FormControl
-                style={{ minWidth: 200 }}
+                style={{ minWidth: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Please select a class</InputLabel>
