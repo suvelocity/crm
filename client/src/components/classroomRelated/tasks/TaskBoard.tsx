@@ -7,7 +7,6 @@ import Button from "@material-ui/core/Button";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-import Task from "./Task";
 import TaskTable from "./TaskTable";
 
 export default function TaskBoard() {

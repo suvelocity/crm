@@ -41,7 +41,9 @@ function Notices() {
       );
       setLoading(false);
       setNotices(data);
-    } catch {}
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
+    }
   }, []);
 
   useEffect(() => {

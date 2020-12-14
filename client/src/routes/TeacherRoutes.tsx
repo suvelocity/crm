@@ -16,6 +16,9 @@ export default function TeacherRoutes() {
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
       <div id='interface-container' style={{ flexGrow: 1 }}>
         <Switch>
+          <Route exact path='/'>
+            <Dashboard />
+          </Route>
           <Route path='/lessons'>
             <Lessons />
           </Route>
@@ -27,9 +30,6 @@ export default function TeacherRoutes() {
           </Route>
           <Route path='/teacher'>
             <Teacher />
-          </Route>
-          <Route path='/'>
-            <Dashboard />
           </Route>
           <Route path='*'>
             <div>404 Not Found</div>

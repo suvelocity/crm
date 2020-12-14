@@ -1,45 +1,45 @@
 import * as React from "react";
-import { DataGrid, ColDef, ValueGetterParams } from "@material-ui/data-grid";
+import { DataGrid, ColDef } from "@material-ui/data-grid";
+import network from "../../../helpers/network";
+import Swal from "sweetalert2";
+import { Loading } from "react-loading-wrapper";
+import Modal from "@material-ui/core/Modal";
+import Button from "@material-ui/core/Button";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import Submit from "./Submit";
 
 const columns: ColDef[] = [
-  { field: "id", headerName: "#", width: 70 },
-  { field: "taskName", headerName: "Task", width: 300 },
-  { field: "lesson", headerName: "Lesson", width: 200 },
+  { field: "id", headerName: "#", width: 50 },
+  { field: "taskName", headerName: "Task", flex: 1 },
+  { field: "lesson", headerName: "Lesson", flex: 1 },
   {
     field: "endDate",
     headerName: "Deadline",
     type: "date",
-    width: 90,
+    width: 300,
   },
   {
     field: "link",
     headerName: "External Link",
     type: "date",
-    width: 300,
+    flex: 1,
   },
   {
     field: "status",
     headerName: "Status",
-    width: 90,
+    width: 100,
   },
 ];
 
-// const rows = [
-//   { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-//   { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-//   { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-//   { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-//   { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-//   { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-//   { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-//   { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-//   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-// ];
-
 export default function DataGridDemo(props: any) {
+  const [selection, setSelection] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const classes = useStyles();
+  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  console.log(selection);
   const { myTasks } = props;
-
-  console.log(myTasks);
 
   const rows =
     myTasks?.map((task: any) => {
@@ -52,9 +52,76 @@ export default function DataGridDemo(props: any) {
       };
     }) || [];
 
+  const handleOpen = () => {
+    if (selection.length !== 1) {
+      alert("please select one task");
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <Submit taskId={selection[0]} />
+    </div>
+  );
+
   return (
-    <div style={{ height: 400, width: "100%" }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+    <div>
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          onSelectionChange={(newSelection) => {
+            setSelection(newSelection.rowIds);
+          }}
+          checkboxSelection={true}
+        />
+      </div>
+      <div>
+        <Button variant='outlined' onClick={handleOpen}>
+          Submit selected task
+        </Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'>
+          {body}
+        </Modal>
+      </div>
     </div>
   );
 }
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      position: "absolute",
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  })
+);

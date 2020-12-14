@@ -95,14 +95,17 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
 
 //todo support 3rd party apps fcc/challengeme
 
-router.put("/bytaskid/:id", async (req: Request, res: Response) => {
+router.put("/submit/:id", async (req: Request, res: Response) => {
   try {
     const currentStatus: any = await TaskofStudent.findByPk(req.params.id, {
       attributes: ["status"],
     });
+
+    //todo add validationwith event table
     await TaskofStudent.update(
       {
         status: currentStatus.status === "pending" ? "done" : "pending",
+        submitLink: req.body.url,
       },
       { where: { id: req.params.id } }
     );
