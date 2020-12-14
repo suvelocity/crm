@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Modal from "@material-ui/core/Modal";
+import EditIcon from "@material-ui/icons/Edit";
+import AddJob from "./AddJob";
 import {
   H1,
   Wrapper,
@@ -15,27 +17,31 @@ import {
   StyledDiv,
   StyledLink,
   MultilineListItem,
+  EditDiv,
 } from "../../styles/styledComponents";
-import PersonIcon from "@material-ui/icons/Person";
+import { SingleListItem } from "../tableRelated";
+import {
+  Person as PersonIcon,
+  Description as DescriptionIcon,
+  ContactSupport as ContactSupportIcon,
+  PlaylistAddCheck as PlaylistAddCheckIcon,
+  Business as BusinessIcon,
+  LocationCity as LocationCityIcon,
+  PostAdd as PostAddIcon,
+} from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { IJob, IEvent } from "../../typescript/interfaces";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import BusinessIcon from "@material-ui/icons/Business";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ApplyForJobModal from "./ApplyForJobModal";
 import Swal from "sweetalert2";
-import DescriptionIcon from "@material-ui/icons/Description";
-import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import { formatToIsraeliDate } from "../../helpers/general";
-import { capitalize } from "../../helpers/general";
+import { capitalize, formatToIsraeliDate } from "../../helpers";
 
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
 
@@ -62,6 +68,12 @@ function SingleJob() {
     setLoading(false);
   }, [id, setJob, setLoading, setEventsToMap]);
 
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getJob();
+  };
+
   const removeStudents = useCallback(
     async (
       studentId: number,
@@ -78,9 +90,9 @@ function SingleJob() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          await network.patch("/api/v1/event/delete", {
-            studentId,
-            jobId: job?.id,
+          await network.put("/api/v1/event/delete", {
+            userId: studentId,
+            relatedId: job?.id,
           });
           getJob();
         }
@@ -92,8 +104,8 @@ function SingleJob() {
   useEffect(() => {
     try {
       getJob();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
   }, [id]);
@@ -109,6 +121,7 @@ function SingleJob() {
     setEventsToMap(sortedEvents);
   };
 
+  const tableRepeatFormula = "0.7fr 1.5fr 1fr 1.5fr 3fr";
   return (
     <>
       <Wrapper width="80%">
@@ -118,57 +131,48 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+          <EditDiv onClick={() => setModalState(true)}>
+            <EditIcon />
+          </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <PostAddIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Position"
-                  secondary={capitalize(job?.position)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Position"
+                secondary={capitalize(job?.position)}
+              >
+                <PostAddIcon />
+              </SingleListItem>
+
               {/* Position */}
             </List>
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <LocationCityIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Company"
-                  secondary={capitalize(job?.company)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Company"
+                secondary={capitalize(job?.Company?.name)}
+              >
+                <BusinessIcon />
+              </SingleListItem>
             </List>
             {/* Company */}
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Location"
-                  secondary={capitalize(job?.location)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Location"
+                secondary={capitalize(job?.location)}
+              >
+                <BusinessIcon />
+              </SingleListItem>
             </List>
             <List>
               {/* Location */}
-              <ListItem>
-                <ListItemIcon>
-                  <PersonIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Contact"
-                  secondary={capitalize(job?.contact)}
-                />
-              </ListItem>
+              <SingleListItem
+                primary="Contact"
+                secondary={capitalize(job?.contact)}
+              >
+                <PersonIcon />
+              </SingleListItem>
               {/* Contact */}
             </List>
           </GridDiv>
-          <br />
           {job?.description && (
             <MultilineListItem>
               <ListItemIcon>
@@ -204,6 +208,24 @@ function SingleJob() {
               />
             </MultilineListItem>
           )}
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            style={{ overflow: "scroll" }}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {!job ? (
+              <div>oops</div>
+            ) : (
+              <AddJob
+                handleClose={handleClose}
+                update={true}
+                job={job}
+                header="Edit Job"
+              />
+            )}
+          </Modal>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
@@ -219,7 +241,7 @@ function SingleJob() {
             {eventsToMap && (
               <li>
                 {/* <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr"> */}
-                <TableHeader repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
+                <TableHeader repeatFormula={tableRepeatFormula}>
                   <PersonIcon />
                   <StyledSpan weight="bold">Name</StyledSpan>
                   <StyledSpan weight="bold">Class</StyledSpan>
@@ -235,7 +257,7 @@ function SingleJob() {
                     color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
-                    <StyledDiv repeatFormula="0.7fr 1.5fr 1fr 1.5fr 3fr">
+                    <StyledDiv repeatFormula={tableRepeatFormula}>
                       <PersonIcon />
                       <StyledSpan weight="bold">
                         {capitalize(event.Student?.firstName)}{" "}
@@ -246,7 +268,7 @@ function SingleJob() {
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>{`${capitalize(
-                        event.status
+                        event.eventName
                       )}, as of ${formatToIsraeliDate(
                         event.date
                       )}`}</StyledSpan>

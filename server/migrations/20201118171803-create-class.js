@@ -17,12 +17,10 @@ module.exports = {
       },
       starting_date: {
         allowNull: false,
-
         type: Sequelize.DATE,
       },
       ending_date: {
         allowNull: false,
-
         type: Sequelize.DATE,
       },
       cycle_number: {

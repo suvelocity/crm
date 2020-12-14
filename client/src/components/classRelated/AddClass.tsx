@@ -1,12 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import network from "../../helpers/network";
-import DoneIcon from "@material-ui/icons/Done";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import {
   Wrapper,
   TitleWrapper,
@@ -15,35 +9,57 @@ import {
   GridDiv,
 } from "../../styles/styledComponents";
 import { useHistory } from "react-router-dom";
-import { IJob } from "../../typescript/interfaces";
+import { IClass } from "../../typescript/interfaces";
 import {
   FormControl,
   FormHelperText,
   InputLabel,
   MenuItem,
+  Button,
+  TextField,
   Select,
 } from "@material-ui/core";
+import { ActionBtn, ErrorBtn } from "../formRelated";
+import Swal from "sweetalert2";
 
-const AddClass = () => {
+const courses: string[] = ["Cyber4s", "Excellentteam", "Adva"];
+interface Props {
+  cls?: IClass;
+  header?: string;
+  update?: boolean;
+  handleClose?: Function;
+}
+const AddClass = (props: Props) => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
-  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
+  const empty = Object.keys(errors).length === 0;
 
-  const onSubmit = async (data: Omit<IJob, "id">) => {
+  const defaultDateValue = `${new Date().getFullYear()}-${(
+    "0" +
+    (new Date().getMonth() + 1)
+  ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+
+  const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
-      await network.post("/api/v1/class", data);
-      history.push("/class/all");
-    } catch (e) {
-      alert("error occurred");
+      if(props.update && props.cls) {
+        await network.patch(`/api/v1/class/${props.cls.id}`, data);
+        props.handleClose&& props.handleClose() 
+        // history.push(`/company/${props.company.id}`);
+      }else{
+        await network.post("/api/v1/class", data);
+        history.push("/class/all");
+      }
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
-
+  
   return (
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">Add Class</H1>
+          <H1 color="#2c6e3c">{props.header? props.header : 'Add Class'}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -56,41 +72,31 @@ const AddClass = () => {
                 <Controller
                   as={
                     <Select>
-                      <MenuItem key="opt1" value="Cyber4s">
-                        Cyber4s
-                      </MenuItem>
-                      <MenuItem key="opt2" value="Test">
-                        Test
-                      </MenuItem>
+                      {courses.map((course: string, i: number) => (
+                        <MenuItem key={`opt${i}`} value={course}>
+                          {course}
+                        </MenuItem>
+                      ))}
                     </Select>
                   }
                   name="course"
                   rules={{ required: "Course is required" }}
                   control={control}
-                  defaultValue=""
+                  defaultValue={props.cls? props.cls.course : ''}
                 />
               </FormControl>
               {!empty ? (
                 errors.course ? (
-                  <Tooltip title={errors.course.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.course.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
               <TextField
                 id="name"
                 label="Name"
+                defaultValue={props.cls? props.cls.name : ''}
                 inputRef={register({
                   required: "Class title is required",
                   minLength: {
@@ -102,60 +108,39 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.name ? (
-                  <Tooltip title={errors.name.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.name.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
+
               <FormControl>
                 <FormHelperText>Start Date</FormHelperText>
                 <TextField
                   type="date"
                   id="startingDate"
                   name="startingDate"
+                  defaultValue={props.cls? props.cls.startingDate.slice(0,10) : defaultDateValue}
                   inputRef={register({ required: "Start date is required" })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
               {!empty ? (
                 errors.startDate ? (
-                  <Tooltip title={errors.startDate.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.startDate.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
             </div>
             <div>
               <TextField
                 id="cycleNumber"
                 name="cycleNumber"
                 type="number"
-                defaultValue={1}
+                defaultValue={props.cls? props.cls.cycleNumber : 1}
                 inputRef={register({
                   required: "Cycle number is required",
                 })}
@@ -163,84 +148,55 @@ const AddClass = () => {
               />
               {!empty ? (
                 errors.cycleNumber ? (
-                  <Tooltip title={errors.cycleNumber.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.cycleNumber.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
+
               <TextField
                 name="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
                 label="Zoom Link"
+                defaultValue={props.cls? props.cls.zoomLink : ''}
               />
               {!empty ? (
                 errors.zoomLink ? (
-                  <Tooltip title={errors.zoomLink.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.company.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
-              <br />
-              <br />
+              {generateBrs(2)}
               <FormControl>
                 <FormHelperText>End Date</FormHelperText>
                 <TextField
                   type="date"
                   id="endingDate"
                   name="endingDate"
+                  defaultValue={props.cls? props.cls.endingDate.slice(0,10) : defaultDateValue}
                   inputRef={register({
                     required: "End date is required",
                   })}
-                  defaultValue={`${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}`}
                   style={{ width: "12.7vw" }}
                 />
               </FormControl>
               {!empty ? (
                 errors.endDate ? (
-                  <Tooltip title={errors.endDate.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <ErrorBtn tooltipTitle={errors.endDate.message} />
                 ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
+                  <ActionBtn />
                 )
               ) : null}
             </div>
           </GridDiv>
-          <br />
-
+          {generateBrs(1)}
           <TextField
             id="additionalDetails"
             multiline
             fullWidth
+            defaultValue={props.cls? props.cls.additionalDetails : ''}
             rows={5}
             variant="outlined"
             name="additionalDetails"
@@ -254,22 +210,12 @@ const AddClass = () => {
           />
           {!empty ? (
             errors.additionalDetails ? (
-              <Tooltip title={errors.additionalDetails.message}>
-                <IconButton style={{ cursor: "default" }}>
-                  <ErrorOutlineIcon
-                    style={{ width: "30px", height: "30px" }}
-                    color="error"
-                  />
-                </IconButton>
-              </Tooltip>
+              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
             ) : (
-              <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color="action" />
-              </IconButton>
+              <ActionBtn />
             )
           ) : null}
-          <br />
-          <br />
+          {generateBrs(2)}
           <Button
             id="submitButton"
             style={{ backgroundColor: "#2c6e3c", color: "white" }}
@@ -286,3 +232,11 @@ const AddClass = () => {
 };
 
 export default AddClass;
+
+const generateBrs = (num: number): JSX.Element[] => {
+  const arrOfSpaces = [];
+  for (let i = 0; i < num; i++) {
+    arrOfSpaces.push(<br />);
+  }
+  return arrOfSpaces;
+};
