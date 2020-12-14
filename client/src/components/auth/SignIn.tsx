@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import network from "../../helpers/network";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -27,6 +27,15 @@ export function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const empty = Object.keys(errors).length === 0;
+
+  useEffect(() => {
+    document.addEventListener("mouseup", () => {
+      setShowPassword(false);
+    });
+    document.addEventListener("dragend", () => {
+      setShowPassword(false);
+    });
+  }, []);
 
   const onSubmit = async (userData: IUserSignIn) => {
     try {
