@@ -55,7 +55,6 @@ function NewEventModal({
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
     delete data.comment;
-    console.log(data);
     try {
       const {
         data: newEvent,

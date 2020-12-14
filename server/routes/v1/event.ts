@@ -1,12 +1,11 @@
 import { Router, Request, Response } from "express";
-import { stat } from "fs";
 import {
   cancelAllJobsOfStudent,
   cancelAllApplicantsForJob,
 } from "../../helper";
 const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company, Meeting } from "../../models";
+import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 
@@ -37,6 +36,11 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
       include: [
         {
           model: Student,
+          include: [
+            {
+              model: Class,
+            },
+          ],
         },
         {
           model: Job,

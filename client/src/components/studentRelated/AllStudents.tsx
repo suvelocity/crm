@@ -201,7 +201,11 @@ function AllStudents() {
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(student.Class.name)}</StyledSpan>
+                    <StyledSpan>{`${capitalize(
+                      student?.Class.name
+                    )} (${capitalize(student?.Class.course)} - ${
+                      student?.Class.cycleNumber
+                    })`}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                   </StyledDiv>

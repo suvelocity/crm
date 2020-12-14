@@ -205,8 +205,10 @@ function SingleStudent() {
                 <TranslateIcon />
               </SingleListItem>
               <SingleListItem
-                primary="Course"
-                secondary={capitalize(student?.Class.name)}
+                primary="Class"
+                secondary={`${capitalize(student?.Class.name)} (${capitalize(
+                  student?.Class.course
+                )} - ${student?.Class.cycleNumber})`}
               >
                 <ClassIcon />
               </SingleListItem>
