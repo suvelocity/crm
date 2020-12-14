@@ -18,7 +18,7 @@ import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../helpers";
-import SignOutButton from "../components/auth/SignOutButton";
+import Cookies from "js-cookie";
 
 function NavAppBar() {
   const [open, setOpen] = useState(false);
@@ -31,6 +31,8 @@ function NavAppBar() {
       refreshToken: getRefreshToken(),
     });
     setUser(null);
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
     history.push("/");
   };
 
