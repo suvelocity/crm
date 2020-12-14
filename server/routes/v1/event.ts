@@ -99,7 +99,7 @@ router.post("/", async (req: Request, res: Response) => {
       const student: IStudent = (await Student.findByPk(userId)).toJSON();
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
-      const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
+      // const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
       cancelAllJobsOfStudent(
         parseInt(userId),
@@ -107,12 +107,12 @@ router.post("/", async (req: Request, res: Response) => {
         studentMsg,
         date
       );
-      cancelAllApplicantsForJob(
-        parseInt(relatedId),
-        parseInt(userId),
-        jobMsg,
-        date
-      );
+      // cancelAllApplicantsForJob(
+      //   parseInt(relatedId),
+      //   parseInt(userId),
+      //   jobMsg,
+      //   date
+      // );
     } else if (eventName === "Sent CV") {
       const job: IJob = (
         await Job.findByPk(relatedId, {

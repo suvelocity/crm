@@ -19,6 +19,8 @@ export interface IStudent {
   mentorId: number | null;
   mentor?: IMentor | null;
   Events: IEvent[];
+  resumeLink?: string;
+  fccAccount?: string;
 }
 
 export interface IJob {

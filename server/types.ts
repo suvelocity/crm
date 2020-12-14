@@ -31,6 +31,7 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   fccAccount?: string;
+  resumeLink?: string;
 }
 
 export interface IClass {
