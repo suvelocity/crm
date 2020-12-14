@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 //@ts-ignore
-import { Mentor, Student, Meeting,Class } from '../../../models';
+import { Student,Mentor,Meeting,Class,MentorProgram,MentorStudent, } from '../../../models';
 import { mentorSchema, mentorSchemaToPut } from '../../../validations';
 import { IMentor } from '../../../types';
 
@@ -24,16 +24,17 @@ router.get('/:id', async (req: Request, res: Response) => {
       where: { id: req.params.id },
       include: [
         {
-          model: Student,
+          model: MentorStudent,
           include: [
             {
-              model:Class,
-              attributes: ["name","cycleNumber"]
+              model:MentorProgram,
+              attributes: ["name"]
+            },
+            {
+              model:Student,
+              attributes: ["firstName", "lastName"]
             }
           ]
-        },
-        {
-          model: Meeting,
         },
       ],
     });

@@ -20,7 +20,7 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
 import { capitalize } from "../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import SimpleModal from "./Modal";
 import { pairing } from "./GeoCoding";
 
@@ -33,17 +33,18 @@ function NewClassMentorProject() {
   const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
+  let query = useLocation().search.split('=')[1];
 
   // console.log(pairing(cls?.Students!, []))
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
-      `/api/v1/class/byId/${id}`
+      `/api/v1/class/byId/${query}`
     );
-    data.Students = data.Students.filter((student) => !student.mentorId);
+    // data.Students = data.Students.filter((student) => !student.mentorId);
     setCls(data);
     setLoading(false);
-  }, [id, setLoading, setCls]);
+  }, [query, setLoading, setCls]);
 
   const getMentors = useCallback(async () => {
     const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
@@ -81,6 +82,8 @@ function NewClassMentorProject() {
         result.source.index,
         1
       );
+      // reorderedMentor.student?  reorderedMentor.student = reorderedMentor.student + 1:reorderedMentor.student = 1; 
+      // itemsMentor.push(reorderedMentor);
       const prevMentor: IMentor | null = itemsStudents[
         parseInt(destination.droppableId)
       ].mentor!;
@@ -95,8 +98,18 @@ function NewClassMentorProject() {
     }
   };
 
+  // const removeMentor = (mentor: IMentor, i: number) => {
+  //   const newCls: IClass | undefined = cls;
+  //   newCls!.Students[i].mentor = null;
+  //   setCls(newCls);
+  //   const newMentors: IMentor[] = mentors;
+  //   newMentors.forEach(m => {
+  //     if(m.id===mentor.id) m.student!--
+  //     }
+  //   );
+  //   setMentors(newMentors);
+  // };
   const removeMentor = (mentor: IMentor, i: number) => {
-    console.log("delete");
     const newMentors: IMentor[] = Array.from(mentors);
     newMentors.push(mentor);
     setMentors(newMentors);
@@ -220,7 +233,7 @@ function NewClassMentorProject() {
                     marginLeft: 10,
                   }}
                 >
-                  create
+                  SAVE
                 </Button>
                 <Button onClick={() => assignMentors(cls)}>Generate</Button>
                 <Button onClick={() => resetMentors(cls)}>Reset</Button>

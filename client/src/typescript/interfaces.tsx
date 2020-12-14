@@ -112,15 +112,26 @@ export interface IMentor {
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
+  student?:number;
+  MentorStudents?:IMentorStusent[]
 }
 
-export interface IMentorClassDashboard {
+export interface IMentorStusent {
+  id?: number;
+  mentorId: number;
+  mentorProgramId: number;
+  studentId: number;
+  Mentor?: Partial<IMentor>;
+  MentorProgram?: Partial<IMentorProgram>;
+  Meetings?: Partial<IMeeting>[];
+  Student?: Partial<IStudent>;
+}
+
+export interface IMentorProgramDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  Class: Partial<IClass>;
-  Mentor: IMentor;
-  Meetings: Partial<IMeeting>[];
+  MentorStudents: Partial<IMentorStusent>[];
 }
 
 export interface IMeeting {

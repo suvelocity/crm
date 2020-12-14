@@ -35,6 +35,8 @@ const SingleMentor: React.FC = () => {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/${id}`
     );
+    console.log(data);
+    
     setMentor(data);
     setLoading(false);
   }, [id, setMentor, setLoading]);
@@ -138,25 +140,32 @@ const SingleMentor: React.FC = () => {
                     secondary={capitalize(mentor[0]?.gender)}
                   />
                 </ListItem>
-                {/* Students */}
-                {mentor[0]?.Students && (
+                {/* programs */}
+                {mentor[0]?.MentorStudents![0] && (
+                  <>
                   <ListItem>
                     <ListItemIcon>
                       <AssignmentIndIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary="Students"
-                      secondary={mentor[0]?.Students.map((student) => {
-                        return `
-                          ${capitalize(student.firstName)} ${capitalize(
-                          student.lastName
-                        )} - ${capitalize(student.Class!.name)}:${capitalize(
-                          `${student.Class!.cycleNumber}`
-                        )} \n
-                          `;
+                      primary="programs"
+                      secondary={mentor[0]?.MentorStudents.map((program) => {
+                        return <div>{capitalize(program.MentorProgram!.name)}</div>
                       })}
                     />
                   </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <AssignmentIndIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="students"
+                      secondary={mentor[0]?.MentorStudents.map((program) => {
+                        return <div>{`${capitalize(program.Student!.firstName)} ${capitalize(program.Student!.lastName)}`}</div>
+                      })}
+                    />
+                  </ListItem>
+                  </>
                 )}
               </List>
             </GridDiv>

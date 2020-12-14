@@ -6,7 +6,7 @@ import {
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import {Student,Mentor,Meeting,Class,MentorProgram, MentorStudent} from "../../../models";
+import {Student,Mentor,Meeting,Class,MentorProgram,MentorStudent,} from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
 
 const router = Router();
@@ -20,10 +20,12 @@ router.get("/all", async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 });
-// det program by id
+// get program by id
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const program: IMentorProgram[] = await MentorProgram.findByPk(req.params.id);
+    const program: IMentorProgram[] = await MentorProgram.findByPk(
+      req.params.id
+    );
     res.json(program);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -33,17 +35,21 @@ router.get("/:id", async (req: Request, res: Response) => {
 // get all program meetings:
 router.get("/dashboard/:id", async (req: Request, res: Response) => {
   try {
-    const programTableData = await MentorStudent.findAll({
-      where: { mentorProgramId: req.params.id },
+    const program = await MentorProgram.findByPk(req.params.id);
+    const programTableData = await Student.findAll({
+      attributes: ["id","firstName", "lastName"],
+      where: {classId: program.classId },
       include: [
         {
-          model: Student,
-        },
-        {
-          model: Mentor,
-        },
-        {
-          model: Meeting,
+          model: MentorStudent,
+          include: [
+            {
+              model: Mentor,
+            },
+            {
+              model: Meeting,
+            },
+          ],
         },
       ],
     });
@@ -80,27 +86,20 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// end program and remove mentor id from students 
+// end program and remove mentor id from students
 router.put("/end/:id", async (req: Request, res: Response) => {
-    try {
-        const program: IMentorProgram = await MentorProgram.findByPk(req.params.id);
-        const students : number = parseInt(req.body.students)
-        const programUpdated = await MentorProgram.update({open: false}, {
-            where: { id: req.params.id },
-        });
-      const studentUpdated = await Student.update({ mentorId: null }, {
-        where: {
-          classId:program.classId
-        }
-      });
-      console.log
-      (students)
-      if (programUpdated[0] === 1 && studentUpdated[0] === students) return res.json({ message: "mentor project ended" })
-      res.status(404).json({ error: "class not found" });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+  try {
+    const programUpdated = await MentorProgram.update(
+      { open: false },
+      {
+        where: { id: req.params.id },
+      }
+    );
+    return res.json({ message: "mentor project ended" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // delete program
 router.patch("/delete", async (req, res) => {
