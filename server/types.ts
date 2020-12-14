@@ -137,7 +137,7 @@ export interface IMentor {
 type meeting = { date: string };
 // type class = {name: string, cycleNumber: number}
 
-export interface IDeshbord {
+export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
@@ -150,4 +150,12 @@ export interface IMeeting {
   mentorId: number;
   studentId: number;
   place: string;
+}
+export interface IMentorProgram{
+  id?: number;
+  classId: number;
+  name: string;
+  open: boolean;
+  endDate: string;
+  startDate: string;
 }

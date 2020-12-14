@@ -13,21 +13,26 @@ import {
 } from "../../styles/styledComponents";
 import { Button } from "@material-ui/core";
 import { useParams, useHistory } from "react-router-dom";
-import { IClass, MentorClassDashboard } from "../../typescript/interfaces";
+import { IClass, IMentorClassDashboard, IMentorProgram } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../helpers/general";
 
-const ClassDashboard: React.FC = () => {
+const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [tabelsData, setTabelData] = useState<MentorClassDashboard[]>([]);
+  const [tabelsData, setTabelData] = useState<IMentorClassDashboard[]>([]);
+  const [programdetails,setProgramDetails]=useState<IMentorProgram>();
   const { id } = useParams();
   const history = useHistory();
 
   const getTableData = useCallback(async () => {
-    const { data } = await network.get(`/api/v1/M/meeting/class/${id}`);
-    setTabelData(data);
+    const program = await network.get(`/api/v1/M/program/${id}`);
+    console.log(program.data);
+    setProgramDetails(program.data)
+    const dashboardData = await network.get(`/api/v1/M/program/dashboard/${id}`);
+    console.log(dashboardData.data);
+    setTabelData(dashboardData.data);
     setLoading(false);
   }, []);
 
@@ -37,7 +42,7 @@ const ClassDashboard: React.FC = () => {
 
   const endProgram = async () =>{
     try{
-      const res = await network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length })
+      const res = await network.put(`/api/v1/M/program/end/${id}`, { students: tabelsData.length })
       history.push('/mentor')
     }catch(err){
       console.error(err.message)
@@ -49,8 +54,8 @@ const ClassDashboard: React.FC = () => {
       <Center>
         <TitleWrapper>
           <Loading loading={loading} size={30}>
-            {tabelsData[0] && (
-              <H1 color="#c47dfa">{`${tabelsData[0].Class.name} - ${tabelsData[0].Class.cycleNumber}`}</H1>
+            {programdetails && (
+              <H1 color="#c47dfa">{`${programdetails.name}`}</H1>
             )}
           </Loading>
         </TitleWrapper>
@@ -63,11 +68,11 @@ const ClassDashboard: React.FC = () => {
               <TableHeader repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
                 <ClassIcon />
                 <StyledSpan weight="bold">Mentor Name</StyledSpan>
-                <StyledSpan weight="bold">Company</StyledSpan>
-                <StyledSpan weight="bold">Email</StyledSpan>
-                <StyledSpan weight="bold">Job</StyledSpan>
+                <StyledSpan weight="bold">Mentor Company</StyledSpan>
+                <StyledSpan weight="bold">Mentor Email</StyledSpan>
                 <StyledSpan weight="bold">Student Name</StyledSpan>
                 <StyledSpan weight="bold">Meetings</StyledSpan>
+                <StyledSpan weight="bold">Pair Page</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -85,9 +90,8 @@ const ClassDashboard: React.FC = () => {
                     </StyledLink>
                     <StyledSpan>{row.Mentor.company}</StyledSpan>
                     <StyledSpan>{row.Mentor.email}</StyledSpan>
-                    <StyledSpan>{row.Mentor.job}</StyledSpan>
                     <StyledLink to={`/student/${row.id}`} color="black">
-                      <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
+                      <StyledSpan weight="bold">{`${row.firstName} ${row.lastName}`}</StyledSpan>
                     </StyledLink>
                     <StyledSpan>
                       {row.Meetings &&
@@ -98,13 +102,14 @@ const ClassDashboard: React.FC = () => {
                               ? "red"
                               : "green";
                           return (
-                            <div style={{ color: color }}>
+                            <div>
                               {meet.date &&
-                                `${i + 1} - ${meet.date.slice(0, 10)}`}
+                                `${i + 1} - ${new Date(meet.date).toLocaleDateString()}`}
                             </div>
                           );
                         })}
                     </StyledSpan>
+                    <StyledSpan><Button>Show</Button></StyledSpan>
                   </StyledDiv>
                 ) : (
                   <StyledDiv repeatFormula="0.5fr 1fr 2fr 1fr ">
@@ -128,4 +133,4 @@ const ClassDashboard: React.FC = () => {
   );
 };
 
-export default ClassDashboard;
+export default ProgramDashboard;

@@ -1,6 +1,6 @@
 import React from "react";
-import MentorClasses from "../../components/mentorRelated/MentorClasses";
-import ClassDashboard from "../../components/mentorRelated/ClassDashboard";
+import MentorPrograms from "../../components/mentorRelated/MentorPrograms";
+import ProgramDashboard from "../../components/mentorRelated/ProgramDashboard";
 import NewProject from "../../components/mentorRelated/NewProject";
 import NewClassMentorProject from "../../components/mentorRelated/NewClassMentorProject";
 import AddMentor from "../../components/mentorRelated/AddMentor";
@@ -12,7 +12,7 @@ function AdminClassesRoutes() {
   return (
     <Switch>
       <Route exact path="/mentor">
-        <MentorClasses />
+        <MentorPrograms />
       </Route>
       <Route exact path="/mentor/all">
         <AllMentors />
@@ -29,8 +29,8 @@ function AdminClassesRoutes() {
       <Route exact path="/mentor/new/:id">
         <NewClassMentorProject />
       </Route>
-      <Route exact path="/mentor/class/:id">
-        <ClassDashboard />
+      <Route exact path="/mentor/program/:id">
+        <ProgramDashboard />
       </Route>
     </Switch>
   );
