@@ -14,6 +14,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   const [zoomLink, setZoomLink] = useState<string>("");
   const [resource, setResource] = useState<string>("");
   const [resources, setResources] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<string[]>([]);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
