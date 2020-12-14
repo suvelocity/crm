@@ -21,11 +21,11 @@ export const classSchemaToPut = Joi.object({
 });
 
 export const eventsSchema = Joi.object({
-  studentId: Joi.number().required(),
-  jobId: Joi.number().required(),
-  status: Joi.string().required(),
+  userId: Joi.number().required(),
+  relatedId: Joi.number().required(),
+  eventName: Joi.string().required(),
   date: Joi.date(),
-  comment: Joi.string().allow(null, ""),
+  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
@@ -113,16 +113,42 @@ export const signInSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+export const lessonSchema = Joi.object({
+  classId: Joi.number().required(),
+  title: Joi.string().required(),
+  body: Joi.string().required(),
+  resource: Joi.string().allow(null, ""),
+  zoomLink: Joi.string().allow(null, ""),
+  createdBy: Joi.number().required(),
+});
+
+export const noticeSchema = Joi.object({
+  classId: Joi.number().required(),
+  type: Joi.string().required(),
+  body: Joi.string().required(),
+  createdBy: Joi.number().required(),
+});
+
+export const taskSchema = Joi.object({
+  lessonId: Joi.number().required(),
+  externalId: Joi.string().allow(null, ""),
+  externalLink: Joi.string().allow(null, ""),
+  createdBy: Joi.number().required(),
+  endDate: Joi.date().required(),
+  type: Joi.string().required(),
+  status: Joi.string().required(),
+  body: Joi.string().required(),
+});
 export const meetingSchema = Joi.object({
   studentId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
-  date: Joi.date().min(new Date()).allow(null, "")
-})
+  date: Joi.date().min(new Date()).allow(null, ""),
+});
 
 export const meetingSchemaToPut = Joi.object({
   place: Joi.string().allow(null, ""),
-  date: Joi.date().min(new Date()).allow(null, "")
-})
+  date: Joi.date().min(new Date()).allow(null, ""),
+});
 
 export const mentorSchema = Joi.object({
   name: Joi.string().required(),

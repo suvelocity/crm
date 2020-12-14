@@ -50,6 +50,7 @@ export const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
+  position: relative;
 `;
 
 export const Center = styled.div`
@@ -140,4 +141,11 @@ export const StyledSelect = styled.select`
     clip-path: polygon(100% 0%, 0 0%, 50% 100%);
     justify-self: end;
   }
+`;
+
+export const EditDiv = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 33px;
+  top: 25px;
 `;

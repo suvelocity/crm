@@ -33,6 +33,7 @@ export function SignIn() {
         const { data } = await network.post("/api/v1/auth/signin", userData);
         //@ts-ignore
         const decoded = jwt.decode(getRefreshToken());
+        //@ts-ignore
         if (decoded && decoded.type! === data.userType) {
           if (data.dataValues) {
             setUser({
@@ -74,7 +75,7 @@ export function SignIn() {
       <Center>
         <TitleWrapper>
           {" "}
-          <H1 color="#a3a365">Log In </H1>
+          <H1 color='#a3a365'>Log In </H1>
         </TitleWrapper>
 
         <form onSubmit={handleSubmit}>
@@ -83,8 +84,8 @@ export function SignIn() {
               setEmail(e.target.value)
             }
             value={email}
-            type="email"
-            placeholder="Enter email..."
+            type='email'
+            placeholder='Enter email...'
           />
           <br />
           <input
@@ -92,19 +93,19 @@ export function SignIn() {
               setPassword(e.target.value)
             }
             value={password}
-            type="password"
-            placeholder="Enter password..."
+            type='password'
+            placeholder='Enter password...'
           />
           <br />
           <label>Remember Me</label>
           <input
-            type="checkbox"
+            type='checkbox'
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setRememberMe((prev: boolean) => !prev)
             }
           />
           <br />
-          <button type="submit">Submit</button>
+          <button type='submit'>Submit</button>
         </form>
       </Center>
     </Wrapper>

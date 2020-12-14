@@ -9,17 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Event, {
-        foreignKey: "studentId",
+        foreignKey: "userId",
         onDelete: "cascade",
         hooks: true,
+      });
+      this.hasMany(models.TaskofStudent, {
+        foreignKey: "userId",
       });
       this.hasMany(models.Meeting, {
         foreignKey: "studentId",
         onDelete: "cascade",
         hooks: true,
       });
-      this.belongsTo(models.Mentor,{
-        foreignKey: "mentorId"   
+      this.belongsTo(models.Mentor, {
+        foreignKey: "mentorId",
       });
       this.belongsTo(models.Class, {
         foreignKey: "classId",

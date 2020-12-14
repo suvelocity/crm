@@ -17,7 +17,7 @@ export interface IStudent {
   citizenship: string;
   additionalDetails: string;
   mentorId: number | null;
-  mentor?: IMentor | null
+  mentor?: IMentor | null;
   Events: IEvent[];
 }
 
@@ -73,10 +73,10 @@ export type status =
 
 export interface IEvent {
   id?: number;
-  status: status;
-  studentId?: number;
-  jobId?: number;
-  comment?: string;
+  eventName: status;
+  userId?: number;
+  relatedId?: number;
+  entry?: { [key: string]: any };
   date: string;
   Student?: IStudent;
   Job?: IJob;
@@ -116,20 +116,20 @@ export interface IMentor {
 
 export interface MentorClassDashboard {
   id?: number;
-  firstName:string;
-  lastName:string;
+  firstName: string;
+  lastName: string;
   Class: Partial<IClass>;
   Mentor: IMentor;
   Meetings: Partial<IMeeting>[];
-};
+}
 
 export interface IMeeting {
   id?: number;
-  date:string;
-  mentorId:number;
-  studentId:number;
-  place:string;
-};
+  date: string;
+  mentorId: number;
+  studentId: number;
+  place: string;
+}
 export interface IUser {
   id?: number;
   userType: string;
@@ -157,3 +157,35 @@ export interface IUserSignIn {
   password: string;
   rememberMe: boolean;
 }
+
+export interface INotice {
+  id?: number;
+  classId: number;
+  type: "regular" | "important" | "critical";
+  body: string;
+  createdBy: number;
+}
+
+export interface ILesson {
+  id?: number;
+  classId: number;
+  title: string;
+  body: string;
+  resource?: string;
+  zoomLink?: string;
+  createdBy: number;
+}
+
+export interface ITask {
+  id?: number;
+  lessonId: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  status: string;
+  body: string;
+}
+
+export type ThemeType = "dark" | "light";
