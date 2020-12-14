@@ -42,11 +42,10 @@ const AddClass = (props: Props) => {
 
   const onSubmit = async (data: Omit<IClass, "id">) => {
     try {
-      if(props.update && props.cls) {
+      if (props.update && props.cls) {
         await network.patch(`/api/v1/class/${props.cls.id}`, data);
-        props.handleClose&& props.handleClose() 
-        // history.push(`/company/${props.company.id}`);
-      }else{
+        props.handleClose && props.handleClose();
+      } else {
         await network.post("/api/v1/class", data);
         history.push("/class/all");
       }
@@ -54,12 +53,12 @@ const AddClass = (props: Props) => {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
-  
+
   return (
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">{props.header? props.header : 'Add Class'}</H1>
+          <H1 color="#2c6e3c">{props.header ? props.header : "Add Class"}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -82,7 +81,7 @@ const AddClass = (props: Props) => {
                   name="course"
                   rules={{ required: "Course is required" }}
                   control={control}
-                  defaultValue={props.cls? props.cls.course : ''}
+                  defaultValue={props.cls ? props.cls.course : ""}
                 />
               </FormControl>
               {!empty ? (
@@ -96,7 +95,7 @@ const AddClass = (props: Props) => {
               <TextField
                 id="name"
                 label="Name"
-                defaultValue={props.cls? props.cls.name : ''}
+                defaultValue={props.cls ? props.cls.name : ""}
                 inputRef={register({
                   required: "Class title is required",
                   minLength: {
@@ -121,7 +120,11 @@ const AddClass = (props: Props) => {
                   type="date"
                   id="startingDate"
                   name="startingDate"
-                  defaultValue={props.cls? props.cls.startingDate.slice(0,10) : defaultDateValue}
+                  defaultValue={
+                    props.cls
+                      ? props.cls.startingDate.slice(0, 10)
+                      : defaultDateValue
+                  }
                   inputRef={register({ required: "Start date is required" })}
                   style={{ width: "12.7vw" }}
                 />
@@ -140,7 +143,7 @@ const AddClass = (props: Props) => {
                 id="cycleNumber"
                 name="cycleNumber"
                 type="number"
-                defaultValue={props.cls? props.cls.cycleNumber : 1}
+                defaultValue={props.cls ? props.cls.cycleNumber : 1}
                 inputRef={register({
                   required: "Cycle number is required",
                 })}
@@ -159,7 +162,7 @@ const AddClass = (props: Props) => {
                 name="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
                 label="Zoom Link"
-                defaultValue={props.cls? props.cls.zoomLink : ''}
+                defaultValue={props.cls ? props.cls.zoomLink : ""}
               />
               {!empty ? (
                 errors.zoomLink ? (
@@ -175,7 +178,11 @@ const AddClass = (props: Props) => {
                   type="date"
                   id="endingDate"
                   name="endingDate"
-                  defaultValue={props.cls? props.cls.endingDate.slice(0,10) : defaultDateValue}
+                  defaultValue={
+                    props.cls
+                      ? props.cls.endingDate.slice(0, 10)
+                      : defaultDateValue
+                  }
                   inputRef={register({
                     required: "End date is required",
                   })}
@@ -196,7 +203,7 @@ const AddClass = (props: Props) => {
             id="additionalDetails"
             multiline
             fullWidth
-            defaultValue={props.cls? props.cls.additionalDetails : ''}
+            defaultValue={props.cls ? props.cls.additionalDetails : ""}
             rows={5}
             variant="outlined"
             name="additionalDetails"

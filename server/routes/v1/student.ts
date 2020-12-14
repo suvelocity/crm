@@ -7,6 +7,7 @@ import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
+import { Op } from "sequelize";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -59,7 +60,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const body: IStudent = req.body;
     const studentExists = await Student.findOne({
-      where: { idNumber: body.idNumber },
+      where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
     if (studentExists) return res.status(409).send("Student already exists");
     const newStudent: IStudent = {
@@ -79,6 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
+      resumeLink: body.resumeLink,
       // fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
