@@ -34,7 +34,7 @@ function NewClassMentorProject() {
   const { id } = useParams();
   const history = useHistory();
 
-  console.log(pairing(cls?.Students!, []))
+  // console.log(pairing(cls?.Students!, []))
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
