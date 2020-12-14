@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 //@ts-ignore
-import { Student, Job, Event, Class } from "../../models";
+import { Student, Job, Event, Class, Company } from "../../models";
 import { IJob } from "../../types";
 import { jobSchema, jobSchemaToPut } from "../../validations";
 const router = Router();
@@ -21,7 +21,9 @@ router.get("/all", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "date", "comment"],
+        },
+        {
+          model: Company,
         },
       ],
     });
@@ -48,7 +50,9 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "date", "comment"],
+        },
+        {
+          model: Company,
         },
       ],
     });
@@ -66,7 +70,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const {
       position,
-      company,
+      companyId,
       description,
       location,
       contact,
@@ -75,7 +79,7 @@ router.post("/", async (req: Request, res: Response) => {
     } = req.body;
     const newJob: IJob = {
       position,
-      company,
+      companyId,
       description,
       contact,
       location,
@@ -91,7 +95,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   const { error } = jobSchemaToPut.validate(req.body);
   if (error) return res.status(400).json({ error: error.message });
   try {

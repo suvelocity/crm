@@ -49,7 +49,16 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const { error } = mentorSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
-    const { name, company, email, phone, address, job } = req.body;
+    const {
+      name,
+      company,
+      email,
+      phone,
+      address,
+      job,
+      available,
+      gender,
+    } = req.body;
     const newMentor: IMentor = await Mentor.create({
       name,
       company,
@@ -57,6 +66,8 @@ router.post('/', async (req: Request, res: Response) => {
       phone,
       address,
       job,
+      available,
+      gender,
     });
     res.json(newMentor);
   } catch (err) {

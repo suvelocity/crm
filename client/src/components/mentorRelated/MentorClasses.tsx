@@ -32,17 +32,19 @@ const MentorClasses: React.FC = () => {
     getClasses();
   }, [getClasses]);
 
+  console.log(classes)
+
   return (
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#2c6e3c">Mentor Management</H1>
+          <H1 color="#c47dfa">Mentor Management</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/mentor/all">
           <Button
             variant="contained"
-            style={{ backgroundColor: "#2c6e3c", color: "white" }}
+            style={{ backgroundColor: "#c47dfa", color: "white" }}
           >
             All Mentors
           </Button>
@@ -51,7 +53,7 @@ const MentorClasses: React.FC = () => {
           <Button
             variant="contained"
             style={{
-              backgroundColor: "#2c6e3c",
+              backgroundColor: "#c47dfa",
               color: "white",
               marginLeft: 10,
             }}
@@ -75,7 +77,7 @@ const MentorClasses: React.FC = () => {
           )}
           {classes &&
             classes.map((cls) => (
-              <li>
+              <li style={{backgroundColor: cls.Students && (cls.Students.some(student => !student.mentorId)) ? 'red' : 'primary'}} >
                 <StyledLink to={`/mentor/class/${cls.id}`} color="black">
                   <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
                     <ClassIcon />
@@ -86,6 +88,7 @@ const MentorClasses: React.FC = () => {
                     <StyledSpan>{cls.cycleNumber}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
+                
               </li>
             ))}
         </StyledUl>

@@ -23,14 +23,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { formatPhone } from "../../helpers/general";
 import { FiltersComponents } from "../FiltersComponents";
-import { capitalize } from "../../helpers/general";
-
-const onTheSameDay = (day1: number, day2: number) => {
-  const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
-  const Day = 1000 * 60 * 60 * 24;
-  const diffLessThanDay = Math.abs(day1 - day2) < Day;
-  return sameDayNumber && diffLessThanDay;
-};
+import { capitalize, onTheSameDay } from "../../helpers/general";
 
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
@@ -56,7 +49,7 @@ function AllStudents() {
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       } else if (
         eventTime.getTime() > jobs[`job${id}`].time ||
@@ -64,7 +57,7 @@ function AllStudents() {
       ) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       }
     }
@@ -123,6 +116,7 @@ function AllStudents() {
       setFilteredStudents(students);
     }
   }, [students]);
+
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
       const classCondition = !filterAttributes.Class
@@ -140,8 +134,9 @@ function AllStudents() {
         : filterAttributes.JobStatus === "None"
         ? jobless
         : recentJobStatus.includes(filterAttributes.JobStatus);
-      const firstName = filterAttributes.Name.split(" ")[0];
-      const lastName = filterAttributes.Name.split(" ")[1];
+      const names = filterAttributes.Name.split(" ");
+      const firstName = names[0];
+      const lastName = names[1];
       const firstNameCondition = !firstName
         ? true
         : student.firstName === firstName;

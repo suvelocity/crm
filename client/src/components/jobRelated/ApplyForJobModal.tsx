@@ -1,59 +1,26 @@
 import React, { useState, useEffect } from "react";
 import network from "../../helpers/network";
-import { Modal, Button } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import { IStudent, IEvent } from "../../typescript/interfaces";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  CircularProgress,
+  ListItemText,
+  ListItem,
+  FormControlLabel,
+  Checkbox,
+  List,
+  Typography,
+  Modal,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@material-ui/core";
 import { Loading } from "react-loading-wrapper";
+import { SingleListItem } from "../tableRelated";
 import "react-loading-wrapper/dist/index.css";
-
-function getModalStyle() {
-  return {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-    },
-    paper: {
-      position: "absolute",
-      width: "50%",
-      maxWidth: 700,
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: 7,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      outline: "none",
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: "33.33%",
-      flexShrink: 0,
-      fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    button: {
-      textAlign: "center",
-      margin: 10,
-    },
-  })
-);
+import Swal from "sweetalert2";
 
 function ApplyForJobModal({
   currentStudents,
@@ -83,8 +50,8 @@ function ApplyForJobModal({
           )
         );
       })();
-    } catch (e) {
-      console.log(e.message);
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   }, [currentStudents]);
 
@@ -102,10 +69,11 @@ function ApplyForJobModal({
         setLoading(true);
         studentsToApply.forEach(async (studentId: string) => {
           await network.post(`/api/v1/event`, {
-            studentId,
-            jobId,
+            userId: studentId,
+            relatedId: jobId,
+            type: "jobs",
             date: new Date().setHours(0, 0, 0, 0),
-            status: "Started application process",
+            eventName: "Started application process",
           });
         });
         setTimeout(() => {
@@ -113,8 +81,8 @@ function ApplyForJobModal({
           setLoading(false);
           handleClose();
         }, 1000);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
       }
     } else {
       handleClose();
@@ -165,24 +133,18 @@ function ApplyForJobModal({
                   </AccordionSummary>
                   <AccordionDetails>
                     <List dense>
-                      <ListItem>
-                        <ListItemText
-                          primary="Name"
-                          secondary={student.firstName + " " + student.lastName}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Email"
-                          secondary={student.email}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Phone Number"
-                          secondary={student.phone}
-                        />
-                      </ListItem>
+                      <SingleListItem
+                        primary="Name"
+                        secondary={student.firstName + " " + student.lastName}
+                      />
+                      <SingleListItem
+                        primary="Email"
+                        secondary={student.email}
+                      />
+                      <SingleListItem
+                        primary="Phone Number"
+                        secondary={student.phone}
+                      />
                       <ListItem>
                         <ListItemText
                           primary="Course"
@@ -197,7 +159,8 @@ function ApplyForJobModal({
                               <>
                                 {student.Events.map((event: IEvent) => (
                                   <p key={event.Job?.id}>
-                                    {event.Job?.position} {event.Job?.company}
+                                    {event.Job?.position}{" "}
+                                    {event.Job?.Company?.name}
                                   </p>
                                 ))}
                               </>
@@ -243,3 +206,41 @@ function ApplyForJobModal({
 }
 
 export default ApplyForJobModal;
+
+function getModalStyle() {
+  return {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      position: "absolute",
+      width: "50%",
+      maxWidth: 700,
+      minWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 7,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      outline: "none",
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: "33.33%",
+      flexShrink: 0,
+      fontWeight: theme.typography.fontWeightBold,
+      marginTop: 11,
+    },
+    button: {
+      textAlign: "center",
+      margin: 10,
+    },
+  })
+);

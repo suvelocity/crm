@@ -11,7 +11,8 @@ import {
   StyledDiv,
   TableHeader,
 } from "../../styles/styledComponents";
-import { useParams } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import { useParams, useHistory } from "react-router-dom";
 import { IClass, MentorClassDashboard } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -22,10 +23,10 @@ const ClassDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [tabelsData, setTabelData] = useState<MentorClassDashboard[]>([]);
   const { id } = useParams();
+  const history = useHistory();
 
   const getTableData = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/meeting/class/${id}`);
-    console.log(data);
     setTabelData(data);
     setLoading(false);
   }, []);
@@ -34,13 +35,22 @@ const ClassDashboard: React.FC = () => {
     getTableData();
   }, []);
 
+  const endProgram = async () =>{
+    try{
+      const res = await network.put(`/api/v1/M/classes/end/${id}`, { students: tabelsData.length })
+      history.push('/mentor')
+    }catch(err){
+      console.error(err.message)
+    }
+  }
+
   return (
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <Loading loading={loading} size={30}>
             {tabelsData[0] && (
-              <H1 color="#2c6e3c">{`${tabelsData[0].Class.name} - ${tabelsData[0].Class.cycleNumber}`}</H1>
+              <H1 color="#c47dfa">{`${tabelsData[0].Class.name} - ${tabelsData[0].Class.cycleNumber}`}</H1>
             )}
           </Loading>
         </TitleWrapper>
@@ -64,39 +74,55 @@ const ClassDashboard: React.FC = () => {
           {tabelsData &&
             tabelsData.map((row) => (
               <li>
-                <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
-                  <ClassIcon />
-                  <StyledLink to={`/mentor/${row.id}`} color="black">
-                    <StyledSpan weight="bold">
-                      {capitalize(row.Mentor.name)}
+                {row.Mentor ? (
+                  <StyledDiv repeatFormula="0.5fr 1fr 1fr 1.5fr 1fr 1fr 1fr">
+                    <ClassIcon />
+
+                    <StyledLink to={`/mentor/${row.id}`} color="black">
+                      <StyledSpan weight="bold">
+                        {capitalize(row.Mentor.name)}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>{row.Mentor.company}</StyledSpan>
+                    <StyledSpan>{row.Mentor.email}</StyledSpan>
+                    <StyledSpan>{row.Mentor.job}</StyledSpan>
+                    <StyledLink to={`/student/${row.id}`} color="black">
+                      <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>
+                      {row.Meetings &&
+                        row.Meetings.map((meet, i) => {
+                          let color: string =
+                            meet.date &&
+                            new Date(meet.date).getTime() > Date.now()
+                              ? "red"
+                              : "green";
+                          return (
+                            <div style={{ color: color }}>
+                              {meet.date &&
+                                `${i + 1} - ${meet.date.slice(0, 10)}`}
+                            </div>
+                          );
+                        })}
                     </StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>{row.Mentor.company}</StyledSpan>
-                  <StyledSpan>{row.Mentor.email}</StyledSpan>
-                  <StyledSpan>{row.Mentor.job}</StyledSpan>
-                  <StyledLink to={`/student/${row.id}`} color="black">
-                    <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>
-                    {row.Meetings &&
-                      row.Meetings.map((meet, i) => {
-                        let color: string =
-                          meet.date &&
-                          new Date(meet.date).getTime() > Date.now()
-                            ? "red"
-                            : "green";
-                        return (
-                          <div style={{ color: color }}>
-                            {meet.date &&
-                              `${i + 1} - ${meet.date.slice(0, 10)}`}
-                          </div>
-                        );
-                      })}
-                  </StyledSpan>
-                </StyledDiv>
+                  </StyledDiv>
+                ) : (
+                  <StyledDiv repeatFormula="0.5fr 1fr 2fr 1fr ">
+                    <ClassIcon />
+                    <StyledLink to={`/mentor/new/${id}`} color= 'black'>
+                      <Button style={{backgroundColor: 'red'}}>Get Mentor</Button>
+                      </StyledLink>
+                      <div>--------</div>
+                    <StyledLink to={`/student/${row.id}`} color="black">
+                      <StyledSpan>{`${row.firstName} ${row.lastName}`}</StyledSpan>
+                      </StyledLink>
+
+                  </StyledDiv>
+                )}
               </li>
             ))}
         </StyledUl>
+        <Button style={{backgroundColor: 'red'}} onClick={() => endProgram()}>End Program</Button>
       </Loading>
     </Wrapper>
   );
