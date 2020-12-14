@@ -29,7 +29,7 @@ function Notices() {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <AddNotice />
+      <AddNotice updateLocal={setNotices} />
     </div>
   );
   const classIdPlaceHolder = 1;
@@ -69,7 +69,7 @@ function Notices() {
     <>
       <Loading size={30} loading={loading}>
         <div
-          className='notice-container'
+          className="notice-container"
           // style={{ backgroundColor: "white" }}
         >
           {notices?.map((notice) => (
@@ -85,14 +85,15 @@ function Notices() {
 
         {user.userType === "teacher" && (
           <div>
-            <Button variant='outlined' onClick={handleOpen}>
+            <Button variant="outlined" onClick={handleOpen}>
               Add Notice
             </Button>
             <Modal
               open={open}
               onClose={handleClose}
-              aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'>
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            >
               {body}
             </Modal>
           </div>
