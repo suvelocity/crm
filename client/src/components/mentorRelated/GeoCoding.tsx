@@ -56,9 +56,8 @@ export async function pairing(s: any[], m: any[]) {
     });
     mentorsList.sort((a: any, b: any) => a.distance - b.distance);
     student.mentor = mentorsList;
-      console.log(mentorsList)
-    
-    studentRec(final, student);
+    console.log(mentorsList)
+    // studentRec(final, student);
   });
   // final.map((obj) => obj.mentor = obj.mentor)
 //   console.log(
@@ -73,15 +72,15 @@ export async function pairing(s: any[], m: any[]) {
 function studentRec(final: any[], student: any) {
   let currStudentI = final.findIndex((obj) => obj.id === student.id);
   let currStudent = final[currStudentI];
-
   if (!currStudent) {
-    currStudent = {
-      id: student.id,
-      address: student.address,
-      mentor: student.mentor,
+      currStudent =
+      {
+        id: student.id,
+        address: student.address,
+        mentor: student.mentor,
+      }
     };
-  }
-  console.log(currStudent);
+  console.log(currStudent.address);
   const mentorTaken = final.findIndex(
     (obj) =>
       obj.mentor[0].id === currStudent.mentor[0].id && obj.id !== currStudent.id
@@ -89,7 +88,6 @@ function studentRec(final: any[], student: any) {
 
     if (mentorTaken !== -1) {
     const otherStudent = final[mentorTaken];
-    otherStudent.mentor.sort((a: any, b: any) => a.distance - b.distance);
     console.log(
       "other:",
       otherStudent,
@@ -100,19 +98,18 @@ function studentRec(final: any[], student: any) {
       );
     
     if (
-      otherStudent.mentor[1].distance - otherStudent.mentor[0].distance <
+      otherStudent.mentor[1].distance - otherStudent.mentor[0].distance >
       currStudent.mentor[1].distance - currStudent.mentor[0].distance
     ) {
-    //   console.log(
-    //     currStudent.address,
-    //     "changed from",
-    //     currStudent.mentor[0].distance,
-    //     "to",
-    //     currStudent.mentor[1].distance
-    //   );
+      console.log(
+        currStudent.address,
+        "changed from",
+        currStudent.mentor[0].distance,
+        "to",
+        currStudent.mentor[1].distance
+      );
       final[currStudentI].mentor = currStudent.mentor.slice(1);
       console.log("this lose");
-      if (currStudentI === -1) final.push(currStudent);
       studentRec(final, currStudent);
     } else {
     //   console.log(
@@ -123,10 +120,9 @@ function studentRec(final: any[], student: any) {
     //     otherStudent.mentor[1].address
     //   );
         final[mentorTaken].mentor = otherStudent.mentor.slice(1);
-        console.log(final)
-      console.log("other lose");
-      if (currStudentI === -1) final.push(currStudent);
-      studentRec(final, otherStudent);
+        console.log("other lose");
+        if (currStudentI === -1) final.push(currStudent);
+        studentRec(final, otherStudent);
     }
   } else {
     console.log(
@@ -185,4 +181,4 @@ const m = [
     { id: 11, address: "yavne" },
 ];
 
-// pairing(s, m);
+pairing(s, m);
