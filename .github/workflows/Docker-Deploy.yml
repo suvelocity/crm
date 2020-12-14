@@ -60,7 +60,7 @@ jobs:
 
     # Build production build (So the Docker Image Has The Latest Build Version)
     - name: Create production build
-      run: CI=false INLINE_RUNTIME_CHUNK=false npm run build
+      run: CI=false npm run build:prod
       working-directory: ./client
 
     # Enable When using ENV_FILE Secret
