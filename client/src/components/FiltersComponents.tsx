@@ -40,7 +40,7 @@ export const FiltersComponents = ({
         >
           <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy} Filter`}</InputLabel>
+          >{`${item.filterBy}`}</InputLabel>
           <Select
             labelId={`demo-simple-select-label${item.filterBy}`}
             style={{ height: "100%", width: "60%" }}
