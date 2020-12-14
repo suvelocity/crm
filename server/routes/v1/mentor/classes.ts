@@ -1,9 +1,20 @@
 import { Request, Response, Router } from "express";
 //@ts-ignore
-import { MentorStudent} from "../../../models";
-import {mentorStudentSchemaToPut, mentorStudentSchema} from "../../../validations"
+import { MentorStudent, Class} from "../../../models";
+import {mentorStudentSchemaToPut, mentorStudentSchema} from "../../../validations";
+import { IClass } from "../../../types";
 
 const router = Router();
+
+// get all classes
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const classes: IClass[] = await Class.findAll();
+    res.json(classes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
   
 // add mentorstudent relation: 
 router.post("/", async (req: Request, res: Response) => {

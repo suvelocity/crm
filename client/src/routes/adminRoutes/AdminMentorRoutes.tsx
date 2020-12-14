@@ -1,7 +1,7 @@
 import React from "react";
 import MentorPrograms from "../../components/mentorRelated/MentorPrograms";
 import ProgramDashboard from "../../components/mentorRelated/ProgramDashboard";
-import NewProject from "../../components/mentorRelated/NewProject";
+import NewProgram from "../../components/mentorRelated/NewProgram";
 import NewClassMentorProject from "../../components/mentorRelated/NewClassMentorProject";
 import AddMentor from "../../components/mentorRelated/AddMentor";
 import SingleMentor from "../../components/mentorRelated/SingleMentor";
@@ -18,7 +18,7 @@ function AdminClassesRoutes() {
         <AllMentors />
       </Route>
       <Route exact path="/mentor/new">
-        <NewProject />
+        <NewProgram />
       </Route>
       <Route exact path="/mentor/add">
         <AddMentor />
