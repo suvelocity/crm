@@ -106,6 +106,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
             handleChange(e, "body")
           }
           required={true}
+          multiline
         />
         <Input
           variant='outlined'
@@ -114,7 +115,6 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
-          required={true}
         />
         <Submit>Add Lesson</Submit>
       </AddLessonForm>

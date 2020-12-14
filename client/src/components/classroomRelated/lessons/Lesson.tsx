@@ -33,13 +33,17 @@ export default function Lesson({
                     .split("%#splitingResource#%")
                     .map((resource: string, index: number) => (
                       <ResourcesLink key={index}>
-                        <Link href={resource}>{resource}</Link>
+                        <Link target='_blank' href={resource}>
+                          {resource}
+                        </Link>
                       </ResourcesLink>
                     ))
                 : //@ts-ignore
                   lesson.resource?.length > 0 && (
                     //@ts-ignore
-                    <Link href={resource!}>{lesson.resource}</Link>
+                    <Link target='_blank' href={resource!}>
+                      {lesson.resource}
+                    </Link>
                   )}
             </ResourcesLinks>
           </StyledDetails>
