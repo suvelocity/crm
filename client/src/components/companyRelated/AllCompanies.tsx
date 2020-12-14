@@ -34,13 +34,13 @@ function AllCompanies() {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#a3a365">All Companies</H1>
+          <H1 color="#b0b050">All Companies</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/company/add">
           <Button
             variant="contained"
-            style={{ backgroundColor: "#a3a365", color: "white" }}
+            style={{ backgroundColor: "#b0b050", color: "white" }}
           >
             Add Company
           </Button>

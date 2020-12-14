@@ -201,7 +201,7 @@ function AddStudent(props: Props) {
               ) : null}
               <br />
               <FormControl
-                style={{ minWidth: 195 }}
+                style={{ width: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Languages</InputLabel>
@@ -216,7 +216,8 @@ function AddStudent(props: Props) {
                           value={languages[key].name}
                         >
                           {/* @ts-ignore */}
-                          {languages[key].nativeName}
+                          {`${languages[key].name}`}
+                          {/* , ${languages[key].nativeName}`} */}
                         </MenuItem>
                       ))}
                     </Select>
