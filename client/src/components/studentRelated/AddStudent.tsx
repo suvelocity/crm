@@ -75,7 +75,6 @@ function AddStudent(props: Props) {
       }
     }
   };
-
   return (
     <Wrapper>
       <Center>

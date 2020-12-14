@@ -52,7 +52,6 @@ function SingleStudent() {
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(
       `/api/v1/student/byId/${id}`

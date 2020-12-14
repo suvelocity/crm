@@ -1,6 +1,6 @@
 // @flow
 // import * as React from 'react';
-import React from "react";
+import React, {useState} from "react";
 import { MenuItem, Select, InputLabel, FormControl } from "@material-ui/core";
 import { filterStudentObject, SelectInputs } from "../typescript/interfaces";
 
@@ -16,7 +16,9 @@ export const FiltersComponents = ({
   callbackFunction,
   widthPercent,
 }: Props) => {
+  const [value, setValue] = useState<string[]>([""])
   const determineWhatToSet = (by: string, value: any) => {
+    console.log(by, value, 'determined');
     switch (by) {
       case "Class":
         return callbackFunction({ ...filterObject, Class: value });
@@ -41,12 +43,21 @@ export const FiltersComponents = ({
           <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
           >{`${item.filterBy}`}</InputLabel>
-          <Select
+          <Select multiple
             labelId={`demo-simple-select-label${item.filterBy}`}
-            style={{ height: "100%", width: "60%" }}
-            onChange={(e) => determineWhatToSet(item.filterBy, e.target.value)}
+            style={{ height: "100%", width: "60%" }} 
+            defaultValue={[""]}
+            onChange={(e) => {
+              const value = e.target.value as string[] | undefined;
+              if(value){
+                if(value.filter(val => val != "").length === 0){
+                  return determineWhatToSet(item.filterBy, [""])
+                }
+                return determineWhatToSet(item.filterBy, value.filter(val => val != ""))
+              }
+              return determineWhatToSet(item.filterBy, [""])
+            }}
           >
-            <MenuItem value={""}>All</MenuItem>
             {item.filterBy === "Job Status" && (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}

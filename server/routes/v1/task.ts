@@ -4,8 +4,8 @@ const router = Router();
 import { Class, Task, TaskofStudent, Student } from "../../models";
 import { ILesson, IClass, ITask, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
-import network from "../../../client/src/helpers/network";
-import { ne } from "sequelize/types/lib/operators";
+// import network from "../../../client/src/helpers/network";
+// import { ne } from "sequelize/types/lib/operators";
 
 //todo support post of array of tasks
 //posts a single task to db and gives all students this task
@@ -53,7 +53,6 @@ router.post("/:classid", async (req: Request, res: Response) => {
       ],
     });
     const idArr = classStudents.Students;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (student: any): ITaskofStudent => {
