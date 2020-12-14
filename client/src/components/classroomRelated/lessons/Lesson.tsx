@@ -33,11 +33,14 @@ export default function Lesson({
                     .split("%#splitingResource#%")
                     .map((resource: string, index: number) => (
                       <ResourcesLink key={index}>
-                        <Link>{resource}</Link>
+                        <Link href={resource}>{resource}</Link>
                       </ResourcesLink>
                     ))
                 : //@ts-ignore
-                  lesson.resource?.length > 0 && <Link>{lesson.resource}</Link>}
+                  lesson.resource?.length > 0 && (
+                    //@ts-ignore
+                    <Link href={resource!}>{lesson.resource}</Link>
+                  )}
             </ResourcesLinks>
           </StyledDetails>
         </StyledAccordion>
@@ -76,8 +79,10 @@ const ResourcesLink = styled.div`
   margin-top: 15px;
 `;
 
-const Link = styled.span`
+const Link = styled.a`
   background-color: #3f51b5;
+  text-decoration: none;
+  color:${({ theme }: { theme: any }) => theme.colors.font}};
   border-radius: 8px;
   padding: 5px;
   color: white;
