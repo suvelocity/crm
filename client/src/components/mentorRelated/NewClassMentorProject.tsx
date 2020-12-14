@@ -91,7 +91,6 @@ function NewClassMentorProject() {
   };
 
   const removeMentor = (mentor: IMentor, i: number) => {
-    console.log("delete");
     const newMentors: IMentor[] = Array.from(mentors);
     newMentors.push(mentor);
     setMentors(newMentors);
@@ -137,7 +136,6 @@ function NewClassMentorProject() {
 
   const assignMentors = (mentorizeClass: IClass | undefined) => {
     const mentorNeededCount: number = mentorizeClass!.Students.filter(student => !(student.mentor || student.mentorId)).length;
-    console.log(mentorNeededCount)
     if (mentorNeededCount <= mentors.length) {
       let mentorsCount: number = 0
       for (let i = 0; i < mentorizeClass!.Students.length; i++) {

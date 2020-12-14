@@ -79,7 +79,6 @@ function AddStudent(props: Props) {
       }
     }
   };
-
   return (
     <Wrapper>
       <Center>
@@ -228,7 +227,7 @@ function AddStudent(props: Props) {
                   }
                   name="languages"
                   rules={{ required: "Languages is required" }}
-                  defaultValue={props.student ? props.student.languages : []}
+                  defaultValue={props.student ? props.student.languages.split(",") : []}
                   control={control}
                 />
               </FormControl>

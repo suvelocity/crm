@@ -85,10 +85,10 @@ export interface IEvent {
 type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class: string;
-  Course: string;
-  JobStatus: string;
-  Name: string;
+  Class: string[];
+  Course: string[];
+  JobStatus: string[];
+  Name: string[];
 }
 export interface Name {
   firstName: string;
