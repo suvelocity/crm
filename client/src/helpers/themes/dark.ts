@@ -5,6 +5,6 @@ export const darkTheme = {
     addItem: "#242526",
     font: "white",
     divider: "red",
-    task: "#003847",
+    accordion: "#003847",
   },
 };
