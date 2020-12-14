@@ -30,6 +30,7 @@ import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
 import languages from "../../helpers/languages.json";
+import LanguageSelector from "../LanguageSelector";
 interface Props {
   student?: IStudent;
   header?: string;
@@ -205,9 +206,19 @@ function AddStudent(props: Props) {
                 )
               ) : null}
               <br />
+              <LanguageSelector
+                //@ts-ignore
+                id="languages"
+                name="languages"
+                defaultValue={props.student ? props.student.languages : ""}
+                inputRef={register({ required: "Languages are required" })}
+                label="Languages"
+              />
+
+              {/* 
               <FormControl
                 style={{ minWidth: 200 }}
-                error={Boolean(errors.classId)}
+                error={Boolean(errors.languages)}
               >
                 <InputLabel>Languages</InputLabel>
                 <Controller
@@ -221,17 +232,21 @@ function AddStudent(props: Props) {
                           value={languages[key].name}
                         >
                           {/* @ts-ignore */}
-                          {languages[key].nativeName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  }
-                  name="languages"
-                  rules={{ required: "Languages is required" }}
-                  defaultValue={props.student ? props.student.languages : []}
-                  control={control}
-                />
-              </FormControl>
+              {/* <b>{languages[key].name}</b> */}
+              {", "}
+              {/* @ts-ignore */}
+              {/* {languages[key].nativeName} */}
+              {/* </MenuItem> */}
+              {/* ))} */}
+              {/* </Select> */}
+              {/* } */}
+              {/* name="languages" */}
+              {/* rules={{ required: "Languages is required" }} */}
+              {/* defaultValue={props.student ? props.student.languages : []} */}
+              {/* control={control} */}
+              {/* /> */}
+              {/* </FormControl> */}
+
               {!empty ? (
                 errors.languages ? (
                   <ErrorBtn tooltipTitle={errors.languages.message} />

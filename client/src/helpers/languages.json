@@ -100,7 +100,7 @@
     "nativeName": "ဗမာစာ"
   },
   "ca": {
-    "name": "Catalan; Valencian",
+    "name": "Catalan-Valencian",
     "nativeName": "Català"
   },
   "ch": {
@@ -112,7 +112,7 @@
     "nativeName": "нохчийн мотт"
   },
   "ny": {
-    "name": "Chichewa; Chewa; Nyanja",
+    "name": "Chichewa-Chewa-Nyanja",
     "nativeName": "chiCheŵa, chinyanja"
   },
   "zh": {
@@ -148,7 +148,7 @@
     "nativeName": "dansk"
   },
   "dv": {
-    "name": "Divehi; Dhivehi; Maldivian;",
+    "name": "Divehi-Dhivehi-Maldivian",
     "nativeName": "ދިވެހި"
   },
   "nl": {
@@ -188,7 +188,7 @@
     "nativeName": "français, langue française"
   },
   "ff": {
-    "name": "Fula; Fulah; Pulaar; Pular",
+    "name": "Fula-Fulah-Pulaar-Pular",
     "nativeName": "Fulfulde, Pulaar, Pular"
   },
   "gl": {
@@ -204,7 +204,7 @@
     "nativeName": "Deutsch"
   },
   "el": {
-    "name": "Greek, Modern",
+    "name": "Greek Modern",
     "nativeName": "Ελληνικά"
   },
   "gn": {
@@ -216,7 +216,7 @@
     "nativeName": "ગુજરાતી"
   },
   "ht": {
-    "name": "Haitian; Haitian Creole",
+    "name": "Haitian-Haitian Creole",
     "nativeName": "Kreyòl ayisyen"
   },
   "ha": {
@@ -224,10 +224,6 @@
     "nativeName": "Hausa, هَوُسَ"
   },
   "he": {
-    "name": "Hebrew",
-    "nativeName": "עברית"
-  },
-  "iw": {
     "name": "Hebrew",
     "nativeName": "עברית"
   },
@@ -296,7 +292,7 @@
     "nativeName": "basa Jawa"
   },
   "kl": {
-    "name": "Kalaallisut, Greenlandic",
+    "name": "Kalaallisut Greenlandic",
     "nativeName": "kalaallisut, kalaallit oqaasii"
   },
   "kn": {
@@ -320,7 +316,7 @@
     "nativeName": "ភាសាខ្មែរ"
   },
   "ki": {
-    "name": "Kikuyu, Gikuyu",
+    "name": "Kikuyu Gikuyu",
     "nativeName": "Gĩkũyũ"
   },
   "rw": {
@@ -328,7 +324,7 @@
     "nativeName": "Ikinyarwanda"
   },
   "ky": {
-    "name": "Kirghiz, Kyrgyz",
+    "name": "Kirghiz Kyrgyz",
     "nativeName": "кыргыз тили"
   },
   "kv": {
@@ -348,7 +344,7 @@
     "nativeName": "Kurdî, كوردی‎"
   },
   "kj": {
-    "name": "Kwanyama, Kuanyama",
+    "name": "Kwanyama Kuanyama",
     "nativeName": "Kuanyama"
   },
   "la": {
@@ -356,7 +352,7 @@
     "nativeName": "latine, lingua latina"
   },
   "lb": {
-    "name": "Luxembourgish, Letzeburgesch",
+    "name": "Luxembourgish Letzeburgesch",
     "nativeName": "Lëtzebuergesch"
   },
   "lg": {
@@ -364,7 +360,7 @@
     "nativeName": "Luganda"
   },
   "li": {
-    "name": "Limburgish, Limburgan, Limburger",
+    "name": "Limburgish Limburgan Limburger",
     "nativeName": "Limburgs"
   },
   "ln": {
@@ -432,7 +428,7 @@
     "nativeName": "Ekakairũ Naoero"
   },
   "nv": {
-    "name": "Navajo, Navaho",
+    "name": "Navajo Navaho",
     "nativeName": "Diné bizaad, Dinékʼehǰí"
   },
   "nb": {
@@ -472,11 +468,11 @@
     "nativeName": "Occitan"
   },
   "oj": {
-    "name": "Ojibwe, Ojibwa",
+    "name": "Ojibwe Ojibwa",
     "nativeName": "ᐊᓂᔑᓈᐯᒧᐎᓐ"
   },
   "cu": {
-    "name": "Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic",
+    "name": "Old Church Slavonic Church Slavic Church Slavonic Old Bulgarian Old Slavonic",
     "nativeName": "ѩзыкъ словѣньскъ"
   },
   "om": {
@@ -488,11 +484,11 @@
     "nativeName": "ଓଡ଼ିଆ"
   },
   "os": {
-    "name": "Ossetian, Ossetic",
+    "name": "Ossetian Ossetic",
     "nativeName": "ирон æвзаг"
   },
   "pa": {
-    "name": "Panjabi, Punjabi",
+    "name": "Panjabi Punjabi",
     "nativeName": "ਪੰਜਾਬੀ, پنجابی‎"
   },
   "pi": {
@@ -508,7 +504,7 @@
     "nativeName": "polski"
   },
   "ps": {
-    "name": "Pashto, Pushto",
+    "name": "Pashto Pushto",
     "nativeName": "پښتو"
   },
   "pt": {
@@ -528,7 +524,7 @@
     "nativeName": "kiRundi"
   },
   "ro": {
-    "name": "Romanian, Moldavian, Moldovan",
+    "name": "Romanian Moldavian Moldovan",
     "nativeName": "română"
   },
   "ru": {
@@ -564,7 +560,7 @@
     "nativeName": "српски језик"
   },
   "gd": {
-    "name": "Scottish Gaelic; Gaelic",
+    "name": "Scottish Gaelic-Gaelic",
     "nativeName": "Gàidhlig"
   },
   "sn": {
@@ -572,7 +568,7 @@
     "nativeName": "chiShona"
   },
   "si": {
-    "name": "Sinhala, Sinhalese",
+    "name": "Sinhala Sinhalese",
     "nativeName": "සිංහල"
   },
   "sk": {
@@ -592,7 +588,7 @@
     "nativeName": "Sesotho"
   },
   "es": {
-    "name": "Spanish; Castilian",
+    "name": "Spanish-Castilian",
     "nativeName": "español, castellano"
   },
   "su": {
@@ -632,7 +628,7 @@
     "nativeName": "ትግርኛ"
   },
   "bo": {
-    "name": "Tibetan Standard, Tibetan, Central",
+    "name": "Tibetan Standard Tibetan Central",
     "nativeName": "བོད་ཡིག"
   },
   "tk": {
@@ -672,7 +668,7 @@
     "nativeName": "Reo Tahiti"
   },
   "ug": {
-    "name": "Uighur, Uyghur",
+    "name": "Uighur Uyghur",
     "nativeName": "Uyƣurqə, ئۇيغۇرچە‎"
   },
   "uk": {
@@ -728,7 +724,7 @@
     "nativeName": "Yorùbá"
   },
   "za": {
-    "name": "Zhuang, Chuang",
+    "name": "Zhuang Chuang",
     "nativeName": "Saɯ cueŋƅ, Saw cuengh"
   }
 }
