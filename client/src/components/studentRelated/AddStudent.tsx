@@ -71,7 +71,7 @@ function AddStudent(props: Props) {
     } catch (error) {
       if (error.response.status === 409) {
         Swal.fire({
-          title: "User with the same id already exists",
+          title: "User with the same id or email already exists",
           icon: "error",
         });
       } else {
