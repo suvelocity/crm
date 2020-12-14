@@ -26,7 +26,7 @@ interface Props {
   update?: boolean;
   handleClose?: Function;
 }
-const AddCompany = (props:Props) => {
+const AddCompany = (props: Props) => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -34,11 +34,11 @@ const AddCompany = (props:Props) => {
 
   const onSubmit = async (data: Omit<ICompany, "id">) => {
     try {
-      if(props.update && props.company) {
+      if (props.update && props.company) {
         await network.patch(`/api/v1/company/${props.company.id}`, data);
-        props.handleClose&& props.handleClose()
+        props.handleClose && props.handleClose();
         // history.push(`/company/${props.company.id}`);
-      }else{
+      } else {
         await network.post("/api/v1/company", data);
         history.push("/company/all");
       }
@@ -51,15 +51,15 @@ const AddCompany = (props:Props) => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color='#a3a365'>{props.header? props.header : 'Add Company'}</H1>
+          <H1 color="#a3a365">{props.header ? props.header : "Add Company"}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
             <div>
               <TextField
-                id='name'
-                label='Name'
-                defaultValue={props.company? props.company.name : ''}
+                id="name"
+                label="Name"
+                defaultValue={props.company ? props.company.name : ""}
                 inputRef={register({
                   required: "Company name is required",
                   minLength: {
@@ -67,7 +67,7 @@ const AddCompany = (props:Props) => {
                     message: "Company needs to have a minimum of 2 letters",
                   },
                 })}
-                name='name'
+                name="name"
               />
               {!empty ? (
                 errors.name ? (
@@ -79,13 +79,13 @@ const AddCompany = (props:Props) => {
               <br />
               <br />
               <GoogleMaps
-                id='location'
-                name='location'
-                defaultValue={props.company? props.company.location : ''}
+                id="location"
+                name="location"
+                defaultValue={props.company ? props.company.location : ""}
                 inputRef={register({
                   required: "Location is required",
                 })}
-                label='Location'
+                label="Location"
               />
               {!empty ? (
                 errors.location ? (
@@ -93,7 +93,7 @@ const AddCompany = (props:Props) => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
@@ -104,16 +104,16 @@ const AddCompany = (props:Props) => {
             </div>
             <div>
               <TextField
-                id='contactName'
-                label='Contact Name'
-                defaultValue={props.company? props.company.contactName : ''}
+                id="contactName"
+                label="Contact Name"
+                defaultValue={props.company ? props.company.contactName : ""}
                 inputRef={register({
                   pattern: {
                     value: validNameRegex,
                     message: "Contact name can have only letters and spaces",
                   },
                 })}
-                name='contactName'
+                name="contactName"
               />
               {!empty ? (
                 errors.contactName ? (
@@ -121,7 +121,7 @@ const AddCompany = (props:Props) => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
@@ -132,11 +132,13 @@ const AddCompany = (props:Props) => {
               <br />
               <br />
               <TextField
-                id='contactPosition'
-                name='contactPosition'
-                defaultValue={props.company? props.company.contactPosition : ''}
+                id="contactPosition"
+                name="contactPosition"
+                defaultValue={
+                  props.company ? props.company.contactPosition : ""
+                }
                 inputRef={register()}
-                label='Contact Position'
+                label="Contact Position"
               />
               {!empty ? (
                 errors.contactPosition ? (
@@ -144,7 +146,7 @@ const AddCompany = (props:Props) => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
@@ -155,16 +157,16 @@ const AddCompany = (props:Props) => {
               <br />
               <br />
               <TextField
-                id='contactNumber'
-                defaultValue={props.company? props.company.contactNumber : ''}
-                label='Contact Phone Number'
+                id="contactNumber"
+                defaultValue={props.company ? props.company.contactNumber : ""}
+                label="Contact Phone Number"
                 inputRef={register({
                   pattern: {
                     value: validPhoneNumberRegex,
                     message: "Invalid Phone Number",
                   },
                 })}
-                name='contactNumber'
+                name="contactNumber"
               />
               {!empty ? (
                 errors.contactNumber ? (
@@ -172,7 +174,7 @@ const AddCompany = (props:Props) => {
                     <IconButton style={{ cursor: "default" }}>
                       <ErrorOutlineIcon
                         style={{ width: "30px", height: "30px" }}
-                        color='error'
+                        color="error"
                       />
                     </IconButton>
                   </Tooltip>
@@ -185,20 +187,20 @@ const AddCompany = (props:Props) => {
           <br />
 
           <TextField
-            id='description'
+            id="description"
             multiline
             fullWidth
             rows={5}
-            variant='outlined'
-            defaultValue={props.company? props.company.description : ''}
-            name='description'
+            variant="outlined"
+            defaultValue={props.company ? props.company.description : ""}
+            name="description"
             inputRef={register({
               maxLength: {
                 value: 500,
                 message: "Description Details are too long",
               },
             })}
-            label='Description'
+            label="Description"
           />
           {!empty ? (
             errors.description ? (
@@ -206,24 +208,24 @@ const AddCompany = (props:Props) => {
                 <IconButton style={{ cursor: "default" }}>
                   <ErrorOutlineIcon
                     style={{ width: "30px", height: "30px" }}
-                    color='error'
+                    color="error"
                   />
                 </IconButton>
               </Tooltip>
             ) : (
               <IconButton style={{ cursor: "default" }}>
-                <DoneIcon color='action' />
+                <DoneIcon color="action" />
               </IconButton>
             )
           ) : null}
           <br />
           <br />
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#a3a365", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>

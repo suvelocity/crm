@@ -371,7 +371,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="militaryService"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Military Service is too long",
+              },
+            })}
             label="Military Service"
           />
           {generateBrs(2)}
@@ -384,7 +389,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="workExperience"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Work Experience is too long",
+              },
+            })}
             label="Work Experience"
           />
           {generateBrs(2)}
@@ -409,7 +419,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="additionalDetails"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Additional Details are too long",
+              },
+            })}
             label="Additional Details"
           />
           {generateBrs(2)}
