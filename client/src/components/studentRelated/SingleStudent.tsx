@@ -182,7 +182,11 @@ function SingleStudent() {
               </SingleListItem>
               <SingleListItem
                 primary="Work Experience"
-                secondary={capitalize(student?.workExperience)}
+                secondary={
+                  student?.workExperience
+                    ? capitalize(student?.workExperience)
+                    : "None"
+                }
               >
                 <WorkIcon />
               </SingleListItem>

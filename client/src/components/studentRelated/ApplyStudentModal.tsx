@@ -58,7 +58,7 @@ function ApplyStudentModal({
     if (jobsToApply.length > 0) {
       try {
         setLoading(true);
-        jobsToApply.forEach(async (jobId: string) => {
+        Array.from(new Set(jobsToApply)).forEach(async (jobId: string) => {
           await network.post(`/api/v1/event`, {
             userId: studentId,
             relatedId: jobId,
