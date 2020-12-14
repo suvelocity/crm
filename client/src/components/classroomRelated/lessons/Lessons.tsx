@@ -47,27 +47,15 @@ export default function Lessons() {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <AddLesson />
+      <AddLesson setOpen={setOpen} />
     </div>
   );
   const fetchClassLessons = async () => {
     try {
-      const { data: lessons } = await network.get(`/byclass/${classId}`);
-      const temp = [
-        {
-          id: 10,
-          classId: 1,
-          title: "hello sonnnnnn",
-          body: "redux by nirrrrrr",
-          resource:
-            "http://www.myAss.com%#splitingResource#%http://yourAss.com",
-          zoomLink: "http://www.zoomAss.com",
-          createdBy: 1,
-        },
-      ];
-
-      return temp;
-      //   return lessons;
+      const { data: lessons } = await network.get(
+        `/api/v1/lesson/byclass/${classId}`
+      );
+      return Array.isArray(lessons) ? lessons : [];
     } catch {
       return [];
     }
@@ -79,7 +67,7 @@ export default function Lessons() {
       setFilteredLessons(allLessons);
       setLoading(false);
     })();
-  }, []);
+  }, [open]);
 
   return (
     <Loading size={30} loading={loading}>
