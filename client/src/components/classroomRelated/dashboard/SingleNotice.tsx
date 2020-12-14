@@ -20,7 +20,6 @@ export default function SingleNotice(props: any) {
         width: "80%",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: "20px",
         padding: "10px",
         // backgroundColor: "#2C3034",
         font: "25px",
@@ -57,7 +56,6 @@ export default function SingleNotice(props: any) {
       </Collapse>
       <Button
         disabled={open}
-        variant='outlined'
         color='secondary'
         onClick={() => {
           setOpen(true);

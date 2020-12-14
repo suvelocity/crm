@@ -5,7 +5,7 @@ import ErrorBoundary from "../helpers/ErrorBoundary";
 import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
-import Tasks from "../components/classroomRelated/tasks/Tasks";
+import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import Teacher from "../components/classroomRelated/teacher/Teacher";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 
@@ -23,7 +23,7 @@ export default function TeacherRoutes() {
             <Schedhule />
           </Route>
           <Route path='/tasks'>
-            <Tasks />
+            <TaskBoard />
           </Route>
           <Route path='/teacher'>
             <Teacher />

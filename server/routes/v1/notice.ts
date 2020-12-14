@@ -59,7 +59,6 @@ router.put("/byid/:id", async (req: Request, res: Response) => {
   }
 });
 
-//!paraniod didnt work here
 router.delete("/:id", async (req: Request, res: Response) => {
   const paramsId: string = req.params.id;
   try {
