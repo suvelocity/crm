@@ -61,8 +61,10 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   };
 
   const handleAddResource = () => {
-    setResources((prev) => [resource, ...prev]);
-    setResource("");
+    if (resource.length > 0) {
+      setResources((prev) => [resource, ...prev]);
+      setResource("");
+    }
   };
 
   const handleRemove = (index: number): void => {
