@@ -3,9 +3,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Modal from '@material-ui/core/Modal';
-import EditIcon from '@material-ui/icons/Edit';
-import AddClass from './AddClass';
+import Modal from "@material-ui/core/Modal";
+import EditIcon from "@material-ui/icons/Edit";
+import AddClass from "./AddClass";
 import { SingleListItem } from "../tableRelated";
 import {
   H1,
@@ -20,6 +20,7 @@ import {
   StyledUl,
   StyledLink,
   repeatFormula,
+  EditDiv,
 } from "../../styles/styledComponents";
 import {
   CalendarToday as CalendarTodayIcon,
@@ -54,7 +55,7 @@ function SingleClass() {
     setModalState(false);
     setLoading(true);
     getClass();
-  }
+  };
 
   useEffect(() => {
     try {
@@ -74,8 +75,9 @@ function SingleClass() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-        <div style={{display:'flex', justifyContent: 'space-between'}}>
-            <div>
+          <EditDiv onClick={() => setModalState(true)}>
+            <EditIcon />
+          </EditDiv>
           <GridDiv repeatingFormula="1fr 1fr">
             <List>
               <SingleListItem primary="Name" secondary={capitalize(cls?.name)}>
@@ -101,7 +103,6 @@ function SingleClass() {
               >
                 <CalendarTodayIcon />
               </SingleListItem>
-              {/* Course */}
               <ListItem>
                 <ListItemIcon>
                   <CalendarTodayIcon />
@@ -126,20 +127,24 @@ function SingleClass() {
               </SingleListItem>
             </MultilineListItem>
           )}
-          </div>
-          <div style={{cursor: "pointer" }} onClick={() => setModalState(true)}><EditIcon /></div>
-          </div>
+
           <Modal
             open={modalState}
             onClose={() => setModalState(false)}
-            style={{overflow: 'scroll'}}
+            style={{ overflow: "scroll" }}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
-            {
-              !cls?<div>oops</div>:
-              <AddClass handleClose={handleClose} update={true} cls={cls} header='Edit Class'/>
-            }
+            {!cls ? (
+              <div>oops</div>
+            ) : (
+              <AddClass
+                handleClose={handleClose}
+                update={true}
+                cls={cls}
+                header="Edit Class"
+              />
+            )}
           </Modal>
         </Loading>
       </Wrapper>

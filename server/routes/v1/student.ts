@@ -26,7 +26,6 @@ router.get("/all", async (req: Request, res: Response) => {
   const onlyActive: boolean = Boolean(req.query.onlyactive);
   const omitRelations: boolean = Boolean(req.query.omitrelations);
 
-  console.log(omitRelations + " " + onlyActive);
   //@ts-ignore
   const filteredFields: PublicFields[] = fields?.filter((field: string) =>
     publicFields.includes(field)

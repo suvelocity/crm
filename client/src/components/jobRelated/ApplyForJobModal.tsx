@@ -69,10 +69,11 @@ function ApplyForJobModal({
         setLoading(true);
         studentsToApply.forEach(async (studentId: string) => {
           await network.post(`/api/v1/event`, {
-            studentId,
-            jobId,
+            userId: studentId,
+            relatedId: jobId,
+            type: "jobs",
             date: new Date().setHours(0, 0, 0, 0),
-            status: "Started application process",
+            eventName: "Started application process",
           });
         });
         setTimeout(() => {
