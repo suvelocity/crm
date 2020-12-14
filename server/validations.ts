@@ -7,7 +7,7 @@ export const classSchema = Joi.object({
   endingDate: Joi.string().required(),
   cycleNumber: Joi.number().required(),
   zoomLink: Joi.string().allow(null, ""),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const classSchemaToPut = Joi.object({
@@ -17,37 +17,37 @@ export const classSchemaToPut = Joi.object({
   endingDate: Joi.string(),
   cycleNumber: Joi.number(),
   zoomLink: Joi.string(),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const eventsSchema = Joi.object({
-  studentId: Joi.number().required(),
-  jobId: Joi.number().required(),
-  status: Joi.string().required(),
+  userId: Joi.number().required(),
+  relatedId: Joi.number().required(),
+  eventName: Joi.string().required(),
   date: Joi.date(),
-  comment: Joi.string().allow(null, ""),
+  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
   //TODO: check what is required
   companyId: Joi.number().required(),
   position: Joi.string().required(),
-  requirements: Joi.string().required(),
+  requirements: Joi.string().max(500).required(),
   location: Joi.string().required(),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().max(500).allow(null, ""),
   contact: Joi.string().required(),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const jobSchemaToPut = Joi.object({
   //TODO: check what is required
   companyId: Joi.number().allow(null, ""),
   position: Joi.string().allow(null, ""),
-  requirements: Joi.string().allow(null, ""),
+  requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().allow(null, ""),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().max(500).allow(null, ""),
   contact: Joi.string().allow(null, ""),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const studentSchema = Joi.object({
@@ -56,18 +56,19 @@ export const studentSchema = Joi.object({
   lastName: Joi.string().required(),
   phone: Joi.string().required(),
   idNumber: Joi.string().required(),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
   classId: Joi.number().required(),
   age: Joi.number().required(),
   address: Joi.string().required(),
   maritalStatus: Joi.string().required(),
   children: Joi.number().required(),
   academicBackground: Joi.string().allow(null, ""),
-  militaryService: Joi.string().allow(null, ""),
-  workExperience: Joi.string().allow(null, ""),
+  militaryService: Joi.string().max(500).allow(null, ""),
+  workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().required(),
   citizenship: Joi.string().required(),
-  fccaccount: Joi.string().max(30).allow(null, ""),
+  fccAccount: Joi.string().max(30).allow(null, ""),
+  resumeLink: Joi.string().max(500).allow(null, ""),
 });
 
 export const studentSchemaToPut = Joi.object({
@@ -76,24 +77,25 @@ export const studentSchemaToPut = Joi.object({
   lastName: Joi.string().allow(null, ""),
   phone: Joi.string().allow(null, ""),
   idNumber: Joi.string().allow(null, ""),
-  additionalDetails: Joi.string().allow(null, ""),
+  additionalDetails: Joi.string().max(500).allow(null, ""),
   classId: Joi.number().allow(null, ""),
   age: Joi.number().allow(null, ""),
   address: Joi.string().allow(null, ""),
-  maritalStatus: Joi.string().allow(null, ""),
+  maritalStatus: Joi.string().max(500).allow(null, ""),
   children: Joi.number().allow(null, ""),
   academicBackground: Joi.string().allow(null, ""),
-  militaryService: Joi.string().allow(null, ""),
-  workExperience: Joi.string().allow(null, ""),
+  militaryService: Joi.string().max(500).allow(null, ""),
+  workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().allow(null, ""),
   citizenship: Joi.string().allow(null, ""),
-  fccaccount: Joi.string().max(30).allow(null, ""),
+  fccAccount: Joi.string().max(30).allow(null, ""),
+  resumeLink: Joi.string().max(500).allow(null, ""),
 });
 
 export const companySchema = Joi.object({
   name: Joi.string().required(),
   location: Joi.string().required(),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().max(500).allow(null, ""),
   contactName: Joi.string().allow(null, ""),
   contactNumber: Joi.string().allow(null, ""),
   contactPosition: Joi.string().allow(null, ""),
@@ -102,7 +104,7 @@ export const companySchema = Joi.object({
 export const companySchemaToPut = Joi.object({
   name: Joi.string().allow(null, ""),
   location: Joi.string().allow(null, ""),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().max(500).allow(null, ""),
   contactName: Joi.string().allow(null, ""),
   contactNumber: Joi.string().allow(null, ""),
   contactPosition: Joi.string().allow(null, ""),

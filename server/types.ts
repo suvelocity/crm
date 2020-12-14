@@ -1,6 +1,7 @@
 import { Model } from "sequelize/types";
 
 export interface IJob {
+  Company?: ICompany;
   id?: number;
   companyId: number;
   position: string;
@@ -30,6 +31,7 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   fccAccount?: string;
+  resumeLink?: string;
 }
 
 export interface IClass {
@@ -45,10 +47,12 @@ export interface IClass {
 
 export interface IEvent {
   id?: number;
-  studentId: number;
-  jobId: number;
-  status: string;
-  comment?: string;
+  userId: number;
+  relatedId: number;
+  eventName: string;
+  entry?: string;
+  type: string;
+  date: Date;
 }
 
 export interface ICompany {

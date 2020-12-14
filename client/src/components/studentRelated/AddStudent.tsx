@@ -7,12 +7,8 @@ import {
   validPhoneNumberRegex,
   onlyNumbersRegex,
 } from "../../helpers";
-import DoneIcon from "@material-ui/icons/Done";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -71,7 +67,7 @@ function AddStudent(props: Props) {
     } catch (error) {
       if (error.response.status === 409) {
         Swal.fire({
-          title: "User with the same id already exists",
+          title: "User with the same id or email already exists",
           icon: "error",
         });
       } else {
@@ -79,7 +75,6 @@ function AddStudent(props: Props) {
       }
     }
   };
-
   return (
     <Wrapper>
       <Center>
@@ -206,7 +201,7 @@ function AddStudent(props: Props) {
               ) : null}
               <br />
               <FormControl
-                style={{ minWidth: 200 }}
+                style={{ width: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Languages</InputLabel>
@@ -221,14 +216,17 @@ function AddStudent(props: Props) {
                           value={languages[key].name}
                         >
                           {/* @ts-ignore */}
-                          {languages[key].nativeName}
+                          {`${languages[key].name}`}
+                          {/* , ${languages[key].nativeName}`} */}
                         </MenuItem>
                       ))}
                     </Select>
                   }
                   name="languages"
                   rules={{ required: "Languages is required" }}
-                  defaultValue={props.student ? props.student.languages : []}
+                  defaultValue={
+                    props.student ? props.student.languages.split(", ") : []
+                  }
                   control={control}
                 />
               </FormControl>
@@ -239,11 +237,31 @@ function AddStudent(props: Props) {
                   <ActionBtn />
                 )
               ) : null}
+              <br />
+              <TextField
+                id="resumeLink"
+                name="resumeLink"
+                defaultValue={props.student ? props.student.resumeLink : ""}
+                inputRef={register({
+                  maxLength: {
+                    value: 500,
+                    message: "Resume link needs to be 500 letters max",
+                  },
+                })}
+                label="Resume Link"
+              />
+              {!empty ? (
+                errors.resumeLink ? (
+                  <ErrorBtn tooltipTitle={errors.resumeLink.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
               {generateBrs(2)}
             </div>
             <div>
               <FormControl
-                style={{ minWidth: 200 }}
+                style={{ minWidth: 195 }}
                 error={Boolean(errors.classId)}
               >
                 <InputLabel>Please select a class</InputLabel>
@@ -371,7 +389,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="militaryService"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Military Service is too long",
+              },
+            })}
             label="Military Service"
           />
           {generateBrs(2)}
@@ -384,7 +407,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="workExperience"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Work Experience is too long",
+              },
+            })}
             label="Work Experience"
           />
           {generateBrs(2)}
@@ -409,7 +437,12 @@ function AddStudent(props: Props) {
             rows={4}
             variant="outlined"
             name="additionalDetails"
-            inputRef={register()}
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Additional Details are too long",
+              },
+            })}
             label="Additional Details"
           />
           {generateBrs(2)}

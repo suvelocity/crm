@@ -11,17 +11,15 @@ import {
 import { formatToIsraeliDate } from "../../helpers";
 
 export default function PDFLink({ data }: { data: IEvent[] }) {
-  console.log(data);
-
   const MyDocument = () => (
     <Document>
-      <Page size='A4'>
+      <Page size="A4">
         <View>
           {data.map((process: IEvent, i: number) => (
             <Text>
               {i + 1}. Student: {process.Student!.firstName}{" "}
               {process.Student!.lastName}, Position: {process.Job!.position},
-              Status: {process.status}, Date:
+              Status: {process.eventName}, Date:
               {formatToIsraeliDate(process.date)}.
             </Text>
           ))}

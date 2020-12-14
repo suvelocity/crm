@@ -77,8 +77,8 @@ function EventsLog({
           </TimelineSeparator>
           <TimelineContent>
             <Paper className={classes.ticket}>
-              <TicketHeader>{capitalize(event.status)}</TicketHeader>
-              <Typography>{capitalize(event.comment)}</Typography>
+              <TicketHeader>{capitalize(event.eventName)}</TicketHeader>
+              <Typography>{capitalize(event.entry?.comment)}</Typography>
               <DeleteIcon onClick={() => promptDeleteModal(event.id!)} />
             </Paper>
           </TimelineContent>

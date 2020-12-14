@@ -30,7 +30,7 @@ export const cancelAllJobsOfStudent: (
       include: [
         {
           model: Event,
-          attributes: ["jobId"],
+          attributes: ["relatedId"],
         },
       ],
       attributes: ["firstName", "lastName", "idNumber", "id"],
@@ -39,17 +39,19 @@ export const cancelAllJobsOfStudent: (
     if (!studentData) return;
     const jobIds: number[] = getUnique(
       //@ts-ignore
-      studentData.Events.map((event: IEvent) => event.jobId),
+      studentData.Events.map((event: IEvent) => event.relatedId),
       [hiredJobId]
     );
     await Promise.all(
-      jobIds.map((jobId: number) =>
+      jobIds.map((relatedId: number) =>
         Event.create({
-          studentId,
-          jobId,
-          status: "Canceled",
           comment,
           date,
+          userId: studentId,
+          relatedId,
+          type: "jobs",
+          eventName: "Canceled",
+          entry: { comment },
         })
       )
     );
@@ -75,28 +77,29 @@ export const cancelAllApplicantsForJob: (
       include: [
         {
           model: Event,
-          attributes: ["studentId"],
+          attributes: ["userId"],
         },
       ],
-      // attributes: []
     });
 
     if (!jobData) return;
 
     const studentsIds = getUnique(
       //@ts-ignore
-      jobData.Events.map((event: IEvent) => event.studentId),
+      jobData.Events.map((event: IEvent) => event.userId),
       [hiredStudentId]
     );
 
     await Promise.all(
-      studentsIds.map((studentId: number) =>
+      studentsIds.map((userId: number) =>
         Event.create({
-          studentId,
-          jobId,
-          status: "Canceled",
-          comment,
           date,
+          userId,
+          relatedId: jobId,
+          type: "jobs",
+          // date: new Date().setHours(0, 0, 0, 0),
+          eventName: "Canceled",
+          entry: { comment },
         })
       )
     );
@@ -110,7 +113,6 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   array: number[],
   exclude: number[]
 ) => {
-  console.log(exclude);
   //@ts-ignore
   return array.filter(
     (elem: number, i: number) =>
@@ -173,7 +175,6 @@ export const getQuery: (
           ],
         },
       ],
-      attributes: ["id", "status", "date", "comment"],
     };
 
     include.push(includeEvents);

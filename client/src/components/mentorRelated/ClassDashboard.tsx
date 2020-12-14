@@ -25,7 +25,6 @@ const ClassDashboard: React.FC = () => {
 
   const getTableData = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/meeting/class/${id}`);
-    console.log(data);
     setTabelData(data);
     setLoading(false);
   }, []);
