@@ -22,7 +22,7 @@ export const classSchemaToPut = Joi.object({
 
 export const eventsSchema = Joi.object({
   userId: Joi.number().required(),
-  relatedId: Joi.number().required(),
+  relatedId: Joi.number(),
   eventName: Joi.string().required(),
   date: Joi.date(),
   // entry: Joi.string().allow(null, ""),

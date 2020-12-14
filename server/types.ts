@@ -117,12 +117,13 @@ export interface SeqInclude {
   where?: {};
 }
 
-export type PublicFields = "firstname" | "lastname" | "fcc";
+export type PublicFields = "firstname" | "lastname" | "fcc" | "id";
 
 export enum PublicFieldsEnum {
   firstname = "first_name",
   lastname = "last_name",
   fcc = "fcc_account",
+  id = "id"
 }
 export interface IMentor {
   id?: number;
