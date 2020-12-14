@@ -8,6 +8,7 @@ module.exports = {
       "Users",
       [
         {
+          id:1,
           email: "Admin@admin.com",
           password: bcrypt.hashSync("Admin123!", 10),
           type: "admin",
@@ -20,6 +21,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("People", { email: "Admin@admin.com" }, {});
+    await queryInterface.bulkDelete("Users", { email: "Admin@admin.com" }, {});
   },
 };

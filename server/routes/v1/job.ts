@@ -21,7 +21,7 @@ router.get("/all", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "date", "comment"],
+          attributes: ["id", "status", "date", "comment"],
         },
         {
           model: Company,
@@ -51,7 +51,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["status", "date", "comment"],
+          attributes: ["id", "status", "date", "comment"],
         },
         {
           model: Company,
@@ -97,7 +97,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   const { error } = jobSchemaToPut.validate(req.body);
   if (error) return res.status(400).json({ error: error.message });
   try {
