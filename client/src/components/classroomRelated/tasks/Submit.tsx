@@ -21,7 +21,8 @@ export default function SubmitTask(props: any) {
 
   const submitTask = async () => {
     try {
-      await network(`/api/v1/task/submit/${taskId}`, { url: url });
+      await network.put(`/api/v1/task/submit/${taskId}`, { url: url });
+      handleClose();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }

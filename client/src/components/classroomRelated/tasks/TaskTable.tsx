@@ -9,7 +9,7 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Submit from "./Submit";
 
 const columns: ColDef[] = [
-  { field: "id", headerName: "#", width: 50 },
+  { field: "taskId", headerName: "#", width: 50 },
   { field: "taskName", headerName: "Task", flex: 1 },
   { field: "lesson", headerName: "Lesson", flex: 1 },
   {
@@ -29,6 +29,11 @@ const columns: ColDef[] = [
     headerName: "Status",
     width: 100,
   },
+  {
+    field: "submitLink",
+    headerName: "URL Submitted",
+    width: 300,
+  },
 ];
 
 export default function DataGridDemo(props: any) {
@@ -44,11 +49,13 @@ export default function DataGridDemo(props: any) {
   const rows =
     myTasks?.map((task: any) => {
       return {
-        id: task.Task.id,
+        id: task.id,
+        taskId: task.Task.id,
         taskName: task.Task.body,
         lesson: task.Task.Lesson.title,
         deadline: task.Task.endDate,
         status: task.status,
+        submitLink: task.submitLink,
       };
     }) || [];
 

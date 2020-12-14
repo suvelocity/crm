@@ -60,6 +60,7 @@ router.post("/:classid", async (req: Request, res: Response) => {
             taskId: task.id,
             type: task.type,
             status: "pending",
+            submitLink: "",
           };
         }
       );
@@ -79,7 +80,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
     const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
       where: { userId: req.params.id },
-      attributes: ["id", "status"],
+      attributes: ["id", "status", "submit_link"],
       include: [
         {
           model: Task,
