@@ -183,7 +183,7 @@ function ApplyForJobModal({
       >
         Assign a Student
       </Button>
-      <Modal open={open} onClose={handleClose}>
+      <Modal style={{ overflow: "scroll" }}  open={open} onClose={handleClose}>
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
