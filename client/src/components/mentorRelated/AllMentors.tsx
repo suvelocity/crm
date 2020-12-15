@@ -39,6 +39,8 @@ function AllMentors() {
       await network.put(`/api/v1/M/mentor/${id}`, {
         available: !currentAvailability,
       });
+      const { data } = await network.get('/api/v1/M/mentor');
+      setMentors(data);
     }
   };
 
@@ -83,34 +85,31 @@ function AllMentors() {
           {mentors &&
             mentors.map((mentor) => (
               <li>
-                <StyledLink color='black' to={`/mentor/${mentor?.id}`}>
-                  <StyledDiv repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
-                    <PersonIcon />
+                <StyledDiv repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
+                  <PersonIcon />
+                  <StyledLink color='black' to={`/mentor/${mentor?.id}`}>
                     <StyledSpan weight='bold'>
                       {capitalize(mentor.name)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
-                    <StyledSpan>{mentor.email}</StyledSpan>
-                    <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
-                    <StyledSpan>{mentor.address}</StyledSpan>
-                    <StyledSpan>{mentor.job}</StyledSpan>
-                    <StyledSpan>
-                      <Switch
-                        checked={mentor.available}
-                        onChange={() =>
-                          changeAvailabilityOfMentor(
-                            mentor?.id,
-                            mentor.available
-                          )
-                        }
-                        color='primary'
-                        name='checkedB'
-                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                      />
-                    </StyledSpan>
-                    <StyledSpan>{mentor.gender}</StyledSpan>
-                  </StyledDiv>
-                </StyledLink>
+                  </StyledLink>
+                  <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
+                  <StyledSpan>{mentor.email}</StyledSpan>
+                  <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
+                  <StyledSpan>{mentor.address}</StyledSpan>
+                  <StyledSpan>{mentor.job}</StyledSpan>
+                  <StyledSpan>
+                    <Switch
+                      checked={mentor.available}
+                      onChange={() =>
+                        changeAvailabilityOfMentor(mentor?.id, mentor.available)
+                      }
+                      color='primary'
+                      name='checkedB'
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  </StyledSpan>
+                  <StyledSpan>{mentor.gender}</StyledSpan>
+                </StyledDiv>
               </li>
             ))}
         </StyledUl>
