@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Event, {
-        foreignKey: "studentId",
+        foreignKey: "userId",
         onDelete: "cascade",
         hooks: true,
       });
@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "studentId",
         onDelete: "cascade",
         hooks: true,
+      });
+      this.hasMany(models.User, {
+        foreignKey: "relatedId",
       });
       this.belongsTo(models.Mentor, {
         foreignKey: "mentorId",
@@ -48,6 +51,8 @@ module.exports = (sequelize, DataTypes) => {
       additionalDetails: DataTypes.STRING,
       classId: DataTypes.INTEGER,
       mentorId: DataTypes.INTEGER,
+      fccAccount: DataTypes.STRING,
+      resumeLink: DataTypes.STRING,
     },
     {
       sequelize,

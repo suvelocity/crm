@@ -34,10 +34,10 @@ function AllStudents() {
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
-      Class: "",
-      Course: "",
-      JobStatus: "",
-      Name: "",
+      Class: [""],
+      Course: [""],
+      JobStatus: [""],
+      Name: [""],
     }
   );
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
@@ -49,7 +49,7 @@ function AllStudents() {
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       } else if (
         eventTime.getTime() > jobs[`job${id}`].time ||
@@ -57,7 +57,7 @@ function AllStudents() {
       ) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].status,
+          status: events[i].eventName,
         };
       }
     }
@@ -119,35 +119,47 @@ function AllStudents() {
 
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
-      const classCondition = !filterAttributes.Class
+      console.log(filterAttributes.Class.length)
+      const classCondition = filterAttributes.Class.length === 1 && filterAttributes.Class[0] === ""
         ? true
-        : student.Class.name === filterAttributes.Class;
-      const courseCondition = !filterAttributes.Course
+        : filterAttributes.Class.includes(student.Class.name);
+      console.log(student.Class.name, filterAttributes.Class)
+      const courseCondition = filterAttributes.Course.length === 1 && filterAttributes.Course[0] === ""
         ? true
-        : student.Class.course === filterAttributes.Course;
+        : filterAttributes.Course.includes(student.Class.course);
+      console.log(student.Class.course, filterAttributes.Course)
+      // console.log(student)
       const recentJobStatus = getRecentJobsStatus(student.Events);
       const jobless =
         recentJobStatus.length === 0 ||
         recentJobStatus.every((status) => status === "Rejected");
-      const jobStatusCondition = !filterAttributes.JobStatus
+      const jobStatusCondition = filterAttributes.JobStatus.length === 1 && filterAttributes.JobStatus[0] === ""
         ? true
-        : filterAttributes.JobStatus === "None"
-        ? jobless
-        : recentJobStatus.includes(filterAttributes.JobStatus);
-      const names = filterAttributes.Name.split(" ");
-      const firstName = names[0];
-      const lastName = names[1];
-      const firstNameCondition = !firstName
+        : (filterAttributes.JobStatus.includes("None") && jobless) || 
+        filterAttributes.JobStatus.find(status => recentJobStatus.includes(status))
+      const fullNames = filterAttributes.Name.map(fullname => fullname.split(" ").filter(name => name != ""));
+      const firstAndLastNamesMatch = fullNames.find(fullname => {
+        const firstName = fullname[0];
+        const lastName = fullname[1];
+        // console.log(fullname, firstName, lastName)
+        const firstNameCondition = (!firstName && fullNames.length === 1)
         ? true
-        : student.firstName === firstName;
-      const lastNameCondition = !lastName
+        : student.firstName.trim() === firstName;
+        const lastNameCondition = (!lastName && fullNames.length === 1)
         ? true
-        : student.lastName === lastName;
+        : student.lastName.trim() === lastName;
+        return firstNameCondition && lastNameCondition
+      })
+      console.log(
+        classCondition,
+        courseCondition,
+        firstAndLastNamesMatch,
+        jobStatusCondition
+      );
       return (
         classCondition &&
         courseCondition &&
-        firstNameCondition &&
-        lastNameCondition &&
+        firstAndLastNamesMatch &&
         jobStatusCondition
       );
     });
@@ -157,7 +169,7 @@ function AllStudents() {
   }, [filterAttributes]);
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
           <H1>All Students</H1>
@@ -170,8 +182,8 @@ function AllStudents() {
             callbackFunction={setFilterAttributes}
             widthPercent={75}
           />
-          <StyledLink to='/student/add'>
-            <Button variant='contained' color='primary'>
+          <StyledLink to="/student/add">
+            <Button variant="contained" color="primary">
               Add Student
             </Button>
           </StyledLink>
@@ -184,24 +196,28 @@ function AllStudents() {
             <li>
               <TableHeader>
                 <PersonIcon />
-                <StyledSpan weight='bold'>Name</StyledSpan>
-                <StyledSpan weight='bold'>Class</StyledSpan>
-                <StyledSpan weight='bold'>Email</StyledSpan>
-                <StyledSpan weight='bold'>Phone</StyledSpan>
+                <StyledSpan weight="bold">Name</StyledSpan>
+                <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Email</StyledSpan>
+                <StyledSpan weight="bold">Phone</StyledSpan>
               </TableHeader>
             </li>
           )}
           {filteredStudents &&
             filteredStudents.map((student) => (
               <li>
-                <StyledLink color='black' to={`/student/${student?.id}`}>
+                <StyledLink color="black" to={`/student/${student?.id}`}>
                   <StyledDiv>
                     <PersonIcon />
-                    <StyledSpan weight='bold'>
+                    <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(student.Class.name)}</StyledSpan>
+                    <StyledSpan>{`${capitalize(
+                      student?.Class.name
+                    )} (${capitalize(student?.Class.course)} - ${
+                      student?.Class.cycleNumber
+                    })`}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                   </StyledDiv>

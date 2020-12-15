@@ -21,7 +21,6 @@ router.get("/all", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["id", "status", "date", "comment"],
         },
         {
           model: Company,
@@ -51,7 +50,6 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
-          attributes: ["id", "status", "date", "comment"],
         },
         {
           model: Company,

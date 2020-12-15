@@ -36,6 +36,6 @@ export function StudentRoutes() {
         </Switch>
         </div>
       </ErrorBoundary>
-  </>
+    </>
   );
 }

@@ -1,11 +1,9 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Class, Task, TaskofStudent, Student } from "../../models";
-import { ILesson, IClass, ITask, ITaskofStudent } from "../../types";
+import { Class, Task, TaskofStudent, Student, Lesson } from "../../models";
+import { ITask, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
-import network from "../../../client/src/helpers/network";
-import { ne } from "sequelize/types/lib/operators";
 
 //todo support post of array of tasks
 //posts a single task to db and gives all students this task
@@ -53,7 +51,6 @@ router.post("/:classid", async (req: Request, res: Response) => {
       ],
     });
     const idArr = classStudents.Students;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (student: any): ITaskofStudent => {
@@ -63,6 +60,7 @@ router.post("/:classid", async (req: Request, res: Response) => {
             taskId: task.id,
             type: task.type,
             status: "pending",
+            submitLink: "",
           };
         }
       );
@@ -82,8 +80,13 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
     const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
       where: { userId: req.params.id },
-      attributes: ["id", "status"],
-      include: [Task],
+      attributes: ["id", "status", "submit_link"],
+      include: [
+        {
+          model: Task,
+          include: [{ model: Lesson, attributes: ["id", "title"] }],
+        },
+      ],
     });
     return res.json(myTasks);
   } catch (error) {
@@ -93,14 +96,17 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
 
 //todo support 3rd party apps fcc/challengeme
 
-router.put("/bytaskid/:id", async (req: Request, res: Response) => {
+router.put("/submit/:id", async (req: Request, res: Response) => {
   try {
     const currentStatus: any = await TaskofStudent.findByPk(req.params.id, {
       attributes: ["status"],
     });
+
+    //todo add validationwith event table
     await TaskofStudent.update(
       {
         status: currentStatus.status === "pending" ? "done" : "pending",
+        submitLink: req.body.url,
       },
       { where: { id: req.params.id } }
     );
