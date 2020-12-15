@@ -40,27 +40,6 @@ const MentorPrograms: React.FC = () => {
         <TitleWrapper>
           <H1 color="#c47dfa">All Mentor Programs</H1>
         </TitleWrapper>
-        <br />
-        <StyledLink to="/mentor/all">
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "#c47dfa", color: "white" }}
-          >
-            All Mentors
-          </Button>
-        </StyledLink>
-        <StyledLink to="/mentor/new">
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: "#c47dfa",
-              color: "white",
-              marginLeft: 10,
-            }}
-          >
-            new project
-          </Button>
-        </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
