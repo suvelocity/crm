@@ -151,6 +151,9 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
+export interface IPairMeetings {
+  
+}
 
 export interface IMentorProgram{
   id?: number;

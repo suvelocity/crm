@@ -30,6 +30,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { useHistory } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
+import Swal from "sweetalert2";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -54,11 +55,10 @@ const NewProgram: React.FC = () => {
       data.endDate = endDate!.toString();
       console.log(data);
       const res = await network.post("/api/v1/M/program/", data);
-      console.log(res);
-
+      Swal.fire("Success!", "", "success");
       history.push(`/mentor/new/${res.data.id}?class=${data.classId}`);
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
