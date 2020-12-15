@@ -1,24 +1,27 @@
 import React from "react";
-import MentorClasses from "../../components/mentorRelated/MentorClasses";
-import ClassDashboard from "../../components/mentorRelated/ClassDashboard";
-import NewProject from "../../components/mentorRelated/NewProject";
+import MentorPrograms from "../../components/mentorRelated/MentorPrograms";
+import ProgramDashboard from "../../components/mentorRelated/ProgramDashboard";
+import NewProgram from "../../components/mentorRelated/NewProgram";
 import NewClassMentorProject from "../../components/mentorRelated/NewClassMentorProject";
 import AddMentor from "../../components/mentorRelated/AddMentor";
 import SingleMentor from "../../components/mentorRelated/SingleMentor";
 import AllMentors from "../../components/mentorRelated/AllMentors";
+import NavBar from "../../components/mentorRelated/NavBar";
 import { Switch, Route } from "react-router-dom";
 
 function AdminClassesRoutes() {
   return (
+    <>
+    <NavBar/>
     <Switch>
       <Route exact path="/mentor">
-        <MentorClasses />
+        <MentorPrograms />
       </Route>
       <Route exact path="/mentor/all">
         <AllMentors />
       </Route>
       <Route exact path="/mentor/new">
-        <NewProject />
+        <NewProgram />
       </Route>
       <Route exact path="/mentor/add">
         <AddMentor />
@@ -29,10 +32,11 @@ function AdminClassesRoutes() {
       <Route exact path="/mentor/new/:id">
         <NewClassMentorProject />
       </Route>
-      <Route exact path="/mentor/class/:id">
-        <ClassDashboard />
+      <Route exact path="/mentor/program/:id">
+        <ProgramDashboard />
       </Route>
     </Switch>
+    </>
   );
 }
 

@@ -18,7 +18,16 @@ export interface IStudent {
   additionalDetails: string;
   mentorId: number | null;
   mentor?: IMentor | null;
+  MentorStudents? : IPair[]
   Events: IEvent[];
+}
+
+export interface IPair {
+  id: number
+  mentorProgramId: number,
+  studentId: number,
+  mentorId: number,
+  Mentor? : IMentor
 }
 
 export interface IJob {
@@ -112,15 +121,26 @@ export interface IMentor {
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
+  student?:number;
+  MentorStudents?:IMentorStusent[]
 }
 
-export interface MentorClassDashboard {
+export interface IMentorStusent {
+  id?: number;
+  mentorId: number;
+  mentorProgramId: number;
+  studentId: number;
+  Mentor?: Partial<IMentor>;
+  MentorProgram?: Partial<IMentorProgram>;
+  Meetings?: Partial<IMeeting>[];
+  Student?: Partial<IStudent>;
+}
+
+export interface IMentorProgramDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  Class: Partial<IClass>;
-  Mentor: IMentor;
-  Meetings: Partial<IMeeting>[];
+  MentorStudents: Partial<IMentorStusent>[];
 }
 
 export interface IMeeting {
@@ -130,6 +150,16 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
+
+export interface IMentorProgram{
+  id?: number;
+  classId: number;
+  name: string;
+  open: boolean;
+  endDate: string;
+  startDate: string;
+}
+
 export interface IUser {
   id?: number;
   userType: string;

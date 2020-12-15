@@ -21,8 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
-      this.belongsTo(models.Mentor, {
-        foreignKey: "mentorId",
+      this.hasMany(models.MentorStudent, {
+        foreignKey: "studentId",
+        onDelete: "cascade",
+        hooks: true,
       });
       this.belongsTo(models.Class, {
         foreignKey: "classId",
