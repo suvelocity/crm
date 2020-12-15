@@ -16,6 +16,7 @@ interface Task {
   type: string;
   body: string;
   title: string;
+  status: "active" | "disabled";
 }
 
 export default function AddLesson({ setOpen }: { setOpen: any }) {
@@ -44,11 +45,22 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         "/api/v1/lesson",
         lessonToAdd
       );
+
+      tasks.forEach(async (task) => {
+        const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+        console.log(taskWithLessonId);
+
+        await network.post(
+          `/api/v1/task/toclass/${user.classId}`,
+          taskWithLessonId
+        );
+      });
       setOpen(false);
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }
   };
+  console.log(tasks);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -98,9 +110,10 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
       {
         body: "",
         createdBy: user.id,
-        type: "menual",
+        type: "manual",
         endDate: new Date(),
         title: "",
+        status: "active",
       },
       ...prev,
     ]);
@@ -125,8 +138,16 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         prevTasks[index].type = change;
         setTasks(prevTasks);
         break;
-      case "description":
-        prevTasks[index].description = change;
+      case "body":
+        prevTasks[index].body = change;
+        setTasks(prevTasks);
+        break;
+      case "endDate":
+        prevTasks[index].endDate = change;
+        setTasks(prevTasks);
+        break;
+      case "status":
+        prevTasks[index].status = change;
         setTasks(prevTasks);
         break;
     }
@@ -134,17 +155,6 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
 
   return (
     <AddLessonContainer>
-      <AddRsourcesContainer onSubmit={handleSubmit}>
-        <Input
-          variant='outlined'
-          label='Resource'
-          value={resource}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange(e, "resource")
-          }
-        />
-        <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
-      </AddRsourcesContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
           variant='outlined'
@@ -175,18 +185,28 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
             handleChange(e, "zoomLink")
           }
         />
-        <Submit>Add Lesson</Submit>
-      </AddLessonForm>
-      <Info>
-        {resources.map((resource: string, index: number) => (
-          <OneInfo key={index} onClick={() => handleRemove(index, "resource")}>
-            <Tooltip title='delete resource'>
-              <Link>{resource}</Link>
-            </Tooltip>
-          </OneInfo>
-        ))}
-      </Info>
-      <div>
+        <AddRsourcesContainer onSubmit={handleSubmit}>
+          <Input
+            variant='outlined'
+            label='Resource'
+            value={resource}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleChange(e, "resource")
+            }
+          />
+          <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
+        </AddRsourcesContainer>
+        <Info>
+          {resources.map((resource: string, index: number) => (
+            <OneInfo
+              key={index}
+              onClick={() => handleRemove(index, "resource")}>
+              <Tooltip title='delete resource'>
+                <Link>{resource}</Link>
+              </Tooltip>
+            </OneInfo>
+          ))}
+        </Info>
         <AddBtn onClick={addTask}>Add Task</AddBtn>
         <Info>
           {tasks.map((task: Task, index: number) => (
@@ -200,7 +220,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
             </OneInfo>
           ))}
         </Info>
-      </div>
+      </AddLessonForm>
+      <Submit onClick={handleSubmit}>Create Lesson</Submit>
     </AddLessonContainer>
   );
 }
@@ -237,13 +258,15 @@ const AddLessonForm = styled.form`
 const Info = styled.div`
   //TODO rename
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: flex-start;
 `;
 
 const OneInfo = styled.div`
   //TODO rename
   margin-top: 15px;
+  padding: 10px;
+  margin-right: 15px;
 `;
 
 const Link = styled.span`

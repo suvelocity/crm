@@ -15,12 +15,12 @@ interface Task {
   endDate: Date;
   type: string;
   title: string;
-  body: string;
-  description: string;
+  body?: string;
+  status: "active" | "disabled";
 }
-export default function Task({ task, index }: { task: Task; index: number }) {
-  const [challengeType, setChallengeType] = useState<string>("manual");
-  const [challenge, setChallenge] = useState<string>("");
+// export default function Task({ task, index }: { task: Task; index: number }) {
+//   const [challengeType, setChallengeType] = useState<string>("manual");
+//   const [challenge, setChallenge] = useState<string>("");
 
 export default function Task({
   task,
@@ -39,22 +39,17 @@ export default function Task({
   };
 
   return (
-    <div>
+    <div
+      className='create-task'
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}>
       <hr />
-      <>
-        <Input
-          variant='outlined'
-          label='Task title'
-          value={task.title}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "title");
-          }}
-        />
-        {/* <div>title: {task.title}</div> */}
-      </>
-
       <Select
+        style={{ marginTop: "5px", marginBottom: "5px" }}
         value={task.type}
+        variant='outlined'
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "type");
         }}>
@@ -63,7 +58,6 @@ export default function Task({
         <MenuItem value='fcc'>fcc</MenuItem>
         <MenuItem value='quiz'>quiz</MenuItem>
       </Select>
-      <br />
       {task.type === "manual" ? (
         <Input
           variant='outlined'
@@ -74,23 +68,36 @@ export default function Task({
           }}
         />
       ) : (
-        <div></div>
-        // <Select //TODO change to challenge type
-        //   value={challenge}
-        //   onChange={handleChallengeChange}
-        //   defaultValue='pick challenge'
-        // >
-        //   <MenuItem value={"manual"}>manual</MenuItem>
-        //   <MenuItem value={"challengeMe"}>challengeMe</MenuItem>
-        //   <MenuItem value={"fcc"}>fcc</MenuItem>
-        // </Select>
+        <Select //TODO change to challenge type
+          style={{ marginTop: "5px", marginBottom: "5px" }}
+          value={task.title}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            changer(e, "title");
+          }}
+          variant='outlined'
+          defaultValue='Pick a Task'>
+          <MenuItem value={"challenge1"}>challenge1</MenuItem>
+          <MenuItem value={"challenge2"}>challenge2</MenuItem>
+          <MenuItem value={"challenge3"}>challenge3</MenuItem>
+        </Select>
       )}
+      <>
+        <Input
+          disabled={task.type === "manual" ? false : true}
+          variant='outlined'
+          label='Task title'
+          value={task.title}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            changer(e, "title");
+          }}
+        />
+      </>
       <Input
         variant='outlined'
         label='Task Description'
-        value={task.description}
+        value={task.body}
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          changer(e, "description");
+          changer(e, "body");
         }}
       />
       <hr />
@@ -109,9 +116,22 @@ export default function Task({
           }}
         />
       </MuiPickersUtilsProvider>
+      <Select
+        style={{ marginTop: "5px", marginBottom: "5px" }}
+        value={task.status}
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+          changer(e, "status");
+        }}
+        variant='outlined'
+        defaultValue='Pick a Status'>
+        <MenuItem value={"active"}>active</MenuItem>
+        <MenuItem value={"disabled"}>disabled</MenuItem>
+      </Select>
     </div>
   );
 }
+
 const Input = styled(TextField)`
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
