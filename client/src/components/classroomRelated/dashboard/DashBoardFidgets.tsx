@@ -1,3 +1,8 @@
+import { AxiosResponse } from "axios";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { ILesson, ITask } from "../../../../../server/types";
+import { AuthContext } from "../../../helpers";
+import network from "../../../helpers/network";
 import {
   TitleWrapper,
   H1,
@@ -6,44 +11,68 @@ import {
 } from "../../../styles/styledComponents";
 const mockTasks = [
   {
-    title: "Build challenge app",
+    body: "Build challenge app",
     deadline: new Date(),
-    done: false,
+    status: "pending",
     by: "Guy",
   },
   {
-    title: "Spotify app",
+    body: "Spotify app",
     deadline: new Date(),
-    done: true,
+    status: "done",
     by: "Nir",
   },
   {
-    title: "rebuild challengeMe",
+    body: "rebuild challengeMe",
     deadline: new Date(),
-    done: true,
+    status: "done",
     by: "Tomer",
   },
   {
-    title: "Break into Penthagon's servers",
+    body: "Break into Penthagon's servers",
     deadline: new Date(),
-    done: true,
+    status: "done",
     by: "Rotem",
   },
 ];
 
-// export function Fidget({type, data}:{type:string,data: any[]}){
-//   switch
-// }
-
 export function TasksFidget() {
-  const allTasks: any[] = mockTasks;
-  const completedTasks: any[] = [];
-  const incompleteTasks: any[] = [];
+  const [completedTasks, setCompletedTasks] = useState<ITask[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITask[]>([]);
 
-  allTasks.forEach((task: any) => {
-    if (task.done) completedTasks.push(task);
-    else incompleteTasks.push(task);
-  });
+  const { user } = useContext<any>(AuthContext);
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks: () => Promise<void> = async () => {
+    try {
+      const { data: allTasks }: { data: ITask[] } = await network.get(
+        `/api/v1/task/bystudentid/${user.id}`
+      );
+      //only for now, for style purposes.
+      if (allTasks[0]) {
+        setCompletedTasks(
+          allTasks.filter((task: ITask) => task.status === "done")
+        );
+        setIncompletedTasks(
+          allTasks.filter((task: ITask) => task.status !== "done")
+        );
+      } else {
+        setIncompletedTasks(
+          //@ts-ignore
+          mockTasks.filter((task: Itask) => task.status === "done")
+        );
+        setCompletedTasks(
+          //@ts-ignore
+          mockTasks.filter((task: ITask) => task.status !== "done")
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Wrapper style={{ height: "60%" }}>
@@ -54,12 +83,12 @@ export function TasksFidget() {
       </Center>
       <p>
         <b>Completed Tasks</b>
-        {completedTasks.map((task: any) => (
-          <li>{task.title}</li>
+        {completedTasks.map((task: ITask, i: number) => (
+          <li key={`compTask${i}`}>{task.body}</li>
         ))}
         <b>Incompleted Tasks</b>
-        {incompleteTasks.map((task: any) => (
-          <li>{task.title}</li>
+        {incompletedTasks.map((task: ITask, i: number) => (
+          <li key={`incompTask${i}`}>{task.body}</li>
         ))}
       </p>
     </Wrapper>
@@ -74,8 +103,28 @@ const mockLessons = [
   },
 ];
 export function LessonsFidget() {
-  const todayLessons: any[] = mockLessons;
+  const [todayLessons, settodayLessons] = useState<ILesson[]>([]);
+  const { user } = useContext<any>(AuthContext);
 
+  useEffect(() => {
+    fetchLesson();
+    console.log("hi");
+  }, []);
+
+  const fetchLesson: () => Promise<void> = async () => {
+    try {
+      const { data: allLessons }: { data: ILesson[] } = await network.get(
+        `/api/v1/lesson/bycalss/${user.classId}`
+      );
+      console.log("me");
+      settodayLessons(allLessons);
+    } catch (e) {
+      console.log(e);
+      settodayLessons((mockLessons as unknown) as ILesson[]);
+    }
+  };
+
+  console.log(todayLessons);
   return (
     <Wrapper style={{ height: "60%" }}>
       <Center>
@@ -84,8 +133,8 @@ export function LessonsFidget() {
         </TitleWrapper>
       </Center>
       <p>
-        {todayLessons.map((lesson: any) => (
-          <li>{lesson.title}</li>
+        {todayLessons.map((lesson: any, i: number) => (
+          <li key={`lsn${i}`}>{lesson.title}</li>
         ))}{" "}
       </p>
     </Wrapper>

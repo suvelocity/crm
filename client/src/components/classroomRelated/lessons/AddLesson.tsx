@@ -75,8 +75,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
     <AddLessonContainer>
       <AddRsourcesContainer onSubmit={handleSubmit}>
         <Input
-          variant='outlined'
-          label='Resource'
+          variant="outlined"
+          label="Resource"
           value={resource}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "resource")
@@ -88,19 +88,19 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
       </AddRsourcesContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
-          variant='outlined'
-          label='Lesson name'
+          variant="outlined"
+          label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby='my-helper-text'
+          aria-describedby="my-helper-text"
           required={true}
         />
 
         <Input
-          variant='outlined'
-          label='Lesson content'
+          variant="outlined"
+          label="Lesson content"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -108,8 +108,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           required={true}
         />
         <Input
-          variant='outlined'
-          label='Zoom link'
+          variant="outlined"
+          label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
@@ -121,7 +121,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
       <ResourcesLinks>
         {resources.map((resource: string, index: number) => (
           <ResourcesLink key={index} onClick={() => handleRemove(index)}>
-            <Tooltip title='delete resource'>
+            <Tooltip title="delete resource">
               <Link>{resource}</Link>
             </Tooltip>
           </ResourcesLink>
