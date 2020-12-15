@@ -7,6 +7,15 @@ import Button from "@material-ui/core/Button";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
+import Task from "./Task";
+
+interface Task {
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  body: string;
+}
 
 export default function AddLesson({ setOpen }: { setOpen: any }) {
   const [title, setTitle] = useState<string>("");
@@ -14,6 +23,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   const [zoomLink, setZoomLink] = useState<string>("");
   const [resource, setResource] = useState<string>("");
   const [resources, setResources] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [task, setTask] = useState<string>("");
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -57,20 +68,48 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
       case "resource":
         setResource(value);
         break;
+      case "task":
+        setTask(value);
+        break;
     }
   };
 
   const handleAddResource = () => {
-    setResources((prev) => [resource, ...prev]);
-    setResource("");
+    if (resource.length > 0) {
+      setResources((prev) => [resource, ...prev]);
+      setResource("");
+    }
   };
 
-  const handleRemove = (index: number): void => {
-    const prevResources = resources.slice();
-    prevResources.splice(index, 1);
-    setResources(prevResources);
+  const handleRemove = (index: number, name: string): void => {
+    switch (name) {
+      case "resource":
+        const prevResources = resources.slice();
+        prevResources.splice(index, 1);
+        setResources(prevResources);
+        break;
+      case "task":
+        const prevTasks = tasks.slice();
+        prevTasks.splice(index, 1);
+        setTasks(prevTasks);
+        break;
+    }
   };
 
+  const addTask = () => {
+    if (task.length > 0) {
+      setTasks((prev) => [
+        {
+          body: task,
+          createdBy: user.id,
+          type: "menual",
+          endDate: new Date(),
+        },
+        ...prev,
+      ]);
+      setTask("");
+    }
+  };
   return (
     <AddLessonContainer>
       <AddRsourcesContainer onSubmit={handleSubmit}>
@@ -82,9 +121,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
             handleChange(e, "resource")
           }
         />
-        <AddResourceBtn onClick={handleAddResource}>
-          Add Resource
-        </AddResourceBtn>
+        <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
       </AddRsourcesContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
@@ -106,6 +143,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
             handleChange(e, "body")
           }
           required={true}
+          multiline
         />
         <Input
           variant="outlined"
@@ -114,24 +152,49 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
-          required={true}
         />
         <Submit>Add Lesson</Submit>
       </AddLessonForm>
       <ResourcesLinks>
         {resources.map((resource: string, index: number) => (
-          <ResourcesLink key={index} onClick={() => handleRemove(index)}>
+          <ResourcesLink
+            key={index}
+            onClick={() => handleRemove(index, "resource")}
+          >
             <Tooltip title="delete resource">
               <Link>{resource}</Link>
             </Tooltip>
           </ResourcesLink>
         ))}
       </ResourcesLinks>
+      <div>
+        <Input
+          variant="outlined"
+          label="Task name"
+          value={task}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleChange(e, "task")
+          }
+        />
+        <AddBtn onClick={addTask}>Add Task</AddBtn>
+        <ResourcesLinks>
+          {tasks.map((task: Task, index: number) => (
+            <ResourcesLink
+              key={index}
+              // onClick={() => handleRemove(index, "task")}
+            >
+              {/* <Tooltip title='delete task'> */}
+              <Task task={task} index={index} />
+              {/* </Tooltip> */}
+            </ResourcesLink>
+          ))}
+        </ResourcesLinks>
+      </div>
     </AddLessonContainer>
   );
 }
 
-const AddResourceBtn = styled(Button)`
+const AddBtn = styled(Button)`
   margin-left: 20px;
 `;
 

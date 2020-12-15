@@ -26,8 +26,10 @@ export default function Lessons() {
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
         for (let item of Object.values(lesson)) {
-          if (item.toString().toLowerCase().includes(value.toLowerCase())) {
-            return true;
+          if (item) {
+            if (item.toString().toLowerCase().includes(value.toLowerCase())) {
+              return true;
+            }
           }
         }
       })
