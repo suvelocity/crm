@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import TeacherTaskBoard from "./TeacherTaskBoard";
 
 export default function Teacher() {
-    return (
-        <div>
-            im teacher
-        </div>
-    )
+  return (
+    <div>
+      <TeacherTaskBoard />
+    </div>
+  );
 }

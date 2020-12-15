@@ -14,7 +14,7 @@ import TextField from "@material-ui/core/TextField";
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
+  // const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState<boolean>(false);
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
@@ -48,6 +48,7 @@ export default function Lessons() {
     setOpen(false);
   };
   const body = (
+    //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} />
     </div>
@@ -114,23 +115,28 @@ const FilterContainer = styled.div`
   justify-content: center;
   padding: 20px;
 `;
+const modalStyle = {
+  top: `50%`,
+  left: `50%`,
+  transform: `translate(-${50}%, -${50}%)`,
+  overflowY: "scroll",
+};
+// function getModalStyle() {
+//   // const top = 50 + rand();
+//   // const left = 50 + rand();
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
+//   return {
+//     top: `50%`,
+//     left: `50%`,
+//     transform: `translate(-${50}%, -${50}%)`,
+//     overflowY: "scroll",
+//   };
+// }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",
-      width: 400,
       backgroundColor: theme.palette.background.paper,
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
