@@ -57,7 +57,7 @@ router.post("/:classid", async (req: Request, res: Response) => {
       const taskArr = await idArr.map(
         (student: any): ITaskofStudent => {
           return {
-            userId: student.id,
+            studentId: student.id,
             //@ts-ignore
             taskId: task.id,
             type: task.type,
@@ -72,7 +72,7 @@ router.post("/:classid", async (req: Request, res: Response) => {
       );
     }
 
-    return res.json(task);
+    return res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

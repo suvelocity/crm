@@ -8,6 +8,7 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
 import TaskTable from "./TaskTable";
+import Nofitication from "./Nofitication";
 
 export default function TaskBoard() {
   const [myTasks, setMyTasks] = useState<ITask[] | null>();
@@ -28,12 +29,10 @@ export default function TaskBoard() {
   const getMyTasks = async () => {
     try {
       const { data }: { data: ITask[] } = await network.get(
-        user.id
-          ? `/api/v1/task/bystudentid/${user.id}`
-          : `/api/v1/task/bystudentid/1`
+        `/api/v1/task/bystudentid/${user.id}`
       );
-      setLoading(false);
       setMyTasks(data);
+      setLoading(false);
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
@@ -51,6 +50,7 @@ export default function TaskBoard() {
     <DashboardContainer>
       <Content>
         <Loading size={30} loading={loading}>
+          <Nofitication myTasks={myTasks} />
           <TaskTable myTasks={myTasks} />
         </Loading>
       </Content>

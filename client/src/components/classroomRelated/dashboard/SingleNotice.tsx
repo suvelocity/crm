@@ -38,7 +38,11 @@ export default function SingleNotice(props: any) {
               <CloseIcon fontSize='inherit' />
             </IconButton>
           }>
-          <AlertTitle>by teacher</AlertTitle>
+          <AlertTitle>
+            <b>
+              <u>{notice.Teacher.firstName + " " + notice.Teacher.lastName}</u>
+            </b>
+          </AlertTitle>
           <strong> {notice.body}</strong>
 
           {userType === "teacher" && (
