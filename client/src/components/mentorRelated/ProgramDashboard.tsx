@@ -76,7 +76,7 @@ const ProgramDashboard: React.FC = () => {
         <StyledUl>
           {tabelsData && (
             <li>
-              <TableHeader repeatFormula="0.5fr 1fr 1fr 1fr 1fr 0.5fr">
+              <TableHeader repeatFormula="0.5fr 1fr 1fr 1fr 1fr 0.75fr 0.5fr">
                 <ClassIcon />
                 <StyledSpan weight="bold">Student Name</StyledSpan>
                 <StyledSpan weight="bold">Mentor Name</StyledSpan>
@@ -89,28 +89,35 @@ const ProgramDashboard: React.FC = () => {
           {tabelsData &&
             tabelsData.map((row) =>(
               <li>
-                  <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 0.5fr">
+                  <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 0.75fr 0.5fr">
                     <ClassIcon />
                     <StyledLink to={`/student/${row.id}`} color="black">
                       <StyledSpan weight="bold">{`${row.firstName} ${row.lastName}`}</StyledSpan>
                     </StyledLink>
-                    {
-                      (row.MentorStudents && row.MentorStudents[0] && row.MentorStudents[0].Mentor) ?
+                  {
+                    (row.MentorStudents && row.MentorStudents[0] && row.MentorStudents[0].Mentor) ?
                       
                       <>
-                      <StyledLink to={`/mentor/${row.MentorStudents[0].Mentor.id}`} color="black">
-                        <StyledSpan weight="bold">
-                          {capitalize(row.MentorStudents[0].Mentor.name)}
+                        <StyledLink to={`/mentor/${row.MentorStudents[0].Mentor.id}`} color="black">
+                          <StyledSpan weight="bold">
+                            {capitalize(row.MentorStudents[0].Mentor.name)}
+                          </StyledSpan>
+                        </StyledLink>
+                        <StyledSpan>{row.MentorStudents[0].Mentor.company}</StyledSpan>
+                        <StyledSpan>
+                          {row.MentorStudents[0].Meetings &&
+                            row.MentorStudents[0].Meetings.length
+                          }
                         </StyledSpan>
-                      </StyledLink>
-                      <StyledSpan>{row.MentorStudents[0].Mentor.company}</StyledSpan>
-                      <StyledSpan>
-                        {row.MentorStudents[0].Meetings &&
-                          row.MentorStudents[0].Meetings.length
-                        }
-                      </StyledSpan>
-                      <StyledSpan><Button>Show</Button></StyledSpan>
-                      </> : <StyledSpan><Button onClick={ async () => {
+                        <StyledSpan><Button>Show</Button></StyledSpan>
+                      </> :
+                      <>
+                        <span>-</span>
+                        <span>-</span>
+                        <span>-</span>
+                        <span>-</span>
+                      </>}
+                  <StyledSpan><Button onClick={async () => {
                         setModalBody(
                           <div>
                             <H1>Pick Mentor</H1>
@@ -118,7 +125,7 @@ const ProgramDashboard: React.FC = () => {
                               {availableMentors.map(mentor => 
                                 <li>
                                 <StyledDiv
-                                  repeatFormula="0.5fr 1fr 1fr 1fr 1fr"
+                                  repeatFormula="0.5fr 1fr 1fr 1fr 1fr "
                                   onClick={async () => {
                                     (row.MentorStudents && row.MentorStudents[0] && row.MentorStudents[0].Mentor) ?
                                       await network.put(`/api/v1/M/classes/${row.MentorStudents[0].id}`, {
@@ -131,7 +138,10 @@ const ProgramDashboard: React.FC = () => {
                                         mentorProgramId: id,
                                         mentorId: mentor.id,
                                         studentId: row.id
-                                      })
+                                      });
+                                    getTableData();
+                                    setModalOpen(false
+                                    )
                                   }}>
                                     <StyledSpan  weight="bold">{mentor.MentorStudents.length || 0}</StyledSpan>
                                     <StyledSpan weight="bold">
@@ -148,7 +158,7 @@ const ProgramDashboard: React.FC = () => {
                         )
                         setModalOpen(true)
                     } }>Edit</Button></StyledSpan>
-                    }
+                    
                   </StyledDiv>
               </li>
             ))}
