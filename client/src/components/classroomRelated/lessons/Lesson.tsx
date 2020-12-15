@@ -19,8 +19,8 @@ export default function Lesson({
         <StyledAccordion>
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
             {"#" + (index + 1) + " " + lesson.title}
           </StyledSummery>
@@ -33,7 +33,7 @@ export default function Lesson({
                     .split("%#splitingResource#%")
                     .map((resource: string, index: number) => (
                       <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
+                        <Link target="_blank" href={resource}>
                           {resource}
                         </Link>
                       </ResourcesLink>
@@ -41,7 +41,7 @@ export default function Lesson({
                 : //@ts-ignore
                   lesson.resource?.length > 0 && (
                     //@ts-ignore
-                    <Link target='_blank' href={resource!}>
+                    <Link target="_blank" href={lesson.resource}>
                       {lesson.resource}
                     </Link>
                   )}
