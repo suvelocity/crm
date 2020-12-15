@@ -73,7 +73,8 @@ router.post('/', async (req: Request, res: Response) => {
       email,
       phone,
       address,
-      job,
+      role,
+      experience,
       available,
       gender,
     } = req.body;
@@ -83,7 +84,8 @@ router.post('/', async (req: Request, res: Response) => {
       email,
       phone,
       address,
-      job,
+      role,
+      experience,
       available,
       gender,
     });

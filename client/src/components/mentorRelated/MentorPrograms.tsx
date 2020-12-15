@@ -11,7 +11,6 @@ import {
   StyledDiv,
   TableHeader,
 } from "../../styles/styledComponents";
-import Button from "@material-ui/core/Button";
 import { IMentorProgram } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";

@@ -1,56 +1,29 @@
 import { Request, Response , Router } from "express";
 import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
-import { Student, Mentor, Meeting, Class} from "../../../models";
+import { Student, Mentor, MentorStudent, Meeting, Class} from "../../../models";
 import { IDashboard, IMeeting } from "../../../types";
 
 const router = Router();
 
-// get class deshbord table:
-router.get('/class/:id', async (req: Request, res: Response) => {
+// get pair meets:
+router.get('/:id', async (req: Request, res: Response) => {
     try{
-        const classTableData:IDashboard[] = await Student.findAll({
-            attributes:["id", "firstName", "lastName"],
-            where:{classId:req.params.id},
+        const classTableData:IDashboard[] = await MentorStudent.findOne({
+            where:{id:req.params.id},
             include:[
                 {
-                    model: Class,
-                    attributes: ["name", "cycleNumber"]
+                    model: Student,
                 },
                 {
                     model: Mentor,
                 },
                 {
                     model: Meeting,
-                    attributes:["date"],
                 }
             ]
         });
-
         res.json(classTableData);
-    }catch(err){
-        res.status(500).json({ error: err.message });
-    }
-})
-
-// get student meets:
-router.get('/student/:id', async (req: Request, res: Response) => {
-    try{
-        const studentMeets:IDashboard = await Student.findOne({
-            attributes:["id", "firstName", "lastName"],
-            where:{id:req.params.id},
-            include:[
-                {
-                    model: Mentor
-                },
-                {
-                    model: Meeting,
-                    attributes:["date"],
-                },
-            ]
-        });
-
-        res.json(studentMeets);
     }catch(err){
         res.status(500).json({ error: err.message });
     }

@@ -27,6 +27,7 @@ import {
 import { IMentor } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import GoogleMaps from "../GeoSearch";
+import Swal from "sweetalert2";
 
 
 const AddMentor: React.FC = () => {
@@ -37,11 +38,13 @@ const AddMentor: React.FC = () => {
 
   const onSubmit = async (data: IMentor) => {
     try {
-        data.available = true;       
+        data.available = true; 
+        console.log(data);
         await network.post("/api/v1/M/mentor/", data);
+        Swal.fire("Success!", "", "success");
         history.push("/mentor/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
