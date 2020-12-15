@@ -179,7 +179,9 @@ function SingleProcess() {
           </div>
         </GridDiv>
       </Loading>
-      <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
+      {job?.id && student?.id && events && (
+      <NewEventModal events={events} studentId={studentId} jobId={jobId} add={addEventToLog} />
+      )}
     </Wrapper>
   );
 }
