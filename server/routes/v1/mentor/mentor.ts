@@ -6,6 +6,22 @@ import { IMentor } from '../../../types';
 
 const router = Router();
 
+router.get('/available', async (req: Request, res: Response) => {
+  try {
+    const allMentors: any[] = await Mentor.findAll({
+      where: {
+        available: true
+      },
+      include: [{
+        model: MentorStudent,
+      }]
+    });
+    res.json(allMentors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get all mentors
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -16,6 +32,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Get all information about specific mentor
 router.get('/:id', async (req: Request, res: Response) => {

@@ -77,8 +77,10 @@ const MentorPrograms: React.FC = () => {
             </li>
           )}
           {programs &&
-            programs.map((program,i) => (
-              <li key={i} /* style={{backgroundColor: cls.Students && (cls.Students.some(student => !student.mentorId)) ? 'red' : 'primary'}}*/>
+            programs.map((program,i) =>{
+              const color:string = program.open? "#b5e8ca":"#b06363";
+              return(
+              <li key={i} style={{backgroundColor:color}}>
                 <StyledLink to={`/mentor/program/${program.id}`} color="black">
                   <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1fr">
                     <ClassIcon />
@@ -90,9 +92,10 @@ const MentorPrograms: React.FC = () => {
                     <StyledSpan><Button>Edit</Button></StyledSpan>
                   </StyledDiv>
                 </StyledLink>
-                
               </li>
-            ))}
+              )
+            })
+          }
         </StyledUl>
       </Loading>
     </Wrapper>

@@ -17,14 +17,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "mentorId",
       });
       this.belongsTo(models.MentorStudent, {
-        foreignKey: "programId",
+        foreignKey: "pairId",
       });
     }
   };
   Meeting.init({
     mentorId: DataTypes.INTEGER,
     studentId: DataTypes.INTEGER,
-    programId: DataTypes.INTEGER,
+    pairId: DataTypes.INTEGER,
     date: DataTypes.DATE,
     place: DataTypes.STRING
   }, {
