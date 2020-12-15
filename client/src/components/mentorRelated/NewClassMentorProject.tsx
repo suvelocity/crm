@@ -20,9 +20,9 @@ import "react-loading-wrapper/dist/index.css";
 import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
 import { capitalize } from "../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import SimpleModal from "./Modal";
-import { pairing } from "./GeoCoding";
+import { StudentRoutes } from "../../routes";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
@@ -33,33 +33,60 @@ function NewClassMentorProject() {
   const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
+  let query = useLocation().search.split('=')[1];
 
   // console.log(pairing(cls?.Students!, []))
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
-      `/api/v1/class/byId/${id}`
+      `/api/v1/M/classes/byId/${query}/${id}`,
     );
-    data.Students = data.Students.filter((student) => !student.mentorId);
+    // data.Students = data.Students.filter((student) => !student.mentorId);
+    data.Students = data.Students.map(student => {
+      student.mentor = student.MentorStudents![0] ? student.MentorStudents![0].Mentor : null
+      return student
+   })
     setCls(data);
     setLoading(false);
-  }, [id, setLoading, setCls]);
+  }, [query, setLoading, setCls, id]);
 
-  const getMentors = useCallback(async () => {
+  const getMentors = useCallback(async (cls: IClass | undefined) => {
     const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
-    setMentors(data);
+    console.log(data)
+    const mentorList = data.map(mentor => {
+      let count = 0
+      cls?.Students.forEach((student) => {
+        if (student.MentorStudents![0]) {
+          if (student.MentorStudents![0].mentorId === mentor.id) count++
+        } 
+      });
+      mentor.student = count
+      return mentor
+    })
+    console.log(mentorList)
+    setMentors(mentorList);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     try {
       getClass();
-      getMentors();
+     
     } catch (e) {
       console.log(e.message);
     }
     //eslint-disable-next-line
   }, [getClass, getMentors]);
+
+  useEffect(() => {
+    try {
+      getMentors(cls);
+    } catch (e) {
+      console.log(e.message);
+    }
+    //eslint-disable-next-line
+  }, [cls, getMentors]);
+  
 
   const onDropLeftEnd = (result: any) => {
     const { source, destination } = result;
@@ -81,11 +108,14 @@ function NewClassMentorProject() {
         result.source.index,
         1
       );
+      reorderedMentor.student?  reorderedMentor.student = reorderedMentor.student + 1:reorderedMentor.student = 1; 
+      itemsMentor.push(reorderedMentor);
       const prevMentor: IMentor | null = itemsStudents[
         parseInt(destination.droppableId)
       ].mentor!;
       if (prevMentor) {
-        itemsMentor.push(prevMentor);
+        const mentorI = itemsMentor.findIndex(m => m.id === prevMentor.id);
+        mentorI > -1 ? itemsMentor[mentorI].student = itemsMentor[mentorI].student! - 1 : itemsMentor.push(prevMentor)
       }
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
       const newCls: IClass | undefined = cls;
@@ -96,19 +126,34 @@ function NewClassMentorProject() {
   };
 
   const removeMentor = (mentor: IMentor, i: number) => {
-    console.log("delete");
     const newMentors: IMentor[] = Array.from(mentors);
-    newMentors.push(mentor);
+    const mentorI: number = newMentors.findIndex(m => m.id === mentor.id);
+    if (mentorI > -1) {
+      newMentors[mentorI].student = newMentors[mentorI].student! - 1 
+    } else {
+      newMentors.push(mentor)
+    }
     setMentors(newMentors);
     const newCls: IClass | undefined = cls;
     newCls!.Students[i].mentor = null;
     setCls(newCls);
   };
+  // const removeMentor = (mentor: IMentor, i: number) => {
+  //   const newMentors: IMentor[] = Array.from(mentors);
+  //   newMentors.push(mentor);
+  //   setMentors(newMentors);
+  //   const newCls: IClass | undefined = cls;
+  //   newCls!.Students[i].mentor = null;
+  //   setCls(newCls);
+  // };
 
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
     try {
-      await network.put(`/api/v1/M/classes/student/${student.id}`, {
+
+      await network.post(`/api/v1/M/classes`, {
+        mentorProgramId: id,
         mentorId: student.mentor!.id,
+        studentId: student.id
       });
     } catch {
       return student.firstName + student.lastName;
@@ -120,10 +165,9 @@ function NewClassMentorProject() {
       const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
       const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
       if (dontHaveMentor.length > 0) {
-        const newError = `${dontHaveMentor.length} students in this class not linked to a mentor`;
         setModalBody(
           <div>
-            <div style={{ color: "red", fontWeight: "bold" }}>{newError}</div>
+            <div style={{ color: "red", fontWeight: "bold" }}>{`${dontHaveMentor.length} students in this class not linked to a mentor`}</div>
             <StyledSpan>{`Would you like to link ${newMentorsToDb.length} students anyway?`}</StyledSpan>
             <div>
               <Button
@@ -136,7 +180,6 @@ function NewClassMentorProject() {
                           style={{ color: "green" }}
                         >{`${newMentorsToDb.length} students have new mentors!`}</div>
                       );
-                      await network.put(`/api/v1/M/classes/${id}`);
                       history.push('/mentor')
                     }
                     );
@@ -161,7 +204,6 @@ function NewClassMentorProject() {
             await saveMentor(student);
           }
         });
-        await network.put(`/api/v1/M/classes/${id}`);
         history.push("/mentor");
       }
     } catch (err) {
@@ -170,17 +212,8 @@ function NewClassMentorProject() {
   };
 
   const resetMentors = (mentorizeClass: IClass | undefined) => {
-    const mentorizeStudents: Omit<IStudent, "Class">[] = mentorizeClass!
-      .Students;
-    const backToMentors: IMentor[] = [];
-    for (let i = 0; i < mentorizeStudents.length; i++) {
-      if (mentorizeStudents[i].mentor && !mentorizeStudents[i].mentorId) {
-        backToMentors.push(mentorizeStudents[i].mentor!);
-        delete mentorizeStudents[i].mentor;
-      }
-    }
-    setMentors(backToMentors.concat(mentors));
-    setCls(mentorizeClass);
+    getClass();
+    
   };
 
   const assignMentors = (mentorizeClass: IClass | undefined) => {
@@ -220,7 +253,7 @@ function NewClassMentorProject() {
                     marginLeft: 10,
                   }}
                 >
-                  create
+                  SAVE
                 </Button>
                 <Button onClick={() => assignMentors(cls)}>Generate</Button>
                 <Button onClick={() => resetMentors(cls)}>Reset</Button>
@@ -317,15 +350,15 @@ function NewClassMentorProject() {
                               {...provided.dragHandleProps}
                             >
                               <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr">
+                                <StyledSpan  weight="bold">{mentor.student?mentor.student:0}</StyledSpan>
                                 <StyledLink
                                   to={`/mentor/${mentor.id}`}
                                   color="black"
                                 >
-                                  <PersonIcon />
-                                </StyledLink>
                                 <StyledSpan weight="bold">
                                   {capitalize(mentor.name)}
                                 </StyledSpan>
+                                </StyledLink>
                                 <StyledSpan>{mentor.address}</StyledSpan>
                                 <StyledSpan>{mentor.company}</StyledSpan>
                                 <StyledSpan>{mentor.job}</StyledSpan>

@@ -2,14 +2,14 @@ import { Request, Response , Router } from "express";
 import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
 import { Student, Mentor, Meeting, Class} from "../../../models";
-import { IDeshbord, IMeeting } from "../../../types";
+import { IDashboard, IMeeting } from "../../../types";
 
 const router = Router();
 
 // get class deshbord table:
 router.get('/class/:id', async (req: Request, res: Response) => {
     try{
-        const classTableData:IDeshbord[] = await Student.findAll({
+        const classTableData:IDashboard[] = await Student.findAll({
             attributes:["id", "firstName", "lastName"],
             where:{classId:req.params.id},
             include:[
@@ -36,7 +36,7 @@ router.get('/class/:id', async (req: Request, res: Response) => {
 // get student meets:
 router.get('/student/:id', async (req: Request, res: Response) => {
     try{
-        const studentMeets:IDeshbord = await Student.findOne({
+        const studentMeets:IDashboard = await Student.findOne({
             attributes:["id", "firstName", "lastName"],
             where:{id:req.params.id},
             include:[
