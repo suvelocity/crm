@@ -25,7 +25,6 @@ const MentorPrograms: React.FC = () => {
 
   const getPrograms = useCallback(async () => {
     const { data } = await network.get("/api/v1/M/program/all");
-    console.log(data);
     setPrograms(data);
     setLoading(false);
   }, []);
@@ -46,7 +45,7 @@ const MentorPrograms: React.FC = () => {
         <StyledUl>
           {programs && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1fr">
+              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1.5fr">
                 <ClassIcon />
                 <StyledSpan weight="bold">Program Name</StyledSpan>
                 <StyledSpan weight="bold">Start Date</StyledSpan>
@@ -60,7 +59,7 @@ const MentorPrograms: React.FC = () => {
               const color: string = program.open ? "#b5e8ca" : "#b06363";
               return (
                 <li key={i} style={{ backgroundColor: color }}>
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 2fr">
+                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1.5fr">
                     <ClassIcon />
                     <StyledLink
                       to={`/mentor/program/${program.id}`}
@@ -87,7 +86,7 @@ const MentorPrograms: React.FC = () => {
                       </StyledSpan>
                     </StyledLink>
                     <StyledSpan>
-                      <EditProgramModal programId={program.id!} />
+                      <EditProgramModal program={program!} getPrograms={getPrograms} />
                     </StyledSpan>
                   </StyledDiv>
                 </li>
