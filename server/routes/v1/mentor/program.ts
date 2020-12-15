@@ -14,7 +14,9 @@ const router = Router();
 // get all the mentor programs:
 router.get("/all", async (req: Request, res: Response) => {
   try {
-    const allProgram: IMentorProgram[] = await MentorProgram.findAll();
+    const allProgram: IMentorProgram[] = await MentorProgram.findAll({
+      order:[['open','DESC']]
+    });
     res.json(allProgram);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -41,7 +43,11 @@ router.get("/dashboard/:id", async (req: Request, res: Response) => {
       where: {classId: program.classId },
       include: [
         {
-          model: MentorStudent,
+          model: MentorStudent ,
+          where: {   
+            mentorProgramId: req.params.id,
+          },
+          required: false,
           include: [
             {
               model: Mentor,

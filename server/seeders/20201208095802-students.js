@@ -20,7 +20,6 @@ module.exports = {
           created_at: new Date(),
           updated_at:new Date(),
           class_id:1,
-          mentor_id:1
         },
         {
           id:2,
@@ -63,7 +62,6 @@ module.exports = {
           created_at:new Date(),
           updated_at:new Date(),
           class_id:3,
-          mentor_id:3
         },
         {
           id:4,
