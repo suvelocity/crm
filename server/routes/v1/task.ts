@@ -7,42 +7,49 @@ import { Student, Lesson, Event } from "../../models";
 import { ITask, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
 
-//todo support post of array of tasks
-//posts a single task to db and gives all students this task
-router.post("/:classid", async (req: Request, res: Response) => {
-  try {
-    const {
-      lessonId,
-      externalId,
-      externalLink,
-      createdBy,
-      endDate,
-      type,
-      status,
-      body,
-    } = req.body;
-    const { error } = taskSchema.validate({
-      lessonId,
-      externalId,
-      externalLink,
-      createdBy,
-      endDate,
-      type,
-      status,
-      body,
-    });
-    if (error) return res.status(400).json({ error: error.message });
-    const task: ITask = await Task.create({
-      lessonId,
-      externalId,
-      externalLink,
-      createdBy,
-      endDate,
-      type,
-      status,
-      body,
-    });
+const createTask = async (req: Request, res: Response) => {
+  const {
+    lessonId,
+    externalId,
+    externalLink,
+    createdBy,
+    endDate,
+    type,
+    status,
+    title,
+    body,
+  } = req.body;
+  const { error } = taskSchema.validate({
+    lessonId,
+    externalId,
+    externalLink,
+    createdBy,
+    endDate,
+    type,
+    status,
+    title,
+    body,
+  });
+  if (error) return res.status(400).json({ error: error.message });
+  const task: ITask = await Task.create({
+    lessonId,
+    externalId,
+    externalLink,
+    createdBy,
+    endDate,
+    type,
+    status,
+    title,
+    body,
+  });
+  return task;
+};
 
+//todo support post of array of tasks
+//posts a single task to entire class
+router.post("/toclass/:classid", async (req: Request, res: Response) => {
+  try {
+    const task = await createTask(req, res);
     const classStudents = await Class.findByPk(req.params.classid, {
       attributes: ["id", "name"],
       include: [
@@ -60,9 +67,44 @@ router.post("/:classid", async (req: Request, res: Response) => {
             studentId: student.id,
             //@ts-ignore
             taskId: task.id,
+            //@ts-ignore
             type: task.type,
             status: "pending",
             submitLink: "",
+            description: "",
+          };
+        }
+      );
+
+      const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
+        taskArr
+      );
+    }
+
+    return res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//posts a single toask to 1 or more students
+router.post("/tostudents", async (req: Request, res: Response) => {
+  try {
+    const task = await createTask(req, res);
+
+    const { idArr } = req.body;
+    if (task) {
+      const taskArr = await idArr.map(
+        (student: any): ITaskofStudent => {
+          return {
+            studentId: student.id,
+            //@ts-ignore
+            taskId: task.id,
+            //@ts-ignore
+            type: task.type,
+            status: "pending",
+            submitLink: "",
+            description: "",
           };
         }
       );

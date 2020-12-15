@@ -93,13 +93,14 @@ export interface INotice {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
-  externalId?: number;
+  lessonId?: number;
+  externalId?: string | number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
   status: string;
+  title: string;
   body: string;
 }
 
@@ -109,7 +110,8 @@ export interface ITaskofStudent {
   taskId: number;
   type: string;
   status: string;
-  submitLink: string;
+  submitLink?: string;
+  description?: string;
 }
 export interface SeqInclude {
   model: Model;

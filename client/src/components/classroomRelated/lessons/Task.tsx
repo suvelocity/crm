@@ -18,6 +18,9 @@ interface Task {
   body: string;
   description: string;
 }
+export default function Task({ task, index }: { task: Task; index: number }) {
+  const [challengeType, setChallengeType] = useState<string>("manual");
+  const [challenge, setChallenge] = useState<string>("");
 
 export default function Task({
   task,

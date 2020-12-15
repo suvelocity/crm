@@ -25,9 +25,9 @@ export default function TeacherRoutes() {
           <Route path='/schedhule'>
             <Schedhule />
           </Route>
-          {/* <Route path='/tasks'>
+          <Route path='/tasks'>
             <TaskBoard />
-          </Route> */}
+          </Route>
           <Route path='/teacher'>
             <Teacher />
           </Route>
