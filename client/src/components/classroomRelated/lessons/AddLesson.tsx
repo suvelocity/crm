@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, ChangeEvent } from "react";
 import styled from "styled-components";
 import { ILesson } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
@@ -15,6 +15,7 @@ interface Task {
   endDate: Date;
   type: string;
   body: string;
+  title: string;
 }
 
 export default function AddLesson({ setOpen }: { setOpen: any }) {
@@ -24,7 +25,6 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   const [resource, setResource] = useState<string>("");
   const [resources, setResources] = useState<string[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [task, setTask] = useState<string>("");
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -51,7 +51,7 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement>,
     name: string
   ): void => {
     const { value } = e.target;
@@ -67,9 +67,6 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         break;
       case "resource":
         setResource(value);
-        break;
-      case "task":
-        setTask(value);
         break;
     }
   };
@@ -97,19 +94,38 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
   };
 
   const addTask = () => {
-    if (task.length > 0) {
-      setTasks((prev) => [
-        {
-          body: task,
-          createdBy: user.id,
-          type: "menual",
-          endDate: new Date(),
-        },
-        ...prev,
-      ]);
-      setTask("");
+    setTasks((prev) => [
+      {
+        body: "",
+        createdBy: user.id,
+        type: "menual",
+        endDate: new Date(),
+        title: "",
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleTaskChange = (
+    element: string,
+    index: number,
+    change: string | Date
+  ) => {
+    const prevTasks = tasks.slice();
+    switch (element) {
+      case "title":
+        prevTasks[index].title = change;
+        setTasks(prevTasks);
+        break;
+      case "date":
+        prevTasks[index].endDate = change;
+        setTasks(prevTasks);
+        break;
+
+      case "type":
     }
   };
+
   return (
     <AddLessonContainer>
       <AddRsourcesContainer onSubmit={handleSubmit}>
@@ -155,40 +171,29 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         />
         <Submit>Add Lesson</Submit>
       </AddLessonForm>
-      <ResourcesLinks>
+      <Info>
         {resources.map((resource: string, index: number) => (
-          <ResourcesLink
-            key={index}
-            onClick={() => handleRemove(index, "resource")}
-          >
+          <OneInfo key={index} onClick={() => handleRemove(index, "resource")}>
             <Tooltip title="delete resource">
               <Link>{resource}</Link>
             </Tooltip>
-          </ResourcesLink>
+          </OneInfo>
         ))}
-      </ResourcesLinks>
+      </Info>
       <div>
-        <Input
-          variant="outlined"
-          label="Task name"
-          value={task}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange(e, "task")
-          }
-        />
         <AddBtn onClick={addTask}>Add Task</AddBtn>
-        <ResourcesLinks>
+        <Info>
           {tasks.map((task: Task, index: number) => (
-            <ResourcesLink
+            <OneInfo
               key={index}
               // onClick={() => handleRemove(index, "task")}
             >
               {/* <Tooltip title='delete task'> */}
-              <Task task={task} index={index} />
+              <Task handleChange={handleTaskChange} task={task} index={index} />
               {/* </Tooltip> */}
-            </ResourcesLink>
+            </OneInfo>
           ))}
-        </ResourcesLinks>
+        </Info>
       </div>
     </AddLessonContainer>
   );
@@ -219,15 +224,19 @@ const AddLessonContainer = styled.div`
 const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
+  height: 80vh;
+  width: 80vw;
 `;
 
-const ResourcesLinks = styled.div`
+const Info = styled.div`
+  //TODO rename
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 `;
 
-const ResourcesLink = styled.div`
+const OneInfo = styled.div`
+  //TODO rename
   margin-top: 15px;
 `;
 

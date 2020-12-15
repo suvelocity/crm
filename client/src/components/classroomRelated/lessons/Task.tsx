@@ -9,10 +9,21 @@ interface Task {
   type: string;
   body: string;
 }
-export default function Task({ task, index }: { task: Task; index: number }) {
-  const [challengeType, setChallengeType] = useState<string>("menual");
-  const [challenge, setChallenge] = useState<string>("");
 
+export default function Task({
+  task,
+  index,
+  handleChange,
+}: {
+  task: Task;
+  index: number;
+  handleChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => void;
+}) {
+  const [challengeType, setChallengeType] = useState<string>("manual");
+  const [challenge, setChallenge] = useState<string>("");
   const [link, setLink] = useState<string>("");
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
@@ -20,7 +31,7 @@ export default function Task({ task, index }: { task: Task; index: number }) {
   console.log("====================================");
   console.log(task);
   console.log("====================================");
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChangeType = (event: React.ChangeEvent<{ value: unknown }>) => {
     setChallengeType(event.target.value as string);
   };
 
@@ -32,21 +43,36 @@ export default function Task({ task, index }: { task: Task; index: number }) {
 
   return (
     <div>
+      <hr />
+      <Input
+        variant="outlined"
+        label="Task name"
+        value={task}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          handleChange(e, "task")
+        }
+      />
       <div>name: {task.body}</div>
-      <Select value={challengeType} onChange={handleChange}>
-        <MenuItem value={"menual"}>menual</MenuItem>
-        <MenuItem value={"challengeMe"}>challengeMe</MenuItem>
-        <MenuItem value={"fcc"}>fcc</MenuItem>
+      <Select value={challengeType} onChange={handleChangeType}>
+        <MenuItem value="manual">manual</MenuItem>
+        <MenuItem value="challengeMe">challengeMe</MenuItem>
+        <MenuItem value="fcc">fcc</MenuItem>
       </Select>
-      {challengeType === "menual" ? (
-        <input onChange={handleLinkChange} placeholder='link to task' />
+      <br />
+      {challengeType === "manual" ? (
+        <input onChange={handleLinkChange} placeholder="link to task" />
       ) : (
-        <Select value={challenge} onChange={handleChallengeChange}>
-          <MenuItem value={"menual"}>menual</MenuItem>
+        <Select
+          value={challenge}
+          onChange={handleChallengeChange}
+          defaultValue="pick challenge"
+        >
+          <MenuItem value={"manual"}>manual</MenuItem>
           <MenuItem value={"challengeMe"}>challengeMe</MenuItem>
           <MenuItem value={"fcc"}>fcc</MenuItem>
         </Select>
       )}
+      <hr />
     </div>
   );
 }

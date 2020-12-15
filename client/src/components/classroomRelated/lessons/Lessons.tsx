@@ -75,9 +75,9 @@ export default function Lessons() {
     <Loading size={30} loading={loading}>
       <FilterContainer>
         <TextField
-          variant='outlined'
+          variant="outlined"
           style={{ textAlign: "center" }}
-          label='Search'
+          label="Search"
           value={filter}
           onChange={handleFilter}
         />
@@ -88,14 +88,14 @@ export default function Lessons() {
         ))}
         {(user.userType === "teacher" || user.userType === "admin") && (
           <>
-            <Button variant='outlined' onClick={handleOpen}>
+            <Button variant="outlined" onClick={handleOpen}>
               Add Lesson
             </Button>
             <Modal
               open={open}
               onClose={handleClose}
-              aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
             >
               {body}
             </Modal>
@@ -116,13 +116,14 @@ const FilterContainer = styled.div`
 `;
 
 function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+  // const top = 50 + rand();
+  // const left = 50 + rand();
 
   return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
+    top: `50%`,
+    left: `50%`,
+    transform: `translate(-${50}%, -${50}%)`,
+    overflowY: "scroll",
   };
 }
 
@@ -130,7 +131,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",
-      width: 400,
       backgroundColor: theme.palette.background.paper,
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
