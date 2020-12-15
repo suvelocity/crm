@@ -63,6 +63,7 @@ export default function Lessons() {
       return [];
     }
   };
+
   useEffect(() => {
     (async () => {
       const allLessons = await fetchClassLessons();
