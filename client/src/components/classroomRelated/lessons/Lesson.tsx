@@ -86,7 +86,7 @@ const ResourcesLink = styled.div`
 const Link = styled.a`
   background-color: #3f51b5;
   text-decoration: none;
-  color:${({ theme }: { theme: any }) => theme.colors.font}};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   border-radius: 8px;
   padding: 5px;
   color: white;
