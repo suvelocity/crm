@@ -17,6 +17,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../helpers/general";
+import EditProgramModal from "./EditProgramModal";
 
 const MentorPrograms: React.FC = () => {
   const [programs, setPrograms] = useState<IMentorProgram[]>([]);
@@ -24,7 +25,7 @@ const MentorPrograms: React.FC = () => {
 
   const getPrograms = useCallback(async () => {
     const { data } = await network.get("/api/v1/M/program/all");
-    console.log(data)
+    console.log(data);
     setPrograms(data);
     setLoading(false);
   }, []);
@@ -32,7 +33,6 @@ const MentorPrograms: React.FC = () => {
   useEffect(() => {
     getPrograms();
   }, [getPrograms]);
-
 
   return (
     <Wrapper width="80%">
@@ -56,25 +56,43 @@ const MentorPrograms: React.FC = () => {
             </li>
           )}
           {programs &&
-            programs.map((program,i) =>{
-              const color:string = program.open? "#b5e8ca":"#b06363";
-              return(
-              <li key={i} style={{backgroundColor:color}}>
-                <StyledLink to={`/mentor/program/${program.id}`} color="black">
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1fr">
+            programs.map((program, i) => {
+              const color: string = program.open ? "#b5e8ca" : "#b06363";
+              return (
+                <li key={i} style={{ backgroundColor: color }}>
+                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 2fr">
                     <ClassIcon />
-                    <StyledSpan weight="bold">
-                      {capitalize(program.name)}
+                    <StyledLink
+                      to={`/mentor/program/${program.id}`}
+                      color="black"
+                    >
+                      <StyledSpan weight="bold">
+                        {capitalize(program.name)}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledLink
+                      to={`/mentor/program/${program.id}`}
+                      color="black"
+                    >
+                      <StyledSpan>
+                        {new Date(program.startDate).toLocaleDateString()}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledLink
+                      to={`/mentor/program/${program.id}`}
+                      color="black"
+                    >
+                      <StyledSpan>
+                        {new Date(program.endDate).toLocaleDateString()}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>
+                      <EditProgramModal programId={program.id!} />
                     </StyledSpan>
-                    <StyledSpan>{new Date(program.startDate).toLocaleDateString()}</StyledSpan>
-                    <StyledSpan>{new Date(program.endDate).toLocaleDateString()}</StyledSpan>
-                    <StyledSpan><Button>Edit</Button></StyledSpan>
                   </StyledDiv>
-                </StyledLink>
-              </li>
-              )
-            })
-          }
+                </li>
+              );
+            })}
         </StyledUl>
       </Loading>
     </Wrapper>

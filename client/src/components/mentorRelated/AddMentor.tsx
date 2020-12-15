@@ -37,7 +37,7 @@ const AddMentor: React.FC = () => {
 
   const onSubmit = async (data: IMentor) => {
     try {
-        data.available = true;      
+        data.available = true;       
         await network.post("/api/v1/M/mentor/", data);
         history.push("/mentor/all");
     } catch (e) {
@@ -178,7 +178,9 @@ const AddMentor: React.FC = () => {
                 )
               ) : null}
               <br />
-            <TextField
+            </div>
+            <div>
+              <TextField
                 id="role"
                 name="role"
                 inputRef={register({
@@ -201,10 +203,8 @@ const AddMentor: React.FC = () => {
                     <DoneIcon color="action" />
                   </IconButton>
                 )
-              ) : null}
-              <br />
-            </div>
-            <div>
+                ) : null}
+                <br />
             <TextField
                 id="experience"
                 name="experience"
@@ -235,7 +235,6 @@ const AddMentor: React.FC = () => {
               <GoogleMaps
                 id='address'
                 name='address'
-                // defaultValue={props.student? props.student.address : ''}
                 inputRef={register({ required: "Address is required" })}
                 label='Address'
               />
@@ -279,10 +278,25 @@ const AddMentor: React.FC = () => {
                   defaultValue="female"
                 />
               </FormControl>
+              {!empty ? (
+                errors.classId ? (
+                  <Tooltip title={errors.classId.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
               <br />
             </div>
           </GridDiv>
-          <br />
           <br />
           <Button
             id="submitButton"

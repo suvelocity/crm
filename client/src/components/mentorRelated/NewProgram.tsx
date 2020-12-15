@@ -39,8 +39,9 @@ import {
 const NewProgram: React.FC = () => {
   const [classes, setClasses] = useState<IClass[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date());
-  const [endDate, setEndDate] = React.useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [programName, setProgramName] = useState<string>("");
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -54,7 +55,7 @@ const NewProgram: React.FC = () => {
       console.log(data);
       const res = await network.post("/api/v1/M/program/", data);
       console.log(res);
-      
+
       history.push(`/mentor/new/${res.data.id}?class=${data.classId}`);
     } catch (e) {
       alert("error occurred");
@@ -81,35 +82,6 @@ const NewProgram: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <GridDiv>
               <div>
-                <TextField
-                  id="name"
-                  name="name"
-                  inputRef={register({
-                    required: "Program Name is required",
-                    minLength: {
-                      value: 2,
-                      message: "Full Name needs to be a minimum of 2 letters",
-                    },
-                  })}
-                  label="Program Name"
-                />
-                {!empty ? (
-                  errors.name ? (
-                    <Tooltip title={errors.name.message}>
-                      <IconButton style={{ cursor: "default" }}>
-                        <ErrorOutlineIcon
-                          style={{ width: "30px", height: "30px" }}
-                          color="error"
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  ) : (
-                    <IconButton style={{ cursor: "default" }}>
-                      <DoneIcon color="action" />
-                    </IconButton>
-                  )
-                ) : null}
-                <br />
                 <br />
                 <FormControl
                   style={{ minWidth: 200 }}
@@ -126,6 +98,7 @@ const NewProgram: React.FC = () => {
                               <MenuItem
                                 key={i}
                                 value={cls.id}
+                                onClick={()=>setProgramName(`${cls.name}: ${cls.cycleNumber}- M Program`)}
                               >{`${cls.name}-${cls.cycleNumber}`}</MenuItem>
                             );
                           })}
@@ -139,6 +112,36 @@ const NewProgram: React.FC = () => {
                 {!empty ? (
                   errors.classId ? (
                     <Tooltip title={errors.classId.message}>
+                      <IconButton style={{ cursor: "default" }}>
+                        <ErrorOutlineIcon
+                          style={{ width: "30px", height: "30px" }}
+                          color="error"
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    <IconButton style={{ cursor: "default" }}>
+                      <DoneIcon color="action" />
+                    </IconButton>
+                  )
+                ) : null}
+                <br />
+                <TextField
+                  id="name"
+                  name="name"
+                  value={programName}
+                  inputRef={register({
+                    required: "Program Name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Full Name needs to be a minimum of 2 letters",
+                    },
+                  })}
+                  label="Program Name"
+                />
+                {!empty ? (
+                  errors.name ? (
+                    <Tooltip title={errors.name.message}>
                       <IconButton style={{ cursor: "default" }}>
                         <ErrorOutlineIcon
                           style={{ width: "30px", height: "30px" }}

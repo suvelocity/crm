@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     phone: DataTypes.STRING,
     address: DataTypes.STRING,
-    job: DataTypes.STRING,
+    role: DataTypes.STRING,
+    experience: DataTypes.INTEGER,
     available: DataTypes.BOOLEAN,
     gender: DataTypes.STRING,
   }, {
