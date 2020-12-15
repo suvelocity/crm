@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Class, {
         foreignKey: "classId",
       });
+      this.hasMany(models.QuizSubmission, {
+        foreignKey: 'studentId'
+      });
+      this.belongsToMany(models.Quiz, {
+        through: models.QuizSubmission,
+        foreignKey: 'studentId',
+        otherKey: 'quizId'
+      })
     }
   }
   Student.init(
