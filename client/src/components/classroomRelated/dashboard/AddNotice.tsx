@@ -20,7 +20,13 @@ import Button from "@material-ui/core/Button";
 const classIdPlaceHolder = 1;
 const createdByPlaceHolder = 1;
 
-export default function AddNotice({ updateLocal }: { updateLocal: any }) {
+export default function AddNotice({
+  updateLocal,
+  closeModal,
+}: {
+  updateLocal: React.Dispatch<React.SetStateAction<INotice[] | undefined>>;
+  closeModal: () => void;
+}) {
   const [notices, setNotices] = useState<INotice[] | null>();
   const [body, setBody] = useState("");
   const [type, setType] = useState("regular");
@@ -46,11 +52,14 @@ export default function AddNotice({ updateLocal }: { updateLocal: any }) {
         body,
         createdBy: createdByPlaceHolder,
       });
-      updateLocal((prev: INotice[]) => prev.concat(data));
+      updateLocal((prev: INotice[] | undefined) => prev?.concat(data));
       //fix this. not clsoing for some reason
-      handleClose();
-    } catch (e) {
+    } catch (error) {
       //todo add catch handler
+
+      Swal.fire("Error Occurred", error.message, "error");
+    } finally {
+      closeModal();
     }
   };
   return (

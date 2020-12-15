@@ -11,7 +11,7 @@ import { AuthContext } from "../../../helpers";
 import SingleNotice from "./SingleNotice";
 
 function Notices() {
-  const [notices, setNotices] = useState<INotice[] | null>();
+  const [notices, setNotices] = useState<INotice[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
@@ -29,7 +29,7 @@ function Notices() {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <AddNotice updateLocal={setNotices} />
+      <AddNotice updateLocal={setNotices} closeModal={handleClose} />
     </div>
   );
   const classIdPlaceHolder = 1;
@@ -58,10 +58,15 @@ function Notices() {
   const deleteNotice = async (id: number) => {
     try {
       await network.delete(`/api/v1/notice/${id}`);
-      //todo add popup deleted susccsefuly
+      setNotices((prev: INotice[] | undefined) =>
+        prev?.filter((notice: INotice) => notice.id !== id)
+      );
+
+      Swal.fire("Notice deleted successfully!", "", "success");
       console.log(`notice ${id} deleted sucssesfuly`);
     } catch (error) {
       //todo error handler
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -69,35 +74,41 @@ function Notices() {
     <>
       <Loading size={30} loading={loading}>
         <div
-          className="notice-container"
+          className={classes.noticeContainer}
           // style={{ backgroundColor: "white" }}
         >
-          {notices?.map((notice) => (
-            //@ts-ignore
-            <SingleNotice
-              notice={notice}
-              key={notice.id}
-              deleteNotice={deleteNotice}
-              userType={user.userType}
-            />
-          ))}
-        </div>
-
-        {user.userType === "teacher" && (
           <div>
-            <Button variant="outlined" onClick={handleOpen}>
-              Add Notice
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              {body}
-            </Modal>
+            {notices?.map((notice) => (
+              //@ts-ignore
+              <SingleNotice
+                notice={notice}
+                key={notice.id}
+                deleteNotice={deleteNotice}
+                userType={user.userType}
+              />
+            ))}
           </div>
-        )}
+
+          {user.userType === "teacher" && (
+            <div>
+              <Button
+                variant="outlined"
+                onClick={handleOpen}
+                style={{ position: "absolute", bottom: "0" }}
+              >
+                Add Notice
+              </Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+              >
+                {body}
+              </Modal>
+            </div>
+          )}
+        </div>
       </Loading>
     </>
   );
@@ -129,6 +140,11 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
+    },
+    noticeContainer: {
+      position: "relative",
+      minHeight: "35vh",
+      padding: "2vh 3vw",
     },
   })
 );

@@ -114,7 +114,7 @@ export function LessonsFidget() {
   const fetchLesson: () => Promise<void> = async () => {
     try {
       const { data: allLessons }: { data: ILesson[] } = await network.get(
-        `/api/v1/lesson/bycalss/${user.classId}`
+        `/api/v1/lesson/byclass/${user.classId}`
       );
       console.log("me");
       settodayLessons(allLessons);
