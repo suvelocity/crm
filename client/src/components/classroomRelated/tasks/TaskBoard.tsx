@@ -14,6 +14,7 @@ export default function TaskBoard() {
   const [loading, setLoading] = useState<boolean>(true);
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  console.log(user);
 
   const DashboardContainer = styled.div`
     background-color: ${({ theme }: { theme: any }) => theme.colors.background};
@@ -27,7 +28,9 @@ export default function TaskBoard() {
   const getMyTasks = async () => {
     try {
       const { data }: { data: ITask[] } = await network.get(
-        `/api/v1/task/bystudentid/${user.id}`
+        user.id
+          ? `/api/v1/task/bystudentid/${user.id}`
+          : `/api/v1/task/bystudentid/1`
       );
       setLoading(false);
       setMyTasks(data);
@@ -47,8 +50,9 @@ export default function TaskBoard() {
   return (
     <DashboardContainer>
       <Content>
-        {/* <Task myTasks={myTasks} /> */}
-        <TaskTable myTasks={myTasks} />
+        <Loading size={30} loading={loading}>
+          <TaskTable myTasks={myTasks} />
+        </Loading>
       </Content>
     </DashboardContainer>
   );

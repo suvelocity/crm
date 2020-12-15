@@ -105,7 +105,7 @@ export interface ITask {
 
 export interface ITaskofStudent {
   id?: number;
-  userId: number;
+  studentId: number;
   taskId: number;
   type: string;
   status: string;

@@ -6,6 +6,8 @@ import Notices from "./Notices";
 export default function Dashboard() {
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  console.log(user);
+
   return (
     <DashboardContainer>
       <Notices />
