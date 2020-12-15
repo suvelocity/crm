@@ -16,7 +16,7 @@ module.exports = {
       "Classes",
       [
         {
-          id: 1,
+          id: 3,
           course: "Excellentteam",
           name: "An excellent team",
           starting_date: new Date(),
@@ -28,7 +28,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          id: 2,
+          id: 4,
           course: "Cyber4s",
           name: "A cyber force",
           starting_date: new Date(),
