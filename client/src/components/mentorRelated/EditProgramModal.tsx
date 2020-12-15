@@ -26,6 +26,9 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,25 +65,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function EditProgramModal({ programId }: { programId: number }) {
+function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, getPrograms:any }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
-  const [cls, setCls] = useState<IClass[]>();
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date());
-  const [endDate, setEndDate] = React.useState<Date | null>(new Date());
+  const [programOpen, setProgramOpen] = useState<boolean>(program.open);
+  const [startDate, setStartDate] = React.useState<Date | null>(new Date(program.startDate));
+  const [endDate, setEndDate] = React.useState<Date | null>(new Date(program.endDate));
   const { register, handleSubmit, errors, control } = useForm();
-
-  const getClasses = useCallback(async () => {
-    const { data } = await network.get("/api/v1/M/classes");
-    setCls(data);
-  }, [setCls]);
-
-  useEffect(() => {
-    getClasses();
-  }, []);
-
-  const empty = Object.keys(errors).length === 0;
 
   const handleOpen = () => {
     setOpen(true);
@@ -90,27 +82,15 @@ function EditProgramModal({ programId }: { programId: number }) {
     setOpen(false);
   };
 
-  //   const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
   const submitStatus = async (data: any) => {
-    // if (data.eventName === "Hired") {
     handleClose();
-    //   const proceed: boolean = await promptAreYouSure();
-    //   if (!proceed) return;
-    // }
-    // data.userId = studentId;
-    // data.relatedId = jobId;
-    // data.entry = { comment: data.comment };
-    // delete data.comment;
-    // console.log(data);
+    data.open = programOpen;
+    data.startDate = startDate;
+    data.endDate = endDate;
+    !data.name? data.name=program.name:data.name=data.name;
     try {
-      //   const {
-      //     data: newEvent,
-      //   }: { data: IEvent; newEvent: IEvent } = await network.post(
-      //     "/api/v1/event",
-      //     data
-      //   );
-      //   add(newEvent);
-      //   handleClose();
+        await network.put(`/api/V1/M/program/${program.id}`,data);
+        getPrograms();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
@@ -120,110 +100,95 @@ function EditProgramModal({ programId }: { programId: number }) {
     return Swal.fire({
       title: "Are you sure?",
       text:
-        "Changing status to 'hired' will automatically cancel all other applicants and the rest of this student jobs.\nThis is irreversible!",
+        "This Program will delete, and you would'nt watch it any more ",
       icon: "warning",
       showCancelButton: true,
       cancelButtonColor: "#3085d6",
       confirmButtonColor: "#2fa324",
-      confirmButtonText: "Hire!",
+      confirmButtonText: "Delete!",
     }).then((result) => {
       if (result.isConfirmed) return true;
       return false;
     });
   };
+  const deleteProgram = async ()=>{
+      handleClose();
+      const proceed: boolean = await promptAreYouSure();
+      if (!proceed) return;
+    await network.patch('/api/V1/M/program/delete',{programId:program.id});
+    getPrograms()
+  }
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <div className={classes.root}>
         <Center>
           <h1>Edit Program Details</h1>
+          <h3>{program.name}</h3>
         </Center>
         <form onSubmit={handleSubmit(submitStatus)}>
-          <GridDiv>
-            <FormControl
-              style={{ minWidth: 200 }}
-              error={Boolean(errors.classId)}
-            >
-              <InputLabel>Class</InputLabel>
-              <Controller
-                as={
-                  <Select>
-                    {cls &&
-                      cls[0] &&
-                      cls.map((c, i) => {
-                        return (
-                          <MenuItem
-                            key={i}
-                            value={c.id}
-                          >{`${c.name}-${c.cycleNumber}`}</MenuItem>
-                        );
-                      })}
-                  </Select>
-                }
-                name="classId"
-                rules={{ required: "Class is required" }}
-                control={control}
-              />
-            </FormControl>
-            {!empty ? (
-              errors.classId ? (
-                <ErrorBtn tooltipTitle={errors.classId.message} />
-              ) : (
-                <ActionBtn />
-              )
-            ) : null}
-            <br />
+          <Center>
             <TextField
               id="name"
               name="name"
               inputRef={register({
-                required: "Program Name is required",
                 minLength: {
                   value: 2,
                   message: "Name needs to be a minimum of 2 letters",
                 },
               })}
               label="Program Name"
-            />{" "}
-            {!empty ? (
-              errors.name ? (
-                <ErrorBtn tooltipTitle={errors.name.message} />
-              ) : (
-                <ActionBtn />
-              )
-            ) : null}
-            <div>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="startDate"
-                  label="Start Date"
-                  value={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  name="startDate"
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="endDate"
-                  label="End Date"
-                  value={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-            </div>
-          </GridDiv>
+            />
+            <br />
+            <br />
+                  <Controller
+                    as={
+                        <FormControlLabel
+                        control={
+                          <Switch
+                            onChange={()=>setProgramOpen(!programOpen)}
+                            name="checkedB"
+                            color="primary"
+                          />
+                        }
+                        label={programOpen? "The program is open":"The program is close"}
+                      />
+                    }
+                    name="open"
+                    control={control}
+                    />
+                <br/>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="startDate"
+                label="Start Date"
+                value={startDate}
+                onChange={(date) => setStartDate(date)}
+                name="startDate"
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+              <br />
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="endDate"
+                label="End Date"
+                value={endDate}
+                onChange={(date) => setEndDate(date)}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </Center>
           <Center>
             <Button
               type="submit"
@@ -231,10 +196,15 @@ function EditProgramModal({ programId }: { programId: number }) {
               variant="contained"
               color="primary"
             >
-              Edit
+              SAVE
             </Button>
           </Center>
         </form>
+        <Center>
+          <Button style={{textAlign: "center", margin: 10, backgroundColor:"#d50000"}} variant="contained" onClick={deleteProgram}>
+            Delete Program
+          </Button>
+        </Center>
       </div>
     </div>
   );
@@ -243,10 +213,10 @@ function EditProgramModal({ programId }: { programId: number }) {
     <>
       <Button
         // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
-        style={{position: "relative" }}
+        // style={{ position: "relative" }}
         // style={{ display: "block", margin: "4vh auto" }}
         variant="contained"
-        color="primary"
+        // color="primary"
         onClick={handleOpen}
       >
         Edit Program
