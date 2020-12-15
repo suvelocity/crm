@@ -116,7 +116,8 @@ export interface IMentor {
   email: string;
   phone: string;
   address: string;
-  job: string;
+  role: string;
+  experience: number;
   available: boolean;
   gender: string;
   Students?: Partial<IStudent>[];

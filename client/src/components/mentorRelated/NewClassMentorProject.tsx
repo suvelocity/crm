@@ -361,7 +361,7 @@ function NewClassMentorProject() {
                                 </StyledLink>
                                 <StyledSpan>{mentor.address}</StyledSpan>
                                 <StyledSpan>{mentor.company}</StyledSpan>
-                                <StyledSpan>{mentor.job}</StyledSpan>
+                                <StyledSpan>{mentor.role}</StyledSpan>
                               </StyledDiv>
                             </li>
                           )}

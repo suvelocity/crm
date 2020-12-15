@@ -36,19 +36,6 @@ function AllMentors() {
         <TitleWrapper>
           <H1 color='#c47dfa'>All Mentors</H1>
         </TitleWrapper>
-        <br />
-        <StyledLink to="/mentor/add">
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: "#c47dfa",
-              color: "white",
-              marginLeft: 10,
-            }}
-          >
-            new mentor
-          </Button>
-        </StyledLink>
       </Center>
       <br />
       <Loading loading={loading} size={30}>
@@ -81,7 +68,7 @@ function AllMentors() {
                     <StyledSpan>{mentor.email}</StyledSpan>
                     <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
                     <StyledSpan>{mentor.address}</StyledSpan>
-                    <StyledSpan>{mentor.job}</StyledSpan>
+                    <StyledSpan>{mentor.role}</StyledSpan>
                     <StyledSpan>{mentor.available ? 'yes' : 'no'}</StyledSpan>
                     <StyledSpan>{mentor.gender}</StyledSpan>
                   </StyledDiv>

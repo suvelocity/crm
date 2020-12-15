@@ -21,6 +21,8 @@ import "react-loading-wrapper/dist/index.css";
 import { IMentor } from "../../typescript/interfaces";
 import BusinessIcon from "@material-ui/icons/Business";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
+import HourglassEmptyOutlinedIcon from '@material-ui/icons/HourglassEmptyOutlined';
 import WcIcon from "@material-ui/icons/Wc";
 import WorkIcon from "@material-ui/icons/Work";
 import { capitalize } from "../../helpers/general";
@@ -118,14 +120,24 @@ const SingleMentor: React.FC = () => {
                     secondary={capitalize(mentor[0]?.company)}
                   />
                 </ListItem>
-                {/* job */}
+                {/* role */}
                 <ListItem>
                   <ListItemIcon>
-                    <WorkIcon />
+                    <WorkOutlineIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Role And Experience"
-                    secondary={capitalize(mentor[0]?.job)}
+                    primary="Role"
+                    secondary={capitalize(mentor[0]?.role)}
+                  />
+                </ListItem>
+                {/* experience */}
+                <ListItem>
+                  <ListItemIcon>
+                    <HourglassEmptyOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Experience"
+                    secondary={mentor[0]?.experience}
                   />
                 </ListItem>
               </List>

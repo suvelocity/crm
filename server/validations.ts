@@ -156,9 +156,10 @@ export const mentorSchema = Joi.object({
   email: Joi.string().required(),
   phone: Joi.string().required(),
   address: Joi.string().required(),
-  job: Joi.string().allow(null, ""),
+  role: Joi.string().allow(null, ""),
+  experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
-  gender: Joi.string().required(),
+  gender: Joi.string().required().allow(null, ""),
 });
 
 export const mentorSchemaToPut = Joi.object({
@@ -167,7 +168,8 @@ export const mentorSchemaToPut = Joi.object({
   email: Joi.string().allow(null, ""),
   phone: Joi.string().allow(null, ""),
   address: Joi.string().allow(null, ""),
-  job: Joi.string().allow(null, ""),
+  role: Joi.string().allow(null, ""),
+  experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().allow(null, ""),
 });
