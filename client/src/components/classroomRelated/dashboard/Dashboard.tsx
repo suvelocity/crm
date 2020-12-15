@@ -10,15 +10,15 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula="1fr 1fr 1fr">
+      <TilesRow repeatFormula="1fr 1fr 1fr" height="30vh">
         <InformationTile>
           <TasksFidget />
         </InformationTile>
         <InformationTile>
-          <ScheduleFidget />
+          <LessonsFidget />
         </InformationTile>
         <InformationTile>
-          <LessonsFidget />
+          <ScheduleFidget />
         </InformationTile>
       </TilesRow>
       <Notices />
@@ -33,13 +33,13 @@ const DashboardContainer = styled.div`
 `;
 
 const InformationTile = styled.div`
-  background-color: red;
   height: auto;
   width: auto;
 `;
+// background-color: red;
 
+// background-color: blue;
 const TilesRow = styled.div`
-  background-color: blue;
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
   display: grid;
