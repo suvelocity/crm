@@ -18,7 +18,16 @@ export interface IStudent {
   additionalDetails: string;
   mentorId: number | null;
   mentor?: IMentor | null;
+  MentorStudents? : IPair[]
   Events: IEvent[];
+}
+
+export interface IPair {
+  id: number
+  mentorProgramId: number,
+  studentId: number,
+  mentorId: number,
+  Mentor? : IMentor
 }
 
 export interface IJob {

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 //@ts-ignore
-import { MentorStudent, Class} from "../../../models";
+import { MentorStudent, Class, Student, Mentor} from "../../../models";
 import {mentorStudentSchemaToPut, mentorStudentSchema} from "../../../validations";
 import { IClass } from "../../../types";
 
@@ -39,6 +39,36 @@ router.put("/:id", async (req: Request, res: Response) => {
     res.status(404).json({ error: "Relation not found" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/byId/:class/:program", async (req: Request, res: Response) => {
+  try {
+    const selectedClass: IClass[] = await Class.findByPk(req.params.class, {
+      include: [
+        {
+          model: Student,
+          required: false,
+          include: [
+            {
+              model: MentorStudent,
+              required: false,
+              where: {mentorProgramId: parseInt(req.params.program)},
+              include: [
+                {
+                  model: Mentor,
+                  attributes: ['name', 'id', 'address', 'company', 'job']
+                }
+              ]
+            }
+          ]
+        },
+      ],
+    });
+    if (selectedClass) return res.json(selectedClass);
+    res.status(404).json({ error: "Class not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
   
