@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { AxiosResponse } from "axios";
-import { IEvent } from "../../typescript/interfaces";
+import { IMeeting } from "../../../typescript/interfaces";
 import {
   TimelineItem,
   TimelineDot,
@@ -10,7 +10,7 @@ import {
   TimelineSeparator,
   TimelineConnector,
 } from "@material-ui/lab";
-import { capitalize, formatToIsraeliDate } from "../../helpers";
+import { capitalize, formatToIsraeliDate } from "../../../helpers";
 import {
   Theme,
   createStyles,
@@ -19,67 +19,67 @@ import {
   Paper,
 } from "@material-ui/core";
 import styled from "styled-components";
-import UpdateIcon from "@material-ui/icons/Update";
-import { CheckCircleOutline } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import Swal from "sweetalert2";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 
-function EventsLog({
-  events,
-  remove,
+function MeetingsLog({
+meeting
 }: {
-  events: IEvent[];
-  remove: (eventId: number) => void;
+meeting: IMeeting[];
 }) {
   const classes = useStyles();
 
-  const deleteEvent = async (eventId: number) => {
-    try {
-      await network.patch("/api/v1/event/delete", { eventId });
-      Swal.fire("Success!", "", "success");
-    } catch (error) {
-      Swal.fire("Error Occurred", error.message, "error");
-    }
-  };
+  // const deleteEvent = async (eventId: number) => {
+  //   try {
+  //     await network.patch("/api/v1/event/delete", { eventId });
+  //     Swal.fire("Success!", "", "success");
+  //   } catch (error) {
+  //     Swal.fire("Error Occurred", error.message, "error");
+  //   }
+  // };
 
-  const promptDeleteModal: (eventId: number) => void = (eventId: number) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Deleting an event is ireversible!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteEvent(eventId).then((_) => remove(eventId));
-      }
-    });
-  };
+  // const promptDeleteModal: (eventId: number) => void = (eventId: number) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Deleting an event is ireversible!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Delete",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       deleteEvent(eventId).then((_) => remove(eventId));
+  //     }
+  //   });
+  // };
 
   return (
     <Timeline align="alternate">
-      {events.map((event: IEvent, i: number, arr) => (
+      {meeting.map((meet: IMeeting, i: number) => (
         <TimelineItem className={classes.timellineItem}>
           <TimelineOppositeContent>
-            <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp>
+            <DateStamp>{formatToIsraeliDate(meet.date)}</DateStamp>
           </TimelineOppositeContent>
           <TimelineSeparator>
-            <TimelineDot
+            {/* <TimelineDot
               color={i !== arr.length - 1 ? "grey" : "primary"}
               variant={i !== arr.length - 1 ? "outlined" : undefined}
             >
               {i === arr.length - 1 ? <UpdateIcon /> : <CheckCircleOutline />}
-            </TimelineDot>
-            {i !== arr.length - 1 && <TimelineConnector />}
+            </TimelineDot> */}
+            {/* {i !== arr.length - 1 && <TimelineConnector />} */}
           </TimelineSeparator>
           <TimelineContent>
             <Paper className={classes.ticket}>
-              <TicketHeader>{capitalize(event.eventName)}</TicketHeader>
-              <Typography>{capitalize(event.entry?.comment)}</Typography>
-              <DeleteIcon onClick={() => promptDeleteModal(event.id!)} />
+              <TicketHeader>{capitalize(`Meet - ${i+1}`)}</TicketHeader>
+              <Typography>{capitalize(meet.title)}</Typography>
+              <DeleteIcon />
+              <CheckCircleOutlineIcon />
+              <EditIcon />
             </Paper>
           </TimelineContent>
         </TimelineItem>
@@ -88,7 +88,7 @@ function EventsLog({
   );
 }
 
-export default EventsLog;
+export default MeetingsLog;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -118,5 +118,6 @@ const DateStamp = styled.span`
 
 const TicketHeader = styled.div`
   font-weight: bold;
+  font-size: 16px;
   margin-bottom: 10px;
 `;
