@@ -19,9 +19,9 @@ import {
   Paper,
 } from "@material-ui/core";
 import styled from "styled-components";
-import UpdateIcon from "@material-ui/icons/Update";
-import { CheckCircleOutline } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
 
@@ -75,9 +75,11 @@ meeting: IMeeting[];
           </TimelineSeparator>
           <TimelineContent>
             <Paper className={classes.ticket}>
-              {/* <TicketHeader>{capitalize(event.eventName)}</TicketHeader>
-              <Typography>{capitalize(event.entry?.comment)}</Typography> */}
+              <TicketHeader>{capitalize(`Meet - ${i+1}`)}</TicketHeader>
+              <Typography>{capitalize(meet.title)}</Typography>
               <DeleteIcon />
+              <CheckCircleOutlineIcon />
+              <EditIcon />
             </Paper>
           </TimelineContent>
         </TimelineItem>
@@ -116,5 +118,6 @@ const DateStamp = styled.span`
 
 const TicketHeader = styled.div`
   font-weight: bold;
+  font-size: 16px;
   margin-bottom: 10px;
 `;
