@@ -42,6 +42,22 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id
+    const deleted = await MentorStudent.destroy({
+      where: {
+        id: id
+      }
+    })
+    console.log(deleted)
+    if (deleted) return res.json({ message: "Relation deleted" });
+    res.status(404).json({ error: "Relation not found" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/byId/:class/:program", async (req: Request, res: Response) => {
   try {
     const selectedClass: IClass[] = await Class.findByPk(req.params.class, {
@@ -57,7 +73,7 @@ router.get("/byId/:class/:program", async (req: Request, res: Response) => {
               include: [
                 {
                   model: Mentor,
-                  attributes: ['name', 'id', 'address', 'company', 'job']
+                  attributes: ['name', 'id', 'address', 'company', 'role', 'experience']
                 }
               ]
             }
