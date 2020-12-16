@@ -149,6 +149,10 @@ export interface IMeeting {
   date: string;
   pairId:number;
   place: string;
+  occurred:boolean;
+  mentorFeedback:string;
+  studentFeedback:string;
+  title:string;
 }
 export interface IPairMeetings {
   id?:number;

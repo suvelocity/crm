@@ -95,7 +95,7 @@ function PairMeetings() {
             </Center>
           </Wrapper>
           <Wrapper padding="10px" backgroundColor="#fafafa">
-            <WorkIcon style={workIconStyle} />
+            <PersonIcon style={personIconStyle} />
             <Center>
               <H2>Mentor</H2>
               <GridDiv>
@@ -127,14 +127,16 @@ function PairMeetings() {
           <div style={{ gridColumn: "span 2", height: "auto" }}>
           <Center>
             <TitleWrapper>
-              <H1>Meetings</H1>
+              <H1 color="#c47dfa">Meetings</H1>
             </TitleWrapper>
           </Center>
             {meetings?.Meetings && <MeetingsLog meeting={meetings.Meetings} />}
           </div>
         </GridDiv>
       </Loading>
-      {/* <NewMeetingModal studentId={studentId} jobId={jobId} add={addEventToLog} /> */}
+      <Center>
+      <NewMeetingModal />
+      </Center>
     </Wrapper>
   );
 }
@@ -152,7 +154,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const personIconStyle: any = {
   position: "absolute",
-  backgroundColor: "#3f51b5",
+  backgroundColor: "#c47dfa",
   color: "white",
   borderRadius: "50%",
   padding: "8px",
@@ -162,7 +164,7 @@ const personIconStyle: any = {
 
 const workIconStyle: any = {
   position: "absolute",
-  backgroundColor: "#3f51b5",
+  backgroundColor: "#c47dfa",
   color: "white",
   borderRadius: "50%",
   padding: "8px",
@@ -172,9 +174,9 @@ const workIconStyle: any = {
 
 const H2 = styled.h2`
   margin: 5px auto;
-  background-color: #3f51b5;
+  background-color: "#c47dfa";
   border-radius: 15px;
-  color: white;
+  color: black;
   width: fit-content;
   padding: 5px 20px;
 `;
