@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
@@ -9,26 +9,37 @@ import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import Teacher from "../components/classroomRelated/teacher/Teacher";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import network from "../helpers/network";
-import { useRecoilState } from "recoil";
 import { challengeMeChallenges } from "../atoms";
+import { AuthContext } from "../helpers";
 import Cookies from "js-cookie";
+import { useRecoilState } from "recoil";
+import { teacherStudents, classesOfTeacher } from "../atoms";
 
 export default function TeacherRoutes() {
   const [CMChallenges, setCMChallenges] = useRecoilState(challengeMeChallenges);
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  const [students, setStudents] = useRecoilState(teacherStudents);
+  const [classesToTeacher, setClassesToTeacher] = useRecoilState(
+    classesOfTeacher
+  );
+
+  const fetchTeacherData = async () => {
+    try {
+      const { data: teacherStudents } = await network.get(
+        `/api/v1/student/byTeacher/${user.id}`
+      );
+      setClassesToTeacher(teacherStudents);
+      const allStudents = teacherStudents.map(
+        (classRoom: any) => classRoom.Class.Students
+      );
+      setStudents(allStudents.flat()); //TODO check with multipal classes
+    } catch {}
+  };
 
   useEffect(() => {
     (async () => {
-      try {
-        // const {
-        //   data: token,
-        // } = await network.post(`http://35.239.15.221:8080/api/v1/auth/token`, {
-        //   token: Cookies.get("refreshToken"),
-        // });
-        // console.log("====================================");
-        // console.log(token);
-        // console.log("====================================");
-        // const {data:chllenges} = await network.get("http://35.239.15.221:8080/api/v1/challenges",hea)
-      } catch {}
+      await fetchTeacherData();
     })();
   }, []);
 
