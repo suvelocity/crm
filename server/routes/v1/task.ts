@@ -179,7 +179,7 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
       switch (task.type) {
         case "fcc":
           try {
-            const event: any = await Event.findAll({
+            const event: any = await Event.findOne({
               where: {
                 userId: req.body.studentId, //!check if this will be userid or studentid
                 eventName: "FCC_SUBMIT_SUCCESS", //!check if this will be the name of the event
