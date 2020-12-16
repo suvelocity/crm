@@ -157,3 +157,10 @@ export interface IUserSignIn {
   password: string;
   rememberMe: boolean;
 }
+
+export interface filterMentorObject {
+  Company: string;
+  Gender: string;
+  Address: string;
+  // available: string;
+}
