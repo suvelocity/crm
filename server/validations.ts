@@ -25,6 +25,7 @@ export const eventsSchema = Joi.object({
   relatedId: Joi.number().required(),
   eventName: Joi.string().required(),
   date: Joi.date(),
+  type: Joi.string().required(),
   // entry: Joi.string().allow(null, ""),
 });
 

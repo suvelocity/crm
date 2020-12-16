@@ -1,5 +1,4 @@
 import { Model } from "sequelize/types";
-
 export interface IJob {
   Company?: ICompany;
   id?: number;
@@ -50,7 +49,7 @@ export interface IEvent {
   userId: number;
   relatedId: number;
   eventName: string;
-  entry?: string;
+  entry?: any;
   type: string;
   date: Date;
 }
@@ -118,12 +117,13 @@ export interface SeqInclude {
   where?: {};
 }
 
-export type PublicFields = "firstname" | "lastname" | "fcc";
+export type PublicFields = "firstname" | "lastname" | "fcc" | "id";
 
 export enum PublicFieldsEnum {
   firstname = "first_name",
   lastname = "last_name",
   fcc = "fcc_account",
+  id = "id",
 }
 export interface IMentor {
   id?: number;
@@ -154,3 +154,5 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
+
+export interface IFccEvent {}

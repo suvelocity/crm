@@ -1,8 +1,10 @@
 require("dotenv").config();
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 import {
   IEvent,
+  IFccEvent,
   IJob,
   IStudent,
   PublicFields,
@@ -12,6 +14,7 @@ import {
 //@ts-ignore
 import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
+import { flatMap, flatten } from "lodash";
 
 //TODO fix types
 export const cancelAllJobsOfStudent: (
@@ -189,4 +192,60 @@ export const getQuery: (
         ),
       }
     : { include };
+};
+
+export const fetchFCC: () => void = async () => {
+  const date: number = new Date("2020-09-01").getTime();
+  console.log(date);
+
+  try {
+    const studentsData: any = (
+      await Student.findAll(getQuery(["fcc", "id"], true, true))
+    ).map((a: any) => a.toJSON());
+    const usernames: string[] = studentsData.map(
+      (d: { fcc_account: string; id: string }) => d.fcc_account
+    );
+
+    console.log(usernames);
+    const fccEvents: IFccEvent[] = (
+      await axios.post(
+        "https://europe-west1-crm-fcc-scraper.cloudfunctions.net/crm-fcc-scraper",
+        {
+          usernames,
+          date,
+        }
+      )
+    ).data;
+
+    let counter = 0;
+
+    //TODO fix types
+    const parsedEvents: IEvent[] = flatMap(fccEvents, (userEvents: any) => {
+      const username = userEvents.username;
+      const { id: userId } = studentsData.find(
+        (sd: any) => sd.fcc_account === username
+      );
+      return userEvents.progress.map((challenge: any) => {
+        counter++;
+        const parsedEvent: IEvent = {
+          relatedId: challenge.id,
+          userId: userId,
+          eventName: "FCC_SUBMIT_SUCCESS",
+          type: "fcc",
+          date: challenge.completedDate,
+        };
+        if (challenge.hasOwnProperty("repetition")) {
+          parsedEvent.entry!.repetition = challenge.repetition;
+        }
+        return parsedEvent;
+      });
+    });
+
+    await Event.bulkCreate(parsedEvents);
+
+    return { success: true, newEvents: parsedEvents.length };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: err.message };
+  }
 };
