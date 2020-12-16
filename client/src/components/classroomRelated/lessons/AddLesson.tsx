@@ -53,8 +53,7 @@ export default function AddLesson({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const lessonToAdd: ILesson = {
-        classId: user.classId,
+      const lessonToAdd: Omit<ILesson, "classId"> = {
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
@@ -64,7 +63,6 @@ export default function AddLesson({
       if (update && lesson) {
         await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
         handleClose && handleClose();
-        // history.push(`/company/${props.company.id}`);
       } else {
         const { data: addedLesson }: { data: ILesson } = await network.post(
           "/api/v1/lesson",
@@ -253,7 +251,9 @@ export default function AddLesson({
           ))}
         </Info>
       </AddLessonForm>
-      <Submit onClick={handleSubmit}>Create Lesson</Submit>
+      <Submit onClick={handleSubmit}>
+        {header ? header : "Create Lesson"}
+      </Submit>
     </AddLessonContainer>
   );
 }

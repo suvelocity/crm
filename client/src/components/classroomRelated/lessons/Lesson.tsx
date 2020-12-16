@@ -10,6 +10,7 @@ import { useState, useCallback } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
 import AddLesson from "./AddLesson";
+import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
 
@@ -25,7 +26,13 @@ export default function Lesson({
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
   const classes = useStyles();
   const getLesson = useCallback(async () => {
-    // const {data} = await network.get('/api/v1/lesson')
+    try {
+      const { data } = await network.get(`/api/v1/lesson/byId/${lesson.id}`);
+      setLessonState(data);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   }, [loading]);
   const handleClose = () => {
     setModalState(false);
