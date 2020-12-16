@@ -180,7 +180,7 @@ export interface ILesson {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
+  lessonId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;

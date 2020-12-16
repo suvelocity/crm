@@ -8,8 +8,16 @@ import { teacherStudents } from "../../../atoms";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import AddTask from "../lessons/AddTask";
-import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
+import Swal from "sweetalert2";
+import { IStudent } from "../../../typescript/interfaces";
+
+const GlobalStyle = createGlobalStyle`
+  .swal2-container {
+    z-index:100000000000000
+  }
+`;
 
 interface Task {
   externalLink?: string;
@@ -19,23 +27,37 @@ interface Task {
   title: string;
   body?: string;
   status: "active" | "disabled";
-}
+} //TODO check with amit the correct interface (in interfaces the interface ie different)
 
 export default function Teacher() {
-  const postTask = async (e: any, task: Task, arrOfStudentsIds: string[]) => {};
-  const [students, setStudents] = useRecoilState(teacherStudents);
-  const [open, setOpen] = useState<boolean>(false);
-  //@ts-ignore
-  const { user } = useContext(AuthContext);
-  const classes = useStyles();
-
-  const [task, setTask] = useState<Task>({
+  const getBaseTask = (): Task => ({
     createdBy: user.id,
     endDate: new Date(),
     title: "",
     type: "manual",
     status: "active",
   });
+
+  const postTask = async () => {
+    if (!task.title) return Swal.fire("Error", "title is required", "error");
+    if (studentsToTask.length === 0)
+      return Swal.fire("Error", "no student selected", "error");
+    try {
+      await network.post("/api/v1/task/tostudents", {
+        ...task,
+        idArr: studentsToTask,
+      });
+      Swal.fire("Success", "task added successfully", "success");
+      handleClose();
+    } catch {}
+  };
+  const [students, setStudents] = useRecoilState(teacherStudents);
+  const [open, setOpen] = useState<boolean>(false);
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  const classes = useStyles();
+
+  const [task, setTask] = useState<Task>(getBaseTask());
   const [studentsToTask, setStudentsToTask] = useState<number[]>([]);
 
   const handleTaskChange = (element: string, index: number, change: any) => {
@@ -96,6 +118,7 @@ export default function Teacher() {
 
   const handleClose = () => {
     setOpen(false);
+    setTask(getBaseTask());
   };
 
   const body = (
@@ -108,7 +131,6 @@ export default function Teacher() {
         task={task}
         studentsToTask={studentsToTask}
       />
-      {/* @ts-ignore */}
       <Button variant='contained' onClick={postTask}>
         add task
       </Button>
@@ -123,6 +145,7 @@ export default function Teacher() {
         (classRoom: any) => classRoom.Class.Students
       );
       setStudents(allStudents[0]); //TODO check eith multipal classes
+      setStudentsToTask(allStudents[0].map((student: IStudent) => student.id));
     } catch {}
   };
 
@@ -134,6 +157,7 @@ export default function Teacher() {
 
   return (
     <div>
+      <GlobalStyle />
       <AddCircleIcon onClick={() => setOpen(true)} />
       <Modal
         open={open}

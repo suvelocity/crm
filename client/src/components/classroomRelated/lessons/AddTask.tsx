@@ -147,34 +147,19 @@ export default function AddTask({
       {students && studentsToTask !== undefined && (
         <Select
           multiple
-          defaultValue={
-            students
-              .map((student) => {
-                return student.id;
-              })
-              // .filter((student) => {
-              //   return studentsToTask.some((id) => {
-              //     return id === student.id;
-              //   });
-              // })
-          }
+          defaultValue={students.map((student) => {
+            return student.id;
+          })}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "students");
           }}
-          // renderValue={(selected) => (selected as string[]).join(", ")}
         >
-          {students
-          .map((student: IStudent) => {
+          {students.map((student: IStudent) => {
             return (
               <MenuItem key={student.id} value={student.id}>
                 {`${student.firstName} ${student.lastName}`}
               </MenuItem>
             );
-            // .filter((student) => {
-            //   return !studentsToTask.some((id) => {
-            //     return id === student.id;
-            //   });
-            // })
           })}
         </Select>
       )}
