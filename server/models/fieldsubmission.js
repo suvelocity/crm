@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class QuizSubmission extends Model {
+  class FieldSubmission extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,13 +14,22 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Student, {
         foreignKey: 'studentId'
       });
-      this.belongsTo(models.Quiz, {
-        foreignKey: 'quizId'
+      this.belongsTo(models.Field, {
+        foreignKey: 'fieldId',
+        as: 'fields'
       });
+      this.hasMany(models.SelectedOption, {
+        foreignKey: 'fieldSubmissionId'
+      });
+      this.belongsToMany(models.Option, {
+        through: models.SelectedOption,
+        foreignKey: 'fieldSubmissionId',
+        otherKey: 'optionId',
+      })
     }
   };
-  QuizSubmission.init({
-    quizId: {
+  FieldSubmission.init({
+    fieldId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -28,16 +37,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    rank: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+    textualAnswer: {
+      type: DataTypes.STRING,
     },
   }, {
     sequelize,
     underscored: true,
-    modelName: 'QuizSubmission',
+    modelName: 'FieldSubmission',
     paranoid: true,
-    tableName: 'quiz_submissions'
+    tableName: 'fieldsubmissions'
   });
-  return QuizSubmission;
+  return FieldSubmission;
 };

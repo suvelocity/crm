@@ -1,18 +1,23 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Questions', {
+    await queryInterface.createTable('FieldSubmissions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
-        type: Sequelize.STRING
+      field_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
-      quiz_id: {
-        type: Sequelize.INTEGER
+      student_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      textual_answer: {
+        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: false,
@@ -25,11 +30,11 @@ module.exports = {
         defaultValue: new Date()
       },
       deleted_at: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATE 
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Questions');
+    await queryInterface.dropTable('FieldSubmissions');
   }
 };

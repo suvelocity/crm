@@ -37,21 +37,28 @@ import React, { useEffect, useState } from "react";
 // export default function QuizzesList() {
 //   const classes = useStyles();
 
-//   const [quizzes, setQuizzes] = useState();
-//   const [userSubmissions, setUserSubmissions] = useState();
+  // interface Quiz {
+  //   name: string
+  // };
+  // interface userSubmissions {
+  //   quizId: number
+  // };
 
-//   useEffect(() => {
-//     const fetchQuizzes = async () => {
-//       const quizzes = (await axios.get("/quizzes/all")).data;
-//       setQuizzes(quizzes);
-//     };
-//     const fetchUserSubmissions = async () => {
-//       const userSubmissions = (await axios.get(`/users/1/submissions`)).data;
-//       setUserSubmissions(userSubmissions);
-//     };
-//     fetchUserSubmissions();
-//     fetchQuizzes();
-//   }, []);
+  // const [quizzes, setQuizzes] = useState<Quiz | undefined>();
+  // const [userSubmissions, setUserSubmissions] = useState<userSubmissions>();
+
+  // useEffect(() => {
+  //   const fetchQuizzes = async () => {
+  //     const quizzes = (await axios.get("/quizzes/all")).data;
+  //     setQuizzes(quizzes);
+  //   };
+  //   const fetchUserSubmissions = async () => {
+  //     const userSubmissions = (await axios.get(`/users/1/submissions`)).data;
+  //     setUserSubmissions(userSubmissions);
+  //   };
+  //   fetchUserSubmissions();
+  //   fetchQuizzes();
+  // }, []);
 
 //   return (quizzes && userSubmissions) ? (
 //     <>

@@ -177,3 +177,26 @@ export const mentorSchemaToPut = Joi.object({
 export const studentMentorIdPut = Joi.object({
   mentorId: Joi.number(),
 });
+
+export const quizSchema = Joi.object({
+  name: Joi.string().required(),
+  createdBy: Joi.number().required(),
+});
+
+export const quizSchemaToPut = Joi.object({
+  name: Joi.string().allow(null, ""),
+  createdBy: Joi.number().allow(null, ""),
+});
+
+
+export const quizSubmissionSchema = Joi.object({
+  quizId: Joi.number().required(),
+  studentId: Joi.number().required(),
+  rank: Joi.number().required()
+});
+
+export const quizSubmissionSchemaToPut = Joi.object({
+  quizId: Joi.number().allow(null, ""),
+  studentId: Joi.number().allow(null, ""),
+  rank: Joi.number().allow(null, "")
+});

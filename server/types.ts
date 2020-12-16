@@ -136,6 +136,17 @@ export interface IMentor {
   available: boolean;
   gender: string;
 }
+export interface IQuiz {
+  id?: number;
+  name: string;
+  createdBy: number;
+}
+export interface IQuizSubmission {
+  id?: number;
+  quizId: number;
+  studentId: number;
+  rank: number;
+}
 
 type meeting = { date: string };
 // type class = {name: string, cycleNumber: number}

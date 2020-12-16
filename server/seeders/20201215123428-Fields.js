@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      "Questions",
+      "Fields",
       [
         {
           id: 1,
@@ -54,7 +54,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete(
-      "Questions",
+      "Fields",
       [
         {
           id: 1,

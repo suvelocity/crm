@@ -8,22 +8,22 @@ module.exports = {
         {
           id: 1,
           name: "Sequelize",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 2,
           name: "Flex-Box",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 3,
           name: "Class-Components",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 4,
           name: "SQL",
-          created_by: 1
+          creator_id: 1
         },
       ],
       {}
@@ -37,22 +37,22 @@ module.exports = {
         {
           id: 1,
           name: "Sequelize",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 2,
           name: "Flex-Box",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 3,
           name: "Class-Components",
-          created_by: 1
+          creator_id: 1
         },
         {
           id: 4,
           name: "SQL",
-          created_by: 1
+          creator_id: 1
         },
       ],
       {}

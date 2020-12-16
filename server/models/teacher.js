@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "teacherId",
       });
       this.hasMany(models.Quiz, {
-        foreignKey: 'createdBy'
+        foreignKey: 'creatorId'
       });
     }
   }

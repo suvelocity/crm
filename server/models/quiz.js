@@ -9,20 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Teacher, {
-        foreignKey: "createdBy"
+        foreignKey: "creatorId"
       });
-
-      this.hasMany(models.QuizSubmission, {
+      this.hasMany(models.Field, {
         foreignKey: "quizId",
       });
-      this.hasMany(models.Question, {
-        foreignKey: "quizId",
-      });
-      this.belongsToMany(models.Student, {
-        through: models.QuizSubmission,
-        foreignKey: 'quizId',
-        otherKey: 'studentId'
-      });
+      // this.hasMany(models.QuizSubmission, {
+      //   foreignKey: "quizId",
+      // });
+      // this.belongsToMany(models.Student, {
+      //   through: models.QuizSubmission,
+      //   foreignKey: 'quizId',
+      //   otherKey: 'studentId'
+      // });
     }
   }
   Quiz.init(
@@ -31,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      createdBy: {
+      creatorId: {
         type: DataTypes.INTEGER,
         allowNull: false
       }
