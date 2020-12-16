@@ -3,7 +3,7 @@ const router = Router();
 //@ts-ignore
 import { Lesson, Class, Task, Teacher } from "../../models";
 import { ILesson, IClass, ITask } from "../../types";
-import { lessonSchema } from "../../validations";
+import { lessonSchema, lessonSchemaToPut } from "../../validations";
 
 router.post("/", async (req: Request, res: Response) => {
   try {
@@ -61,6 +61,21 @@ router.get("/byid/:id", async (req: Request, res: Response) => {
     });
     if (lesson) return res.json(lesson);
     res.status(404).json({ error: "lesson not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//find all lessons of class
+router.put("/:id", async (req: Request, res: Response) => {
+  const { error } = lessonSchemaToPut.validate(req.body);
+  if (error) return res.status(400).json({ error: error.message });
+  try {
+    const updated = await Lesson.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updated[0] === 1) return res.json({ msg: "Lesson updated" });
+    res.status(404).json({ error: "Lesson not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

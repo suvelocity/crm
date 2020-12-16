@@ -3,11 +3,13 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import Tooltip from "@material-ui/core/Tooltip";
 
 interface Task {
   externalLink?: string;
@@ -18,18 +20,17 @@ interface Task {
   body?: string;
   status: "active" | "disabled";
 }
-// export default function Task({ task, index }: { task: Task; index: number }) {
-//   const [challengeType, setChallengeType] = useState<string>("manual");
-//   const [challenge, setChallenge] = useState<string>("");
 
-export default function Task({
+export default function AddTask({
   task,
   index,
   handleChange,
+  handleRemove,
 }: {
   task: Task;
   index: number;
   handleChange: (element: string, index: number, change: any) => void;
+  handleRemove: (index: number, name: string) => void;
 }) {
   const changer = (
     e: React.ChangeEvent<{ value: unknown }>,
@@ -38,21 +39,30 @@ export default function Task({
     handleChange(toChange, index, e.target.value);
   };
 
+  const removeTask = () => {
+    handleRemove(index, "task");
+  };
+
   return (
     <div
       className='create-task'
       style={{
         display: "flex",
         flexDirection: "column",
-      }}>
+      }}
+    >
       <hr />
+      <Tooltip title='Remove task'>
+        <DeleteForeverIcon onClick={removeTask} />
+      </Tooltip>
       <Select
         style={{ marginTop: "5px", marginBottom: "5px" }}
         value={task.type}
         variant='outlined'
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "type");
-        }}>
+        }}
+      >
         <MenuItem value='manual'>manual</MenuItem>
         <MenuItem value='challengeMe'>challengeMe</MenuItem>
         <MenuItem value='fcc'>fcc</MenuItem>
@@ -75,7 +85,8 @@ export default function Task({
             changer(e, "title");
           }}
           variant='outlined'
-          defaultValue='Pick a Task'>
+          defaultValue='Pick a Task'
+        >
           <MenuItem value={"challenge1"}>challenge1</MenuItem>
           <MenuItem value={"challenge2"}>challenge2</MenuItem>
           <MenuItem value={"challenge3"}>challenge3</MenuItem>
@@ -123,7 +134,8 @@ export default function Task({
           changer(e, "status");
         }}
         variant='outlined'
-        defaultValue='Pick a Status'>
+        defaultValue='Pick a Status'
+      >
         <MenuItem value={"active"}>active</MenuItem>
         <MenuItem value={"disabled"}>disabled</MenuItem>
       </Select>

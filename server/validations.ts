@@ -124,6 +124,15 @@ export const lessonSchema = Joi.object({
   createdBy: Joi.number().required(),
 });
 
+export const lessonSchemaToPut = Joi.object({
+  classId: Joi.number().allow(null, ""),
+  title: Joi.string().allow(null, ""),
+  body: Joi.string().allow(null, ""),
+  resource: Joi.string().allow(null, ""),
+  zoomLink: Joi.string().allow(null, ""),
+  createdBy: Joi.number().allow(null, ""),
+});
+
 export const noticeSchema = Joi.object({
   classId: Joi.number().required(),
   type: Joi.string().required(),

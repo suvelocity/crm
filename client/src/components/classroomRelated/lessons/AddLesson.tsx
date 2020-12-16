@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
-import Task from "./Task";
+import AddTask from "./AddTask";
 
 interface Task {
   externalLink?: string;
@@ -200,7 +200,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}>
+              onClick={() => handleRemove(index, "resource")}
+            >
               <Tooltip title='delete resource'>
                 <Link>{resource}</Link>
               </Tooltip>
@@ -215,7 +216,12 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
               // onClick={() => handleRemove(index, "task")}
             >
               {/* <Tooltip title='delete task'> */}
-              <Task handleChange={handleTaskChange} task={task} index={index} />
+              <AddTask
+                handleChange={handleTaskChange}
+                task={task}
+                index={index}
+                handleRemove={handleRemove}
+              />
               {/* </Tooltip> */}
             </OneInfo>
           ))}

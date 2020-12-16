@@ -47,12 +47,14 @@ export default function Lessons() {
   const handleClose = () => {
     setOpen(false);
   };
+
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} />
     </div>
   );
+
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
