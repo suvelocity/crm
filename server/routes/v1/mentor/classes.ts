@@ -73,7 +73,7 @@ router.get("/byId/:class/:program", async (req: Request, res: Response) => {
               include: [
                 {
                   model: Mentor,
-                  attributes: ['name', 'id', 'address', 'company', 'job']
+                  attributes: ['name', 'id', 'address', 'company', 'role', 'experience']
                 }
               ]
             }
