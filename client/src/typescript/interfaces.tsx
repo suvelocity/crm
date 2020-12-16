@@ -147,12 +147,14 @@ export interface IMentorProgramDashboard {
 export interface IMeeting {
   id?: number;
   date: string;
-  mentorId: number;
-  studentId: number;
+  pairId:number;
   place: string;
 }
 export interface IPairMeetings {
-  
+  id?:number;
+  Mentor:Partial<IMentor>;
+  Student:Partial<IStudent>;
+  Meetings: IMeeting[];
 }
 
 export interface IMentorProgram{

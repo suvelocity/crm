@@ -109,7 +109,7 @@ const ProgramDashboard: React.FC = () => {
                           row.MentorStudents[0].Meetings.length
                         }
                       </StyledSpan>
-                      <StyledSpan><Button>Show</Button></StyledSpan>
+                      <StyledSpan><StyledLink to={`/mentor/meeting/${row.MentorStudents[0].id}`} color="black"><Button>Show</Button></StyledLink></StyledSpan>
                       </> : <StyledSpan><Button onClick={ async () => {
                         setModalBody(
                           <div>
