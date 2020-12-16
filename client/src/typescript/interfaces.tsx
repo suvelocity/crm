@@ -17,8 +17,17 @@ export interface IStudent {
   citizenship: string;
   additionalDetails: string;
   mentorId: number | null;
-  mentor?: IMentor | null
+  mentor?: IMentor | null;
+  MentorStudents? : IPair[]
   Events: IEvent[];
+}
+
+export interface IPair {
+  id: number
+  mentorProgramId: number,
+  studentId: number,
+  mentorId: number,
+  Mentor? : IMentor
 }
 
 export interface IJob {
@@ -73,10 +82,10 @@ export type status =
 
 export interface IEvent {
   id?: number;
-  status: status;
-  studentId?: number;
-  jobId?: number;
-  comment?: string;
+  eventName: status;
+  userId?: number;
+  relatedId?: number;
+  entry?: { [key: string]: any };
   date: string;
   Student?: IStudent;
   Job?: IJob;
@@ -107,29 +116,54 @@ export interface IMentor {
   email: string;
   phone: string;
   address: string;
-  job: string;
+  role: string;
+  experience: number;
   available: boolean;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
+  student?:number;
+  MentorStudents?:IMentorStusent[]
 }
 
-export interface MentorClassDashboard {
+export interface IMentorStusent {
   id?: number;
-  firstName:string;
-  lastName:string;
-  Class: Partial<IClass>;
-  Mentor: IMentor;
-  Meetings: Partial<IMeeting>[];
-};
+  mentorId: number;
+  mentorProgramId: number;
+  studentId: number;
+  Mentor?: Partial<IMentor>;
+  MentorProgram?: Partial<IMentorProgram>;
+  Meetings?: Partial<IMeeting>[];
+  Student?: Partial<IStudent>;
+}
+
+export interface IMentorProgramDashboard {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  MentorStudents: Partial<IMentorStusent>[];
+}
 
 export interface IMeeting {
   id?: number;
-  date:string;
-  mentorId:number;
-  studentId:number;
-  place:string;
-};
+  date: string;
+  mentorId: number;
+  studentId: number;
+  place: string;
+}
+export interface IPairMeetings {
+  
+}
+
+export interface IMentorProgram{
+  id?: number;
+  classId: number;
+  name: string;
+  open: boolean;
+  endDate: string;
+  startDate: string;
+}
+
 export interface IUser {
   id?: number;
   userType: string;
@@ -158,9 +192,40 @@ export interface IUserSignIn {
   rememberMe: boolean;
 }
 
+export interface INotice {
+  id?: number;
+  classId: number;
+  type: "regular" | "important" | "critical";
+  body: string;
+  createdBy: number;
+}
+
+export interface ILesson {
+  id?: number;
+  classId: number;
+  title: string;
+  body: string;
+  resource?: string;
+  zoomLink?: string;
+  createdBy: number;
+}
+
+export interface ITask {
+  id?: number;
+  lessonId: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  status: string;
+  body: string;
+}
+
+export type ThemeType = "dark" | "light";
+
 export interface filterMentorObject {
   Company: string;
   Gender: string;
   Address: string;
-  // available: string;
 }

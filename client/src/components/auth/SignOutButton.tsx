@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import network from "../../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../../helpers";
 import Cookies from "js-cookie";
-import { useHistory } from "react-router-dom";
 
 export default function SignOutButton({ style = {} }) {
   //@ts-ignore

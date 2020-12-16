@@ -11,10 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Meeting,{
-        foreignKey: "mentorId"   
+        foreignKey: "mentorId",
+        onDelete: "cascade",
+        hooks: true,
       });
-      this.hasMany(models.Student,{
-        foreignKey: "mentorId"   
+      this.hasMany(models.MentorStudent,{
+        foreignKey: "mentorId",
+        onDelete: "cascade",
+        hooks: true,
       });
     }
   };
@@ -24,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     phone: DataTypes.STRING,
     address: DataTypes.STRING,
-    job: DataTypes.STRING,
+    role: DataTypes.STRING,
+    experience: DataTypes.INTEGER,
     available: DataTypes.BOOLEAN,
     gender: DataTypes.STRING,
   }, {
