@@ -16,11 +16,11 @@ import React, { useRef } from "react";
 // });
 
 // const MenuPopupState = () => {
-//   const menuIconRef = useRef();
+//   const menuIconRef = React.useRef<HTMLDivElement>(null);
 //   const classes = useStyles();
 //   const popupState = usePopupState({ variant: "popover", popupId: "demoMenu" });
 //   return (
-//     <div>
+//     <div> 
 //       <MenuRoundedIcon
 //         variant="contained"
 //         {...bindTrigger(popupState)}
