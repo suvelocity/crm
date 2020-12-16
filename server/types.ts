@@ -45,10 +45,12 @@ export interface IClass {
 
 export interface IEvent {
   id?: number;
-  studentId: number;
-  jobId: number;
-  status: string;
-  comment?: string;
+  userId: number;
+  relatedId: number;
+  eventName: string;
+  entry?: string;
+  type: string;
+  date: Date;
 }
 
 export interface ICompany {
@@ -69,6 +71,43 @@ export interface IUser {
   relatedId?: number;
 }
 
+export interface ILesson {
+  id?: number;
+  classId: number;
+  title: string;
+  body: string;
+  resource?: string;
+  zoomLink?: string;
+  createdBy: number;
+}
+
+export interface INotice {
+  id?: number;
+  classId: number;
+  type: string;
+  body: string;
+  createdBy: number;
+}
+
+export interface ITask {
+  id?: number;
+  lessonId: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  status: string;
+  body: string;
+}
+
+export interface ITaskofStudent {
+  id?: number;
+  userId: number;
+  taskId: number;
+  type: string;
+  status: string;
+}
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
@@ -95,20 +134,28 @@ export interface IMentor {
   gender: string;
 }
 
-type meeting = {date: string}
+type meeting = { date: string };
 // type class = {name: string, cycleNumber: number}
 
-export interface IDeshbord {
+export interface IDashboard {
   id?: number;
-  firstName:string;
-  lastName:string;
+  firstName: string;
+  lastName: string;
   // Class: class;
-  Mentor:IMentor;
-  Meetings:meeting[];
+  Mentor: IMentor;
+  Meetings: meeting[];
 }
 export interface IMeeting {
   id?: number;
-  mentorId:number;
-  studentId:number;
-  place:string;
+  mentorId: number;
+  studentId: number;
+  place: string;
+}
+export interface IMentorProgram{
+  id?: number;
+  classId: number;
+  name: string;
+  open: boolean;
+  endDate: string;
+  startDate: string;
 }

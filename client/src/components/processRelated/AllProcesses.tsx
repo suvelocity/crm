@@ -39,7 +39,7 @@ function AllProcesses() {
       const arrOfProcessesValue = [
         `${process.Student!.firstName} ${process.Student!.lastName}`,
         process.Job!.position,
-        process.status,
+        process.eventName,
         formatToIsraeliDate(process.date),
       ];
       for (let value of arrOfProcessesValue) {
@@ -67,18 +67,18 @@ function AllProcesses() {
   }, []);
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color='#cf8f18'>All Processes</H1>
+          <H1 color="#cf8f18">All Processes</H1>
         </TitleWrapper>
       </Center>
       <br />
       <Center>
         <TextField
-          variant='outlined'
+          variant="outlined"
           value={filterInput}
-          label='Search process'
+          label="Search process"
           onChange={(e) => handleFilter(e)}
         />
       </Center>
@@ -93,10 +93,10 @@ function AllProcesses() {
             <li>
               <TableHeader>
                 <TimelineIcon />
-                <StyledSpan weight='bold'>Student</StyledSpan>
-                <StyledSpan weight='bold'>Job</StyledSpan>
-                <StyledSpan weight='bold'>Status</StyledSpan>
-                <StyledSpan weight='bold'>Date</StyledSpan>
+                <StyledSpan weight="bold">Student</StyledSpan>
+                <StyledSpan weight="bold">Job</StyledSpan>
+                <StyledSpan weight="bold">Status</StyledSpan>
+                <StyledSpan weight="bold">Date</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -105,16 +105,16 @@ function AllProcesses() {
               <li>
                 <StyledLink
                   to={`/process/${process.Student!.id}/${process.Job!.id}`}
-                  color='black'
+                  color="black"
                 >
                   <StyledDiv>
                     <TimelineIcon />
-                    <StyledSpan weight='bold'>
+                    <StyledSpan weight="bold">
                       {capitalize(process.Student!.firstName)}{" "}
                       {capitalize(process.Student!.lastName)}
                     </StyledSpan>
                     <StyledSpan>{capitalize(process.Job!.position)}</StyledSpan>
-                    <StyledSpan>{process.status}</StyledSpan>
+                    <StyledSpan>{process.eventName}</StyledSpan>
                     <StyledSpan>{formatToIsraeliDate(process.date)}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
