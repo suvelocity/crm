@@ -9,6 +9,7 @@ const unknownEndpoint = (req: Request, res: Response) => {
 router.use("/meeting", require("./meeting"));
 router.use("/classes", require("./classes"));
 router.use("/mentor", require("./mentor"));
+router.use("/program", require("./program"));
 
 router.use(unknownEndpoint);
 module.exports = router;
