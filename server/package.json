@@ -10,7 +10,7 @@
     "dev": "nodemon -r dotenv/config index.ts",
     "start": "node build",
     "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
-    "fetch" : "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
+    "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

@@ -223,3 +223,9 @@ export interface ITask {
 }
 
 export type ThemeType = "dark" | "light";
+
+export interface filterMentorObject {
+  Company: string;
+  Gender: string;
+  Address: string;
+}
