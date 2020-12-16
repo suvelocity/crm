@@ -71,7 +71,6 @@ function NewClassMentorProject() {
   useEffect(() => {
     try {
       getClass();
-     
     } catch (e) {
       console.log(e.message);
     }
@@ -149,12 +148,27 @@ function NewClassMentorProject() {
 
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
     try {
-
-      await network.post(`/api/v1/M/classes`, {
-        mentorProgramId: id,
-        mentorId: student.mentor!.id,
-        studentId: student.id
-      });
+      console.log(student)
+      if (student.MentorStudents![0]) {
+        if (student.mentor) {
+          await network.put(`/api/v1/M/classes/${student.MentorStudents![0].id}`, {
+          mentorProgramId: id,
+          mentorId: student.mentor!.id,
+          studentId: student.id
+          })
+        } else {
+          await network.delete(`/api/v1/M/classes/${student.MentorStudents![0].id}`)
+        }
+        console.log('chandge')
+      } else if (student.mentor) {
+          await network.post(`/api/v1/M/classes`, {
+            mentorProgramId: id,
+            mentorId: student.mentor!.id,
+            studentId: student.id
+          })
+            
+          console.log('post')
+      } 
     } catch {
       return student.firstName + student.lastName;
     }
@@ -173,7 +187,7 @@ function NewClassMentorProject() {
               <Button
                 style={{ backgroundColor: "green" }}
                 onClick={() =>
-                  newMentorsToDb.forEach((student: Omit<IStudent, "Class">) => {
+                  cls!.Students.forEach((student: Omit<IStudent, "Class">) => {
                     saveMentor(student).then(async () => {
                       setModalBody(
                         <div
@@ -213,7 +227,6 @@ function NewClassMentorProject() {
 
   const resetMentors = (mentorizeClass: IClass | undefined) => {
     getClass();
-    
   };
 
   const assignMentors = (mentorizeClass: IClass | undefined) => {
