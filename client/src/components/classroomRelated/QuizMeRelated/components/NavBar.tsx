@@ -23,7 +23,7 @@ export default function NavBar() {
             <IconButton edge="start" color="secondary" aria-label="menu">
         
             </IconButton>
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <Link to="/quizme" style={{ textDecoration: "none" }}>
               <Typography variant="h6" color="secondary">
                 QuizMe
               </Typography>

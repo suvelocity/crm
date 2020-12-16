@@ -43,10 +43,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+interface Option {
+  id: number,
+  title: string
+}
+type OptionsArray = Option[];
+interface Field {
+  id: number,
+  title: string,
+  Options: OptionsArray
+};
+type FieldsArray = Field[];
+interface Quiz {
+  id: number,
+  name: string,
+  Fields: FieldsArray  
+}
+
 export default function QuizPage() {
   const { id } = useParams();
   const classes = useStyles();
-  const [quiz, setQuiz] = useState<any>();
+
+  const [quiz, setQuiz] = useState<Quiz>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [quizIsOver, setQuizIsOver] = useState<boolean>(false);
@@ -57,7 +75,7 @@ export default function QuizPage() {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const quiz = (await axios.get(`/quizzes/${id}`)).data;
+      const quiz = (await axios.get(`/api/v1/quiz/${id}`)).data;
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -83,8 +101,9 @@ export default function QuizPage() {
     }
   }, [seconds, minutes]);
 
-  const findSelectedAnswerIdByTitle = (title : string) :void => {
-    const currentFieldsArray : any[] = quiz.Questions[currentQuestionIndex].Fields;
+  const findSelectedAnswerIdByTitle = (title : string) :number => {
+    //@ts-ignore
+    const currentFieldsArray : Option[] = quiz.Fields[currentQuestionIndex].Options;
     const selectedAnswer: any = currentFieldsArray.find(
       (field) => field.title === title
     );
@@ -98,11 +117,13 @@ export default function QuizPage() {
       setAnswers([
         ...answers,
         {
-          questionId: quiz.Questions[currentQuestionIndex].id,
+          //@ts-ignore
+          questionId: quiz.Fields[currentQuestionIndex].id,
           answerId: selectedAnswerId,
         },
       ]);
-      if (quiz.Questions.length - 1 > currentQuestionIndex) {
+      //@ts-ignore
+      if (quiz.Fields.length - 1 > currentQuestionIndex) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setMinutes(1);
         setSeconds(30);
@@ -117,11 +138,11 @@ export default function QuizPage() {
   const submitQuiz = async () => {
     try {
       setQuizIsOver(true);
-      await axios.post("/submissions", {
-        userId: 3, // 3
-        quizId: quiz.id, // 1
-        answersSelected: answers,
-      });
+      // await axios.post("/submissions", {
+      //   userId: 3, // 3
+      //   quizId: quiz.id, // 1
+      //   answersSelected: answers,
+      // });
       setFinishTitle("Well done, quiz submitted successfully");
     } catch (error) {
       const errorMessage = error.response.data.message;
@@ -137,7 +158,7 @@ export default function QuizPage() {
               <div>
                 <Typography component={'div'} //@ts-ignore
                 variant={'div'} className={classes.questionTitle}>
-                  {quiz.Questions[currentQuestionIndex].title}
+                  {quiz.Fields[currentQuestionIndex].title}
                 </Typography>
                 <Typography component={'h6'} variant={'h6'} className={classes.timeRemaining}>
                   Time Remaining: {minutes}:
@@ -146,8 +167,8 @@ export default function QuizPage() {
                 </Typography>
               </div>
               <List>
-                {quiz.Questions[currentQuestionIndex].Fields.map(
-                  (field : any, index : string) => (
+                {quiz.Fields[currentQuestionIndex].Options.map(
+                  (option : Option, index: number) => (
                     <ListItem
                       button
                       disableGutters
@@ -160,12 +181,12 @@ export default function QuizPage() {
                       )}
                       className={classes.field}
                     >
-                      <ListItemText primary={`${field.title}`} disableTypography/>
+                      <ListItemText primary={`${option.title}`} disableTypography/>
                     </ListItem>
                   )
                 )}
                 <Container className={classes.chipContainer}>
-                  <Chip label={`${currentQuestionIndex+1}/${quiz.Questions.length}`}
+                  <Chip label={`${currentQuestionIndex+1}/${quiz.Fields.length}`}
                         size={'small'}
                         variant={'outlined'}
                         color={'primary'}

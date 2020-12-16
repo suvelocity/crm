@@ -37,36 +37,40 @@ const useStyles = makeStyles((theme) => ({
 export default function QuizzesList() {
   const classes = useStyles();
 
-  // interface Quiz {
-  //   name: string
-  // };
-  // interface userSubmissions {
-  //   quizId: number
-  // };
+  interface Quiz {
+    id: number
+    name: string
+  };
+  type QuizArray = Quiz[];
 
-  // const [quizzes, setQuizzes] = useState<Quiz | undefined>();
-  // const [userSubmissions, setUserSubmissions] = useState<userSubmissions>();
+  interface UserSubmissions {
+    quizId: number
+  };
+  type UserSubmissionsArray = UserSubmissions[];
 
-  // useEffect(() => {
-  //   const fetchQuizzes = async () => {
-  //     const quizzes = (await axios.get("/quizzes/all")).data;
-  //     setQuizzes(quizzes);
-  //   };
-  //   const fetchUserSubmissions = async () => {
-  //     const userSubmissions = (await axios.get(`/users/1/submissions`)).data;
-  //     setUserSubmissions(userSubmissions);
-  //   };
-  //   fetchUserSubmissions();
-  //   fetchQuizzes();
-  // }, []);
+  const [quizzes, setQuizzes] = useState<QuizArray>();
+  const [userSubmissions, setUserSubmissions] = useState<UserSubmissionsArray>();
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      const quizzes: QuizArray = (await axios.get("/api/v1/quiz/all")).data;
+      setQuizzes(quizzes);
+    };
+    const fetchUserSubmissions = async () => {
+      const userSubmissions: UserSubmissionsArray = (await axios.get(`/api/v1/fieldsubmission/1`)).data;
+      setUserSubmissions(userSubmissions);
+    };
+    fetchUserSubmissions();
+    fetchQuizzes();
+  }, []);
 
   return (quizzes && userSubmissions) ? (
     <>
       <Container className={classes.container}>
         <Container className={classes.list}>
           <List>
-            {quizzes.map((quiz : any, index : number) => (
-              <Link to={`/quiz/${quiz.id}`} style={{textDecoration: "none"}} key={index}>
+            {quizzes.map((quiz, index : number) => (
+              <Link to={`/quizme/quiz/${quiz.id}`} style={{textDecoration: "none"}} key={index}>
                 <ListItem className={classes.li}>
                   <ListItemText
                     primary={quiz.name}
@@ -75,7 +79,7 @@ export default function QuizzesList() {
                   ></ListItemText>
                   <ListItemIcon>
                     {//@ts-ignore
-                    (userSubmissions.submissions.some(sub => sub.quizId === quiz.id))
+                    (userSubmissions.some(sub => sub.quizId === quiz.id))
                     ? 
                     //@ts-ignore
                     <CheckCircleOutline edge="end" />

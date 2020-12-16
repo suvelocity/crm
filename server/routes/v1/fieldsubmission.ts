@@ -12,21 +12,6 @@ import { IQuizSubmission } from "../../types";
 
 const router = Router();
 
-// const calcRank = (quizQuestions: any, answersSelected: any) => {
-//   const numOfQuestions = quizQuestions.length;
-//   let numOfCorrectAnswers = 0;
-//   answersSelected.forEach((answer: any) => {
-//     const correctAnswerId = quizQuestions.find(
-//       (question: any) => question.id === answer.questionId)
-//       .Fields[0].id;
-//     if (correctAnswerId === answer.answerId) {
-//       numOfCorrectAnswers++;
-//     }
-//   });
-//   const rank = Math.floor((numOfCorrectAnswers / numOfQuestions) * 100);
-//   return rank;
-// };
-
 // GET ALL QUIZ-SUBMISSIONS
 router.get("/all", async (req: Request, res: Response) => {
   const submissions = await FieldSubmission.findAll({
@@ -47,7 +32,7 @@ router.get("/all", async (req: Request, res: Response) => {
 
 // GET QUIZ-SUBMISSIONS BY studentId
 router.get("/:id", async (req: Request, res: Response) => {
-  const submissions = await FieldSubmission.findByPk(req.params.id, {
+  const submissions = await FieldSubmission.findAll({
     raw: true,
     include: [
       {
@@ -58,7 +43,10 @@ router.get("/:id", async (req: Request, res: Response) => {
       },
     ],
     attributes: [[db.Sequelize.col("fields.quiz_id"), "quizId"]],
-    group: ['quizId']
+    group: ['quizId'],
+    where: {
+      studentId: req.params.id
+    }
   });
   return res.json(submissions);
 });
@@ -88,7 +76,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 //       const answersSelected = body.answersSelected;
 //       const quizId = body.quizId;
 //       const userId = body.userId;
-//       const quizQuestions = await (await Quiz.findByPk(quizId)).getQuestions({
+//       const correctAnswersArray = await (await Quiz.findByPk(quizId)).getQuestions({
 //         attributes: ["id"],
 //         include: [
 //           {
@@ -100,7 +88,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 //           },
 //         ],
 //       });
-//       const rank = calcRank(quizQuestions, answersSelected);
+//       const rank = calcRank(correctAnswersArray, answersSelected);
 //       const newSubmission = await FieldSubmission.create({ userId, quizId, rank});
 //       return (newSubmission) ? res.json(newSubmission) : res.status(404).json("failed to create submission")
 //     }

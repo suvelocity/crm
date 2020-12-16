@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import "./QuizMe.css";
 import Home from "./components/Home";
 import QuizPage from "./components/QuizPage";
-import UserStats from "./components/UserStats";
+// import UserStats from "./components/UserStats";
 import NavBar from "./components/NavBar";
 
 const useStyles = makeStyles({
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 });
 
 function QuizMe() {
-  // const classes = useStyles();
+  const classes = useStyles();
   return (
     <>
       <Container 
@@ -25,9 +25,9 @@ function QuizMe() {
         <Router>
         <NavBar />
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/quiz/:id" component={QuizPage} />
-            <Route exact path="/statistics" component={UserStats} />
+            <Route exact path="/quizme/" component={Home} />
+            <Route exact path="/quizme/quiz/:id" component={QuizPage} />
+            {/* <Route exact path="/statistics" component={UserStats} /> */}
           </Switch>
         </Router>
       </Container>
