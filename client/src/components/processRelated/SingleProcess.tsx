@@ -63,7 +63,7 @@ function SingleProcess() {
       (event: IEvent) => event.id === eventId
     );
     if (!index) {
-      Swal.fire("Error occured", " event not found", "error");
+      Swal.fire("Error occurred", " event not found", "error");
       return;
     }
     const updated = events?.slice(0, index).concat(events.slice(index + 1));

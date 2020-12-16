@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Modal from '@material-ui/core/Modal';
-import EditIcon from '@material-ui/icons/Edit';
-import AddJob from './AddJob';
+import Modal from "@material-ui/core/Modal";
+import EditIcon from "@material-ui/icons/Edit";
+import AddJob from "./AddJob";
 import {
   H1,
   Wrapper,
@@ -17,6 +17,7 @@ import {
   StyledDiv,
   StyledLink,
   MultilineListItem,
+  EditDiv,
 } from "../../styles/styledComponents";
 import { SingleListItem } from "../tableRelated";
 import {
@@ -71,8 +72,8 @@ function SingleJob() {
     setModalState(false);
     setLoading(true);
     getJob();
-  }
-  
+  };
+
   const removeStudents = useCallback(
     async (
       studentId: number,
@@ -90,8 +91,8 @@ function SingleJob() {
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
           await network.put("/api/v1/event/delete", {
-            studentId,
-            jobId: job?.id,
+            userId: studentId,
+            relatedId: job?.id,
           });
           getJob();
         }
@@ -130,8 +131,9 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-        <div style={{display:'flex', justifyContent: 'space-between'}}>
-          <div>
+          <EditDiv onClick={() => setModalState(true)}>
+            <EditIcon />
+          </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
               <SingleListItem
@@ -206,20 +208,23 @@ function SingleJob() {
               />
             </MultilineListItem>
           )}
-          </div>
-          <div style={{cursor: "pointer" }} onClick={() => setModalState(true)}><EditIcon /></div>
-          </div>
           <Modal
             open={modalState}
             onClose={() => setModalState(false)}
-            style={{overflow: 'scroll'}}
+            style={{ overflow: "scroll" }}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
-            {
-              !job?<div>oops</div>:
-              <AddJob handleClose={handleClose} update={true} job={job} header='Edit Job'/>
-            }
+            {!job ? (
+              <div>oops</div>
+            ) : (
+              <AddJob
+                handleClose={handleClose}
+                update={true}
+                job={job}
+                header="Edit Job"
+              />
+            )}
           </Modal>
           {/* Additional Details */}
         </Loading>
@@ -263,7 +268,7 @@ function SingleJob() {
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>{`${capitalize(
-                        event.status
+                        event.eventName
                       )}, as of ${formatToIsraeliDate(
                         event.date
                       )}`}</StyledSpan>

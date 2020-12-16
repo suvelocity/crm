@@ -1,10 +1,26 @@
 import { Request, Response, Router } from 'express';
 //@ts-ignore
-import { Mentor, Student, Meeting,Class } from '../../../models';
+import { Student,Mentor,Meeting,Class,MentorProgram,MentorStudent, } from '../../../models';
 import { mentorSchema, mentorSchemaToPut } from '../../../validations';
 import { IMentor } from '../../../types';
 
 const router = Router();
+
+router.get('/available', async (req: Request, res: Response) => {
+  try {
+    const allMentors: any[] = await Mentor.findAll({
+      where: {
+        available: true
+      },
+      include: [{
+        model: MentorStudent,
+      }]
+    });
+    res.json(allMentors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Get all mentors
 router.get('/', async (req: Request, res: Response) => {
@@ -17,6 +33,7 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+
 // Get all information about specific mentor
 router.get('/:id', async (req: Request, res: Response) => {
   try {
@@ -24,16 +41,17 @@ router.get('/:id', async (req: Request, res: Response) => {
       where: { id: req.params.id },
       include: [
         {
-          model: Student,
+          model: MentorStudent,
           include: [
             {
-              model:Class,
-              attributes: ["name","cycleNumber"]
+              model:MentorProgram,
+              attributes: ["name"]
+            },
+            {
+              model:Student,
+              attributes: ["firstName", "lastName"]
             }
           ]
-        },
-        {
-          model: Meeting,
         },
       ],
     });
@@ -55,7 +73,8 @@ router.post('/', async (req: Request, res: Response) => {
       email,
       phone,
       address,
-      job,
+      role,
+      experience,
       available,
       gender,
     } = req.body;
@@ -65,7 +84,8 @@ router.post('/', async (req: Request, res: Response) => {
       email,
       phone,
       address,
-      job,
+      role,
+      experience,
       available,
       gender,
     });

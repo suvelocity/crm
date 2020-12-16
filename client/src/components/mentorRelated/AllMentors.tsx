@@ -180,7 +180,7 @@ function AllMentors() {
                   <StyledSpan>{mentor.email}</StyledSpan>
                   <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
                   <StyledSpan>{mentor.address}</StyledSpan>
-                  <StyledSpan>{mentor.job}</StyledSpan>
+                  <StyledSpan>{mentor.role}</StyledSpan>
                   <StyledSpan>
                     <Switch
                       checked={mentor.available}

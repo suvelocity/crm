@@ -11,7 +11,7 @@ export const searchResults = (search: string | number, array: IStudent[]) => {
   });
 };
 
-export const getRefreshToken = () => Cookies.get("refreshToken");
+export const getRefreshToken = () => Cookies.get("refreshToken") || "";
 
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
