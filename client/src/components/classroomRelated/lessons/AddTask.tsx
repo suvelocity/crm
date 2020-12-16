@@ -10,6 +10,7 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import Tooltip from "@material-ui/core/Tooltip";
+import { IStudent } from "../../../typescript/interfaces";
 
 interface Task {
   externalLink?: string;
@@ -23,14 +24,18 @@ interface Task {
 
 export default function AddTask({
   task,
-  index,
+  index = 0,
   handleChange,
   handleRemove,
+  students,
+  studentsToTask,
 }: {
   task: Task;
-  index: number;
+  index?: number;
   handleChange: (element: string, index: number, change: any) => void;
   handleRemove: (index: number, name: string) => void;
+  students?: IStudent[];
+  studentsToTask?: number[];
 }) {
   const changer = (
     e: React.ChangeEvent<{ value: unknown }>,
@@ -139,6 +144,32 @@ export default function AddTask({
         <MenuItem value={"active"}>active</MenuItem>
         <MenuItem value={"disabled"}>disabled</MenuItem>
       </Select>
+      {students && studentsToTask !== undefined && (
+        <Select
+          multiple
+          value={students
+            .filter((student) => {
+              return studentsToTask.some((id) => {
+                return id === student.id;
+              });
+            })
+            .map((student) => {
+              return student.firstName;
+            })}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            changer(e, "students");
+          }}
+          renderValue={(selected) => (selected as string[]).join(", ")}
+        >
+          {students.map((student: IStudent) => {
+            return (
+              <MenuItem key={student.id} value={student.id}>
+                {student.firstName} {student.lastName}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      )}
     </div>
   );
 }

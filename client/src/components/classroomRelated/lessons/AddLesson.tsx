@@ -8,7 +8,6 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-
 interface Task {
   externalLink?: string;
   createdBy: number;
@@ -19,12 +18,33 @@ interface Task {
   status: "active" | "disabled";
 }
 
-export default function AddLesson({ setOpen }: { setOpen: any }) {
-  const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>("");
-  const [zoomLink, setZoomLink] = useState<string>("");
+interface Props {
+  setOpen: Function;
+  handleClose?: Function;
+  update?: boolean;
+  lesson?: ILesson;
+  header?: string;
+}
+export default function AddLesson({
+  setOpen,
+  update,
+  lesson,
+  header,
+  handleClose,
+}: Props) {
+  const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
+  const [body, setBody] = useState<string>(lesson ? lesson.body : "");
+  const [zoomLink, setZoomLink] = useState<string>(
+    lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
+  );
   const [resource, setResource] = useState<string>("");
-  const [resources, setResources] = useState<string[]>([]);
+  const [resources, setResources] = useState<string[]>(
+    lesson
+      ? lesson.resource
+        ? lesson.resource.split("%#splitingResource#%")
+        : []
+      : []
+  );
   const [tasks, setTasks] = useState<Task[]>([]);
 
   //@ts-ignore
@@ -41,21 +61,27 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         zoomLink,
         createdBy: user.id,
       };
-      const { data: addedLesson }: { data: ILesson } = await network.post(
-        "/api/v1/lesson",
-        lessonToAdd
-      );
-
-      tasks.forEach(async (task) => {
-        const taskWithLessonId = { ...task, lessonId: addedLesson.id };
-        console.log(taskWithLessonId);
-
-        await network.post(
-          `/api/v1/task/toclass/${user.classId}`,
-          taskWithLessonId
+      if (update && lesson) {
+        await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+        handleClose && handleClose();
+        // history.push(`/company/${props.company.id}`);
+      } else {
+        const { data: addedLesson }: { data: ILesson } = await network.post(
+          "/api/v1/lesson",
+          lessonToAdd
         );
-      });
-      setOpen(false);
+
+        tasks.forEach(async (task) => {
+          const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+          console.log(taskWithLessonId);
+
+          await network.post(
+            `/api/v1/task/toclass/${user.classId}`,
+            taskWithLessonId
+          );
+        });
+        setOpen(false);
+      }
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }

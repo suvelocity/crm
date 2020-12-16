@@ -5,6 +5,13 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { EditDiv } from "../../../styles/styledComponents";
+import { useState, useCallback } from "react";
+import { Loading } from "react-loading-wrapper";
+import EditIcon from "@material-ui/icons/Edit";
+import AddLesson from "./AddLesson";
+import Modal from "@material-ui/core/Modal";
+import { modalStyle, useStyles } from "./Lessons";
 
 export default function Lesson({
   lesson,
@@ -13,41 +20,79 @@ export default function Lesson({
   lesson: ILesson;
   index: number;
 }) {
+  const [modalState, setModalState] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [lessonState, setLessonState] = useState<ILesson>(lesson);
+  const classes = useStyles();
+  const getLesson = useCallback(async () => {
+    // const {data} = await network.get('/api/v1/lesson')
+  }, [loading]);
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getLesson();
+  };
+  const body = (
+    //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <AddLesson
+        handleClose={handleClose}
+        setOpen={setModalState}
+        update={true}
+        lesson={lessonState}
+        header='Edit Lesson'
+      />
+    </div>
+  );
+
   return (
     <LessonContainer>
       <div>
         <StyledAccordion>
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
-            {"#" + (index + 1) + " " + lesson.title}
+            {"#" + (index + 1) + " " + lessonState.title}
           </StyledSummery>
           <hr />
-          <StyledDetails>{lesson.body}</StyledDetails>
+          <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
-            <ResourcesLinks>
-              {lesson.resource?.includes("%#splitingResource#%")
-                ? lesson.resource
-                    .split("%#splitingResource#%")
-                    .map((resource: string, index: number) => (
-                      <ResourcesLink key={index}>
-                        <Link target="_blank" href={resource}>
-                          {resource}
-                        </Link>
-                      </ResourcesLink>
-                    ))
-                : //@ts-ignore
-                  lesson.resource?.length > 0 && (
-                    //@ts-ignore
-                    <Link target="_blank" href={lesson.resource}>
-                      {lesson.resource}
-                    </Link>
-                  )}
-            </ResourcesLinks>
+            <Loading size={30} loading={loading}>
+              <EditDiv onClick={() => setModalState(true)}>
+                <EditIcon />
+              </EditDiv>
+              <ResourcesLinks>
+                {lessonState.resource?.includes("%#splitingResource#%")
+                  ? lessonState.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target='_blank' href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lessonState.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target='_blank' href={lessonState.resource}>
+                        {lessonState.resource}
+                      </Link>
+                    )}
+              </ResourcesLinks>
+            </Loading>
           </StyledDetails>
         </StyledAccordion>
+        <Modal
+          open={modalState}
+          onClose={() => setModalState(false)}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'
+        >
+          {body}
+        </Modal>
       </div>
     </LessonContainer>
   );
