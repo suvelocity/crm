@@ -31,7 +31,7 @@ module.exports = {
     await Promise.all([
       queryInterface.removeColumn("Students", "fcc_account"),
       queryInterface.changeColumn("Students", "email", {
-        type: Sequelize.VARCHAR(50),
+        type: Sequelize.STRING(50),
       }),
     ]);
   },
