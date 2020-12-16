@@ -6,6 +6,7 @@ import NewClassMentorProject from "../../components/mentorRelated/NewClassMentor
 import AddMentor from "../../components/mentorRelated/AddMentor";
 import SingleMentor from "../../components/mentorRelated/SingleMentor";
 import AllMentors from "../../components/mentorRelated/AllMentors";
+import PairMeetings from "../../components/mentorRelated/Meetings/PairMeetings";
 import NavBar from "../../components/mentorRelated/NavBar";
 import { Switch, Route } from "react-router-dom";
 
@@ -34,6 +35,9 @@ function AdminClassesRoutes() {
       </Route>
       <Route exact path="/mentor/program/:id">
         <ProgramDashboard />
+      </Route>
+      <Route exact path="/mentor/meeting/:id">
+        <PairMeetings />
       </Route>
     </Switch>
     </>
