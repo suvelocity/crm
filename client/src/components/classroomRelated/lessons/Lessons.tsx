@@ -47,12 +47,14 @@ export default function Lessons() {
   const handleClose = () => {
     setOpen(false);
   };
+
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} />
     </div>
   );
+
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
@@ -63,6 +65,7 @@ export default function Lessons() {
       return [];
     }
   };
+
   useEffect(() => {
     (async () => {
       const allLessons = await fetchClassLessons();
@@ -106,34 +109,22 @@ export default function Lessons() {
     </Loading>
   );
 }
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
   justify-content: center;
   padding: 20px;
 `;
-const modalStyle = {
+
+export const modalStyle = {
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
   overflowY: "scroll",
 };
-// function getModalStyle() {
-//   // const top = 50 + rand();
-//   // const left = 50 + rand();
 
-//   return {
-//     top: `50%`,
-//     left: `50%`,
-//     transform: `translate(-${50}%, -${50}%)`,
-//     overflowY: "scroll",
-//   };
-// }
-
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",

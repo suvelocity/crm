@@ -1,17 +1,20 @@
 "use strict";
+//999999
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    /**
+     * Add seed commands here.
+     *
+     * Example:
+
+    */
     await queryInterface.bulkInsert(
-      "Teachers",
+      "Teachers_of_Classes",
       [
         {
-          id: 999999,
-          first_name: "lonir",
-          last_name: "lotomer",
-          email: "teacher@teacher.com",
+          teacher_id: 999999,
           class_id: 1,
-          related_id: 999999,
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -26,6 +29,6 @@ module.exports = {
      *
      * Example:
      */
-    await queryInterface.bulkDelete("Teachers", null, {});
+    await queryInterface.bulkDelete("Teachers_of_Classes", null, {});
   },
 };

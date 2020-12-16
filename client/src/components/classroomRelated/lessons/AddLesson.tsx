@@ -7,8 +7,7 @@ import Button from "@material-ui/core/Button";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
-import Task from "./Task";
-
+import AddTask from "./AddTask";
 interface Task {
   externalLink?: string;
   createdBy: number;
@@ -19,12 +18,33 @@ interface Task {
   status: "active" | "disabled";
 }
 
-export default function AddLesson({ setOpen }: { setOpen: any }) {
-  const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>("");
-  const [zoomLink, setZoomLink] = useState<string>("");
+interface Props {
+  setOpen: Function;
+  handleClose?: Function;
+  update?: boolean;
+  lesson?: ILesson;
+  header?: string;
+}
+export default function AddLesson({
+  setOpen,
+  update,
+  lesson,
+  header,
+  handleClose,
+}: Props) {
+  const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
+  const [body, setBody] = useState<string>(lesson ? lesson.body : "");
+  const [zoomLink, setZoomLink] = useState<string>(
+    lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
+  );
   const [resource, setResource] = useState<string>("");
-  const [resources, setResources] = useState<string[]>([]);
+  const [resources, setResources] = useState<string[]>(
+    lesson
+      ? lesson.resource
+        ? lesson.resource.split("%#splitingResource#%")
+        : []
+      : []
+  );
   const [tasks, setTasks] = useState<Task[]>([]);
 
   //@ts-ignore
@@ -34,28 +54,33 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
     e.preventDefault();
     try {
       const lessonToAdd: ILesson = {
-        classId: user.classId,
+        classId: Number(user.classId),
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
         zoomLink,
         createdBy: user.id,
       };
-      const { data: addedLesson }: { data: ILesson } = await network.post(
-        "/api/v1/lesson",
-        lessonToAdd
-      );
-
-      tasks.forEach(async (task) => {
-        const taskWithLessonId = { ...task, lessonId: addedLesson.id };
-        console.log(taskWithLessonId);
-
-        await network.post(
-          `/api/v1/task/toclass/${user.classId}`,
-          taskWithLessonId
+      if (update && lesson) {
+        await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+        handleClose && handleClose();
+      } else {
+        const { data: addedLesson }: { data: ILesson } = await network.post(
+          "/api/v1/lesson",
+          lessonToAdd
         );
-      });
-      setOpen(false);
+
+        tasks.forEach(async (task) => {
+          const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+          console.log(taskWithLessonId);
+
+          await network.post(
+            `/api/v1/task/toclass/${user.classId}`,
+            taskWithLessonId
+          );
+        });
+        setOpen(false);
+      }
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }
@@ -200,7 +225,8 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}>
+              onClick={() => handleRemove(index, "resource")}
+            >
               <Tooltip title='delete resource'>
                 <Link>{resource}</Link>
               </Tooltip>
@@ -210,18 +236,20 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         <AddBtn onClick={addTask}>Add Task</AddBtn>
         <Info>
           {tasks.map((task: Task, index: number) => (
-            <OneInfo
-              key={index}
-              // onClick={() => handleRemove(index, "task")}
-            >
-              {/* <Tooltip title='delete task'> */}
-              <Task handleChange={handleTaskChange} task={task} index={index} />
-              {/* </Tooltip> */}
+            <OneInfo key={index}>
+              <AddTask
+                handleChange={handleTaskChange}
+                task={task}
+                index={index}
+                handleRemove={handleRemove}
+              />
             </OneInfo>
           ))}
         </Info>
       </AddLessonForm>
-      <Submit onClick={handleSubmit}>Create Lesson</Submit>
+      <Submit onClick={handleSubmit}>
+        {header ? header : "Create Lesson"}
+      </Submit>
     </AddLessonContainer>
   );
 }
