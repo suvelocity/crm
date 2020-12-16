@@ -144,7 +144,8 @@ export default function Teacher() {
       const allStudents = teacherStudents.map(
         (classRoom: any) => classRoom.Class.Students
       );
-      setStudents(allStudents[0]); //TODO check eith multipal classes
+      console.log(allStudents);
+      setStudents(allStudents[0]); //TODO check with multipal classes
       setStudentsToTask(allStudents[0].map((student: IStudent) => student.id));
     } catch {}
   };

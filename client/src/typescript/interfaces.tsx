@@ -181,6 +181,7 @@ export interface ILesson {
 export interface ITask {
   id?: number;
   lessonId?: number;
+  classId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;

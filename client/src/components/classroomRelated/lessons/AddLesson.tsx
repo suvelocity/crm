@@ -53,7 +53,8 @@ export default function AddLesson({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const lessonToAdd: Omit<ILesson, "classId"> = {
+      const lessonToAdd: ILesson = {
+        classId: Number(user.classId),
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
@@ -235,18 +236,13 @@ export default function AddLesson({
         <AddBtn onClick={addTask}>Add Task</AddBtn>
         <Info>
           {tasks.map((task: Task, index: number) => (
-            <OneInfo
-              key={index}
-              // onClick={() => handleRemove(index, "task")}
-            >
-              {/* <Tooltip title='delete task'> */}
+            <OneInfo key={index}>
               <AddTask
                 handleChange={handleTaskChange}
                 task={task}
                 index={index}
                 handleRemove={handleRemove}
               />
-              {/* </Tooltip> */}
             </OneInfo>
           ))}
         </Info>
