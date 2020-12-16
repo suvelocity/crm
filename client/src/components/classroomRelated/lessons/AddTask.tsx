@@ -61,7 +61,7 @@ export default function AddTask({
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
       <Select
-        style={{ marginTop: "5px", marginBottom: "5px" }}
+        style={selectStyle}
         value={task.type}
         variant='outlined'
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -84,7 +84,7 @@ export default function AddTask({
         />
       ) : (
         <Select //TODO change to challenge type
-          style={{ marginTop: "5px", marginBottom: "5px" }}
+          style={selectStyle}
           value={task.title}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "title");
@@ -120,6 +120,7 @@ export default function AddTask({
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           disableToolbar
+          minDate={new Date()}
           variant='inline'
           format='MM/dd/yyyy'
           margin='normal'
@@ -133,7 +134,7 @@ export default function AddTask({
         />
       </MuiPickersUtilsProvider>
       <Select
-        style={{ marginTop: "5px", marginBottom: "5px" }}
+        style={selectStyle}
         value={task.status}
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "status");
@@ -171,3 +172,5 @@ const Input = styled(TextField)`
   margin-top: 5px;
   margin-bottom: 5px;
 `;
+
+const selectStyle = { marginTop: "5px", marginBottom: "5px" };
