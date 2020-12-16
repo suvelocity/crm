@@ -4,7 +4,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import { useRecoilState } from "recoil";
-import { teacherStudents } from "../../../atoms";
+import { teacherStudents, classesOfTeacher } from "../../../atoms";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import AddTask from "../lessons/AddTask";
@@ -52,6 +52,10 @@ export default function Teacher() {
     } catch {}
   };
   const [students, setStudents] = useRecoilState(teacherStudents);
+  const [classesToTeacher, setClassesToTeacher] = useRecoilState(
+    classesOfTeacher
+  );
+
   const [open, setOpen] = useState<boolean>(false);
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -141,10 +145,10 @@ export default function Teacher() {
       const { data: teacherStudents } = await network.get(
         `/api/v1/student/byTeacher/${user.id}`
       );
+      setClassesToTeacher(teacherStudents);
       const allStudents = teacherStudents.map(
         (classRoom: any) => classRoom.Class.Students
       );
-      console.log(allStudents);
       setStudents(allStudents[0]); //TODO check with multipal classes
       setStudentsToTask(allStudents[0].map((student: IStudent) => student.id));
     } catch {}
