@@ -9,12 +9,9 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { ThemeProvider } from "styled-components";
 import jwt from "jsonwebtoken";
-const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 //@ts-ignore
-const { PublicRoutes, AdminRoutes, StudentRoutes } = lazy(
-  //@ts-ignore
-  () => import("./routes")
-);
+import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 
 function App() {
   const [user, setUser] = useState<IUser | null>(null);
@@ -93,11 +90,9 @@ function App() {
   const values = { user, setUser };
   return (
     <>
-      <Suspense fallback={<Loading fullPage />}>
-        <AuthContext.Provider value={values}>
-          <Router>{getRoutes()}</Router>
-        </AuthContext.Provider>
-      </Suspense>
+      <AuthContext.Provider value={values}>
+        <Router>{getRoutes()}</Router>
+      </AuthContext.Provider>
     </>
   );
 }
