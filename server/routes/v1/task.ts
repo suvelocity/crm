@@ -86,7 +86,6 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 //posts a single toask to 1 or more students
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
@@ -247,6 +246,10 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
               ],
             },
           ],
+        },
+        {
+          model: Lesson,
+          attributes: ["title"],
         },
       ],
       order: [["createdAt", "DESC"]],

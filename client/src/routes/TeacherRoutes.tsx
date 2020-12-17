@@ -11,7 +11,6 @@ import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
 import { AuthContext } from "../helpers";
-import Cookies from "js-cookie";
 import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
 
