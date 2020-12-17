@@ -58,6 +58,16 @@ jobs:
       run: CI=false npm run build:prod
       working-directory: ./client
 
+    # Install Server Dependencies
+    - name: Server Install dependencies
+      run: npm ci --only=production
+      working-directory: ./server
+
+    # Compile Typescript for production build 
+    - name: Compile Typescript for production build
+      run: CI=false npm run build
+      working-directory: ./server
+
     # Enable When using ENV_FILE Secret
     - name: create .env file, decode it
       run:  | 
