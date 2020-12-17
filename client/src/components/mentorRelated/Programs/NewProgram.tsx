@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import "date-fns";
 import {
   H1,
@@ -12,12 +12,12 @@ import {
   StyledDiv,
   TableHeader,
   GridDiv,
-} from "../../styles/styledComponents";
-import { IClass, IMentorProgram } from "../../typescript/interfaces";
+} from "../../../styles/styledComponents";
+import { IClass, IMentorProgram } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { useForm, Controller } from "react-hook-form";
-import { validCompanyRegex } from "../../helpers/patterns";
+import { validCompanyRegex } from "../../../helpers/patterns";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";

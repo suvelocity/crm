@@ -9,20 +9,20 @@ import {
   StyledDiv,
   StyledUl,
   StyledLink,
-} from "../../styles/styledComponents";
+} from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
-import { capitalize } from "../../helpers/general";
+import { IStudent, IClass, IMentor } from "../../../typescript/interfaces";
+import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
-import SimpleModal from "./Modal";
-import { StudentRoutes } from "../../routes";
+import SimpleModal from "../Modal";
+import { StudentRoutes } from "../../../routes";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
