@@ -10,6 +10,7 @@ const router = Router();
 
 // GET ALL QUIZZES
 router.get('/all', async (req: Request, res: Response) => {
+  
   const quizzes = await Quiz.findAll({
     attributes: ['id', 'name']
   });

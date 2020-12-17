@@ -25,20 +25,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete(
       "FieldTypes",
-      [
-        {
-          id: 1,
-          name: 'select'
-        },
-        {
-          id: 2,
-          name: 'open'
-        },
-        {
-          id: 3,
-          name: 'checkbox'
-        },
-      ],
+      null,
       {}
     );
   },
