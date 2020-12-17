@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, List, ListItem, ListItemText, Typography, Chip } from "@material-ui/core";
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
-import { IQuiz, IAnswer, IOption } from "../../../../../typescript/interfaces";
+import network from "../../../../../helpers/network";
+import { IOption, IAnswer, IQuiz } from "../../../../../typescript/interfaces"
 
 const useStyles = makeStyles((theme) => ({
   quizWrapper: {
@@ -63,7 +63,7 @@ export default function QuizPage(props: IProps) {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const quiz = (await axios.get(`/api/v1/quiz/${id}`)).data || [];
+      const quiz = (await network.get(`/api/v1/quiz/${id}`)).data;
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -124,7 +124,7 @@ export default function QuizPage(props: IProps) {
   const submitQuiz = async () => {
     try {
       setQuizIsOver(true);
-      // await axios.post("/submissions", {
+      // await network.post("/submissions", {
       //   userId: 3, // 3
       //   quizId: quiz.id, // 1
       //   answersSelected: answers,

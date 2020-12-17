@@ -43,13 +43,14 @@ function AllStudents() {
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
     type JobEvents = { [id: string]: { time: number; status: string } };
     let jobs: JobEvents = {};
-    for (let i = 0; i < events.length; i++) {
-      const id: number = events[i].Job!.id!;
-      const eventTime = new Date(events[i].date);
+    const filteredEvents = events.filter(event => event.type === 'jobs');
+    for (let i = 0; i < filteredEvents.length; i++) {
+      const id: number = filteredEvents[i].Job!.id!;
+      const eventTime = new Date(filteredEvents[i].date);
       if (!jobs[`job${id}`]) {
         jobs[`job${id}`] = {
           time: eventTime.getTime(),
-          status: events[i].eventName,
+          status: filteredEvents[i].eventName,
         };
       } else if (
         eventTime.getTime() > jobs[`job${id}`].time ||

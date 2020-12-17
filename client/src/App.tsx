@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import "./App.css";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthContext, getRefreshToken, theme, ThemeContext } from "./helpers";
 import axios from "axios";
 import { IUser, ThemeType } from "./typescript/interfaces";
-//@ts-ignore
-import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
 import TeacherRoutes from "./routes/TeacherRoutes";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { ThemeProvider } from "styled-components";
 import jwt from "jsonwebtoken";
+//@ts-ignore
+import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
 const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
+
 
 function App() {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentTheme, setCurrentTheme] = useState("light");
-
   useEffect(() => {
     (async () => {
       try {

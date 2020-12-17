@@ -69,7 +69,7 @@ module.exports = {
       }),
       
       queryInterface.removeColumn("Events", "event_name"),
-      queryInterface.removeColumn("Events", "context"),
+      queryInterface.removeColumn("Events", "type"),
       queryInterface.removeColumn("Events", "user_id"),
       queryInterface.removeColumn("Events", "related_id"),
       queryInterface.removeColumn("Events", "entry"),

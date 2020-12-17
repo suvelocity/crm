@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -11,6 +10,7 @@ import {
 } from "@material-ui/core";
 import { CheckCircleOutline } from "@material-ui/icons/";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
+import network from "../../../../helpers/network";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -53,11 +53,16 @@ export default function QuizzesList() {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const quizzes: QuizArray = (await axios.get("/api/v1/quiz/all")).data;
-      setQuizzes(quizzes);
+      try{
+
+        const quizzes: QuizArray = (await network.get("/api/v1/quiz/all")).data;
+        setQuizzes(quizzes);
+      }catch(e){
+        console.trace(e)
+      }
     };
     const fetchUserSubmissions = async () => {
-      const userSubmissions: UserSubmissionsArray = (await axios.get(`/api/v1/fieldsubmission/1`)).data;
+      const userSubmissions: UserSubmissionsArray = (await network.get(`/api/v1/fieldsubmission/1`)).data;
       setUserSubmissions(userSubmissions);
     };
     fetchUserSubmissions();

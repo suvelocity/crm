@@ -7,23 +7,24 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 
 export default function SubmitTask(props: any) {
-  const { taskId } = props;
+  const { taskId, handleClose } = props;
   const [url, setUrl] = useState("");
-  const [open, setOpen] = useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  //   const handleClose = () => {
+  //     setOpen(false);
+  //   };
 
   const submitTask = async () => {
     try {
-      await network.put(`/api/v1/task/submit/${taskId}`, { url: url });
+      const { data } = await network.put(`/api/v1/task/submit/${taskId}`, {
+        url: url,
+      });
       handleClose();
+      if (data.error) {
+        Swal.fire("Error Occurred", data.error, "error");
+      }
     } catch (error) {
+      handleClose();
       Swal.fire("Error Occurred", error.message, "error");
     }
   };

@@ -64,6 +64,7 @@ function ApplyStudentModal({
             relatedId: jobId,
             eventName: "Started application process",
             date: new Date().setHours(0, 0, 0, 0),
+            type: "jobs",
           });
         });
         setTimeout(() => {
