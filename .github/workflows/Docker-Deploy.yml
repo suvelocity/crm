@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GCE_INSTANCE: crm-production_v1   # TODO: name your instance
+  GCE_INSTANCE: crm-production-v1   # TODO: name your instance
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone if needed
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }} # The service account user you created
   DB_PASS: ${{ secrets.DB_PASS }}
