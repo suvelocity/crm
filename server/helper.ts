@@ -14,7 +14,7 @@ import {
 //@ts-ignore
 import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
-import { flatMap, flatten } from "lodash";
+import { flatMap, flatten, orderBy } from "lodash";
 
 //TODO fix types
 export const cancelAllJobsOfStudent: (
@@ -195,8 +195,20 @@ export const getQuery: (
 };
 
 export const fetchFCC: () => void = async () => {
-  const date: number = new Date("2020-09-01").getTime();
-  console.log(date);
+  let date: number;
+  try {
+    date = new Date(
+      (
+        await Event.findOne({
+          where: { eventName: "FCC_SUBMIT_SUCCESS" },
+          order: [["updatedAt", "DESC"]],
+        })
+      ).toJSON().createdAt
+    ).getTime();
+  } catch (e) {
+    console.log(e);
+    date = new Date("2020-07-01").getTime();
+  }
 
   try {
     const studentsData: any = (
@@ -206,7 +218,6 @@ export const fetchFCC: () => void = async () => {
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
 
-    console.log(usernames);
     const fccEvents: IFccEvent[] = (
       await axios.post(
         "https://europe-west1-crm-fcc-scraper.cloudfunctions.net/crm-fcc-scraper",
@@ -217,8 +228,6 @@ export const fetchFCC: () => void = async () => {
       )
     ).data;
 
-    let counter = 0;
-
     //TODO fix types
     const parsedEvents: IEvent[] = flatMap(fccEvents, (userEvents: any) => {
       const username = userEvents.username;
@@ -226,7 +235,6 @@ export const fetchFCC: () => void = async () => {
         (sd: any) => sd.fcc_account === username
       );
       return userEvents.progress.map((challenge: any) => {
-        counter++;
         const parsedEvent: IEvent = {
           relatedId: challenge.id,
           userId: userId,
@@ -243,6 +251,7 @@ export const fetchFCC: () => void = async () => {
 
     await Event.bulkCreate(parsedEvents);
 
+    console.log(fccEvents[1]);
     return { success: true, newEvents: parsedEvents.length };
   } catch (err) {
     console.log(err);

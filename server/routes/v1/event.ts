@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import {
   cancelAllJobsOfStudent,
   cancelAllApplicantsForJob,
+  fetchFCC,
 } from "../../helper";
 const router = Router();
 //@ts-ignore
@@ -77,6 +78,11 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+router.get("/updates", async (req: Request, res: Response) => {
+  const result = await fetchFCC();
+  res.json(result);
 });
 
 router.post("/", async (req: Request, res: Response) => {

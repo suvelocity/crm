@@ -21,10 +21,6 @@ router.use("/company", require("./company"));
 router.use("/lesson", require("./lesson"));
 router.use("/task", require("./task"));
 router.use("/notice", require("./notice"));
-router.get("/nitzan", async (req, res) => {
-  const worked = await fetchFCC();
-  res.json(worked);
-});
 
 router.use(unknownEndpoint);
 module.exports = router;
