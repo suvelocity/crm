@@ -156,11 +156,9 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
-<<<<<<< HEAD
 
 export interface IFccEvent {}
-=======
-export interface IMentorProgram{
+export interface IMentorProgram {
   id?: number;
   classId: number;
   name: string;
@@ -168,4 +166,3 @@ export interface IMentorProgram{
   endDate: string;
   startDate: string;
 }
->>>>>>> dev

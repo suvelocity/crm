@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-<<<<<<< HEAD
 import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event } from "../../models";
@@ -45,11 +44,6 @@ const createTask = async (req: Request, res: Response) => {
   });
   return task;
 };
-=======
-import { Class, Task, TaskofStudent, Student } from "../../models";
-import { ITask, ITaskofStudent } from "../../types";
-import { taskSchema } from "../../validations";
->>>>>>> dev
 
 //todo support post of array of tasks
 //posts a single task to entire class
