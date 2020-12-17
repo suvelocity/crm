@@ -14,8 +14,8 @@ RUN npm install --production
 
 EXPOSE 8080
 
-COPY /server .
+COPY /server/out ./out
 
-CMD ["npm", "run", "spinup"]
+CMD ["npm", "run", "spinup:staging"]
 
 # CMD ["./wait-for-it/wait-for-it.sh", "mysql:3306", "--", "npm", "run", "spinup"]

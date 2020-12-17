@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IPairMeetings } from "../../typescript/interfaces";
+import { IPairMeetings } from "../../../typescript/interfaces";
 import styled from "styled-components";
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
