@@ -8,6 +8,9 @@ import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import Teacher from "../components/classroomRelated/teacher/Teacher";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
+import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
+import QuizPage from '../components/classroomRelated/QuizMeRelated/components/QuizPage'
+
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
 import { AuthContext } from "../helpers";
@@ -63,6 +66,12 @@ export default function TeacherRoutes() {
           </Route>
           <Route path='/teacher'>
             <Teacher />
+          </Route>
+          <Route exact path="/quizme">
+            <QuizMe />
+          </Route>
+          <Route exact path="/quizme/quiz/:id">
+            <QuizPage />
           </Route>
           <Route path='*'>
             <div>404 Not Found</div>
