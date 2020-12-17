@@ -1,6 +1,6 @@
 import React, { useState, useContext, ChangeEvent } from "react";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { ILesson, ITask } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
@@ -8,7 +8,7 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-interface Task {
+export interface Task {
   externalLink?: string;
   createdBy: number;
   endDate: Date;
@@ -24,6 +24,7 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
+  lessonTasks?: Task[];
 }
 export default function AddLesson({
   setOpen,
@@ -31,6 +32,7 @@ export default function AddLesson({
   lesson,
   header,
   handleClose,
+  lessonTasks
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
@@ -45,7 +47,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(lessonTasks? lessonTasks : []);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -73,7 +75,6 @@ export default function AddLesson({
         tasks.forEach(async (task) => {
           const taskWithLessonId = { ...task, lessonId: addedLesson.id };
           console.log(taskWithLessonId);
-
           await network.post(
             `/api/v1/task/toclass/${user.classId}`,
             taskWithLessonId
@@ -146,6 +147,7 @@ export default function AddLesson({
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     const prevTasks = tasks.slice();
+    console.log(change, element)
     switch (element) {
       case "title":
         prevTasks[index].title = change;

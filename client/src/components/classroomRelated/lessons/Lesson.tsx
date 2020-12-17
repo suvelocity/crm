@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { ILesson} from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { EditDiv } from "../../../styles/styledComponents";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
-import AddLesson from "./AddLesson";
+import AddLesson, {Task} from "./AddLesson";
 import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
@@ -24,8 +24,9 @@ export default function Lesson({
   const [modalState, setModalState] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const classes = useStyles();
-  const getLesson = useCallback(async () => {
+  const getLessons= useCallback(async () => {
     try {
       const { data } = await network.get(`/api/v1/lesson/byId/${lesson.id}`);
       setLessonState(data);
@@ -34,11 +35,26 @@ export default function Lesson({
       setLoading(false);
     }
   }, [loading]);
+  const getTasks = useCallback(async () => {
+    try {
+      const { data : tasks } : {data : Task[]} = await network.get(`/api/v1/lesson/tasks/${lesson.id}`);
+      console.log(tasks)
+      setTasks(tasks);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
+  }, [loading])
   const handleClose = () => {
     setModalState(false);
     setLoading(true);
-    getLesson();
+    getLessons();
+    setLoading(true);
+    getTasks()
   };
+  useEffect(() => {
+    getTasks();
+  },[])
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
@@ -48,6 +64,7 @@ export default function Lesson({
         update={true}
         lesson={lessonState}
         header='Edit Lesson'
+        lessonTasks={tasks}
       />
     </div>
   );
@@ -67,7 +84,7 @@ export default function Lesson({
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-              <EditDiv onClick={() => setModalState(true)}>
+            <EditDiv onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
               <ResourcesLinks>
