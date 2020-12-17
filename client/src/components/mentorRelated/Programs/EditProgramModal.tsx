@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   Modal,
@@ -15,11 +15,11 @@ import {
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
-import { Center, GridDiv } from "../../styles/styledComponents";
-import { IEvent, IClass, IMentorProgram } from "../../typescript/interfaces";
-import { ActionBtn, ErrorBtn } from "../formRelated";
+import { Center, GridDiv } from "../../../styles/styledComponents";
+import { IEvent, IClass, IMentorProgram } from "../../../typescript/interfaces";
+import { ActionBtn, ErrorBtn } from "../../formRelated";
 //TODO change this later
-import { statuses } from "../../helpers";
+import { statuses } from "../../../helpers";
 import Swal from "sweetalert2";
 import {
   MuiPickersUtilsProvider,
@@ -238,10 +238,3 @@ function getModalStyle() {
   };
 }
 
-// const generateBrs = (num: number): JSX.Element[] => {
-//   const arrOfSpaces = [];
-//   for (let i = 0; i < num; i++) {
-//     arrOfSpaces.push(<br />);
-//   }
-//   return arrOfSpaces;
-// };

@@ -34,17 +34,7 @@ router.post('/', async (req: Request, res: Response) => {
     try{
         const {error} = meetingSchema.validate(req.body);
         if (error) return res.status(400).json({ error: error.message });
-        const {studentId, date, place} = req.body;
-        const { mentorId } = await Student.findOne({
-            where: {id:studentId},
-            attributes: ["mentorId"]
-        }) 
-        const newMeeting:IMeeting = await Meeting.create({
-            mentorId,
-            studentId,
-            date: new Date(date),
-            place
-        });
+        const newMeeting:IMeeting = await Meeting.create(req.body);
         res.json(newMeeting);
     }catch(err){
         res.status(500).json({ error: err.message });
@@ -72,7 +62,7 @@ router.patch("/delete", async (req, res) => {
     try {
       const {meetingtId} = req.body;
       const deleted: any = await Meeting.destroy({
-        where: { id:meetingtId },
+        where: { id : meetingtId },
       });
       if (deleted) return res.json({ message: "Meeting deleted" });
       return res.status(404).json({ error: "Meeting not found" });

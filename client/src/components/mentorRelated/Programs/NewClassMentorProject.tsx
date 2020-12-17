@@ -9,20 +9,20 @@ import {
   StyledDiv,
   StyledUl,
   StyledLink,
-} from "../../styles/styledComponents";
+} from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IClass, IMentor } from "../../typescript/interfaces";
-import { capitalize } from "../../helpers/general";
+import { IStudent, IClass, IMentor } from "../../../typescript/interfaces";
+import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
-import SimpleModal from "./Modal";
-import { StudentRoutes } from "../../routes";
+import SimpleModal from "../Modal";
+import { StudentRoutes } from "../../../routes";
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
@@ -53,7 +53,9 @@ function NewClassMentorProject() {
   }, [query, setLoading, setCls, id]);
 
   const getMentors = useCallback(async (cls: IClass | undefined) => {
-    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor/available`);
+    const { data }: { data: IMentor[] } = await network.get(
+      `/api/v1/M/mentor/available`
+    );
     console.log(data);
     const mentorList = data.map((mentor) => {
       let count = 0;
@@ -258,161 +260,168 @@ function NewClassMentorProject() {
   };
 
   return (
-    <div style={{ display: "flex" }}>
-      <DragDropContext onDragEnd={onDropLeftEnd}>
-        <Wrapper width="40%">
-          <Center>
-            <TitleWrapper>
-              <H1 color={"#c47dfa"}>
-                Students In Class
-                <Button
-                  variant="contained"
-                  onClick={createProgram}
-                  style={{
-                    backgroundColor: "#c47dfa",
-                    color: "white",
-                    marginLeft: 10,
-                  }}
-                >
-                  SAVE
-                </Button>
-                <Button onClick={() => assignMentors(cls)}>Generate</Button>
-                <Button onClick={() => resetMentors(cls)}>Reset</Button>
-              </H1>
-            </TitleWrapper>
-            <div style={{ color: "red" }}>{error}</div>
-          </Center>
-          <br />
-          <Loading loading={loading} size={30}>
-            <StyledUl>
-              {cls?.Students && (
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <div>
+        {" "}
+        <Button
+          variant="contained"
+          onClick={createProgram}
+          style={{
+            backgroundColor: "#c47dfa",
+            color: "white",
+            marginTop: 10,
+            fontSize: "20px",
+          }}
+        >
+          SAVE
+        </Button>
+      </div>
+      <div style={{ display: "flex" }}>
+        <DragDropContext onDragEnd={onDropLeftEnd}>
+          <Wrapper width="40%">
+            <Center>
+              <TitleWrapper>
+                <H1 color={"#c47dfa"}>
+                  Students In Class
+                  <Button style={{marginLeft:5}} onClick={() => assignMentors(cls)}>Generate</Button>
+                  <Button onClick={() => resetMentors(cls)}>Reset</Button>
+                </H1>
+              </TitleWrapper>
+              <div style={{ color: "red" }}>{error}</div>
+            </Center>
+            <br />
+            <Loading loading={loading} size={30}>
+              <StyledUl>
+                {cls?.Students && (
+                  <li>
+                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr">
+                      <PersonIcon />
+                      <StyledSpan weight="bold">Name</StyledSpan>
+                      <StyledSpan weight="bold">Address</StyledSpan>
+                      <StyledSpan weight="bold">Select Mentor</StyledSpan>
+                    </TableHeader>
+                  </li>
+                )}
+                {cls?.Students &&
+                  cls?.Students!.map(
+                    (student: Omit<IStudent, "Class">, i: number) => {
+                      let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
+                      return (
+                        <li key={student.id} style={{ backgroundColor: color }}>
+                          {/* <StyledLink color="black" to={`/student/${student.id}`}> */}
+                          <StyledDiv repeatFormula="0.4fr 1fr 1fr 1.5fr">
+                            <PersonIcon />
+                            <StyledSpan weight="bold">
+                              {capitalize(student.firstName)}{" "}
+                              {capitalize(student.lastName)}
+                            </StyledSpan>
+                            <StyledSpan>{student.address}</StyledSpan>
+                            <StyledSpan>
+                              <Droppable droppableId={`${i}`}>
+                                {(provided) => (
+                                  <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                  >
+                                    {student.mentor && (
+                                      <StyledDiv repeatFormula="1.5fr 1fr">
+                                        <StyledSpan>
+                                          {capitalize(student.mentor.name)}
+                                        </StyledSpan>
+                                        <Button
+                                          onClick={() =>
+                                            removeMentor(student.mentor!, i)
+                                          }
+                                        >
+                                          <DeleteIcon />
+                                        </Button>
+                                      </StyledDiv>
+                                    )}
+                                    {provided.placeholder}
+                                  </div>
+                                )}
+                              </Droppable>
+                            </StyledSpan>
+                          </StyledDiv>
+                          {/* </StyledLink> */}
+                        </li>
+                      );
+                    }
+                  )}
+              </StyledUl>
+            </Loading>
+          </Wrapper>
+          <Wrapper width="40%">
+            <Center>
+              <TitleWrapper>
+                <H1 color={"#c47dfa"}>Available Mentors</H1>
+              </TitleWrapper>
+            </Center>
+            <br />
+            <Loading loading={loading} size={30}>
+              <StyledUl>
                 <li>
-                  <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr">
+                  <TableHeader repeatFormula="0.5fr 2fr 1fr 1fr 1fr 1fr">
                     <PersonIcon />
                     <StyledSpan weight="bold">Name</StyledSpan>
                     <StyledSpan weight="bold">Address</StyledSpan>
-                    <StyledSpan weight="bold">Select Mentor</StyledSpan>
+                    <StyledSpan weight="bold">company</StyledSpan>
+                    <StyledSpan weight="bold">role</StyledSpan>
+                    <StyledSpan weight="bold">experience</StyledSpan>
                   </TableHeader>
                 </li>
-              )}
-              {cls?.Students &&
-                cls?.Students!.map(
-                  (student: Omit<IStudent, "Class">, i: number) => {
-                    let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
-                    return (
-                      <li key={student.id} style={{ backgroundColor: color }}>
-                        {/* <StyledLink color="black" to={`/student/${student.id}`}> */}
-                        <StyledDiv repeatFormula="0.4fr 1fr 1fr 1.5fr">
-                          <PersonIcon />
-                          <StyledSpan weight="bold">
-                            {capitalize(student.firstName)}{" "}
-                            {capitalize(student.lastName)}
-                          </StyledSpan>
-                          <StyledSpan>{student.address}</StyledSpan>
-                          <StyledSpan>
-                            <Droppable droppableId={`${i}`}>
-                              {(provided) => (
-                                <div
-                                  {...provided.droppableProps}
-                                  ref={provided.innerRef}
-                                >
-                                  {student.mentor && (
-                                    <StyledDiv repeatFormula="1.5fr 1fr">
-                                      <StyledSpan>
-                                        {capitalize(student.mentor.name)}
-                                      </StyledSpan>
-                                      <Button
-                                        onClick={() =>
-                                          removeMentor(student.mentor!, i)
-                                        }
-                                      >
-                                        <DeleteIcon />
-                                      </Button>
-                                    </StyledDiv>
-                                  )}
-                                  {provided.placeholder}
-                                </div>
-                              )}
-                            </Droppable>
-                          </StyledSpan>
-                        </StyledDiv>
-                        {/* </StyledLink> */}
-                      </li>
-                    );
-                  }
-                )}
-            </StyledUl>
-          </Loading>
-        </Wrapper>
-
-        <Wrapper width="40%">
-          <Center>
-            <TitleWrapper>
-              <H1 color={"#c47dfa"}>Available Mentors</H1>
-            </TitleWrapper>
-          </Center>
-          <br />
-          <Loading loading={loading} size={30}>
-            <StyledUl>
-              <li>
-                <TableHeader repeatFormula="0.5fr 2fr 1fr 1fr 1fr 1fr">
-                  <PersonIcon />
-                  <StyledSpan weight="bold">Name</StyledSpan>
-                  <StyledSpan weight="bold">Address</StyledSpan>
-                  <StyledSpan weight="bold">company</StyledSpan>
-                  <StyledSpan weight="bold">role</StyledSpan>
-                  <StyledSpan weight="bold">experience</StyledSpan>
-                </TableHeader>
-              </li>
-              <Droppable droppableId="mentors">
-                {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {mentors &&
-                      mentors.sort(
-                        (a, b) => (a.student || 0) - (b.student || 0)
-                      ) &&
-                      mentors.map((mentor, i) => (
-                        <Draggable key={i} draggableId={`${i}`} index={i}>
-                          {(provided) => (
-                            <li
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr">
-                                <StyledSpan weight="bold">
-                                  {mentor.student ? mentor.student : 0}
-                                </StyledSpan>
-                                <StyledLink
-                                  to={`/mentor/${mentor.id}`}
-                                  color="black"
-                                >
+                <Droppable droppableId="mentors">
+                  {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                      {mentors &&
+                        mentors.sort(
+                          (a, b) => (a.student || 0) - (b.student || 0)
+                        ) &&
+                        mentors.map((mentor, i) => (
+                          <Draggable key={i} draggableId={`${i}`} index={i}>
+                            {(provided) => (
+                              <li
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr">
                                   <StyledSpan weight="bold">
-                                    {capitalize(mentor.name)}
+                                    {mentor.student ? mentor.student : 0}
                                   </StyledSpan>
-                                </StyledLink>
-                                <StyledSpan>{mentor.address}</StyledSpan>
-                                <StyledSpan>{mentor.company}</StyledSpan>
-                                <StyledSpan>{mentor.role}</StyledSpan>
-                                <StyledSpan>{mentor.experience}</StyledSpan>
-                              </StyledDiv>
-                            </li>
-                          )}
-                        </Draggable>
-                      ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </StyledUl>
-          </Loading>
-        </Wrapper>
-      </DragDropContext>
-      <SimpleModal
-        open={modalOpen}
-        setOpen={setModalOpen}
-        modalBody={modalBody}
-      />
+                                  <StyledLink
+                                    to={`/mentor/${mentor.id}`}
+                                    color="black"
+                                  >
+                                    <StyledSpan weight="bold">
+                                      {capitalize(mentor.name)}
+                                    </StyledSpan>
+                                  </StyledLink>
+                                  <StyledSpan>{mentor.address}</StyledSpan>
+                                  <StyledSpan>{mentor.company}</StyledSpan>
+                                  <StyledSpan>{mentor.role}</StyledSpan>
+                                  <StyledSpan>{mentor.experience}</StyledSpan>
+                                </StyledDiv>
+                              </li>
+                            )}
+                          </Draggable>
+                        ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </StyledUl>
+            </Loading>
+          </Wrapper>
+        </DragDropContext>
+        <SimpleModal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          modalBody={modalBody}
+        />
+      </div>
     </div>
   );
 }
