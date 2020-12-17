@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import network from "../../../helpers/network";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
@@ -13,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import Swal from "sweetalert2";
 
 const useRowStyles = makeStyles({
   root: {
@@ -22,29 +24,25 @@ const useRowStyles = makeStyles({
   },
 });
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number
-) {
+const createTask = (
+  title: string,
+  type: string,
+  lesson: string,
+  endDate: Date,
+  externalLink: string,
+  TaskofStudents: []
+) => {
   return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      { date: "2020-01-05", customerId: "11091700", amount: 3 },
-      { date: "2020-01-02", customerId: "Anonymous", amount: 1 },
-    ],
+    title,
+    type,
+    lesson,
+    endDate,
+    externalLink,
+    TaskofStudents,
   };
-}
+};
 
-function Row(props: { row: ReturnType<typeof createData> }) {
+function Row(props: { row: ReturnType<typeof createTask> }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
@@ -61,39 +59,48 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component='th' scope='row'>
-          {row.name}
+          {row.title}
         </TableCell>
-        <TableCell align='right'>{row.calories}</TableCell>
-        <TableCell align='right'>{row.fat}</TableCell>
-        <TableCell align='right'>{row.carbs}</TableCell>
-        <TableCell align='right'>{row.protein}</TableCell>
+        <TableCell align='right'>{row.type}</TableCell>
+        <TableCell align='right'>{row.lesson}</TableCell>
+        <TableCell align='right'>{row.endDate}</TableCell>
+        <TableCell align='right'>"placeholder 7/30"</TableCell>
+        <TableCell align='right'>{row.externalLink}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
               <Typography variant='h6' gutterBottom component='div'>
-                History
+                Students
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align='right'>Amount</TableCell>
-                    <TableCell align='right'>Total price ($)</TableCell>
+                    <TableCell>Full Name</TableCell>
+                    <TableCell>Class</TableCell>
+                    <TableCell align='right'>Submittion State</TableCell>
+                    <TableCell align='right'>Submittion Date</TableCell>
+                    <TableCell align='right'>Submittion Link</TableCell>
+                    {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                  {row.TaskofStudents.map((studentRow: any) => (
+                    <TableRow key={studentRow.studentId}>
                       <TableCell component='th' scope='row'>
-                        {historyRow.date}
+                        {studentRow.Student.firstName +
+                          studentRow.Student.lastName}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align='right'>{historyRow.amount}</TableCell>
+                      <TableCell>{studentRow.Student.Class.name}</TableCell>
+                      <TableCell align='right'>{studentRow.status}</TableCell>
                       <TableCell align='right'>
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        {studentRow.updatedAt
+                          ? studentRow.updatedAt
+                          : "hasn't submitted yet"}
+                      </TableCell>
+                      <TableCell align='right'>
+                        {studentRow.submitLink ? studentRow.submitLink : "none"}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -108,15 +115,40 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 //needs to be array of tasks given
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3, 4.99),
-  createData("Eclair", 262, 16.0, 24, 6.0, 3.79),
-  createData("Cupcake", 305, 3.7, 67, 4.3, 2.5),
-  createData("Gingerbread", 356, 16.0, 49, 3.9, 1.5),
-];
 
-export default function TeacherTaskBoard() {
+export default function TeacherTaskBoard(props: any) {
+  const { user } = props;
+  const [teacherTasks, setTeacherTasks] = useState<any>();
+
+  const fetchTeacherTasks = async () => {
+    try {
+      const { data } = await network.get(`/api/v1/task/byteacherid/${user.id}`);
+      console.log(data);
+      const newArray = await data.map((task: any) => {
+        task.TaskofStudents.forEach((taskofstudent: any) => {
+          console.log(taskofstudent);
+        });
+      });
+
+      setTeacherTasks(data);
+    } catch (error) {
+      return Swal.fire("Error", error, "error");
+    }
+  };
+  useEffect(() => {
+    fetchTeacherTasks();
+  }, []);
+
+  const taskArray = teacherTasks?.map((task: any) => {
+    return createTask(
+      task.title,
+      task.type,
+      task.lessonId,
+      task.endDate,
+      task.externalLink,
+      task.TaskofStudents
+    );
+  });
   return (
     <TableContainer component={Paper}>
       <Table aria-label='collapsible table'>
@@ -127,19 +159,25 @@ export default function TeacherTaskBoard() {
               <b>Task</b>
             </TableCell>
             <TableCell align='right'>
+              <b>Type</b>
+            </TableCell>
+            <TableCell align='right'>
               <b>Lesson</b>
             </TableCell>
             <TableCell align='right'>
-              <b>Days to deadline</b>
+              <b>deadline</b>
             </TableCell>
             <TableCell align='right'>
               <b>Submittions&nbsp;(%)</b>
             </TableCell>
+            <TableCell align='right'>
+              <b>Link</b>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
+          {taskArray?.map((row: any) => (
+            <Row key={row.title} row={row} />
           ))}
         </TableBody>
       </Table>

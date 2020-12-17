@@ -181,14 +181,13 @@ export interface ILesson {
 export interface ITask {
   id?: number;
   lessonId?: number;
-  classId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  status: string;
-  body: string;
+  status: "active" | "disabled";
+  body?: string;
 }
 
 export type ThemeType = "dark" | "light";

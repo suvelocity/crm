@@ -9,12 +9,14 @@ import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
 interface Task {
+  lessonId?: number;
+  externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  body: string;
   title: string;
+  body?: string;
   status: "active" | "disabled";
 }
 
@@ -225,8 +227,7 @@ export default function AddLesson({
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}
-            >
+              onClick={() => handleRemove(index, "resource")}>
               <Tooltip title='delete resource'>
                 <Link>{resource}</Link>
               </Tooltip>

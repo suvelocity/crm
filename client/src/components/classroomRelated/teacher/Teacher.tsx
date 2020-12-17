@@ -20,6 +20,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 interface Task {
+  lessonId?: number;
+  externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
@@ -27,7 +29,7 @@ interface Task {
   title: string;
   body?: string;
   status: "active" | "disabled";
-} //TODO check with amit the correct interface (in interfaces the interface ie different)
+}
 
 export default function Teacher() {
   const getBaseTask = (): Task => ({
@@ -149,11 +151,10 @@ export default function Teacher() {
         open={open}
         onClose={handleClose}
         aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'
-      >
+        aria-describedby='simple-modal-description'>
         {body}
       </Modal>
-      <TeacherTaskBoard />
+      <TeacherTaskBoard user={user} />
     </div>
   );
 }

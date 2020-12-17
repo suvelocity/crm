@@ -148,7 +148,7 @@ export const taskSchema = Joi.object({
   endDate: Joi.date().required(),
   type: Joi.string().required(),
   status: Joi.string().required(),
-  body: Joi.string().required(),
+  body: Joi.string().allow(null, ""),
   title: Joi.string().required(),
 });
 export const meetingSchema = Joi.object({
