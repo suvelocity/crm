@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { checkToken } from "../../helper";
+import { checkToken, fetchFCC } from "../../helper";
 
 require("dotenv").config();
 
