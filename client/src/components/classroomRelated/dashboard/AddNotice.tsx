@@ -1,11 +1,11 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
+import React, { 
+  useState, 
+  useEffect, 
+  useCallback, 
   Dispatch,
-  SetStateAction,
+  SetStateAction
 } from "react";
-import { INotice } from "../../../typescript/interfaces"; //todo add interface
+// import { INotice } from "../../typescript/interfaces"; //todo add interface
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
