@@ -140,14 +140,20 @@ export const taskSchema = Joi.object({
   body: Joi.string().required(),
 });
 export const meetingSchema = Joi.object({
-  studentId: Joi.number().required(),
+  pairId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
-  date: Joi.date().min(new Date()).allow(null, ""),
+  title: Joi.string().allow(null, ""),
+  date: Joi.date().min(new Date()).required(),
+  occurred: Joi.boolean().required(),
 });
 
 export const meetingSchemaToPut = Joi.object({
   place: Joi.string().allow(null, ""),
   date: Joi.date().min(new Date()).allow(null, ""),
+  title: Joi.string().allow(null, ""),
+  studentFeedback: Joi.string().allow(null, ""),
+  mentorFeedback: Joi.string().allow(null, ""),
+  occurred: Joi.boolean().allow(null, ""),
 });
 
 export const mentorSchema = Joi.object({

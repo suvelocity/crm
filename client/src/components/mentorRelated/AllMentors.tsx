@@ -134,18 +134,6 @@ function AllMentors() {
               </Select>
             </div>
           ))}
-          <StyledLink to='/mentor/add'>
-            <Button
-              variant='contained'
-              style={{
-                backgroundColor: '#c47dfa',
-                color: 'white',
-                marginLeft: 10,
-              }}
-            >
-              new mentor
-            </Button>
-          </StyledLink>
         </div>
       </Center>
       <br />

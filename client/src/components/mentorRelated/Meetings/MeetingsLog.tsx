@@ -1,16 +1,13 @@
-import React, { useCallback } from "react";
-import { AxiosResponse } from "axios";
+import React from "react";
 import { IMeeting } from "../../../typescript/interfaces";
 import {
   TimelineItem,
-  TimelineDot,
   TimelineOppositeContent,
   TimelineContent,
   Timeline,
   TimelineSeparator,
-  TimelineConnector,
 } from "@material-ui/lab";
-import { capitalize, formatToIsraeliDate } from "../../../helpers";
+import { capitalize, formatToIsraeliDateAndTime } from "../../../helpers";
 import {
   Theme,
   createStyles,
@@ -18,72 +15,58 @@ import {
   Typography,
   Paper,
 } from "@material-ui/core";
+import {
+  StyledSpan,
+} from "../../../styles/styledComponents";
 import styled from "styled-components";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import EditIcon from '@material-ui/icons/Edit';
-import Swal from "sweetalert2";
-import network from "../../../helpers/network";
+import EndMeetingModal from './EndMeetingModal'
+import EditMeetingModal from './EditMeetingModal'
 
 function MeetingsLog({
-meeting
+meeting,
+getMeetings
 }: {
 meeting: IMeeting[];
+getMeetings:any;
 }) {
   const classes = useStyles();
-
-  // const deleteEvent = async (eventId: number) => {
-  //   try {
-  //     await network.patch("/api/v1/event/delete", { eventId });
-  //     Swal.fire("Success!", "", "success");
-  //   } catch (error) {
-  //     Swal.fire("Error Occurred", error.message, "error");
-  //   }
-  // };
-
-  // const promptDeleteModal: (eventId: number) => void = (eventId: number) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Deleting an event is ireversible!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Delete",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       deleteEvent(eventId).then((_) => remove(eventId));
-  //     }
-  //   });
-  // };
-
+  meeting.sort((a:IMeeting,b:IMeeting) => {
+    return new Date(a.date!).getTime() - new Date(b.date!).getTime()
+  })
   return (
     <Timeline align="alternate">
-      {meeting.map((meet: IMeeting, i: number) => (
+      {meeting.map((meet: IMeeting, i: number) =>{
+        const color = !meet.occurred? "white" : "#cffadb";
+        return (
         <TimelineItem className={classes.timellineItem}>
           <TimelineOppositeContent>
-            <DateStamp>{formatToIsraeliDate(meet.date)}</DateStamp>
+            <DateStamp>{formatToIsraeliDateAndTime(meet.date)}</DateStamp>
           </TimelineOppositeContent>
           <TimelineSeparator>
-            {/* <TimelineDot
-              color={i !== arr.length - 1 ? "grey" : "primary"}
-              variant={i !== arr.length - 1 ? "outlined" : undefined}
-            >
-              {i === arr.length - 1 ? <UpdateIcon /> : <CheckCircleOutline />}
-            </TimelineDot> */}
-            {/* {i !== arr.length - 1 && <TimelineConnector />} */}
           </TimelineSeparator>
-          <TimelineContent>
-            <Paper className={classes.ticket}>
-              <TicketHeader>{capitalize(`Meet - ${i+1}`)}</TicketHeader>
-              <Typography>{capitalize(meet.title)}</Typography>
-              <DeleteIcon />
-              <CheckCircleOutlineIcon />
-              <EditIcon />
+          <TimelineContent >
+            <Paper className={classes.ticket} style={{backgroundColor:color}}>
+              <TicketHeader>{capitalize(`Appointment - ${i+1}`)}</TicketHeader>
+              <StyledSpan weight="bold">
+                Title: 
+              </StyledSpan>
+              <StyledSpan>{` ${meet.title}`}</StyledSpan>
+              <br/>
+              {meet.studentFeedback&&
+              <>
+               <StyledSpan weight="bold">
+               Student Feedback: 
+             </StyledSpan>
+              <StyledSpan>{` ${meet.studentFeedback}`}</StyledSpan>
+              <br/>
+              </>
+              }
+              <EditMeetingModal meeting={meet} getMeetings={getMeetings}/>
+              <EndMeetingModal meeting={meet} getMeetings={getMeetings}/>
             </Paper>
           </TimelineContent>
         </TimelineItem>
-      ))}
+      )})}
     </Timeline>
   );
 }
