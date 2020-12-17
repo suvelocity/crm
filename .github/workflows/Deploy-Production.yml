@@ -17,6 +17,7 @@ env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
   SERVER_PORT: 8080 # the port your server is running on
+  CMDTORUN: npm run spinup:prod
 
 jobs:
   setup-build-publish-deploy:
