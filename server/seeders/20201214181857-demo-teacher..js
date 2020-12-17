@@ -11,7 +11,6 @@ module.exports = {
           last_name: "lotomer",
           email: "teacher@teacher.com",
           class_id: 1,
-          related_id: 999999,
           created_at: new Date(),
           updated_at: new Date(),
         },
