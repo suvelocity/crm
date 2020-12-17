@@ -56,8 +56,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           <IconButton
             aria-label='expand row'
             size='small'
-            onClick={() => setOpen(!open)}
-          >
+            onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -108,6 +107,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
+//needs to be array of tasks given
 const rows = [
   createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99),
   createData("Ice cream sandwich", 237, 9.0, 37, 4.3, 4.99),
@@ -123,11 +123,18 @@ export default function TeacherTaskBoard() {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align='right'>Calories</TableCell>
-            <TableCell align='right'>Fat&nbsp;(g)</TableCell>
-            <TableCell align='right'>Carbs&nbsp;(g)</TableCell>
-            <TableCell align='right'>Protein&nbsp;(g)</TableCell>
+            <TableCell>
+              <b>Task</b>
+            </TableCell>
+            <TableCell align='right'>
+              <b>Lesson</b>
+            </TableCell>
+            <TableCell align='right'>
+              <b>Days to deadline</b>
+            </TableCell>
+            <TableCell align='right'>
+              <b>Submittions&nbsp;(%)</b>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

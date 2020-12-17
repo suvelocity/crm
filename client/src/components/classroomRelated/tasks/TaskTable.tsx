@@ -87,7 +87,7 @@ export default function DataGridDemo(props: any) {
           onSelectionChange={(newSelection) => {
             setSelection(newSelection.rowIds);
           }}
-          checkboxSelection={true}
+          checkboxSelection={false}
         />
       </div>
       <div>
