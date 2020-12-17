@@ -7,7 +7,7 @@ import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-import { ILesson } from "../../typescript/interfaces";
+import { ILesson } from "../../../typescript/interfaces";
 import Lesson from "./Lesson";
 import TextField from "@material-ui/core/TextField";
 
