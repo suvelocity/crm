@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import {
   cancelAllJobsOfStudent,
   cancelAllApplicantsForJob,
+  fetchFCC,
 } from "../../helper";
 const router = Router();
 //@ts-ignore
@@ -79,25 +80,29 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/updates", async (req: Request, res: Response) => {
+  const result = await fetchFCC();
+  res.json(result);
+});
+
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date } = req.body;
+    const { relatedId, eventName, userId, entry, date, type } = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
       userId,
       date,
+      type,
     });
     if (error) return res.status(400).json({ error: error.message });
     if (eventName === "Hired") {
-      //TODO fix types
       const job: IJob = (
         await Job.findByPk(relatedId, {
           include: [{ model: Company, attributes: ["name"] }],
         })
       ).toJSON();
       const student: IStudent = (await Student.findByPk(userId)).toJSON();
-      console.log(student);
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
       // const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
@@ -146,6 +151,7 @@ router.post("/", async (req: Request, res: Response) => {
       eventName,
       entry,
       date,
+      type,
     });
     return res.json(event);
   } catch (error) {
