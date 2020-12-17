@@ -108,7 +108,6 @@ export function LessonsFidget() {
 
   useEffect(() => {
     fetchLesson();
-    console.log("hi");
   }, []);
 
   const fetchLesson: () => Promise<void> = async () => {
@@ -116,7 +115,6 @@ export function LessonsFidget() {
       const { data: allLessons }: { data: ILesson[] } = await network.get(
         `/api/v1/lesson/byclass/${user.classId}`
       );
-      console.log("me");
       settodayLessons(allLessons);
     } catch (e) {
       console.log(e);
@@ -124,7 +122,6 @@ export function LessonsFidget() {
     }
   };
 
-  console.log(todayLessons);
   return (
     <Wrapper style={{ height: "60%" }}>
       <Center>

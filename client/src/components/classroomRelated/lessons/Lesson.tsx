@@ -59,8 +59,7 @@ export default function Lesson({
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
-            id='panel1a-header'
-          >
+            id='panel1a-header'>
             {"#" + (index + 1) + " " + lessonState.title}
           </StyledSummery>
           <hr />
@@ -96,8 +95,7 @@ export default function Lesson({
           open={modalState}
           onClose={() => setModalState(false)}
           aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'
-        >
+          aria-describedby='simple-modal-description'>
           {body}
         </Modal>
       </div>
@@ -108,6 +106,7 @@ export default function Lesson({
 const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   overflow: hidden;
+  margin-bottom: 10px;
 `;
 
 const StyledAccordion = styled(Accordion)`

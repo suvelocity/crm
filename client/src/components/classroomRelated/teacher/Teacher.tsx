@@ -3,7 +3,7 @@ import TeacherTaskBoard from "./TeacherTaskBoard";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../../../atoms";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
@@ -11,7 +11,7 @@ import AddTask from "../lessons/AddTask";
 import { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
-import { IStudent } from "../../../typescript/interfaces";
+import { IClass, IStudent } from "../../../typescript/interfaces";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -20,6 +20,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 interface Task {
+  lessonId?: number;
+  externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
@@ -27,7 +29,7 @@ interface Task {
   title: string;
   body?: string;
   status: "active" | "disabled";
-} //TODO check with amit the correct interface (in interfaces the interface ie different)
+}
 
 export default function Teacher() {
   const getBaseTask = (): Task => ({
@@ -51,10 +53,8 @@ export default function Teacher() {
       handleClose();
     } catch {}
   };
-  const [students, setStudents] = useRecoilState(teacherStudents);
-  const [classesToTeacher, setClassesToTeacher] = useRecoilState(
-    classesOfTeacher
-  );
+  const students = useRecoilValue(teacherStudents);
+  const classesToTeacher = useRecoilValue(classesOfTeacher);
 
   const [open, setOpen] = useState<boolean>(false);
   //@ts-ignore
@@ -62,7 +62,9 @@ export default function Teacher() {
   const classes = useStyles();
 
   const [task, setTask] = useState<Task>(getBaseTask());
-  const [studentsToTask, setStudentsToTask] = useState<number[]>([]);
+  const [studentsToTask, setStudentsToTask] = useState<number[]>(
+    students.map((student: IStudent) => student!.id!)
+  );
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     switch (element) {
@@ -140,25 +142,6 @@ export default function Teacher() {
       </Button>
     </div>
   );
-  const fetchStudents = async () => {
-    try {
-      const { data: teacherStudents } = await network.get(
-        `/api/v1/student/byTeacher/${user.id}`
-      );
-      setClassesToTeacher(teacherStudents);
-      const allStudents = teacherStudents.map(
-        (classRoom: any) => classRoom.Class.Students
-      );
-      setStudents(allStudents[0]); //TODO check with multipal classes
-      setStudentsToTask(allStudents[0].map((student: IStudent) => student.id));
-    } catch {}
-  };
-
-  useEffect(() => {
-    (async () => {
-      await fetchStudents();
-    })();
-  }, []);
 
   return (
     <div>
@@ -168,11 +151,10 @@ export default function Teacher() {
         open={open}
         onClose={handleClose}
         aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'
-      >
+        aria-describedby='simple-modal-description'>
         {body}
       </Modal>
-      <TeacherTaskBoard />
+      <TeacherTaskBoard user={user} />
     </div>
   );
 }

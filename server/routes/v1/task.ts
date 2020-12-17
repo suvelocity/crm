@@ -230,4 +230,31 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/byteacherid/:id", async (req: Request, res: Response) => {
+  try {
+    const myTasks: any[] = await Task.findAll({
+      where: { created_by: req.params.id },
+      include: [
+        {
+          model: TaskofStudent,
+          attributes: ["studentId", "status", "submitLink", "updatedAt"],
+          include: [
+            {
+              model: Student,
+              attributes: ["firstName", "lastName"],
+              include: [
+                { model: Class, attributes: ["id", "name", "endingDate"] },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+    return res.json(myTasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

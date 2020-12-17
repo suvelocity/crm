@@ -100,7 +100,7 @@ export interface ITask {
   type: string;
   status: string;
   title: string;
-  body: string;
+  body?: string;
 }
 
 export interface ITaskofStudent {

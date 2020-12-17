@@ -9,12 +9,14 @@ import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
 interface Task {
+  lessonId?: number;
+  externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  body: string;
   title: string;
+  body?: string;
   status: "active" | "disabled";
 }
 
@@ -182,19 +184,19 @@ export default function AddLesson({
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
-          variant="outlined"
-          label="Lesson name"
+          variant='outlined'
+          label='Lesson name'
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby="my-helper-text"
+          aria-describedby='my-helper-text'
           required={true}
         />
 
         <Input
-          variant="outlined"
-          label="Lesson content"
+          variant='outlined'
+          label='Lesson content'
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -203,8 +205,8 @@ export default function AddLesson({
           multiline
         />
         <Input
-          variant="outlined"
-          label="Zoom link"
+          variant='outlined'
+          label='Zoom link'
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
@@ -212,8 +214,8 @@ export default function AddLesson({
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
-            variant="outlined"
-            label="Resource"
+            variant='outlined'
+            label='Resource'
             value={resource}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleChange(e, "resource")
@@ -225,9 +227,8 @@ export default function AddLesson({
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}
-            >
-              <Tooltip title="delete resource">
+              onClick={() => handleRemove(index, "resource")}>
+              <Tooltip title='delete resource'>
                 <Link>{resource}</Link>
               </Tooltip>
             </OneInfo>

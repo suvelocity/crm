@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.Student, {
+      this.belongsTo(models.Teacher, {
         foreignKey: "createdBy",
       });
       this.belongsTo(models.Lesson, {
@@ -27,8 +27,9 @@ module.exports = (sequelize, DataTypes) => {
       createdBy: DataTypes.INTEGER,
       endDate: DataTypes.DATE,
       type: DataTypes.STRING,
-      status: DataTypes.STRING,
+      title: DataTypes.STRING,
       body: DataTypes.STRING,
+      status: DataTypes.STRING,
     },
     {
       sequelize,

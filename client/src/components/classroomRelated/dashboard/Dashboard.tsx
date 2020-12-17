@@ -8,11 +8,10 @@ import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
 export default function Dashboard() {
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula="1fr 1fr 1fr" height="30vh">
+      <TilesRow repeatFormula='1fr 1fr 1fr' height='30vh'>
         <InformationTile>
           <TasksFidget />
         </InformationTile>
