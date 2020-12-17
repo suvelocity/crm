@@ -1,0 +1,92 @@
+name: Build and Deploy to Google Compute Engine
+
+on:
+  push:
+    branches:
+    - production # specify the branch you want the deploy to take place from
+
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GCE_INSTANCE: crm-production-v1   # TODO: name your instance
+  GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone if needed
+  SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }} # The service account user you created
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_NAME: ${{ secrets.DB_NAME_PRODUCTION_V1 }}
+  ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
+  REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
+  SERVER_PORT: 8080 # the port your server is running on
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1' # optional, if not provided -> resolves to latest version
+        service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        project_id: ${{ secrets.PROJECT_ID }}    
+
+    # Helper for authentication
+    - name: Configure Docker to use gcloud command-line
+      run: gcloud --quiet auth configure-docker
+
+    # # Create a new instance -> MARK IT OUT AFTER FIRST DEPLOY
+    # - name: Create Instance 
+    #   run: make create
+
+    - name: Add React .env file
+      run:  | 
+        echo "$REACT_ENV_FILE" > .env
+        mv .env ./client/.env
+
+    # Install Dependencies (So the Docker Image Has The Latest Client Version)
+    - name: Install dependencies
+      run: npm ci --only=production
+      working-directory: ./client
+
+    # Build production build (So the Docker Image Has The Latest Build Version)
+    - name: Create production build
+      run: CI=false npm run build:prod
+      working-directory: ./client
+
+    # Enable When using ENV_FILE Secret
+    - name: create .env file, decode it
+      run:  | 
+        echo "$ENV_FILE" > .env
+        base64 .env > .env.b64
+
+    # Enable When using ENV_FILE Secret
+    - name: Send .env File
+      run: gcloud compute scp .env.b64 --zone $GCE_INSTANCE_ZONE $GCE_INSTANCE:~
+
+    # Build the Docker image
+    - name: Build image
+      run: make build
+
+    # Push the Docker image to Google Container Registry
+    - name: Publish image
+      run: make push
+
+    # # ONLY first time setup
+    # Initialize Envoironment in Gcloud Instance
+    - name: Initialize gcr communication
+      run: make initialize
+
+    - name: decode .env File for container use
+      run: make ssh-cmd CMD='base64 -d .env.b64 > .env && rm .env.b64'
+
+    # Deploy Container to Gcloud Instance
+    - name: deploy
+      run: make deploy
+
+    # Enable When using ENV_FILE Secret
+    - name: Remove .env File
+      run: make remove-env
