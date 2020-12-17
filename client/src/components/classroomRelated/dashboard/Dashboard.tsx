@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula='1fr 1fr 1fr' height='30vh'>
+      <TilesRow repeatFormula="1fr 1fr 1fr" height="30vh">
         <InformationTile>
           <TasksFidget />
         </InformationTile>
@@ -41,6 +41,7 @@ const InformationTile = styled.div`
 
 // background-color: blue;
 const TilesRow = styled.div`
+  position: relative;
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
   display: grid;
