@@ -2,10 +2,8 @@ import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
 import { Class, Task, TaskofStudent, Student } from "../../models";
-import { ILesson, IClass, ITask, ITaskofStudent } from "../../types";
+import { ITask, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
-// import network from "../../../client/src/helpers/network";
-// import { ne } from "sequelize/types/lib/operators";
 
 //todo support post of array of tasks
 //posts a single task to db and gives all students this task

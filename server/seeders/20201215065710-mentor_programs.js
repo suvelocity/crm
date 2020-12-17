@@ -12,7 +12,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(
-    "mentor_programs",
+    "Mentor_Programs",
     [
       {
         id:1,
@@ -35,6 +35,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("mentor_programs", null, {});
+    await queryInterface.bulkDelete("Mentor_Programs", null, {});
   }
 };

@@ -53,7 +53,7 @@ function NewClassMentorProject() {
   }, [query, setLoading, setCls, id]);
 
   const getMentors = useCallback(async (cls: IClass | undefined) => {
-    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
+    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor/available`);
     console.log(data);
     const mentorList = data.map((mentor) => {
       let count = 0;
