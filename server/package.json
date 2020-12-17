@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "start":"node out/.",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "npx sequelize db:migrate",
+    "build": "tsc --build tsconfig.json",
+    "migrate": "cd src && sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",
+    "spinup:prod": "npm run migrate && npm run start",
     "dev": "nodemon -r dotenv/config index.ts",
-    "start": "node build",
-    "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
-    "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
+    "seed": "cd src && sequelize db:seed:undo:all && npx sequelize db:seed:all",
+    "fetch": "cd src && sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

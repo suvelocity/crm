@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-import { IUser } from "../../../typescript/interfaces";
+import { IUser } from "../../typescript/interfaces";
 import Notices from "./Notices";
 import {
   H1,

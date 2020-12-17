@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { INotice } from "../../../typescript/interfaces"; //todo add interface
+import { INotice } from "../../typescript/interfaces"; //todo add interface
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
