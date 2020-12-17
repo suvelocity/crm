@@ -4,6 +4,7 @@ import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, List, ListItem, ListItemText, Typography, Chip } from "@material-ui/core";
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import { IQuiz, IAnswer, IOption } from "../../../../../typescript/interfaces";
 
 const useStyles = makeStyles((theme) => ({
   quizWrapper: {
@@ -42,31 +43,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center'
   }
 }));
-
-interface Option {
-  id: number,
-  title: string
-}
-type OptionsArray = Option[];
-interface Field {
-  id: number,
-  title: string,
-  Options: OptionsArray
-};
-type FieldsArray = Field[];
-interface Quiz {
-  id: number,
-  name: string,
-  Fields: FieldsArray  
+interface IProps {
+  id: number
 }
 
-export default function QuizPage() {
-  const { id } = useParams();
+export default function QuizPage(props: IProps) {
+  const id = props.id;
+  // const { id } = useParams();
   const classes = useStyles();
 
-  const [quiz, setQuiz] = useState<Quiz>();
+  const [quiz, setQuiz] = useState<IQuiz>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<IAnswer[]>([]);
   const [quizIsOver, setQuizIsOver] = useState<boolean>(false);
   const [finishTitle, setFinishTitle] = useState<string>("Loading...");
   /// TIME REMAINING
@@ -75,7 +63,7 @@ export default function QuizPage() {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const quiz = (await axios.get(`/api/v1/quiz/${id}`)).data;
+      const quiz = (await axios.get(`/api/v1/quiz/${id}`)).data || [];
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -102,18 +90,16 @@ export default function QuizPage() {
   }, [seconds, minutes]);
 
   const findSelectedAnswerIdByTitle = (title : string) :number => {
-    //@ts-ignore
-    const currentFieldsArray : Option[] = quiz.Fields[currentQuestionIndex].Options;
+    const currentFieldsArray : IOption[] = quiz!.Fields[currentQuestionIndex].Options;
     const selectedAnswer: any = currentFieldsArray.find(
       (field) => field.title === title
     );
     const id = selectedAnswer ? selectedAnswer.id : -1;
     return id;
   };
-  const onAnswerSelect = (selectedAnswerId : number, interval : any) :void => {
+  const onAnswerSelect = (selectedAnswerId : number, interval? : any) :void => {
     if (!quizIsOver) {
       console.log(selectedAnswerId);
-      //@ts-ignore
       setAnswers([
         ...answers,
         {
@@ -168,15 +154,13 @@ export default function QuizPage() {
               </div>
               <List>
                 {quiz.Fields[currentQuestionIndex].Options.map(
-                  (option : Option, index: number) => (
+                  (option : IOption, index: number) => (
                     <ListItem
                       button
                       disableGutters
                       key={index}
                       onClick={(e) =>
-                        //@ts-ignore
-                        onAnswerSelect(
-                          //@ts-ignore
+                        onAnswerSelect( //@ts-ignore
                           findSelectedAnswerIdByTitle(e.target.value)
                       )}
                       className={classes.field}

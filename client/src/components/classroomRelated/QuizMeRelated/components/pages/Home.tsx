@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Header from "./Header";
-import QuizzesList from "./QuizzesList";
+import Header from "../Header";
+import QuizzesList from "../QuizzesList";
 
 const useStyles = makeStyles({
   container: {

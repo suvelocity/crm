@@ -4,9 +4,8 @@ import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
 import "./QuizMe.css";
-import Home from "./components/Home";
-import QuizPage from "./components/QuizPage";
-// import UserStats from "./components/UserStats";
+import Home from "./components/pages/Home";
+import FormRouter from "./components/FormRouter";
 import NavBar from "./components/NavBar";
 
 const useStyles = makeStyles({
@@ -26,7 +25,8 @@ function QuizMe() {
         <NavBar />
           <Switch>
             <Route exact path="/quizme/" component={Home} />
-            <Route exact path="/quizme/quiz/:id" component={QuizPage} />
+            <Route exact path="/quizme/quiz/:id" component={FormRouter}/>
+            {/* <Route exact path="/quizme/form/:id" component={FormPage} /> */}
             {/* <Route exact path="/statistics" component={UserStats} /> */}
           </Switch>
         </Router>

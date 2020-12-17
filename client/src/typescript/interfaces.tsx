@@ -191,3 +191,23 @@ export interface ITask {
 }
 
 export type ThemeType = "dark" | "light";
+
+
+export type IOption = {
+  id: number,
+  title: string
+}
+interface IField {
+  id: number,
+  title: string,
+  Options: IOption[]
+};
+export type IQuiz = {
+  id: number,
+  name: string,
+  Fields: IField[]  
+}
+export type IAnswer = {
+  questionId: number, 
+  answerId: number
+}
