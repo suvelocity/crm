@@ -38,8 +38,7 @@ const AddMentor: React.FC = () => {
 
   const onSubmit = async (data: IMentor) => {
     try {
-        data.available = true; 
-        console.log(data);
+        data.available = true;       
         await network.post("/api/v1/M/mentor/", data);
         Swal.fire("Success!", "", "success");
         history.push("/mentor/all");

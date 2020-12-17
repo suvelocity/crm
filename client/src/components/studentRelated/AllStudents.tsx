@@ -34,10 +34,10 @@ function AllStudents() {
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
-      Class: "",
-      Course: "",
-      JobStatus: "",
-      Name: "",
+      Class: [""],
+      Course: [""],
+      JobStatus: [""],
+      Name: [""],
     }
   );
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
@@ -119,35 +119,47 @@ function AllStudents() {
 
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
-      const classCondition = !filterAttributes.Class
+      console.log(filterAttributes.Class.length)
+      const classCondition = filterAttributes.Class.length === 1 && filterAttributes.Class[0] === ""
         ? true
-        : student.Class.name === filterAttributes.Class;
-      const courseCondition = !filterAttributes.Course
+        : filterAttributes.Class.includes(student.Class.name);
+      console.log(student.Class.name, filterAttributes.Class)
+      const courseCondition = filterAttributes.Course.length === 1 && filterAttributes.Course[0] === ""
         ? true
-        : student.Class.course === filterAttributes.Course;
+        : filterAttributes.Course.includes(student.Class.course);
+      console.log(student.Class.course, filterAttributes.Course)
+      // console.log(student)
       const recentJobStatus = getRecentJobsStatus(student.Events);
       const jobless =
         recentJobStatus.length === 0 ||
         recentJobStatus.every((status) => status === "Rejected");
-      const jobStatusCondition = !filterAttributes.JobStatus
+      const jobStatusCondition = filterAttributes.JobStatus.length === 1 && filterAttributes.JobStatus[0] === ""
         ? true
-        : filterAttributes.JobStatus === "None"
-        ? jobless
-        : recentJobStatus.includes(filterAttributes.JobStatus);
-      const names = filterAttributes.Name.split(" ");
-      const firstName = names[0];
-      const lastName = names[1];
-      const firstNameCondition = !firstName
+        : (filterAttributes.JobStatus.includes("None") && jobless) || 
+        filterAttributes.JobStatus.find(status => recentJobStatus.includes(status))
+      const fullNames = filterAttributes.Name.map(fullname => fullname.split(" ").filter(name => name != ""));
+      const firstAndLastNamesMatch = fullNames.find(fullname => {
+        const firstName = fullname[0];
+        const lastName = fullname[1];
+        // console.log(fullname, firstName, lastName)
+        const firstNameCondition = (!firstName && fullNames.length === 1)
         ? true
-        : student.firstName === firstName;
-      const lastNameCondition = !lastName
+        : student.firstName.trim() === firstName;
+        const lastNameCondition = (!lastName && fullNames.length === 1)
         ? true
-        : student.lastName === lastName;
+        : student.lastName.trim() === lastName;
+        return firstNameCondition && lastNameCondition
+      })
+      console.log(
+        classCondition,
+        courseCondition,
+        firstAndLastNamesMatch,
+        jobStatusCondition
+      );
       return (
         classCondition &&
         courseCondition &&
-        firstNameCondition &&
-        lastNameCondition &&
+        firstAndLastNamesMatch &&
         jobStatusCondition
       );
     });
@@ -201,7 +213,11 @@ function AllStudents() {
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
                     </StyledSpan>
-                    <StyledSpan>{capitalize(student.Class.name)}</StyledSpan>
+                    <StyledSpan>{`${capitalize(
+                      student?.Class.name
+                    )} (${capitalize(student?.Class.course)} - ${
+                      student?.Class.cycleNumber
+                    })`}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                   </StyledDiv>

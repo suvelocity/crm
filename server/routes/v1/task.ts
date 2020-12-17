@@ -51,7 +51,6 @@ router.post("/:classid", async (req: Request, res: Response) => {
       ],
     });
     const idArr = classStudents.Students;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (student: any): ITaskofStudent => {

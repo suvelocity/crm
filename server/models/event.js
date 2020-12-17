@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       eventName: DataTypes.STRING,
       type: DataTypes.STRING,
       userId: DataTypes.INTEGER,
-      relatedId: DataTypes.INTEGER,
+      relatedId: DataTypes.STRING,
       entry: DataTypes.JSON,
       creatorId: DataTypes.INTEGER,
       date: DataTypes.DATE,

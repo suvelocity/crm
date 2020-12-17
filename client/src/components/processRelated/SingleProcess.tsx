@@ -22,6 +22,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import WorkIcon from "@material-ui/icons/Work";
 import { SingleCenteredListItem } from "../tableRelated";
 import Swal from "sweetalert2";
+import { capitalize } from "../../helpers/general";
 
 function SingleProcess() {
   const [student, setStudent] = useState<IStudent>();
@@ -69,7 +70,14 @@ function SingleProcess() {
     const updated = events?.slice(0, index).concat(events.slice(index + 1));
     setEvents(updated);
   };
-  const classesType = { primary: classes.primary };
+  const classesType = {
+    primary: classes.primary,
+    secondary: classes.secondary,
+  };
+
+  const classesTypeRequirements = {
+    primary: classes.primaryReq,
+  };
 
   return (
     <Wrapper width="90%">
@@ -90,7 +98,9 @@ function SingleProcess() {
                   <SingleCenteredListItem
                     classes={classesType}
                     primary="Name"
-                    secondary={`${student?.firstName} ${student?.lastName}`}
+                    secondary={`${capitalize(student?.firstName)} ${capitalize(
+                      student?.lastName
+                    )}`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
@@ -102,7 +112,11 @@ function SingleProcess() {
                   <SingleCenteredListItem
                     classes={classesType}
                     primary="Class"
-                    secondary={`${student?.Class.name}`}
+                    secondary={`${capitalize(
+                      student?.Class.name
+                    )} (${capitalize(student?.Class.course)} - ${
+                      student?.Class.cycleNumber
+                    })`}
                   />
                   <SingleCenteredListItem
                     classes={classesType}
@@ -152,7 +166,7 @@ function SingleProcess() {
             <MultilineListItem>
               <ListItemText
                 style={{ width: "95%", margin: "0 auto" }}
-                classes={classesType}
+                classes={classesTypeRequirements}
                 primary="Requirements"
                 secondary={`${job?.requirements}`}
               />
@@ -165,7 +179,9 @@ function SingleProcess() {
           </div>
         </GridDiv>
       </Loading>
-      <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
+      {job?.id && student?.id && events && (
+      <NewEventModal events={events} studentId={studentId} jobId={jobId} add={addEventToLog} />
+      )}
     </Wrapper>
   );
 }
@@ -180,6 +196,14 @@ function sortByDate(event1: IEvent, event2: IEvent) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     primary: {
+      fontWeight: "bold",
+      fontSize: "1.1em",
+      textAlign: "center",
+    },
+    secondary: {
+      textAlign: "center",
+    },
+    primaryReq: {
       fontWeight: "bold",
       fontSize: "1.1em",
     },

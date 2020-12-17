@@ -121,7 +121,7 @@ function SingleJob() {
     setEventsToMap(sortedEvents);
   };
 
-  const tableRepeatFormula = "0.7fr 1.5fr 1fr 1.5fr 3fr";
+  const tableRepeatFormula = "0.7fr 1.2fr 1.8fr 1.6fr 2.2fr";
   return (
     <>
       <Wrapper width="80%">
@@ -229,7 +229,7 @@ function SingleJob() {
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width="65%">
+      <Wrapper width="75%">
         <Center>
           <TitleWrapper>
             <H1 color="#bb4040">Applicants In Process</H1>
@@ -264,7 +264,11 @@ function SingleJob() {
                         {capitalize(event.Student?.lastName)}
                       </StyledSpan>
                       <StyledSpan>
-                        {capitalize(event.Student?.Class.name)}
+                        {`${capitalize(
+                          event.Student?.Class.name
+                        )} (${capitalize(event.Student?.Class.course)} - ${
+                          event.Student?.Class.cycleNumber
+                        })`}
                       </StyledSpan>
                       <StyledSpan>{event.Student?.email}</StyledSpan>
                       <StyledSpan>{`${capitalize(
