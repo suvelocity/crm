@@ -26,6 +26,9 @@ import {
 } from "../../styles/styledComponents";
 import { IMentor } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
+import GoogleMaps from "../GeoSearch";
+import Swal from "sweetalert2";
+
 
 const AddMentor: React.FC = () => {
   const { register, handleSubmit, errors, control } = useForm();
@@ -37,9 +40,10 @@ const AddMentor: React.FC = () => {
     try {
         data.available = true;       
         await network.post("/api/v1/M/mentor/", data);
+        Swal.fire("Success!", "", "success");
         history.push("/mentor/all");
-    } catch (e) {
-      alert("error occurred");
+    } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -179,10 +183,62 @@ const AddMentor: React.FC = () => {
             </div>
             <div>
               <TextField
-                id="address"
-                name="address"
+                id="role"
+                name="role"
+                inputRef={register({
+                  required: "role is required",
+                })}
+                label="Role"
+              />
+              {!empty ? (
+                errors.role ? (
+                  <Tooltip title={errors.role.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+                ) : null}
+                <br />
+            <TextField
+                id="experience"
+                name="experience"
+                type="number"
+                inputRef={register({
+                    required: "experience is required",
+                    valueAsNumber:true,
+                })}
+                label="Experience"
+              />
+              {!empty ? (
+                errors.experience ? (
+                  <Tooltip title={errors.experience.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
+              <GoogleMaps
+                id='address'
+                name='address'
                 inputRef={register({ required: "Address is required" })}
-                label="Address"
+                label='Address'
               />
               {!empty ? (
                 errors.address ? (
@@ -243,19 +299,6 @@ const AddMentor: React.FC = () => {
               <br />
             </div>
           </GridDiv>
-          <br />
-          <br />
-          <TextField
-            id="job"
-            multiline
-            fullWidth
-            rows={4}
-            variant="outlined"
-            name="job"
-            inputRef={register()}
-            label="Role and Experience"
-          />
-          <br />
           <br />
           <Button
             id="submitButton"

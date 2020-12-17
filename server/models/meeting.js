@@ -10,19 +10,19 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.Student, {
-        foreignKey: "studentId",
-      });
-      this.belongsTo(models.Mentor, {
-        foreignKey: "mentorId",
+      this.belongsTo(models.MentorStudent, {
+        foreignKey: "pairId",
       });
     }
   };
   Meeting.init({
-    mentorId: DataTypes.INTEGER,
-    studentId: DataTypes.INTEGER,
+    pairId: DataTypes.INTEGER,
     date: DataTypes.DATE,
-    place: DataTypes.STRING
+    place: DataTypes.STRING,
+    title: DataTypes.STRING,
+    mentorFeedback: DataTypes.STRING,
+    studentFeedback: DataTypes.STRING,
+    occurred: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Meeting',

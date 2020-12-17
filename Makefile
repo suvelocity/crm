@@ -73,10 +73,10 @@ start-app:
 initialize:
 	@echo "configuring vm to use docker commands"
 	$(MAKE) ssh-cmd CMD='docker-credential-gcr configure-docker'
-	@echo "creating network..."
-	$(MAKE) network-init
-	@echo "creating volume for database..."
-	$(MAKE) volume-create
+	# @echo "creating network..."
+	# $(MAKE) network-init
+	# @echo "creating volume for database..."
+	# $(MAKE) volume-create
 	@echo "stopping old mysql container..."
 	-$(MAKE) ssh-cmd CMD='docker container stop ${DB_HOST}'
 	@echo "removing old mysql container..."
