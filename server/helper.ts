@@ -1,8 +1,10 @@
 require("dotenv").config();
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 import {
   IEvent,
+  IFccEvent,
   IJob,
   IStudent,
   PublicFields,
@@ -12,6 +14,7 @@ import {
 //@ts-ignore
 import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
+import { flatMap, flatten, orderBy } from "lodash";
 
 //TODO fix types
 export const cancelAllJobsOfStudent: (
@@ -189,4 +192,69 @@ export const getQuery: (
         ),
       }
     : { include };
+};
+
+export const fetchFCC: () => void = async () => {
+  let date: number;
+  try {
+    date = new Date(
+      (
+        await Event.findOne({
+          where: { eventName: "FCC_SUBMIT_SUCCESS" },
+          order: [["updatedAt", "DESC"]],
+        })
+      ).toJSON().createdAt
+    ).getTime();
+  } catch (e) {
+    console.log(e);
+    date = new Date("2020-07-01").getTime();
+  }
+
+  try {
+    const studentsData: any = (
+      await Student.findAll(getQuery(["fcc", "id"], true, true))
+    ).map((a: any) => a.toJSON());
+    const usernames: string[] = studentsData.map(
+      (d: { fcc_account: string; id: string }) => d.fcc_account
+    );
+
+    const fccEvents: IFccEvent[] = (
+      await axios.post(
+        "https://europe-west1-crm-fcc-scraper.cloudfunctions.net/crm-fcc-scraper",
+        {
+          usernames,
+          date,
+        }
+      )
+    ).data;
+
+    //TODO fix types
+    const parsedEvents: IEvent[] = flatMap(fccEvents, (userEvents: any) => {
+      const username = userEvents.username;
+      const { id: userId } = studentsData.find(
+        (sd: any) => sd.fcc_account === username
+      );
+      return userEvents.progress.map((challenge: any) => {
+        const parsedEvent: IEvent = {
+          relatedId: challenge.id,
+          userId: userId,
+          eventName: "FCC_SUBMIT_SUCCESS",
+          type: "fcc",
+          date: challenge.completedDate,
+        };
+        if (challenge.hasOwnProperty("repetition")) {
+          parsedEvent.entry!.repetition = challenge.repetition;
+        }
+        return parsedEvent;
+      });
+    });
+
+    await Event.bulkCreate(parsedEvents);
+
+    console.log(fccEvents[1]);
+    return { success: true, newEvents: parsedEvents.length };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: err.message };
+  }
 };

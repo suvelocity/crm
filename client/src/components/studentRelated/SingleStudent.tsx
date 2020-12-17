@@ -44,6 +44,7 @@ import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 import { SingleListItem } from "../tableRelated";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
@@ -51,7 +52,6 @@ function SingleStudent() {
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(
       `/api/v1/student/byId/${id}`
@@ -149,6 +149,14 @@ function SingleStudent() {
               <SingleListItem primary="ID Number" secondary={student?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
+              {student?.resumeLink && (
+                <SingleListItem
+                  primary="Resume Link"
+                  secondary={student?.resumeLink}
+                >
+                  <PostAddIcon />
+                </SingleListItem>
+              )}
               {student?.militaryService && (
                 <MultilineListItem>
                   <ListItemIcon>
@@ -182,7 +190,11 @@ function SingleStudent() {
               </SingleListItem>
               <SingleListItem
                 primary="Work Experience"
-                secondary={capitalize(student?.workExperience)}
+                secondary={
+                  student?.workExperience
+                    ? capitalize(student?.workExperience)
+                    : "None"
+                }
               >
                 <WorkIcon />
               </SingleListItem>
@@ -201,8 +213,10 @@ function SingleStudent() {
                 <TranslateIcon />
               </SingleListItem>
               <SingleListItem
-                primary="Course"
-                secondary={capitalize(student?.Class.name)}
+                primary="Class"
+                secondary={`${capitalize(student?.Class.name)} (${capitalize(
+                  student?.Class.course
+                )} - ${student?.Class.cycleNumber})`}
               >
                 <ClassIcon />
               </SingleListItem>

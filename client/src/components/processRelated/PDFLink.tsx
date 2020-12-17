@@ -11,8 +11,6 @@ import {
 import { formatToIsraeliDate } from "../../helpers";
 
 export default function PDFLink({ data }: { data: IEvent[] }) {
-  console.log(data);
-
   const MyDocument = () => (
     <Document>
       <Page size="A4">

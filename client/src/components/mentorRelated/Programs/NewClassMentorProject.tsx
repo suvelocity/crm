@@ -244,7 +244,6 @@ function NewClassMentorProject() {
     const mentorNeededCount: number = mentorizeClass!.Students.filter(
       (student) => !(student.mentor || student.mentorId)
     ).length;
-    console.log(mentorNeededCount);
     if (mentorNeededCount <= mentors.length) {
       let mentorsCount: number = 0;
       for (let i = 0; i < mentorizeClass!.Students.length; i++) {

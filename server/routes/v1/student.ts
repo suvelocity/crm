@@ -1,12 +1,25 @@
 import { Router, Response, Request } from "express";
-//@ts-ignore
-import { Student, Company, Job, Event, Class, User } from "../../models";
+import {
+  //TODO fix
+  //@ts-ignore
+  Student,
+  //@ts-ignore
+  Event,
+  //@ts-ignore
+  Class,
+  //@ts-ignore
+  User,
+  //@ts-ignore
+  TeacherofClass,
+  //@ts-ignore
+} from "../../models";
 import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
+import { Op } from "sequelize";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -19,6 +32,24 @@ const mailOptions = (to: string, password: string) => ({
 });
 
 const router = Router();
+
+router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
+  try {
+    const teacherId: string = req.params.teacherId;
+    const teacherClasses: any | null = await TeacherofClass.findAll({
+      include: [{ model: Class, attributes: ["id"], include: [Student] }],
+      where: { teacherId },
+    });
+
+    if (teacherClasses) {
+      return res.json(teacherClasses);
+    } else {
+      return res.status(404).send("Teacher don`t have classes");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.get("/all", async (req: Request, res: Response) => {
   //@ts-ignore
@@ -59,7 +90,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const body: IStudent = req.body;
     const studentExists = await Student.findOne({
-      where: { idNumber: body.idNumber },
+      where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
     if (studentExists) return res.status(409).send("Student already exists");
     const newStudent: IStudent = {
@@ -79,6 +110,7 @@ router.post("/", async (req: Request, res: Response) => {
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
+      resumeLink: body.resumeLink,
       // fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);

@@ -59,9 +59,10 @@ router.post("/signin", async (req: Request, res: Response) => {
     const user = await User.findOne({
       where: { email },
     });
-    if (!user) return res.json(404).json({ error: "User not found" });
+    if (!user)
+      return res.json(400).json({ error: "Email or password are incorrect" });
     if (!bcrypt.compareSync(password, user.password)) {
-      return res.status(400).json({ error: "Wrong password" });
+      return res.status(400).json({ error: "Email or password are incorrect" });
     }
     const exp = oneDay() * (rememberMe ? 365 : 1);
     const accessTokenExp = fifteenMinutes();
@@ -86,7 +87,7 @@ router.post("/signin", async (req: Request, res: Response) => {
       case "teacher":
         const teacher = await Teacher.findByPk(user.relatedId);
         if (teacher) {
-          return res.status(400).json({ ...teacher, userType: user.type });
+          return res.json({ ...teacher, userType: user.type });
         }
       default:
         return res.status(400).json({ error: "Unknown user type" });

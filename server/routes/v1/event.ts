@@ -1,14 +1,27 @@
 import { Router, Request, Response } from "express";
-import { stat } from "fs";
 import {
   cancelAllJobsOfStudent,
   cancelAllApplicantsForJob,
+  fetchFCC,
 } from "../../helper";
 const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company, Meeting } from "../../models";
+import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
+import transporter from "../../mail";
+
+const mailOptions = (
+  to: string,
+  job: string,
+  student: string,
+  company: string
+) => ({
+  from: process.env.EMAIL_USER,
+  to: to,
+  subject: "You Were Applied!",
+  text: `Hello ${student},\nYour CV was sent to ${company} for the position of ${job}! \nMake sure you're ready!`,
+});
 
 router.get("/all", async (req: Request, res: Response) => {
   try {
@@ -37,6 +50,11 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
       include: [
         {
           model: Student,
+          include: [
+            {
+              model: Class,
+            },
+          ],
         },
         {
           model: Job,
@@ -62,18 +80,23 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/updates", async (req: Request, res: Response) => {
+  const result = await fetchFCC();
+  res.json(result);
+});
+
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date } = req.body;
+    const { relatedId, eventName, userId, entry, date, type } = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
       userId,
       date,
+      type,
     });
     if (error) return res.status(400).json({ error: error.message });
     if (eventName === "Hired") {
-      //TODO fix types
       const job: IJob = (
         await Job.findByPk(relatedId, {
           include: [{ model: Company, attributes: ["name"] }],
@@ -82,7 +105,7 @@ router.post("/", async (req: Request, res: Response) => {
       const student: IStudent = (await Student.findByPk(userId)).toJSON();
       //@ts-ignore
       const studentMsg: string = `Student was hired by ${job.Company.name} as a ${job.position}`;
-      const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
+      // const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
       cancelAllJobsOfStudent(
         parseInt(userId),
@@ -90,11 +113,36 @@ router.post("/", async (req: Request, res: Response) => {
         studentMsg,
         date
       );
-      cancelAllApplicantsForJob(
-        parseInt(relatedId),
-        parseInt(userId),
-        jobMsg,
-        date
+      // cancelAllApplicantsForJob(
+      //   parseInt(relatedId),
+      //   parseInt(userId),
+      //   jobMsg,
+      //   date
+      // );
+    } else if (eventName === "Sent CV") {
+      const job: IJob = (
+        await Job.findByPk(relatedId, {
+          include: [{ model: Company, attributes: ["name"] }],
+        })
+      ).toJSON();
+      const student: IStudent = (
+        await Student.findByPk(userId, {
+          attributes: ["firstName", "lastName", "email"],
+        })
+      ).toJSON();
+      transporter.sendMail(
+        mailOptions(
+          student.email,
+          job.position,
+          `${student.firstName} ${student.lastName}`,
+          job.Company!.name
+        ),
+        function (error: Error | null) {
+          if (error) {
+            console.log(error);
+            console.log("Mail not sent");
+          }
+        }
       );
     }
     const event: IEvent = await Event.create({
@@ -103,6 +151,7 @@ router.post("/", async (req: Request, res: Response) => {
       eventName,
       entry,
       date,
+      type,
     });
     return res.json(event);
   } catch (error) {

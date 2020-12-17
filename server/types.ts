@@ -1,6 +1,6 @@
 import { Model } from "sequelize/types";
-
 export interface IJob {
+  Company?: ICompany;
   id?: number;
   companyId: number;
   position: string;
@@ -30,6 +30,7 @@ export interface IStudent {
   languages: string;
   citizenship: string;
   fccAccount?: string;
+  resumeLink?: string;
 }
 
 export interface IClass {
@@ -48,7 +49,7 @@ export interface IEvent {
   userId: number;
   relatedId: number;
   eventName: string;
-  entry?: string;
+  entry?: any;
   type: string;
   date: Date;
 }
@@ -91,22 +92,25 @@ export interface INotice {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
-  externalId?: number;
+  lessonId?: number;
+  externalId?: string | number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
   status: string;
-  body: string;
+  title: string;
+  body?: string;
 }
 
 export interface ITaskofStudent {
   id?: number;
-  userId: number;
+  studentId: number;
   taskId: number;
   type: string;
   status: string;
+  submitLink?: string;
+  description?: string;
 }
 export interface SeqInclude {
   model: Model;
@@ -115,12 +119,13 @@ export interface SeqInclude {
   where?: {};
 }
 
-export type PublicFields = "firstname" | "lastname" | "fcc";
+export type PublicFields = "firstname" | "lastname" | "fcc" | "id";
 
 export enum PublicFieldsEnum {
   firstname = "first_name",
   lastname = "last_name",
   fcc = "fcc_account",
+  id = "id",
 }
 export interface IMentor {
   id?: number;
@@ -151,7 +156,9 @@ export interface IMeeting {
   studentId: number;
   place: string;
 }
-export interface IMentorProgram{
+
+export interface IFccEvent {}
+export interface IMentorProgram {
   id?: number;
   classId: number;
   name: string;
