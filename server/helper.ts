@@ -7,6 +7,7 @@ import {
   IFccEvent,
   IJob,
   IStudent,
+  ITaskFilter,
   PublicFields,
   PublicFieldsEnum,
   SeqInclude,
@@ -256,5 +257,32 @@ export const fetchFCC: () => void = async () => {
   } catch (err) {
     console.log(err);
     return { success: false, error: err.message };
+  }
+};
+
+export const parseFilters: (stringified: string) => any = (
+  stringfied: string
+) => {
+  try {
+    const parsed: ITaskFilter = JSON.parse(stringfied);
+    const studentFilters: string[] = ["class"];
+    const taskFilters: string[] = ["type"];
+    const sortedFilter = { student: {}, task: {} };
+
+    Object.assign(
+      sortedFilter.task,
+      Object.keys(parsed).filter((field: string) => taskFilters.includes(field))
+    );
+    Object.assign(
+      sortedFilter.student,
+      Object.keys(parsed).filter((field: string) =>
+        studentFilters.includes(field)
+      )
+    );
+
+    return sortedFilter;
+  } catch (e) {
+    console.log(e);
+    return undefined;
   }
 };

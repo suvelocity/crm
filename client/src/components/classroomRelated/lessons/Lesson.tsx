@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson} from "../../../typescript/interfaces";
+import { ILesson } from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -9,7 +9,7 @@ import { EditDiv } from "../../../styles/styledComponents";
 import { useState, useCallback, useEffect } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
-import AddLesson, {Task} from "./AddLesson";
+import AddLesson, { Task } from "./AddLesson";
 import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
@@ -26,7 +26,7 @@ export default function Lesson({
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
   const [tasks, setTasks] = useState<Task[]>([]);
   const classes = useStyles();
-  const getLessons= useCallback(async () => {
+  const getLessons = useCallback(async () => {
     try {
       const { data } = await network.get(`/api/v1/lesson/byId/${lesson.id}`);
       setLessonState(data);
@@ -37,24 +37,26 @@ export default function Lesson({
   }, [loading]);
   const getTasks = useCallback(async () => {
     try {
-      const { data : tasks } : {data : Task[]} = await network.get(`/api/v1/lesson/tasks/${lesson.id}`);
-      console.log(tasks)
+      const { data: tasks }: { data: Task[] } = await network.get(
+        `/api/v1/lesson/tasks/${lesson.id}`
+      );
+      console.log(tasks);
       setTasks(tasks);
     } catch {
     } finally {
       setLoading(false);
     }
-  }, [loading])
+  }, [loading]);
   const handleClose = () => {
     setModalState(false);
     setLoading(true);
     getLessons();
     setLoading(true);
-    getTasks()
+    getTasks();
   };
   useEffect(() => {
     getTasks();
-  },[])
+  }, []);
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
@@ -63,7 +65,7 @@ export default function Lesson({
         setOpen={setModalState}
         update={true}
         lesson={lessonState}
-        header='Edit Lesson'
+        header="Edit Lesson"
         lessonTasks={tasks}
       />
     </div>
@@ -75,15 +77,16 @@ export default function Lesson({
         <StyledAccordion>
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'>
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
             {"#" + (index + 1) + " " + lessonState.title}
           </StyledSummery>
           <hr />
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-            <EditDiv onClick={() => setModalState(true)}>
+              <EditDiv onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
               <ResourcesLinks>
@@ -92,7 +95,7 @@ export default function Lesson({
                       .split("%#splitingResource#%")
                       .map((resource: string, index: number) => (
                         <ResourcesLink key={index}>
-                          <Link target='_blank' href={resource}>
+                          <Link target="_blank" href={resource}>
                             {resource}
                           </Link>
                         </ResourcesLink>
@@ -100,7 +103,7 @@ export default function Lesson({
                   : //@ts-ignore
                     lessonState.resource?.length > 0 && (
                       //@ts-ignore
-                      <Link target='_blank' href={lessonState.resource}>
+                      <Link target="_blank" href={lessonState.resource}>
                         {lessonState.resource}
                       </Link>
                     )}
@@ -111,8 +114,9 @@ export default function Lesson({
         <Modal
           open={modalState}
           onClose={() => setModalState(false)}
-          aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'>
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
           {body}
         </Modal>
       </div>

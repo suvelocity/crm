@@ -8,7 +8,7 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-interface Task {
+export interface Task {
   lessonId?: number;
   externalId?: number;
   externalLink?: string;

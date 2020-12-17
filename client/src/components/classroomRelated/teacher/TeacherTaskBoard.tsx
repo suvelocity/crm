@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import network from "../../../helpers/network";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -15,6 +15,8 @@ import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Swal from "sweetalert2";
+import { set } from "lodash";
+import { MenuItem, Select } from "@material-ui/core";
 
 const useRowStyles = makeStyles({
   root: {
@@ -56,59 +58,83 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
+  row.TaskofStudents = useMemo(() => {
+    return row.TaskofStudents.sort((tos: any) =>
+      tos.status === "done" ? 1 : -1
+    );
+  }, []);
+
+  const calculateSubmissionRate: () => number = () => {
+    return (
+      (row.TaskofStudents.reduce((sum: number, tos: any) => {
+        return tos.status === "done" ? sum + 1 : sum + 0;
+      }, 0) /
+        row.TaskofStudents.length) *
+      100
+    );
+  };
+
+  const ExtractClasses: () => string = () => {
+    return Array.from(
+      new Set(row.TaskofStudents.map((tos: any) => tos?.Student?.Class.name))
+    ).join(", ");
+  };
+
   return (
     <>
       <TableRow className={classes.root}>
         <TableCell>
           <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => setOpen(!open)}>
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component='th' scope='row'>
+        <TableCell component="th" scope="row">
           {row.title}
         </TableCell>
-        <TableCell align='right'>{row.type}</TableCell>
-        <TableCell align='right'>{row.lesson}</TableCell>
-        <TableCell align='right'>{convertDateToString(row.endDate)}</TableCell>
-        <TableCell align='right'>"placeholder 7/30"</TableCell>
-        <TableCell align='right'>{row.externalLink}</TableCell>
+        <TableCell align="right">{ExtractClasses()}</TableCell>
+        <TableCell align="right">{row.type}</TableCell>
+        <TableCell align="right">{row.lesson}</TableCell>
+        <TableCell align="right">{convertDateToString(row.endDate)}</TableCell>
+        <TableCell align="right">{calculateSubmissionRate()}%</TableCell>
+        <TableCell align="right">{row.externalLink}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography variant="h6" gutterBottom component="div">
                 Students
               </Typography>
-              <Table size='small' aria-label='purchases'>
+              <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
                     <TableCell>Full Name</TableCell>
                     <TableCell>Class</TableCell>
-                    <TableCell align='right'>Submission State</TableCell>
-                    <TableCell align='right'>Submission Date</TableCell>
-                    <TableCell align='right'>Submission Link</TableCell>
+                    <TableCell align="right">Submission State</TableCell>
+                    <TableCell align="right">Submission Date</TableCell>
+                    <TableCell align="right">Submission Link</TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.TaskofStudents.map((studentRow: any) => (
                     <TableRow key={studentRow.studentId}>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         {studentRow.Student.firstName +
                           studentRow.Student.lastName}
                       </TableCell>
                       <TableCell>{studentRow.Student.Class.name}</TableCell>
-                      <TableCell align='right'>{studentRow.status}</TableCell>
-                      <TableCell align='right'>
+                      <TableCell align="right">{studentRow.status}</TableCell>
+                      <TableCell align="right">
                         {studentRow.updatedAt
                           ? convertDateToString(studentRow.updatedAt)
                           : "hasn't submitted yet"}
                       </TableCell>
-                      <TableCell align='right'>
+                      <TableCell align="right">
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
                       </TableCell>
                     </TableRow>
@@ -131,8 +157,11 @@ export default function TeacherTaskBoard(props: any) {
 
   const fetchTeacherTasks = async () => {
     try {
-      const { data } = await network.get(`/api/v1/task/byteacherid/${user.id}`);
-      console.log(data);
+      const { data } = await network.get(
+        `/api/v1/task/byteacherid/${user.id}`,
+        { params: { filters: { type: "manual" } } }
+      );
+      // console.log(data);
       const newArray = await data.map((task: any) => {
         task.TaskofStudents.forEach((taskofstudent: any) => {
           console.log(taskofstudent);
@@ -160,26 +189,32 @@ export default function TeacherTaskBoard(props: any) {
   });
   return (
     <TableContainer component={Paper}>
-      <Table aria-label='collapsible table'>
+      <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell />
             <TableCell>
               <b>Task</b>
+              <Select>
+                <MenuItem>kaki</MenuItem>
+              </Select>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align="right">
+              <b>Class</b>
+            </TableCell>
+            <TableCell align="right">
               <b>Type</b>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align="right">
               <b>Lesson</b>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align="right">
               <b>deadline</b>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align="right">
               <b>Submittions&nbsp;(%)</b>
             </TableCell>
-            <TableCell align='right'>
+            <TableCell align="right">
               <b>Link</b>
             </TableCell>
           </TableRow>

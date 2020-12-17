@@ -4,8 +4,9 @@ const router = Router();
 import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event } from "../../models";
-import { ITask, ITaskofStudent } from "../../types";
+import { ITask, ITaskFilter, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
+import { parseFilters } from "../../helper";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -230,9 +231,25 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
 });
 
 router.get("/byteacherid/:id", async (req: Request, res: Response) => {
+  const { filters } = req.query;
+  // const test = { a: "1", b: "2" };
+  // Object.assign(test, filters);
+  // console.log(test);
+  const f = parseFilters(filters as string);
+
   try {
+    // const parsedFilters: ITaskFilter = JSON.parse(filters as string);
+    // const tosFilters: Partial<ITaskFilter> = {}
+    const tosWhereCLause: any = {
+      created_by: req.params.id,
+    };
+    const studentWhereClause: any = {};
+
+    if (filters) {
+      Object.assign(tosWhereCLause, JSON.parse(filters as string));
+    }
     const myTasks: any[] = await Task.findAll({
-      where: { created_by: req.params.id },
+      where: tosWhereCLause,
       include: [
         {
           model: TaskofStudent,
@@ -244,6 +261,7 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
               include: [
                 { model: Class, attributes: ["id", "name", "endingDate"] },
               ],
+              // where:,
             },
           ],
         },

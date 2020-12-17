@@ -50,33 +50,33 @@ export default function AddTask({
 
   return (
     <div
-      className='create-task'
+      className="create-task"
       style={{
         display: "flex",
         flexDirection: "column",
       }}
     >
       <hr />
-      <Tooltip title='Remove task'>
+      <Tooltip title="Remove task">
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
       <Select
         style={selectStyle}
         value={task.type}
-        variant='outlined'
+        variant="outlined"
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "type");
         }}
       >
-        <MenuItem value='manual'>manual</MenuItem>
-        <MenuItem value='challengeMe'>challengeMe</MenuItem>
-        <MenuItem value='fcc'>fcc</MenuItem>
-        <MenuItem value='quiz'>quiz</MenuItem>
+        <MenuItem value="manual">manual</MenuItem>
+        <MenuItem value="challengeMe">challengeMe</MenuItem>
+        <MenuItem value="fcc">fcc</MenuItem>
+        <MenuItem value="quiz">quiz</MenuItem>
       </Select>
       {task.type === "manual" ? (
         <Input
-          variant='outlined'
-          label='Link to task'
+          variant="outlined"
+          label="Link to task"
           value={task.externalLink}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "externalLink");
@@ -89,8 +89,8 @@ export default function AddTask({
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "title");
           }}
-          variant='outlined'
-          defaultValue='Pick a Task'
+          variant="outlined"
+          defaultValue="Pick a Task"
         >
           <MenuItem value={"challenge1"}>challenge1</MenuItem>
           <MenuItem value={"challenge2"}>challenge2</MenuItem>
@@ -100,8 +100,8 @@ export default function AddTask({
       <>
         <Input
           disabled={task.type === "manual" ? false : true}
-          variant='outlined'
-          label='Task title'
+          variant="outlined"
+          label="Task title"
           value={task.title}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "title");
@@ -109,8 +109,8 @@ export default function AddTask({
         />
       </>
       <Input
-        variant='outlined'
-        label='Task Description'
+        variant="outlined"
+        label="Task Description"
         value={task.body}
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "body");
@@ -121,11 +121,11 @@ export default function AddTask({
         <KeyboardDatePicker
           disableToolbar
           minDate={new Date()}
-          variant='inline'
-          format='MM/dd/yyyy'
-          margin='normal'
-          id='date-picker-inline'
-          label='Date picker inline'
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          label="Deadline"
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{
@@ -139,8 +139,8 @@ export default function AddTask({
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "status");
         }}
-        variant='outlined'
-        defaultValue='Pick a Status'
+        variant="outlined"
+        defaultValue="Pick a Status"
       >
         <MenuItem value={"active"}>active</MenuItem>
         <MenuItem value={"disabled"}>disabled</MenuItem>
