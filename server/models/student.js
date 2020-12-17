@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.TaskofStudent, {
         foreignKey: "userId",
       });
-      this.hasMany(models.Meeting, {
+      this.hasMany(models.MentorStudent, {
         foreignKey: "studentId",
         onDelete: "cascade",
         hooks: true,
