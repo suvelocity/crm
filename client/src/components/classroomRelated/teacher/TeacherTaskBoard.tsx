@@ -124,10 +124,10 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                   {row.TaskofStudents.map((studentRow: any) => (
                     <TableRow key={studentRow.studentId}>
                       <TableCell component="th" scope="row">
-                        {studentRow.Student.firstName +
-                          studentRow.Student.lastName}
+                        {studentRow?.Student?.firstName +
+                          studentRow?.Student?.lastName}
                       </TableCell>
-                      <TableCell>{studentRow.Student.Class.name}</TableCell>
+                      <TableCell>{studentRow?.Student?.Class.name}</TableCell>
                       <TableCell align="right">{studentRow.status}</TableCell>
                       <TableCell align="right">
                         {studentRow.updatedAt
@@ -159,7 +159,7 @@ export default function TeacherTaskBoard(props: any) {
     try {
       const { data } = await network.get(
         `/api/v1/task/byteacherid/${user.id}`,
-        { params: { filters: { type: "manual" } } }
+        { params: { filters: { class: "cyber4s" } } }
       );
       // console.log(data);
       const newArray = await data.map((task: any) => {

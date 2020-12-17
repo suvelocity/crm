@@ -235,7 +235,8 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
   // const test = { a: "1", b: "2" };
   // Object.assign(test, filters);
   // console.log(test);
-  const f = parseFilters(filters as string);
+  const parsedFilters = parseFilters(filters as string);
+  console.log(parsedFilters);
 
   try {
     // const parsedFilters: ITaskFilter = JSON.parse(filters as string);
@@ -243,25 +244,31 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
     const tosWhereCLause: any = {
       created_by: req.params.id,
     };
-    const studentWhereClause: any = {};
+    const studentWhereClause: any = parsedFilters.student;
+    Object.assign(tosWhereCLause, parsedFilters.task);
+    console.log(tosWhereCLause);
+    console.log(studentWhereClause);
 
-    if (filters) {
-      Object.assign(tosWhereCLause, JSON.parse(filters as string));
-    }
     const myTasks: any[] = await Task.findAll({
       where: tosWhereCLause,
       include: [
         {
           model: TaskofStudent,
           attributes: ["studentId", "status", "submitLink", "updatedAt"],
+          required: true,
           include: [
             {
               model: Student,
               attributes: ["firstName", "lastName"],
+              required: true,
               include: [
-                { model: Class, attributes: ["id", "name", "endingDate"] },
+                {
+                  model: Class,
+                  required: true,
+                  attributes: ["id", "name", "endingDate"],
+                  where: studentWhereClause,
+                },
               ],
-              // where:,
             },
           ],
         },
@@ -272,6 +279,13 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
       ],
       order: [["createdAt", "DESC"]],
     });
+
+    // console.log(myTasks);
+    // return res.json(
+    //   myTasks.filter((task) =>
+    //     task.TaskofStudent.some((tos: any) => tos.Student)
+    //   )
+    // );
     return res.json(myTasks);
   } catch (error) {
     res.status(500).json({ error: error.message });

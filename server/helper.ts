@@ -16,6 +16,7 @@ import {
 import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
+import { parse } from "dotenv/types";
 
 //TODO fix types
 export const cancelAllJobsOfStudent: (
@@ -265,22 +266,23 @@ export const parseFilters: (stringified: string) => any = (
 ) => {
   try {
     const parsed: ITaskFilter = JSON.parse(stringfied);
+    const studentClassSynonyms: any = { class: "name" };
     const studentFilters: string[] = ["class"];
     const taskFilters: string[] = ["type"];
-    const sortedFilter = { student: {}, task: {} };
 
-    Object.assign(
-      sortedFilter.task,
-      Object.keys(parsed).filter((field: string) => taskFilters.includes(field))
-    );
-    Object.assign(
-      sortedFilter.student,
-      Object.keys(parsed).filter((field: string) =>
-        studentFilters.includes(field)
-      )
-    );
-
-    return sortedFilter;
+    return {
+      student: Object.keys(parsed).reduce((obj: any, field: string) => {
+        if (studentFilters.includes(field))
+          //@ts-ignore
+          obj[studentClassSynonyms[field]] = parsed[field];
+        return obj;
+      }, {}),
+      task: Object.keys(parsed).reduce((obj: any, field: string) => {
+        //@ts-ignore
+        if (taskFilters.includes(field)) obj[field] = parsed[field];
+        return obj;
+      }, {}),
+    };
   } catch (e) {
     console.log(e);
     return undefined;
