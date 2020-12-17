@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
@@ -11,8 +11,41 @@ import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
 import QuizPage from '../components/classroomRelated/QuizMeRelated/components/QuizPage'
 
+import network from "../helpers/network";
+import { challengeMeChallenges } from "../atoms";
+import { AuthContext } from "../helpers";
+import Cookies from "js-cookie";
+import { useRecoilState } from "recoil";
+import { teacherStudents, classesOfTeacher } from "../atoms";
 
 export default function TeacherRoutes() {
+  const [CMChallenges, setCMChallenges] = useRecoilState(challengeMeChallenges);
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  const [students, setStudents] = useRecoilState(teacherStudents);
+  const [classesToTeacher, setClassesToTeacher] = useRecoilState(
+    classesOfTeacher
+  );
+
+  const fetchTeacherData = async () => {
+    try {
+      const { data: teacherStudents } = await network.get(
+        `/api/v1/student/byTeacher/${user.id}`
+      );
+      setClassesToTeacher(teacherStudents);
+      const allStudents = teacherStudents.map(
+        (classRoom: any) => classRoom.Class.Students
+      );
+      setStudents(allStudents.flat()); //TODO check with multipal classes
+    } catch {}
+  };
+
+  useEffect(() => {
+    (async () => {
+      await fetchTeacherData();
+    })();
+  }, []);
+
   return (
     <ErrorBoundary>
       <ClassRoomNavBar />

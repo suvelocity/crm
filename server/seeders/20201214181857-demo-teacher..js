@@ -6,9 +6,11 @@ module.exports = {
       "Teachers",
       [
         {
+          id: 999999,
           first_name: "lonir",
           last_name: "lotomer",
           email: "teacher@teacher.com",
+          class_id: 1,
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -22,7 +24,7 @@ module.exports = {
      * Add commands to revert seed here.
      *
      * Example:
-     * await queryInterface.bulkDelete('People', null, {});
      */
+    await queryInterface.bulkDelete("Teachers", null, {});
   },
 };

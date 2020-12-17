@@ -63,7 +63,7 @@ function SingleProcess() {
     const index: number | undefined = events?.findIndex(
       (event: IEvent) => event.id === eventId
     );
-    if (!index) {
+    if (index === -1 || index === undefined) {
       Swal.fire("Error occurred", " event not found", "error");
       return;
     }
@@ -79,6 +79,7 @@ function SingleProcess() {
     primary: classes.primaryReq,
   };
 
+  console.log(events);
   return (
     <Wrapper width="90%">
       <Center>
@@ -179,7 +180,14 @@ function SingleProcess() {
           </div>
         </GridDiv>
       </Loading>
-      <NewEventModal studentId={studentId} jobId={jobId} add={addEventToLog} />
+      {job?.id && student?.id && events && (
+        <NewEventModal
+          events={events}
+          studentId={studentId}
+          jobId={jobId}
+          add={addEventToLog}
+        />
+      )}
     </Wrapper>
   );
 }

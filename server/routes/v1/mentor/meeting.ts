@@ -1,56 +1,29 @@
 import { Request, Response , Router } from "express";
 import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
-import { Student, Mentor, Meeting, Class} from "../../../models";
-import { IDeshbord, IMeeting } from "../../../types";
+import { Student, Mentor, MentorStudent, Meeting, Class} from "../../../models";
+import { IDashboard, IMeeting } from "../../../types";
 
 const router = Router();
 
-// get class deshbord table:
-router.get('/class/:id', async (req: Request, res: Response) => {
+// get pair meets:
+router.get('/:id', async (req: Request, res: Response) => {
     try{
-        const classTableData:IDeshbord[] = await Student.findAll({
-            attributes:["id", "firstName", "lastName"],
-            where:{classId:req.params.id},
+        const classTableData:IDashboard[] = await MentorStudent.findOne({
+            where:{id:req.params.id},
             include:[
                 {
-                    model: Class,
-                    attributes: ["name", "cycleNumber"]
+                    model: Student,
                 },
                 {
                     model: Mentor,
                 },
                 {
                     model: Meeting,
-                    attributes:["date"],
                 }
             ]
         });
-
         res.json(classTableData);
-    }catch(err){
-        res.status(500).json({ error: err.message });
-    }
-})
-
-// get student meets:
-router.get('/student/:id', async (req: Request, res: Response) => {
-    try{
-        const studentMeets:IDeshbord = await Student.findOne({
-            attributes:["id", "firstName", "lastName"],
-            where:{id:req.params.id},
-            include:[
-                {
-                    model: Mentor
-                },
-                {
-                    model: Meeting,
-                    attributes:["date"],
-                },
-            ]
-        });
-
-        res.json(studentMeets);
     }catch(err){
         res.status(500).json({ error: err.message });
     }
@@ -61,17 +34,7 @@ router.post('/', async (req: Request, res: Response) => {
     try{
         const {error} = meetingSchema.validate(req.body);
         if (error) return res.status(400).json({ error: error.message });
-        const {studentId, date, place} = req.body;
-        const { mentorId } = await Student.findOne({
-            where: {id:studentId},
-            attributes: ["mentorId"]
-        }) 
-        const newMeeting:IMeeting = await Meeting.create({
-            mentorId,
-            studentId,
-            date: new Date(date),
-            place
-        });
+        const newMeeting:IMeeting = await Meeting.create(req.body);
         res.json(newMeeting);
     }catch(err){
         res.status(500).json({ error: err.message });
@@ -99,7 +62,7 @@ router.patch("/delete", async (req, res) => {
     try {
       const {meetingtId} = req.body;
       const deleted: any = await Meeting.destroy({
-        where: { id:meetingtId },
+        where: { id : meetingtId },
       });
       if (deleted) return res.json({ message: "Meeting deleted" });
       return res.status(404).json({ error: "Meeting not found" });

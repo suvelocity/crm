@@ -8,12 +8,14 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
 import TaskTable from "./TaskTable";
+import Nofitication from "./Nofitication";
 
 export default function TaskBoard() {
   const [myTasks, setMyTasks] = useState<ITask[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  console.log(user);
 
   const DashboardContainer = styled.div`
     background-color: ${({ theme }: { theme: any }) => theme.colors.background};
@@ -29,8 +31,8 @@ export default function TaskBoard() {
       const { data }: { data: ITask[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
-      setLoading(false);
       setMyTasks(data);
+      setLoading(false);
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
@@ -47,8 +49,10 @@ export default function TaskBoard() {
   return (
     <DashboardContainer>
       <Content>
-        {/* <Task myTasks={myTasks} /> */}
-        <TaskTable myTasks={myTasks} />
+        <Loading size={30} loading={loading}>
+          <Nofitication myTasks={myTasks} />
+          <TaskTable myTasks={myTasks} />
+        </Loading>
       </Content>
     </DashboardContainer>
   );
