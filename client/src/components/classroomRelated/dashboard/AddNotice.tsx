@@ -1,21 +1,14 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { useState, useContext } from "react";
 import { INotice } from "../../../typescript/interfaces"; //todo add interface
-import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
+import { AuthContext } from "../../../helpers";
 
 const classIdPlaceHolder = 1;
 const createdByPlaceHolder = 1;
@@ -27,6 +20,7 @@ export default function AddNotice({
   updateLocal: React.Dispatch<React.SetStateAction<INotice[] | undefined>>;
   closeModal: () => void;
 }) {
+  const { user }: any = useContext(AuthContext);
   const [notices, setNotices] = useState<INotice[] | null>();
   const [body, setBody] = useState("");
   const [type, setType] = useState("regular");
@@ -47,7 +41,7 @@ export default function AddNotice({
   const sendNotice = async () => {
     try {
       const { data }: { data: INotice } = await network.post(`/api/v1/notice`, {
-        classId: classIdPlaceHolder,
+        classId: user.classId, //todo add class selector
         type,
         body,
         createdBy: createdByPlaceHolder,
@@ -63,18 +57,17 @@ export default function AddNotice({
     }
   };
   return (
-    <div id="post-notice" style={{ display: "flex", flexDirection: "column" }}>
+    <div id='post-notice' style={{ display: "flex", flexDirection: "column" }}>
       <FormControl>
-        <InputLabel id="demo-controlled-open-select-label">Type</InputLabel>
+        <InputLabel id='demo-controlled-open-select-label'>Type</InputLabel>
         <Select
-          labelId="demo-controlled-open-select-label"
-          id="demo-controlled-open-select"
+          labelId='demo-controlled-open-select-label'
+          id='demo-controlled-open-select'
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
           value={type}
-          onChange={handleChange}
-        >
+          onChange={handleChange}>
           <MenuItem value={"regular"}>regular</MenuItem>
           <MenuItem value={"important"}>important</MenuItem>
           <MenuItem value={"critical"}>critical</MenuItem>
@@ -84,15 +77,15 @@ export default function AddNotice({
         onChange={(e) => {
           setBody(e.target.value);
         }}
-        id="outlined-multiline-static"
-        label="notice"
+        id='outlined-multiline-static'
+        label='notice'
         multiline
         rows={5}
         // defaultValue='Default Value'
-        variant="outlined"
+        variant='outlined'
       />
 
-      <Button variant="contained" color="secondary" onClick={sendNotice}>
+      <Button variant='contained' color='secondary' onClick={sendNotice}>
         send
       </Button>
     </div>

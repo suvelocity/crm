@@ -37,7 +37,9 @@ router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
   try {
     const teacherId: string = req.params.teacherId;
     const teacherClasses: any | null = await TeacherofClass.findAll({
-      include: [{ model: Class, attributes: ["id"], include: [Student] }],
+      include: [
+        { model: Class, attributes: ["id", "name"], include: [Student] },
+      ],
       where: { teacherId },
     });
 

@@ -29,6 +29,7 @@ import { AuthContext } from "../helpers";
 import { ThemeContext } from "../helpers";
 //@ts-ignore
 import DarkModeToggle from "react-dark-mode-toggle";
+import "./classroomNavBar.css";
 
 function ClassRoomNavBar() {
   const [open, setOpen] = useState(false);
@@ -62,16 +63,19 @@ function ClassRoomNavBar() {
 
   return (
     <div>
-      {/* top bar */}
+      {/* top bar    background: "#202124",
+    sideBar: "#18191b", */}
       {/* //todo add my color somehow */}
-      <AppBar position='static'>
+      <AppBar
+        position='static'
+        // style={{ backgroundColor: currentTheme === "dark" && "#18191b" }}
+      >
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
             color='inherit'
             edge='start'
-            aria-label='menu'
-          >
+            aria-label='menu'>
             <Menu />
           </IconButton>
           <Typography
@@ -80,8 +84,7 @@ function ClassRoomNavBar() {
               marginRight: 15,
               marginTop: "auto",
               marginBottom: "auto",
-            }}
-          >
+            }}>
             Classroom
           </Typography>
           <DarkModeToggle
@@ -96,8 +99,25 @@ function ClassRoomNavBar() {
               position: "absolute",
               right: 10,
               marginRight: 10,
-            }}
-          >
+            }}>
+            <>
+              <IconButton
+                onClick={handleClick}
+                color='inherit'
+                style={{ color: "red", marginRight: 10 }}>
+                <Badge color='secondary' badgeContent={10}>
+                  <Notifications style={{ marginRight: 10, color: "white" }} />
+                </Badge>
+              </IconButton>
+              <StyledMenu
+                //@ts-ignore
+                id='customized-menu'
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}></StyledMenu>
+            </>
+
             <AccountCircleIcon
               style={{
                 marginRight: 10,
@@ -114,8 +134,7 @@ function ClassRoomNavBar() {
         open={open}
         onClose={() => {
           setOpen(false);
-        }}
-      >
+        }}>
         <StyledDrawer>
           <StyledLink to='/'>
             <DrawerItem onClick={() => setOpen(false)}>
@@ -129,50 +148,34 @@ function ClassRoomNavBar() {
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/schedhule'>
+          {/* <StyledLink to='/schedhule'>
             <DrawerItem onClick={() => setOpen(false)}>
               Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          </StyledLink>
-          <StyledLink to='/tasks'>
-            <DrawerItem onClick={() => setOpen(false)}>
-              Tasks
-              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
-          </StyledLink>
-          {user.userType == "teacher" && (
+          </StyledLink> */}
+          {user.userType == "student" && (
+            <StyledLink to='/tasks'>
+              <DrawerItem onClick={() => setOpen(false)}>
+                Tasks
+                <AssignmentLateIcon
+                  style={{ position: "absolute", right: 10 }}
+                />
+              </DrawerItem>
+            </StyledLink>
+          )}
+
+          {/* {user.userType == "teacher" && (
             <StyledLink to='/teacher'>
               <DrawerItem onClick={() => setOpen(false)}>
                 Teacher
                 <StreetviewIcon style={{ position: "absolute", right: 10 }} />
               </DrawerItem>
             </StyledLink>
-          )}
+          )} */}
           <DrawerItem style={{ alignContent: "flex-end" }}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
-          {user.type !== "student" && (
-            <>
-              <IconButton
-                onClick={handleClick}
-                color='inherit'
-                style={{ color: "red" }}
-              >
-                <Badge color='secondary' badgeContent={10}>
-                  <Notifications style={{ color: "white" }} />
-                </Badge>
-              </IconButton>
-              <StyledMenu
-                //@ts-ignore
-                id='customized-menu'
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              ></StyledMenu>
-            </>
-          )}
         </StyledDrawer>
       </Drawer>
     </div>
@@ -225,14 +228,18 @@ const DrawerItem = styled.div`
 
 const StyledDrawer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.sideBar};
-
   /* background-color: #3f51b5; */
   /* background-image:url('../media/scaleup.jpeg'); */
-
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   height: 100%;
   width: 220px;
   overflow: hidden;
+`;
+
+const StyledAppBar = styled(AppBar)`
+  background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.sidebar}; //TODO change
+  width: 100%;
 `;

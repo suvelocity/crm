@@ -54,8 +54,7 @@ export default function AddTask({
       style={{
         display: "flex",
         flexDirection: "column",
-      }}
-    >
+      }}>
       <hr />
       <Tooltip title='Remove task'>
         <DeleteForeverIcon onClick={removeTask} />
@@ -66,8 +65,7 @@ export default function AddTask({
         variant='outlined'
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "type");
-        }}
-      >
+        }}>
         <MenuItem value='manual'>manual</MenuItem>
         <MenuItem value='challengeMe'>challengeMe</MenuItem>
         <MenuItem value='fcc'>fcc</MenuItem>
@@ -90,8 +88,7 @@ export default function AddTask({
             changer(e, "title");
           }}
           variant='outlined'
-          defaultValue='Pick a Task'
-        >
+          defaultValue='Pick a Task'>
           <MenuItem value={"challenge1"}>challenge1</MenuItem>
           <MenuItem value={"challenge2"}>challenge2</MenuItem>
           <MenuItem value={"challenge3"}>challenge3</MenuItem>
@@ -125,7 +122,7 @@ export default function AddTask({
           format='MM/dd/yyyy'
           margin='normal'
           id='date-picker-inline'
-          label='Date picker inline'
+          label='Choose a Deadline'
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{
@@ -140,25 +137,26 @@ export default function AddTask({
           changer(e, "status");
         }}
         variant='outlined'
-        defaultValue='Pick a Status'
-      >
+        defaultValue='Pick a Status'>
         <MenuItem value={"active"}>active</MenuItem>
         <MenuItem value={"disabled"}>disabled</MenuItem>
       </Select>
       {students && studentsToTask !== undefined && (
         <Select
           multiple
+          variant='outlined'
           defaultValue={students.map((student) => {
             return student.id;
           })}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "students");
-          }}
-        >
-          {students.map((student: IStudent) => {
+          }}>
+          {students.map((student: any) => {
+            console.log(student);
+
             return (
               <MenuItem key={student.id} value={student.id}>
-                {`${student.firstName} ${student.lastName}`}
+                {`${student.className} ${student.firstName} ${student.lastName}`}
               </MenuItem>
             );
           })}

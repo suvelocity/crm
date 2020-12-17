@@ -133,12 +133,10 @@ export default function TeacherTaskBoard(props: any) {
     try {
       const { data } = await network.get(`/api/v1/task/byteacherid/${user.id}`);
       console.log(data);
-      const newArray = await data.map((task: any) => {
-        task.TaskofStudents.forEach((taskofstudent: any) => {
-          console.log(taskofstudent);
-        });
-      });
-
+      // const newArray = await data.map((task: any) => {
+      //   task.TaskofStudents.forEach((taskofstudent: any) => {
+      //   });
+      // });
       setTeacherTasks(data);
     } catch (error) {
       return Swal.fire("Error", error, "error");
@@ -148,11 +146,13 @@ export default function TeacherTaskBoard(props: any) {
     fetchTeacherTasks();
   }, []);
 
+  // console.log(teacherTasks);
+
   const taskArray = teacherTasks?.map((task: any) => {
     return createTask(
       task.title,
       task.type,
-      task.Lesson.title,
+      task.Lesson?.title,
       task.endDate,
       task.externalLink,
       task.TaskofStudents
@@ -186,7 +186,7 @@ export default function TeacherTaskBoard(props: any) {
         </TableHead>
         <TableBody>
           {taskArray?.map((row: any) => (
-            <Row key={row.title} row={row} />
+            <Row key={row?.title} row={row} />
           ))}
         </TableBody>
       </Table>

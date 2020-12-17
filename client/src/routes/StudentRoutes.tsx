@@ -21,9 +21,9 @@ export function StudentRoutes() {
             <Route path='/lessons'>
               <Lessons />
             </Route>
-            <Route path='/schedhule'>
+            {/* <Route path='/schedhule'>
               <Schedhule />
-            </Route>
+            </Route> */}
             <Route path='/tasks'>
               <TaskBoard />
             </Route>

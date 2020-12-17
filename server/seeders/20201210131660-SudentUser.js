@@ -11,6 +11,7 @@ module.exports = {
           email: "student@student.com",
           password: bcrypt.hashSync("student123!", 10),
           type: "student",
+          related_id: 1,
           created_at: new Date(),
           updated_at: new Date(),
         },

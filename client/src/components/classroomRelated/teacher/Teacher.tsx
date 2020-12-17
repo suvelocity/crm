@@ -11,6 +11,7 @@ import AddTask from "../lessons/AddTask";
 import { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
+import styled from "styled-components";
 import { IClass, IStudent } from "../../../typescript/interfaces";
 
 const GlobalStyle = createGlobalStyle`
@@ -144,8 +145,9 @@ export default function Teacher() {
   );
 
   return (
-    <div>
+    <TeacherContainer>
       <GlobalStyle />
+      <h1>Tasks</h1>
       <AddCircleIcon onClick={() => setOpen(true)} />
       <Modal
         open={open}
@@ -155,9 +157,19 @@ export default function Teacher() {
         {body}
       </Modal>
       <TeacherTaskBoard user={user} />
-    </div>
+    </TeacherContainer>
   );
 }
+
+const TeacherContainer = styled.div`
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  height: 100vh;
+  width: 90%;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+`;
 
 const modalStyle = {
   top: `50%`,
