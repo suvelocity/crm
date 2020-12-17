@@ -12,6 +12,7 @@ const columns: ColDef[] = [
   { field: "taskId", headerName: "#", width: 50 },
   { field: "taskName", headerName: "Task", flex: 1 },
   { field: "lesson", headerName: "Lesson", flex: 1 },
+  { field: "type", headerName: "Type", width: 100 },
   {
     field: "endDate",
     headerName: "Deadline",
@@ -43,7 +44,6 @@ export default function DataGridDemo(props: any) {
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
-  console.log(selection);
   const { myTasks } = props;
 
   const rows =
@@ -53,6 +53,7 @@ export default function DataGridDemo(props: any) {
         taskId: task.Task.id,
         taskName: task.Task.body,
         lesson: task.Task.Lesson.title,
+        type: task.Task.type,
         deadline: task.Task.endDate,
         status: task.status,
         submitLink: task.submitLink,
@@ -72,17 +73,17 @@ export default function DataGridDemo(props: any) {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <Submit taskId={selection[0]} />
+      <Submit taskId={selection[0]} handleClose={handleClose} />
     </div>
   );
 
   return (
     <div>
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 630, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
+          pageSize={10}
           onSelectionChange={(newSelection) => {
             setSelection(newSelection.rowIds);
           }}
@@ -90,7 +91,11 @@ export default function DataGridDemo(props: any) {
         />
       </div>
       <div>
-        <Button variant='outlined' onClick={handleOpen}>
+        <Button
+          variant='outlined'
+          onClick={handleOpen}
+          disabled={selection.length === 1 ? false : true}
+          color={selection.length === 1 ? "secondary" : "default"}>
           Submit selected task
         </Button>
         <Modal
@@ -104,6 +109,8 @@ export default function DataGridDemo(props: any) {
     </div>
   );
 }
+
+//*modal
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;

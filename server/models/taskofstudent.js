@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Student, {
-        foreignKey: "userId",
+        foreignKey: "studentId",
       });
       this.belongsTo(models.Task, {
         foreignKey: "taskId",
@@ -18,10 +18,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   TaskofStudent.init(
     {
-      userId: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
       taskId: DataTypes.INTEGER,
       type: DataTypes.STRING,
       status: DataTypes.STRING,
+      submitLink: DataTypes.STRING,
     },
     {
       sequelize,

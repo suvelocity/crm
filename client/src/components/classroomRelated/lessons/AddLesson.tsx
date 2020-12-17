@@ -7,8 +7,7 @@ import Button from "@material-ui/core/Button";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
-import Task from "./Task";
-
+import AddTask from "./AddTask";
 interface Task {
   externalLink?: string;
   createdBy: number;
@@ -16,14 +15,36 @@ interface Task {
   type: string;
   body: string;
   title: string;
+  status: "active" | "disabled";
 }
 
-export default function AddLesson({ setOpen }: { setOpen: any }) {
-  const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>("");
-  const [zoomLink, setZoomLink] = useState<string>("");
+interface Props {
+  setOpen: Function;
+  handleClose?: Function;
+  update?: boolean;
+  lesson?: ILesson;
+  header?: string;
+}
+export default function AddLesson({
+  setOpen,
+  update,
+  lesson,
+  header,
+  handleClose,
+}: Props) {
+  const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
+  const [body, setBody] = useState<string>(lesson ? lesson.body : "");
+  const [zoomLink, setZoomLink] = useState<string>(
+    lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
+  );
   const [resource, setResource] = useState<string>("");
-  const [resources, setResources] = useState<string[]>([]);
+  const [resources, setResources] = useState<string[]>(
+    lesson
+      ? lesson.resource
+        ? lesson.resource.split("%#splitingResource#%")
+        : []
+      : []
+  );
   const [tasks, setTasks] = useState<Task[]>([]);
 
   //@ts-ignore
@@ -33,22 +54,38 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
     e.preventDefault();
     try {
       const lessonToAdd: ILesson = {
-        classId: user.classId,
+        classId: Number(user.classId),
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
         zoomLink,
         createdBy: user.id,
       };
-      const { data: addedLesson }: { data: ILesson } = await network.post(
-        "/api/v1/lesson",
-        lessonToAdd
-      );
-      setOpen(false);
+      if (update && lesson) {
+        await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+        handleClose && handleClose();
+      } else {
+        const { data: addedLesson }: { data: ILesson } = await network.post(
+          "/api/v1/lesson",
+          lessonToAdd
+        );
+
+        tasks.forEach(async (task) => {
+          const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+          console.log(taskWithLessonId);
+
+          await network.post(
+            `/api/v1/task/toclass/${user.classId}`,
+            taskWithLessonId
+          );
+        });
+        setOpen(false);
+      }
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }
   };
+  console.log(tasks);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -98,9 +135,10 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
       {
         body: "",
         createdBy: user.id,
-        type: "menual",
+        type: "manual",
         endDate: new Date(),
         title: "",
+        status: "active",
       },
       ...prev,
     ]);
@@ -125,37 +163,38 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
         prevTasks[index].type = change;
         setTasks(prevTasks);
         break;
+      case "body":
+        prevTasks[index].body = change;
+        setTasks(prevTasks);
+        break;
+      case "endDate":
+        prevTasks[index].endDate = change;
+        setTasks(prevTasks);
+        break;
+      case "status":
+        prevTasks[index].status = change;
+        setTasks(prevTasks);
+        break;
     }
   };
 
   return (
     <AddLessonContainer>
-      <AddRsourcesContainer onSubmit={handleSubmit}>
-        <Input
-          variant='outlined'
-          label='Resource'
-          value={resource}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange(e, "resource")
-          }
-        />
-        <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
-      </AddRsourcesContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
-          variant='outlined'
-          label='Lesson name'
+          variant="outlined"
+          label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby='my-helper-text'
+          aria-describedby="my-helper-text"
           required={true}
         />
 
         <Input
-          variant='outlined'
-          label='Lesson content'
+          variant="outlined"
+          label="Lesson content"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -164,39 +203,53 @@ export default function AddLesson({ setOpen }: { setOpen: any }) {
           multiline
         />
         <Input
-          variant='outlined'
-          label='Zoom link'
+          variant="outlined"
+          label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
         />
-        <Submit>Add Lesson</Submit>
-      </AddLessonForm>
-      <Info>
-        {resources.map((resource: string, index: number) => (
-          <OneInfo key={index} onClick={() => handleRemove(index, "resource")}>
-            <Tooltip title='delete resource'>
-              <Link>{resource}</Link>
-            </Tooltip>
-          </OneInfo>
-        ))}
-      </Info>
-      <div>
-        <AddBtn onClick={addTask}>Add Task</AddBtn>
+        <AddRsourcesContainer onSubmit={handleSubmit}>
+          <Input
+            variant="outlined"
+            label="Resource"
+            value={resource}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleChange(e, "resource")
+            }
+          />
+          <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
+        </AddRsourcesContainer>
         <Info>
-          {tasks.map((task: Task, index: number) => (
+          {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              // onClick={() => handleRemove(index, "task")}
+              onClick={() => handleRemove(index, "resource")}
             >
-              {/* <Tooltip title='delete task'> */}
-              <Task handleChange={handleTaskChange} task={task} index={index} />
-              {/* </Tooltip> */}
+              <Tooltip title="delete resource">
+                <Link>{resource}</Link>
+              </Tooltip>
             </OneInfo>
           ))}
         </Info>
-      </div>
+        <AddBtn onClick={addTask}>Add Task</AddBtn>
+        <Info>
+          {tasks.map((task: Task, index: number) => (
+            <OneInfo key={index}>
+              <AddTask
+                handleChange={handleTaskChange}
+                task={task}
+                index={index}
+                handleRemove={handleRemove}
+              />
+            </OneInfo>
+          ))}
+        </Info>
+      </AddLessonForm>
+      <Submit onClick={handleSubmit}>
+        {header ? header : "Create Lesson"}
+      </Submit>
     </AddLessonContainer>
   );
 }
@@ -233,13 +286,15 @@ const AddLessonForm = styled.form`
 const Info = styled.div`
   //TODO rename
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: flex-start;
 `;
 
 const OneInfo = styled.div`
   //TODO rename
   margin-top: 15px;
+  padding: 10px;
+  margin-right: 15px;
 `;
 
 const Link = styled.span`

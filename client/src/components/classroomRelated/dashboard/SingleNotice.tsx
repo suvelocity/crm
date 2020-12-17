@@ -23,7 +23,8 @@ export default function SingleNotice(props: any) {
         padding: "10px",
         // backgroundColor: "#2C3034",
         font: "25px",
-      }}>
+      }}
+    >
       <Collapse in={open}>
         <Alert
           severity={notice.type == "regular" ? "info" : "error"}
@@ -34,11 +35,19 @@ export default function SingleNotice(props: any) {
               size='small'
               onClick={() => {
                 setOpen(false);
-              }}>
+              }}
+            >
               <CloseIcon fontSize='inherit' />
             </IconButton>
-          }>
-          <AlertTitle>by teacher</AlertTitle>
+          }
+        >
+          <AlertTitle>
+            <b>
+              <u>
+                {notice.Teacher?.firstName + " " + notice.Teacher?.lastName}
+              </u>
+            </b>
+          </AlertTitle>
           <strong> {notice.body}</strong>
 
           {userType === "teacher" && (
@@ -47,7 +56,8 @@ export default function SingleNotice(props: any) {
                 variant='outlined'
                 onClick={() => {
                   deleteNotice(notice.id);
-                }}>
+                }}
+              >
                 delete for students
               </Button>
             </div>
@@ -59,7 +69,8 @@ export default function SingleNotice(props: any) {
         color='secondary'
         onClick={() => {
           setOpen(true);
-        }}>
+        }}
+      >
         Re-open
       </Button>
     </div>
