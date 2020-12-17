@@ -24,6 +24,15 @@ const useRowStyles = makeStyles({
   },
 });
 
+export function convertDateToString(date: Date) {
+  let today = new Date(date);
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+  const generatedDate = `${yyyy}-${mm}-${dd}`;
+  return `${generatedDate}`;
+}
+
 const createTask = (
   title: string,
   type: string,
@@ -63,7 +72,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         </TableCell>
         <TableCell align='right'>{row.type}</TableCell>
         <TableCell align='right'>{row.lesson}</TableCell>
-        <TableCell align='right'>{row.endDate}</TableCell>
+        <TableCell align='right'>{convertDateToString(row.endDate)}</TableCell>
         <TableCell align='right'>"placeholder 7/30"</TableCell>
         <TableCell align='right'>{row.externalLink}</TableCell>
       </TableRow>
@@ -79,9 +88,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                   <TableRow>
                     <TableCell>Full Name</TableCell>
                     <TableCell>Class</TableCell>
-                    <TableCell align='right'>Submittion State</TableCell>
-                    <TableCell align='right'>Submittion Date</TableCell>
-                    <TableCell align='right'>Submittion Link</TableCell>
+                    <TableCell align='right'>Submission State</TableCell>
+                    <TableCell align='right'>Submission Date</TableCell>
+                    <TableCell align='right'>Submission Link</TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
@@ -96,7 +105,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                       <TableCell align='right'>{studentRow.status}</TableCell>
                       <TableCell align='right'>
                         {studentRow.updatedAt
-                          ? studentRow.updatedAt
+                          ? convertDateToString(studentRow.updatedAt)
                           : "hasn't submitted yet"}
                       </TableCell>
                       <TableCell align='right'>
@@ -143,7 +152,7 @@ export default function TeacherTaskBoard(props: any) {
     return createTask(
       task.title,
       task.type,
-      task.lessonId,
+      task.Lesson.title,
       task.endDate,
       task.externalLink,
       task.TaskofStudents

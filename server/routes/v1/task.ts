@@ -248,6 +248,10 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
             },
           ],
         },
+        {
+          model: Lesson,
+          attributes: ["title"],
+        },
       ],
       order: [["createdAt", "DESC"]],
     });
