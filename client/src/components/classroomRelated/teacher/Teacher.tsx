@@ -8,7 +8,7 @@ import { teacherStudents, classesOfTeacher } from "../../../atoms";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import AddTask from "../lessons/AddTask";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
 import { IClass, IStudent } from "../../../typescript/interfaces";
@@ -137,7 +137,7 @@ export default function Teacher() {
         task={task}
         studentsToTask={studentsToTask}
       />
-      <Button variant='contained' onClick={postTask}>
+      <Button variant="contained" onClick={postTask}>
         add task
       </Button>
     </div>
@@ -145,16 +145,19 @@ export default function Teacher() {
 
   return (
     <div>
+      <TeacherTaskBoard user={user} />
       <GlobalStyle />
-      <AddCircleIcon onClick={() => setOpen(true)} />
+
+      <StyledButton onClick={() => setOpen(true)} />
+
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
         {body}
       </Modal>
-      <TeacherTaskBoard user={user} />
     </div>
   );
 }
@@ -177,3 +180,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const StyledButton = styled(AddCircleIcon)`
+  background-color: rgb(65, 85, 181);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  border-radius: 50%;
+  font-size: 3em;
+  color: white;
+  margin: 2vh auto;
+  box-shadow: 0 4px 4px 2px rgba(10, 12, 19, 0.78);
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+
+  :hover {
+    transform: translate(0, 4px);
+  }
+`;

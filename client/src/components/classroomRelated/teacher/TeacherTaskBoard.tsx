@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import network from "../../../helpers/network";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -17,6 +17,7 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Swal from "sweetalert2";
 import { set } from "lodash";
 import { MenuItem, Select } from "@material-ui/core";
+import { ITask } from "../../../typescript/interfaces";
 
 const useRowStyles = makeStyles({
   root: {
@@ -154,12 +155,15 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
 export default function TeacherTaskBoard(props: any) {
   const { user } = props;
   const [teacherTasks, setTeacherTasks] = useState<any>();
+  const [classFilter, setClassFilter] = useState<string>(".");
+  const [typeFilter, setTypeFilter] = useState<string>(".");
 
   const fetchTeacherTasks = async () => {
+    const filter = makeFilter();
     try {
       const { data } = await network.get(
         `/api/v1/task/byteacherid/${user.id}`,
-        { params: { filters: { class: "cyber4s" } } }
+        { params: { filters: filter } }
       );
       // console.log(data);
       const newArray = await data.map((task: any) => {
@@ -173,9 +177,16 @@ export default function TeacherTaskBoard(props: any) {
       return Swal.fire("Error", error, "error");
     }
   };
+
+  const makeFilter = useCallback(() => {
+    const filter: any = {};
+    if (classFilter && classFilter !== ".") filter.class = classFilter;
+    if (typeFilter && typeFilter !== ".") filter.type = typeFilter;
+    return filter;
+  }, [classFilter, typeFilter]);
   useEffect(() => {
     fetchTeacherTasks();
-  }, []);
+  }, [typeFilter, classFilter]);
 
   const taskArray = teacherTasks?.map((task: any) => {
     return createTask(
@@ -187,6 +198,17 @@ export default function TeacherTaskBoard(props: any) {
       task.TaskofStudents
     );
   });
+
+  // const taskOptions: () => string[] = () => {
+  //   console.log(
+  //     Array.from(new Set(teacherTasks?.map((tchrtsk: ITask) => tchrtsk.type)))
+  //   );
+  //   return Array.from(
+  //     new Set(teacherTasks?.map((tchrtsk: ITask) => tchrtsk.type))
+  //   );
+  // };
+
+  console.log(teacherTasks);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -195,15 +217,32 @@ export default function TeacherTaskBoard(props: any) {
             <TableCell />
             <TableCell>
               <b>Task</b>
-              <Select>
-                <MenuItem>kaki</MenuItem>
-              </Select>
             </TableCell>
             <TableCell align="right">
               <b>Class</b>
+              <Select
+                value={classFilter}
+                onChange={(e) => setClassFilter(e.target.value as string)}
+              >
+                <MenuItem value=".">All</MenuItem>
+                <MenuItem value={"cyber4s"}>cyber4s</MenuItem>
+                <MenuItem value={"A cyber force"}>A cyber force</MenuItem>
+              </Select>
             </TableCell>
             <TableCell align="right">
               <b>Type</b>
+              <Select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as string)}
+              >
+                {/* {taskOptions().map((opt: string, i: number) => (
+                  <MenuItem key={`tskopt${i}`}>{opt}</MenuItem>
+                ))} */}
+                <MenuItem value=".">All</MenuItem>
+                <MenuItem value="challengeMe">challengeMe</MenuItem>
+                <MenuItem value="Fcc">Fcc</MenuItem>
+                <MenuItem value="Manual">manual</MenuItem>
+              </Select>
             </TableCell>
             <TableCell align="right">
               <b>Lesson</b>
