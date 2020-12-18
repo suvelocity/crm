@@ -84,9 +84,6 @@ describe("Auth Tests", () => {
     const getTokenResponse = await request(server)
       .post("/api/v1/auth/token")
       .send({ refreshToken: "invalidToken" });
-    console.log("====================================");
-    console.log(getTokenResponse.body);
-    console.log("====================================");
     expect(getTokenResponse.status).toBe(500);
     done();
   });
