@@ -1,9 +1,9 @@
 //@ts-ignore
-import { User, RefreshToken } from "../models";
-import { usersMock, usersCardentials } from "./mocks";
+import { User, RefreshToken } from "../../models";
+import { usersMock, usersCardentials } from "../mocks";
 require("dotenv").config();
 const request = require("supertest");
-import server from "../app";
+import server from "../../app";
 
 export const handleSignIn = async (userType: string) => {
   await User.destroy({ truncate: true, force: true });

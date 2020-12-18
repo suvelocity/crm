@@ -1,5 +1,5 @@
 import request from "supertest";
-import { handleSignIn } from "../handleSignIn";
+import { handleSignIn, extractRefreshToken } from "../testsHelpers";
 import server from "../../app";
 import { studentsMock } from "../mocks";
 //@ts-ignore
@@ -26,7 +26,7 @@ describe("Auth Tests", () => {
     const signOutResponse = await request(server)
       .post("/api/v1/auth/signout")
       .send({
-        refreshToken: refreshToken.split("refreshToken=")[1].split("; ")[0],
+        refreshToken: extractRefreshToken(refreshToken),
       });
     expect(signOutResponse.status).toBe(200);
     expect(signOutResponse.body).toEqual({ success: true });
