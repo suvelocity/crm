@@ -3,8 +3,8 @@ const router = Router();
 //@ts-ignore
 import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
-import { Student, Lesson, Event } from "../../models";
-import { ITask, ITaskFilter, ITaskofStudent } from "../../types";
+import { Student, Lesson, Event, TeacherofClass } from "../../models";
+import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 
@@ -232,15 +232,9 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
 
 router.get("/byteacherid/:id", async (req: Request, res: Response) => {
   const { filters } = req.query;
-  // const test = { a: "1", b: "2" };
-  // Object.assign(test, filters);
-  // console.log(test);
   const parsedFilters = parseFilters(filters as string);
-  console.log(parsedFilters);
 
   try {
-    // const parsedFilters: ITaskFilter = JSON.parse(filters as string);
-    // const tosFilters: Partial<ITaskFilter> = {}
     const tosWhereCLause: any = {
       created_by: req.params.id,
     };
@@ -280,16 +274,31 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
       order: [["createdAt", "DESC"]],
     });
 
-    // console.log(myTasks);
-    // return res.json(
-    //   myTasks.filter((task) =>
-    //     task.TaskofStudent.some((tos: any) => tos.Student)
-    //   )
-    // );
     return res.json(myTasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+router.get("/options/:id", async (req: Request, res: Response) => {
+  const id: string = req.params.id;
+  console.log(id);
+  if (!id) res.status(400).json({ error: "Malformed data" });
+  const options: any = {};
+
+  try {
+    const classes: any[] = await TeacherofClass.findAll({
+      where: { teacher_id: id },
+      attributes: ["id"],
+      include: [{ model: Class, attributes: ["name"] }],
+    });
+
+    options.classes = classes.map((cls: any) => cls.Class.name);
+    options.taskTypes = ["fcc", "Manual", "challengeMe", "quiz"];
+
+    res.json(options);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router;
