@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center'
   }
 }));
+
 interface IProps {
   id: number
 }
