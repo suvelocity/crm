@@ -28,7 +28,7 @@ module.exports = {
           name: "SQL",
           creator_id: 1,
           is_quiz: true
-        },
+        }
       ],
       {}
     );

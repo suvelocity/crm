@@ -36,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       isQuiz: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: false
       }
     },

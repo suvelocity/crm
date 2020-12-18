@@ -47,6 +47,21 @@ module.exports = {
           title: "When would you want to create an index constraint?",
           form_id: 4,
         },
+        {
+          id: 9,
+          title: "How did you feel in this first week of the course?",
+          form_id: 5
+        },
+        {
+          id: 10,
+          title: "What were your first impressions of the course?",
+          form_id: 5
+        },
+        {
+          id: 11,
+          title: "What are your expectations from this course?",
+          form_id: 5
+        }
       ],
       {}
     );
