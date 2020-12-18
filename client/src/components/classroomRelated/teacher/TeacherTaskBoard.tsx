@@ -155,6 +155,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
 export default function TeacherTaskBoard(props: any) {
   const { user } = props;
   const [teacherTasks, setTeacherTasks] = useState<any>();
+  const [filterOptions, setFilterOptions] = useState<any>();
   const [classFilter, setClassFilter] = useState<string>(".");
   const [typeFilter, setTypeFilter] = useState<string>(".");
 
@@ -178,15 +179,28 @@ export default function TeacherTaskBoard(props: any) {
     }
   };
 
+  const getFilterOptins: () => Promise<void> = async () => {
+    const { data: options }: { data: any } = await network.get(
+      `/api/v1/task/options/${user.id}`
+    );
+    console.log(options);
+    setFilterOptions(options);
+  };
+
   const makeFilter = useCallback(() => {
     const filter: any = {};
     if (classFilter && classFilter !== ".") filter.class = classFilter;
     if (typeFilter && typeFilter !== ".") filter.type = typeFilter;
     return filter;
   }, [classFilter, typeFilter]);
+
   useEffect(() => {
     fetchTeacherTasks();
   }, [typeFilter, classFilter]);
+
+  useEffect(() => {
+    getFilterOptins();
+  }, []);
 
   const taskArray = teacherTasks?.map((task: any) => {
     return createTask(
@@ -198,15 +212,6 @@ export default function TeacherTaskBoard(props: any) {
       task.TaskofStudents
     );
   });
-
-  // const taskOptions: () => string[] = () => {
-  //   console.log(
-  //     Array.from(new Set(teacherTasks?.map((tchrtsk: ITask) => tchrtsk.type)))
-  //   );
-  //   return Array.from(
-  //     new Set(teacherTasks?.map((tchrtsk: ITask) => tchrtsk.type))
-  //   );
-  // };
 
   console.log(teacherTasks);
   return (
@@ -225,8 +230,11 @@ export default function TeacherTaskBoard(props: any) {
                 onChange={(e) => setClassFilter(e.target.value as string)}
               >
                 <MenuItem value=".">All</MenuItem>
-                <MenuItem value={"cyber4s"}>cyber4s</MenuItem>
-                <MenuItem value={"A cyber force"}>A cyber force</MenuItem>
+                {filterOptions?.classes?.map((cls: string, i: number) => (
+                  <MenuItem key={`cls${i}`} value={cls}>
+                    {cls}
+                  </MenuItem>
+                ))}
               </Select>
             </TableCell>
             <TableCell align="right">
@@ -239,9 +247,11 @@ export default function TeacherTaskBoard(props: any) {
                   <MenuItem key={`tskopt${i}`}>{opt}</MenuItem>
                 ))} */}
                 <MenuItem value=".">All</MenuItem>
-                <MenuItem value="challengeMe">challengeMe</MenuItem>
-                <MenuItem value="Fcc">Fcc</MenuItem>
-                <MenuItem value="Manual">manual</MenuItem>
+                {filterOptions?.taskTypes?.map((tsktp: string, i: number) => (
+                  <MenuItem key={`tsktp${i}`} value={tsktp}>
+                    {tsktp}
+                  </MenuItem>
+                ))}
               </Select>
             </TableCell>
             <TableCell align="right">
