@@ -8,4 +8,4 @@ export const extractRefreshTokenFull = (res: any) =>
   res.headers["set-cookie"][0].split("refreshToken=")[1].split("; ")[0];
 
 export const extractAccessTokenFull = (res: any) =>
-  res.headers["set-cookie"][0].split("accessToken=")[1].split("; ")[0];
+  res.headers["set-cookie"][1].split("accessToken=")[1].split("; ")[0];
