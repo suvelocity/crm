@@ -65,7 +65,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     );
   }, []);
 
-  const calculateSubmissionRate: () => number = () => {
+  const calculatedSubmissionRate = useMemo(() => {
     return (
       (row.TaskofStudents.reduce((sum: number, tos: any) => {
         return tos.status === "done" ? sum + 1 : sum + 0;
@@ -73,13 +73,17 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         row.TaskofStudents.length) *
       100
     );
-  };
+  }, []);
 
-  const ExtractClasses: () => string = () => {
+  const classList: string = useMemo(() => {
     return Array.from(
       new Set(row.TaskofStudents.map((tos: any) => tos?.Student?.Class.name))
     ).join(", ");
-  };
+  }, []);
+
+  const convertedDate = useMemo(() => {
+    return convertDateToString(row.endDate);
+  }, []);
 
   return (
     <>
@@ -96,15 +100,15 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell component="th" scope="row">
           {row.title}
         </TableCell>
-        <TableCell align="right">{ExtractClasses()}</TableCell>
-        <TableCell align="right">{row.type}</TableCell>
+        <TableCell align="center">{classList}</TableCell>
+        <TableCell align="center">{row.type}</TableCell>
         <TableCell align="right">{row.lesson}</TableCell>
-        <TableCell align="right">{convertDateToString(row.endDate)}</TableCell>
-        <TableCell align="right">{calculateSubmissionRate()}%</TableCell>
+        <TableCell align="right">{convertedDate}</TableCell>
+        <TableCell align="right">{calculatedSubmissionRate}%</TableCell>
         <TableCell align="right">{row.externalLink}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
@@ -183,7 +187,6 @@ export default function TeacherTaskBoard(props: any) {
     const { data: options }: { data: any } = await network.get(
       `/api/v1/task/options/${user.id}`
     );
-    console.log(options);
     setFilterOptions(options);
   };
 
@@ -213,67 +216,70 @@ export default function TeacherTaskBoard(props: any) {
     );
   });
 
-  console.log(teacherTasks);
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>
-              <b>Task</b>
-            </TableCell>
-            <TableCell align="right">
-              <b>Class</b>
-              <Select
-                value={classFilter}
-                onChange={(e) => setClassFilter(e.target.value as string)}
-              >
-                <MenuItem value=".">All</MenuItem>
-                {filterOptions?.classes?.map((cls: string, i: number) => (
-                  <MenuItem key={`cls${i}`} value={cls}>
-                    {cls}
-                  </MenuItem>
-                ))}
-              </Select>
-            </TableCell>
-            <TableCell align="right">
-              <b>Type</b>
-              <Select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value as string)}
-              >
-                {/* {taskOptions().map((opt: string, i: number) => (
-                  <MenuItem key={`tskopt${i}`}>{opt}</MenuItem>
-                ))} */}
-                <MenuItem value=".">All</MenuItem>
-                {filterOptions?.taskTypes?.map((tsktp: string, i: number) => (
-                  <MenuItem key={`tsktp${i}`} value={tsktp}>
-                    {tsktp}
-                  </MenuItem>
-                ))}
-              </Select>
-            </TableCell>
-            <TableCell align="right">
-              <b>Lesson</b>
-            </TableCell>
-            <TableCell align="right">
-              <b>deadline</b>
-            </TableCell>
-            <TableCell align="right">
-              <b>Submittions&nbsp;(%)</b>
-            </TableCell>
-            <TableCell align="right">
-              <b>Link</b>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {taskArray?.map((row: any) => (
-            <Row key={row.title} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>
+                <b>Task</b>
+              </TableCell>
+              <TableCell align="center">
+                <b>Class</b>
+                <Select
+                  value={classFilter}
+                  onChange={(e) => setClassFilter(e.target.value as string)}
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
+                  {filterOptions?.classes?.map((cls: string, i: number) => (
+                    <MenuItem key={`cls${i}`} value={cls}>
+                      {cls}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </TableCell>
+              <TableCell align="center">
+                <b>Type</b>
+                <Select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value as string)}
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
+                  {filterOptions?.taskTypes?.map((tsktp: string, i: number) => (
+                    <MenuItem key={`tsktp${i}`} value={tsktp}>
+                      {tsktp}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </TableCell>
+              <TableCell align="right">
+                <b>Lesson</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>deadline</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Submittions&nbsp;(%)</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Link</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.isArray(taskArray)
+              ? taskArray?.map((row: any) => <Row key={row.title} row={row} />)
+              : null}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {Array.isArray(taskArray) && taskArray.length === 0 && (
+        <h1>No results Found :\</h1>
+      )}
+    </>
   );
 }

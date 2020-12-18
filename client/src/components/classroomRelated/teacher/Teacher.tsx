@@ -12,6 +12,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
 import { IClass, IStudent } from "../../../typescript/interfaces";
+import { relative } from "path";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -144,11 +145,13 @@ export default function Teacher() {
   );
 
   return (
-    <div>
+    <div style={{ position: "relative", minHeight: "50vh" }}>
       <TeacherTaskBoard user={user} />
+      <StyledButton onClick={() => setOpen(true)}>
+        <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
+        New Task
+      </StyledButton>
       <GlobalStyle />
-
-      <StyledButton onClick={() => setOpen(true)} />
 
       <Modal
         open={open}
@@ -181,21 +184,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const StyledButton = styled(AddCircleIcon)`
+const StyledButton = styled.div`
+  position: absolute;
   background-color: rgb(65, 85, 181);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 6px;
-  border-radius: 50%;
-  font-size: 3em;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 2em;
   color: white;
-  margin: 2vh auto;
+  bottom: -10vh;
+  left: 2vw;
   box-shadow: 0 4px 4px 2px rgba(10, 12, 19, 0.78);
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: 0.1s ease-in-out;
 
   :hover {
-    transform: translate(0, 4px);
+    transform: translate(4px, 0);
   }
 `;
