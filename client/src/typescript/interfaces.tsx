@@ -235,6 +235,11 @@ export interface ITask {
 
 export type ThemeType = "dark" | "light";
 
+export interface filterMentorObject {
+  Company: string;
+  Gender: string;
+  Address: string;
+}
 
 export type IOption = {
   id: number,
@@ -245,12 +250,18 @@ interface IField {
   title: string,
   Options: IOption[]
 };
-export type IQuiz = {
+export type IForm = {
   id: number,
   name: string,
+  isQuiz: boolean
+}
+export type IFormExtended = {
+  id: number,
+  name: string,
+  isQuiz: boolean,
   Fields: IField[]  
 }
 export type IAnswer = {
   questionId: number, 
   answerId: number
-}
+};

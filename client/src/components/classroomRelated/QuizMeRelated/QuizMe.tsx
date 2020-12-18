@@ -24,10 +24,10 @@ function QuizMe() {
         <Router>
         <NavBar />
           <Switch>
-            <Route exact path="/quizme/" component={Home} />
-            <Route exact path="/quizme/quiz/:id" component={FormRouter}/>
+            <Route exact path="/quizme/form/:id" component={FormRouter}/>
             {/* <Route exact path="/quizme/form/:id" component={FormPage} /> */}
             {/* <Route exact path="/statistics" component={UserStats} /> */}
+            <Route path="/quizme/" component={Home} />
           </Switch>
         </Router>
       </Container>

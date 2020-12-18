@@ -1,50 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, List, ListItem, ListItemText, Typography, Chip } from "@material-ui/core";
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Chip,
+} from "@material-ui/core";
+import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import network from "../../../../../helpers/network";
-import { IOption, IAnswer, IQuiz } from "../../../../../typescript/interfaces"
+import {
+  IOption,
+  IAnswer,
+  IFormExtended,
+} from "../../../../../typescript/interfaces";
 
 const useStyles = makeStyles((theme) => ({
   quizWrapper: {
-    display: 'flex',
-    justifyContent: 'center'
+    display: "flex",
+    justifyContent: "center",
   },
   quiz: {
-    width: '65vw',
-    maxWidth: '65vw',
+    width: "65vw",
+    maxWidth: "65vw",
     backgroundColor: theme.palette.background.paper,
-    padding: '1em 1.5em',
+    padding: "1em 1.5em",
   },
   questionTitle: {
-    fontSize: '2em',
-    fontWeight: 600
+    fontSize: "2em",
+    fontWeight: 600,
   },
   timeRemaining: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '0.5em'
+    display: "flex",
+    alignItems: "center",
+    marginTop: "0.5em",
   },
   clockIcon: {
-    margin: '0 0.25em'
+    margin: "0 0.25em",
   },
   field: {
     cursor: "pointer",
     margin: "0.75em 0",
     backgroundColor: theme.palette.primary.main,
-    color: theme.palette.secondary.main,  
+    color: theme.palette.secondary.main,
     padding: "0.5em",
-    fontSize: '1.5em',
-    fontWeight: 500
+    fontSize: "1.5em",
+    fontWeight: 500,
   },
   chipContainer: {
-    display: 'flex',
-    justifyContent: 'center'
-  }
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 interface IProps {
-  id: number
+  id: number;
 }
 
 export default function QuizPage(props: IProps) {
@@ -52,7 +63,7 @@ export default function QuizPage(props: IProps) {
   // const { id } = useParams();
   const classes = useStyles();
 
-  const [quiz, setQuiz] = useState<IQuiz>();
+  const [quiz, setQuiz] = useState<IFormExtended>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<IAnswer[]>([]);
   const [quizIsOver, setQuizIsOver] = useState<boolean>(false);
@@ -63,7 +74,7 @@ export default function QuizPage(props: IProps) {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const quiz = (await network.get(`/api/v1/quiz/${id}`)).data;
+      const quiz = (await network.get(`/api/v1/form/${id}`)).data;
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -71,33 +82,34 @@ export default function QuizPage(props: IProps) {
 
   useEffect(() => {
     const countdown = setInterval(() => {
-      if(seconds > 0) {
+      if (seconds > 0) {
         console.log(seconds);
-        setSeconds(seconds => seconds-1);
-      } else if(seconds === 0) {
-        if(minutes > 0) {
-          setMinutes(minutes => minutes-1);
+        setSeconds((seconds) => seconds - 1);
+      } else if (seconds === 0) {
+        if (minutes > 0) {
+          setMinutes((minutes) => minutes - 1);
           setSeconds(59);
-        } else if(minutes === 0){
+        } else if (minutes === 0) {
           clearInterval(countdown);
           onAnswerSelect(-1, countdown);
         }
-      };
-    },1000);
+      }
+    }, 1000);
     return () => {
       clearInterval(countdown);
-    }
+    };
   }, [seconds, minutes]);
 
-  const findSelectedAnswerIdByTitle = (title : string) :number => {
-    const currentFieldsArray : IOption[] = quiz!.Fields[currentQuestionIndex].Options;
+  const findSelectedAnswerIdByTitle = (title: string): number => {
+    const currentFieldsArray: IOption[] = quiz!.Fields[currentQuestionIndex]
+      .Options;
     const selectedAnswer: any = currentFieldsArray.find(
       (field) => field.title === title
     );
     const id = selectedAnswer ? selectedAnswer.id : -1;
     return id;
   };
-  const onAnswerSelect = (selectedAnswerId : number, interval? : any) :void => {
+  const onAnswerSelect = (selectedAnswerId: number, interval?: any): void => {
     if (!quizIsOver) {
       console.log(selectedAnswerId);
       setAnswers([
@@ -126,7 +138,7 @@ export default function QuizPage(props: IProps) {
       setQuizIsOver(true);
       // await network.post("/submissions", {
       //   userId: 3, // 3
-      //   quizId: quiz.id, // 1
+      //   formId: quiz.id, // 1
       //   answersSelected: answers,
       // });
       setFinishTitle("Well done, quiz submitted successfully");
@@ -142,38 +154,47 @@ export default function QuizPage(props: IProps) {
           <Container className={classes.quizWrapper}>
             <Container className={classes.quiz}>
               <div>
-                <Typography component={'div'} //@ts-ignore
-                variant={'div'} className={classes.questionTitle}>
+                <Typography component={"div"} className={classes.questionTitle}>
                   {quiz.Fields[currentQuestionIndex].title}
                 </Typography>
-                <Typography component={'h6'} variant={'h6'} className={classes.timeRemaining}>
+                <Typography
+                  component={"h6"}
+                  variant={"h6"}
+                  className={classes.timeRemaining}
+                >
                   Time Remaining: {minutes}:
                   {seconds < 10 ? "0" + seconds : seconds}
-                  <AccessAlarmIcon className={classes.clockIcon}/>
+                  <AccessAlarmIcon className={classes.clockIcon} />
                 </Typography>
               </div>
               <List>
                 {quiz.Fields[currentQuestionIndex].Options.map(
-                  (option : IOption, index: number) => (
+                  (option: IOption, index: number) => (
                     <ListItem
                       button
                       disableGutters
                       key={index}
                       onClick={(e) =>
-                        onAnswerSelect( //@ts-ignore
+                        onAnswerSelect(
+                          //@ts-ignore
                           findSelectedAnswerIdByTitle(e.target.value)
-                      )}
+                        )
+                      }
                       className={classes.field}
                     >
-                      <ListItemText primary={`${option.title}`} disableTypography/>
+                      <ListItemText
+                        primary={`${option.title}`}
+                        disableTypography
+                      />
                     </ListItem>
                   )
                 )}
                 <Container className={classes.chipContainer}>
-                  <Chip label={`${currentQuestionIndex+1}/${quiz.Fields.length}`}
-                        size={'small'}
-                        variant={'outlined'}
-                        color={'primary'}
+                  <Chip
+                    label={`${currentQuestionIndex + 1}/${quiz.Fields.length}`}
+                    size={"small"}
+                    variant={"outlined"}
+                    color={"primary"}
                   />
                 </Container>
               </List>

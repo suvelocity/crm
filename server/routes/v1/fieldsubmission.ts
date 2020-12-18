@@ -12,7 +12,7 @@ import { IQuizSubmission } from "../../types";
 
 const router = Router();
 
-// GET ALL QUIZ-SUBMISSIONS
+// GET ALL FORM-SUBMISSIONS
 router.get("/all", async (req: Request, res: Response) => {
   const submissions = await FieldSubmission.findAll({
     raw: true,
@@ -24,8 +24,8 @@ router.get("/all", async (req: Request, res: Response) => {
         attributes: [],
       },
     ],
-    attributes: ["studentId", [db.Sequelize.col("fields.quiz_id"), "quizId"]],
-    group: ['studentId', 'quizId']
+    attributes: ["studentId", [db.Sequelize.col("fields.form_id"), "formId"]],
+    group: ['studentId', 'formId']
   });
   return res.json(submissions);
 });
@@ -42,8 +42,8 @@ router.get("/:id", async (req: Request, res: Response) => {
         attributes: [],
       },
     ],
-    attributes: [[db.Sequelize.col("fields.quiz_id"), "quizId"]],
-    group: ['quizId'],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"]],
+    group: ['formId'],
     where: {
       studentId: req.params.id
     }

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.TeacherofClass, {
         foreignKey: "teacherId",
       });
-      this.hasMany(models.Quiz, {
+      this.hasMany(models.Form, {
         foreignKey: 'creatorId'
       });
     }
