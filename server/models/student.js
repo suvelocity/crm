@@ -14,12 +14,18 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       this.hasMany(models.TaskofStudent, {
-        foreignKey: "userId",
+        foreignKey: "studentId",
       });
       this.hasMany(models.MentorStudent, {
         foreignKey: "studentId",
         onDelete: "cascade",
         hooks: true,
+      });
+      this.hasMany(models.User, {
+        foreignKey: "relatedId",
+      });
+      this.belongsTo(models.Mentor, {
+        foreignKey: "mentorId",
       });
       this.belongsTo(models.Class, {
         foreignKey: "classId",
@@ -45,6 +51,8 @@ module.exports = (sequelize, DataTypes) => {
       additionalDetails: DataTypes.STRING,
       classId: DataTypes.INTEGER,
       mentorId: DataTypes.INTEGER,
+      fccAccount: DataTypes.STRING,
+      resumeLink: DataTypes.STRING,
     },
     {
       sequelize,

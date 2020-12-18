@@ -24,10 +24,12 @@ function NewEventModal({
   studentId,
   jobId,
   add,
+  events,
 }: {
   studentId: number;
   jobId: number;
   add: (ne: IEvent) => void;
+  events: IEvent[];
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
@@ -54,8 +56,8 @@ function NewEventModal({
     data.userId = studentId;
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
+    data.type = "jobs";
     delete data.comment;
-    console.log(data);
     try {
       const {
         data: newEvent,
@@ -103,11 +105,16 @@ function NewEventModal({
                 <Controller
                   as={
                     <Select>
-                      {statuses.map((status: string) => (
-                        <MenuItem key={`status-${status}`} value={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
+                      {statuses
+                        .filter(
+                          (status) =>
+                            !events.find((event) => event.eventName === status)
+                        )
+                        .map((status: string) => (
+                          <MenuItem key={`status-${status}`} value={status}>
+                            {status}
+                          </MenuItem>
+                        ))}
                     </Select>
                   }
                   name="eventName"

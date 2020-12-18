@@ -67,15 +67,17 @@ function ApplyForJobModal({
     if (studentsToApply.length > 0) {
       try {
         setLoading(true);
-        studentsToApply.forEach(async (studentId: string) => {
-          await network.post(`/api/v1/event`, {
-            userId: studentId,
-            relatedId: jobId,
-            type: "jobs",
-            date: new Date().setHours(0, 0, 0, 0),
-            eventName: "Started application process",
-          });
-        });
+        Array.from(new Set(studentsToApply)).forEach(
+          async (studentId: string) => {
+            await network.post(`/api/v1/event`, {
+              userId: studentId,
+              relatedId: jobId,
+              type: "jobs",
+              date: new Date().setHours(0, 0, 0, 0),
+              eventName: "Started application process",
+            });
+          }
+        );
         setTimeout(() => {
           getJob();
           setLoading(false);
@@ -151,23 +153,6 @@ function ApplyForJobModal({
                           secondary={student.Class?.name}
                         />
                       </ListItem>
-                      {student.Events.length > 0 && (
-                        <ListItem>
-                          <ListItemText
-                            primary="Applied Jobs"
-                            secondary={
-                              <>
-                                {student.Events.map((event: IEvent) => (
-                                  <p key={event.Job?.id}>
-                                    {event.Job?.position}{" "}
-                                    {event.Job?.Company?.name}
-                                  </p>
-                                ))}
-                              </>
-                            }
-                          />
-                        </ListItem>
-                      )}
                     </List>
                   </AccordionDetails>
                 </Accordion>
@@ -198,7 +183,7 @@ function ApplyForJobModal({
       >
         Assign a Student
       </Button>
-      <Modal open={open} onClose={handleClose}>
+      <Modal style={{ overflow: "scroll" }}  open={open} onClose={handleClose}>
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>

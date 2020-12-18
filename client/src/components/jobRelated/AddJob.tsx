@@ -58,7 +58,6 @@ const AddJob = (props:Props) => {
       );
     })();
   }, []);
-  console.log(props)
 
   return (
     <Wrapper width='80%'>

@@ -14,7 +14,7 @@ import TextField from "@material-ui/core/TextField";
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
+  // const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState<boolean>(false);
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
@@ -26,8 +26,10 @@ export default function Lessons() {
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
         for (let item of Object.values(lesson)) {
-          if (item.toString().toLowerCase().includes(value.toLowerCase())) {
-            return true;
+          if (item) {
+            if (item.toString().toLowerCase().includes(value.toLowerCase())) {
+              return true;
+            }
           }
         }
       })
@@ -45,33 +47,25 @@ export default function Lessons() {
   const handleClose = () => {
     setOpen(false);
   };
+
   const body = (
+    //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
-      <AddLesson />
+      <AddLesson setOpen={setOpen} />
     </div>
   );
+
   const fetchClassLessons = async () => {
     try {
-      const { data: lessons } = await network.get(`/byclass/${classId}`);
-      const temp = [
-        {
-          id: 10,
-          classId: 1,
-          title: "hello sonnnnnn",
-          body: "redux by nirrrrrr",
-          resource:
-            "http://www.myAss.com%#splitingResource#%http://yourAss.com",
-          zoomLink: "http://www.zoomAss.com",
-          createdBy: 1,
-        },
-      ];
-
-      return temp;
-      //   return lessons;
+      const { data: lessons } = await network.get(
+        `/api/v1/lesson/byclass/${classId}`
+      );
+      return Array.isArray(lessons) ? lessons : [];
     } catch {
       return [];
     }
   };
+
   useEffect(() => {
     (async () => {
       const allLessons = await fetchClassLessons();
@@ -79,15 +73,15 @@ export default function Lessons() {
       setFilteredLessons(allLessons);
       setLoading(false);
     })();
-  }, []);
+  }, [open]);
 
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>
         <TextField
-          variant='outlined'
+          variant="outlined"
           style={{ textAlign: "center" }}
-          label='Search'
+          label="Search"
           value={filter}
           onChange={handleFilter}
         />
@@ -98,14 +92,14 @@ export default function Lessons() {
         ))}
         {(user.userType === "teacher" || user.userType === "admin") && (
           <>
-            <Button variant='outlined' onClick={handleOpen}>
+            <Button variant="outlined" onClick={handleOpen}>
               Add Lesson
             </Button>
             <Modal
               open={open}
               onClose={handleClose}
-              aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
             >
               {body}
             </Modal>
@@ -115,32 +109,28 @@ export default function Lessons() {
     </Loading>
   );
 }
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
   justify-content: center;
   padding: 20px;
 `;
+// function getModalStyle() {
+//   // const top = 50 + rand();
+//   // const left = 50 + rand();
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+export const modalStyle = {
+  top: `50%`,
+  left: `50%`,
+  transform: `translate(-${50}%, -${50}%)`,
+  overflowY: "scroll",
+};
 
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",
-      width: 400,
       backgroundColor: theme.palette.background.paper,
       border: "2px solid #000",
       boxShadow: theme.shadows[5],

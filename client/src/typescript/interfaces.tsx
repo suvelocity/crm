@@ -20,6 +20,8 @@ export interface IStudent {
   mentor?: IMentor | null;
   MentorStudents? : IPair[]
   Events: IEvent[];
+  resumeLink?: string;
+  fccAccount?: string;
 }
 
 export interface IPair {
@@ -87,17 +89,20 @@ export interface IEvent {
   relatedId?: number;
   entry?: { [key: string]: any };
   date: string;
+  type: eventTypes;
   Student?: IStudent;
   Job?: IJob;
 }
 
+type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc"
+
 type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class: string;
-  Course: string;
-  JobStatus: string;
-  Name: string;
+  Class: string[];
+  Course: string[];
+  JobStatus: string[];
+  Name: string[];
 }
 export interface Name {
   firstName: string;
@@ -218,14 +223,14 @@ export interface ILesson {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
+  lessonId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  status: string;
-  body: string;
+  status: "active" | "disabled";
+  body?: string;
 }
 
 export type ThemeType = "dark" | "light";
