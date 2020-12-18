@@ -1,5 +1,9 @@
 import request from "supertest";
-import { handleSignIn, extractRefreshToken } from "../testsHelpers";
+import {
+  handleSignIn,
+  extractRefreshToken,
+  extractRefreshTokenFull,
+} from "../testsHelpers";
 import server from "../../app";
 import { studentsMock } from "../mocks";
 //@ts-ignore
@@ -49,6 +53,41 @@ describe("Auth Tests", () => {
       });
     expect(signOutResponse.status).toBe(200);
     expect(signOutResponse.body).toEqual({ success: true });
+    done();
+  });
+
+  test("should be able to get accessToken with refreshToken", async (done) => {
+    const authAdmin = await handleSignIn("admin");
+    const refreshToken = extractRefreshTokenFull(authAdmin);
+    const getTokenResponse = await request(server)
+      .post("/api/v1/auth/token")
+      .send({
+        refreshToken,
+      });
+    expect(getTokenResponse.status).toBe(200);
+    expect(getTokenResponse.body).toEqual({ userType: "admin" });
+    done();
+  });
+
+  test("should not be able to get accessToken without sending token", async (done) => {
+    const authAdmin = await handleSignIn("admin");
+    const refreshToken = extractRefreshTokenFull(authAdmin);
+    const getTokenResponse = await request(server).post("/api/v1/auth/token");
+    expect(getTokenResponse.status).toBe(400);
+    expect(getTokenResponse.body).toEqual({ error: "No refresh token" });
+    done();
+  });
+
+  test("should not be able to get accessToken without valid token", async (done) => {
+    const authAdmin = await handleSignIn("admin");
+    const refreshToken = extractRefreshTokenFull(authAdmin);
+    const getTokenResponse = await request(server)
+      .post("/api/v1/auth/token")
+      .send({ refreshToken: "invalidToken" });
+    console.log("====================================");
+    console.log(getTokenResponse.body);
+    console.log("====================================");
+    expect(getTokenResponse.status).toBe(500);
     done();
   });
 });
