@@ -122,7 +122,7 @@ export default function AddTask({
           format='MM/dd/yyyy'
           margin='normal'
           id='date-picker-inline'
-          label='Choose a Deadline'
+          label='Deadline'
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{

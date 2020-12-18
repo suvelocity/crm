@@ -41,7 +41,6 @@ export default function Lessons() {
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  const classId = 1;
 
   const handleOpen = () => {
     setOpen(true);
@@ -61,7 +60,7 @@ export default function Lessons() {
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
-        `/api/v1/lesson/byclass/${classId}`
+        `/api/v1/lesson/byclass/${user.classId}`
       );
       return Array.isArray(lessons) ? lessons : [];
     } catch {
@@ -78,6 +77,7 @@ export default function Lessons() {
     })();
   }, [open]);
 
+  console.log(user);
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>

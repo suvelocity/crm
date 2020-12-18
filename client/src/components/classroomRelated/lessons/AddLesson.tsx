@@ -289,8 +289,9 @@ const AddLessonContainer = styled.div`
 const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
-  height: 75vh;
-  width: 75vw;
+  height: 80vh;
+  width: 80vw;
+  overflow-y: scroll;
 `;
 
 const Info = styled.div`

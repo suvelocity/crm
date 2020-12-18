@@ -14,6 +14,7 @@ module.exports = {
           related_id: 1,
           created_at: new Date(),
           updated_at: new Date(),
+          related_id: 7,
         },
       ],
       {}

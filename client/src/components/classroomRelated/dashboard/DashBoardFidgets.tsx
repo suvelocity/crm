@@ -36,6 +36,90 @@ const mockTasks = [
     status: "done",
     by: "Rotem",
   },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
 ];
 
 export function TasksFidget() {
@@ -63,7 +147,7 @@ export function TasksFidget() {
   console.log(incompletedTasks);
 
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
           <Headline>My Tasks</Headline>
@@ -119,7 +203,7 @@ export function LessonsFidget() {
   };
 
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
           <Headline>Lessons</Headline>
