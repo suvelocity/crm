@@ -110,7 +110,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// delete meeting
+// delete mentor
 router.patch('/delete', async (req, res) => {
   try {
     const { mentorId } = req.body;

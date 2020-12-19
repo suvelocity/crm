@@ -40,6 +40,7 @@ function AllMentors() {
   useEffect(() => {
     (async () => {
       const { data } = await network.get('/api/v1/M/mentor');
+      data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
       setMentors(data);
       setLoading(false);
       setAllMentors(data);
