@@ -4,6 +4,7 @@ import {
   extractRefreshToken,
   extractRefreshTokenFull,
   extractAccessTokenFull,
+  sendRequest
 } from "../testsHelpers";
 import server from "../../app";
 import {
@@ -16,6 +17,12 @@ import {
 import { Student, Class, User } from "../../models";
 
 let accessToken: string;
+
+    
+  const getCurrentStudents = async () => await sendRequest('get', `/student/all`, accessToken);
+  const getStudentById = async (id:number) => await sendRequest('get', `/student/byId/${id}`, accessToken)
+  const patchStudentById = async (id:number, body: object) => await sendRequest('patch', `/student/${id}`, accessToken, body)
+  const deleteStudentById = async(id:number) => await sendRequest('delete', `/student/${id}`, accessToken);
 
 describe("Students Tests", () => {
   beforeAll(async () => {
@@ -31,9 +38,7 @@ describe("Students Tests", () => {
   });
 
   test("Admin should be able to get all student`s information", async (done) => {
-    const allStudents = await request(server)
-      .get("/api/v1/student/all")
-      .set("authorization", `bearer ${accessToken}`);
+    const allStudents = await getCurrentStudents()
     expect(allStudents.status).toBe(200);
     expect(allStudents.body.length).toBe(10);
     for (let i = 0; i < 10; i++) {
@@ -50,12 +55,9 @@ describe("Students Tests", () => {
 
   test("Admin should be able to get one student`s information", async (done) => {
     for (let i = 1; i < 11; i++) {
-      const student = await request(server)
-        .get(`/api/v1/student/byId/${i}`)
-        .set("authorization", `bearer ${accessToken}`);
+      const student = await getStudentById(i)
       expect(student.status).toBe(200);
       expect(student.body.id).toBe(studentsTestExpectedResult[i - 1].id);
-
       expect(student.body.idNumber).toBe(
         studentsTestExpectedResult[i - 1].idNumber
       );
@@ -65,68 +67,54 @@ describe("Students Tests", () => {
   });
 
   test("Admin should be able to change one student information", async (done) => {
-    const prevStudent = await request(server)
-      .get(`/api/v1/student/byId/1`)
-      .set("authorization", `bearer ${accessToken}`);
+    const prevStudent = await getStudentById(1)
     expect(prevStudent.body.additionalDetails).toBe("single");
-    const student = await request(server)
-      .patch(`/api/v1/student/1`)
-      .set("authorization", `bearer ${accessToken}`)
-      .send({ additionalDetails: "lol" });
+
+    const student = await patchStudentById(1, { additionalDetails: "lol" })
     expect(student.status).toBe(200);
     expect(student.body).toEqual({ message: "Student updated" });
-    const newStudent = await request(server)
-      .get(`/api/v1/student/byId/1`)
-      .set("authorization", `bearer ${accessToken}`);
+
+    const newStudent = await getStudentById(1)
     expect(newStudent.body.additionalDetails).toBe("lol");
     done();
   });
 
   test("Admin should be able to delete", async (done) => {
-    const prevStudents = await request(server)
-      .get(`/api/v1/student/all`)
-      .set("authorization", `bearer ${accessToken}`);
+    const prevStudents = await getCurrentStudents()
     expect(prevStudents.body.length).toBe(10);
-    const prevStudent = await request(server)
-      .get(`/api/v1/student/byId/1`)
-      .set("authorization", `bearer ${accessToken}`);
+
+    const prevStudent = await getStudentById(1)
     expect(prevStudent.status).toBe(200);
-    const deletedStudent = await request(server)
-      .delete(`/api/v1/student/1`)
-      .set("authorization", `bearer ${accessToken}`);
+
+    const deletedStudent = await deleteStudentById(1)
     expect(deletedStudent.status).toBe(200);
     expect(deletedStudent.body).toEqual({ message: "Student deleted" });
-    const newStudents = await request(server)
-      .get(`/api/v1/student/all`)
-      .set("authorization", `bearer ${accessToken}`);
+
+    const newStudents = await getCurrentStudents()
     expect(newStudents.body.length).toBe(9);
-    const notGonnaBeFoundStudent = await request(server)
-      .get(`/api/v1/student/byId/1`)
-      .set("authorization", `bearer ${accessToken}`);
+
+    const notGonnaBeFoundStudent = await getStudentById(1)
     expect(notGonnaBeFoundStudent.status).toBe(404);
     done();
   });
   test("admin should be able to add a student and user", async (done) => {
-    const prevStudents = await request(server)
-      .get(`/api/v1/student/all`)
-      .set("authorization", `bearer ${accessToken}`);
+    const prevStudents = await getCurrentStudents()
+
     const prevUsers = await User.findAll();
     const prevUsersLength = prevUsers.length;
     const prevStudentsLength = prevStudents.body.length;
-    const postedStudent = await request(server)
-      .post(`/api/v1/student`)
-      .set("authorization", `bearer ${accessToken}`)
-      .send({ ...newStudent, id: 100 });
-    // console.log(postedStudent);
+
+    const postedStudent = await sendRequest('post', `/student`,
+     accessToken, { ...newStudent, id: 100 })
     expect(postedStudent.status).toBe(200);
     expect(postedStudent.body.email).toBe(newStudent.email);
-    const allStudents = await request(server)
-      .get(`/api/v1/student/all`)
-      .set("authorization", `bearer ${accessToken}`);
+    
+    const allStudents = await getCurrentStudents()
     expect(allStudents.body.length).toBe(prevStudentsLength + 1);
     expect(allStudents.body[prevStudentsLength].email).toBe(
       newStudent.email
     );
+
     const newUsers = await User.findAll();
     expect(newUsers.length).toBe(prevUsersLength + 1);
     expect(newUsers[prevUsersLength].relatedId).toBe(11);
