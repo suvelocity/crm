@@ -10,6 +10,7 @@ import {
   studentsMock,
   classesMock,
   studentsTestExpectedResult,
+  newStudent
 } from "../mocks";
 //@ts-ignore
 import { Student, Class, User } from "../../models";
@@ -115,18 +116,20 @@ describe("Students Tests", () => {
     const postedStudent = await request(server)
       .post(`/api/v1/student`)
       .set("authorization", `bearer ${accessToken}`)
-      .send({ ...studentsMock[0], id: 100 });
+      .send({ ...newStudent, id: 100 });
+    // console.log(postedStudent);
     expect(postedStudent.status).toBe(200);
-    expect(postedStudent.body.email).toBe(studentsMock[0].email);
+    expect(postedStudent.body.email).toBe(newStudent.email);
     const allStudents = await request(server)
       .get(`/api/v1/student/all`)
       .set("authorization", `bearer ${accessToken}`);
     expect(allStudents.body.length).toBe(prevStudentsLength + 1);
     expect(allStudents.body[prevStudentsLength].email).toBe(
-      studentsMock[0].email
+      newStudent.email
     );
     const newUsers = await User.findAll();
     expect(newUsers.length).toBe(prevUsersLength + 1);
-    expect(newUsers[prevUsersLength].relatedId).toBe(100);
-  });
+    expect(newUsers[prevUsersLength].relatedId).toBe(11);
+    done();
+  }, 10000);
 });

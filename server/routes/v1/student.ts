@@ -97,7 +97,8 @@ router.post("/", async (req: Request, res: Response) => {
       type: "student",
     };
     const user = await User.create(userToCreate);
-    if (user) {
+    if (user && process.env.NODE_ENV !== 'test') {
+      console.log('SENDING MAIL')
       transporter.sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
