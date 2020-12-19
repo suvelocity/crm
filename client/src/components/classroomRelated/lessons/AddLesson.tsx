@@ -4,11 +4,16 @@ import { ILesson, ITask } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
+import '../../../App.css';
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
 export interface Task {
+  id?: number;
+  createdAt?: number;
+  updatedAt?: number;
+  deletedAt?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
@@ -36,6 +41,7 @@ export default function AddLesson({
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
+  const [tasksToDelete, setTasksToDelete] = useState<Task[]>([]);
   const [zoomLink, setZoomLink] = useState<string>(
     lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
   );
@@ -64,7 +70,24 @@ export default function AddLesson({
         createdBy: user.id,
       };
       if (update && lesson) {
-        await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+        console.log('tasks', tasks)
+          await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+          const tasksToUpdate = tasks.slice().filter(task => task.hasOwnProperty('id'));
+          await Promise.all(tasksToUpdate.map(task => {
+            const taskId = task.id;
+            const taskToSend = {...task};
+            delete taskToSend.id
+            delete taskToSend.createdAt;
+            delete taskToSend.updatedAt;
+            delete taskToSend.deletedAt;
+            return network.patch(`/api/v1/task/${taskId}`, taskToSend)
+          }))
+          const tasksToAdd = tasks.filter(task => !task.hasOwnProperty('id'));
+          await Promise.all(tasksToAdd.map(task => {
+            const taskWithLessonId = { ...task, lessonId: lesson.id };
+            return network.post(`/api/v1/task/toclass/${user.classId}`, taskWithLessonId)
+          }))
+          await Promise.all(tasksToDelete.map(task => network.delete(`/api/v1/task/${task.id}`)));
         handleClose && handleClose();
       } else {
         const { data: addedLesson }: { data: ILesson } = await network.post(
@@ -72,21 +95,19 @@ export default function AddLesson({
           lessonToAdd
         );
 
-        tasks.forEach(async (task) => {
+        await Promise.all(tasks.map((task) => {
           const taskWithLessonId = { ...task, lessonId: addedLesson.id };
-          console.log(taskWithLessonId);
-          await network.post(
+          return network.post(
             `/api/v1/task/toclass/${user.classId}`,
             taskWithLessonId
           );
-        });
+        }));
         setOpen(false);
       }
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }
   };
-  console.log(tasks);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -119,13 +140,19 @@ export default function AddLesson({
   const handleRemove = (index: number, name: string): void => {
     switch (name) {
       case "resource":
-        const prevResources = resources.slice();
-        prevResources.splice(index, 1);
-        setResources(prevResources);
+          const prevResources = resources.slice();
+          prevResources.splice(index, 1);
+          setResources(prevResources);
         break;
       case "task":
         const prevTasks = tasks.slice();
-        prevTasks.splice(index, 1);
+        const toDelete = prevTasks.splice(index, 1)[0];
+        if(toDelete.hasOwnProperty('id')){
+          const updateDeleted = tasksToDelete.slice();
+          updateDeleted.push(toDelete);
+          console.log(updateDeleted);
+          setTasksToDelete(updateDeleted);
+        }
         setTasks(prevTasks);
         break;
     }
@@ -147,7 +174,6 @@ export default function AddLesson({
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     const prevTasks = tasks.slice();
-    console.log(change, element)
     switch (element) {
       case "title":
         prevTasks[index].title = change;

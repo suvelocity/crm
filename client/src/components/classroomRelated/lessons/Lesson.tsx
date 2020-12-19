@@ -84,7 +84,7 @@ export default function Lesson({
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-            <EditDiv onClick={() => setModalState(true)}>
+            <EditDiv top='90px' onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
               <ResourcesLinks>
