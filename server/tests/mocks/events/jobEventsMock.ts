@@ -15,7 +15,7 @@ export const jobEventMock = [
   },
   {
     id: 2,
-    eventName: "Started application process",
+    eventName: "Canceled",
     type: "jobs",
     userId: 9,
     relatedId: "1",
@@ -27,10 +27,38 @@ export const jobEventMock = [
   },
   {
     id: 3,
-    eventName: "Canceled",
+    eventName: "Started application process",
     type: "jobs",
     userId: 3,
     relatedId: "1",
+    entry: {
+      comment: "Nitzan Listman was hired for this job ",
+    },
+    creatorId: 0,
+    date: "2020-12-11T00:00:00.000Z",
+    createdAt: "2020-12-14T10:01:57.000Z",
+    updatedAt: "2020-12-14T10:01:57.000Z",
+  },
+  {
+    id: 4,
+    eventName: "Started application process",
+    type: "jobs",
+    userId: 3,
+    relatedId: "2",
+    entry: {
+      comment: "Nitzan Listman was hired for this job ",
+    },
+    creatorId: 0,
+    date: "2020-12-11T00:00:00.000Z",
+    createdAt: "2020-12-14T10:01:57.000Z",
+    updatedAt: "2020-12-14T10:01:57.000Z",
+  },
+  {
+    id: 5,
+    eventName: "Started application process",
+    type: "jobs",
+    userId: 3,
+    relatedId: "3",
     entry: {
       comment: "Nitzan Listman was hired for this job ",
     },

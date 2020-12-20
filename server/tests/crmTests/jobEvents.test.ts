@@ -25,7 +25,7 @@ let accessToken: string;
 const getAllEvents = async () =>
   await sendRequest("get", "/event/all", accessToken);
 
-describe("Students Tests", () => {
+describe("Job Events Tests", () => {
   beforeAll(async () => {
     await Student.destroy({ truncate: true, force: true });
     await Class.destroy({ truncate: true, force: true });
@@ -92,4 +92,20 @@ describe("Students Tests", () => {
     expect(prevEvents.length).toBe(newEvents.length);
     done();
   });
+  //    ~~~~~~~
+  //   ^^^>  //~~~~~\\   <^^^
+  //       \ \  //($ _ $)\\  / /
+  //        \ \  __|   |__  / /
+  //         \ \ ( . Y . ) / /
+  //             |       |
+  //             |  ___  |
+  //             | |   | |
+  //            _| |   | |_
+  //           |___|   |___|
+  // test("If hire  ", async(done)=>{
+  //   const
+  // })
+  // test("Admin should be able to delete job events", async (done) => {
+  //       const
+  //   })
 });
