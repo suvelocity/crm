@@ -4,7 +4,7 @@ import {
   extractRefreshToken,
   extractRefreshTokenFull,
 } from "../testsHelpers";
-import server from "../../app";
+import server from "../../src/app";
 import { studentsMock } from "../mocks";
 //@ts-ignore
 import { Student } from "../../models";

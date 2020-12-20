@@ -1,6 +1,6 @@
 import { string } from "joi";
 import request from "supertest";
-import server from "../../app";
+import server from "../../src/app";
 type requestMethod = "get" | "post" | "put" | "delete" | "patch";
 export const sendRequest = (
   method: string,
