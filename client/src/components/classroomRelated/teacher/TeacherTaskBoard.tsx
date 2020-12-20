@@ -14,10 +14,12 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import Swal from "sweetalert2";
 import { set } from "lodash";
 import { MenuItem, Select } from "@material-ui/core";
 import { ITask } from "../../../typescript/interfaces";
+import { Center } from "../../../styles/styledComponents";
 
 const useRowStyles = makeStyles({
   root: {
@@ -90,55 +92,59 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       <TableRow className={classes.root}>
         <TableCell>
           <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => setOpen(!open)}>
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+            style={{ width: "2vw" }}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component='th' scope='row'>
+        <TableCell component="th" scope="row">
           {row.title}
         </TableCell>
-        <TableCell align='center'>{classList}</TableCell>
-        <TableCell align='center'>{row.type}</TableCell>
-        <TableCell align='right'>{row.lesson}</TableCell>
-        <TableCell align='right'>{convertedDate}</TableCell>
-        <TableCell align='right'>{calculatedSubmissionRate}%</TableCell>
-        <TableCell align='right'>{row.externalLink}</TableCell>
+        <TableCell align="center">{classList}</TableCell>
+        <TableCell align="center">{row.type}</TableCell>
+        <TableCell align="center">{row.lesson}</TableCell>
+        <TableCell align="center">{convertedDate}</TableCell>
+        <TableCell align="center">
+          {Math.floor(calculatedSubmissionRate)}%
+        </TableCell>
+        <TableCell align="center">{row.externalLink}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography variant="h6" gutterBottom component="div">
                 Students
               </Typography>
-              <Table size='small' aria-label='purchases'>
+              <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
                     <TableCell>Full Name</TableCell>
                     <TableCell>Class</TableCell>
-                    <TableCell align='right'>Submission State</TableCell>
-                    <TableCell align='right'>Submission Date</TableCell>
-                    <TableCell align='right'>Submission Link</TableCell>
+                    <TableCell align="left">Submission State</TableCell>
+                    <TableCell align="left">Submission Date</TableCell>
+                    <TableCell align="left">Submission Link</TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.TaskofStudents.map((studentRow: any) => (
                     <TableRow key={studentRow.studentId}>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         {studentRow?.Student?.firstName +
                           studentRow?.Student?.lastName}
                       </TableCell>
                       <TableCell>{studentRow?.Student?.Class.name}</TableCell>
-                      <TableCell align='right'>{studentRow.status}</TableCell>
-                      <TableCell align='right'>
+                      <TableCell align="left">{studentRow.status}</TableCell>
+                      <TableCell align="left">
                         {studentRow.updatedAt
                           ? convertDateToString(studentRow.updatedAt)
                           : "hasn't submitted yet"}
                       </TableCell>
-                      <TableCell align='right'>
+                      <TableCell align="left">
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
                       </TableCell>
                     </TableRow>
@@ -169,12 +175,6 @@ export default function TeacherTaskBoard(props: any) {
         `/api/v1/task/byteacherid/${user.id}`,
         { params: { filters: filter } }
       );
-      // console.log(data);
-      // const newArray = await data.map((task: any) => {
-      //   task.TaskofStudents.forEach((taskofstudent: any) => {
-      //     console.log(taskofstudent);
-      //   });
-      // });
 
       setTeacherTasks(data);
     } catch (error) {
@@ -220,20 +220,21 @@ export default function TeacherTaskBoard(props: any) {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table aria-label='collapsible table'>
+        <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <TableCell />
-              <TableCell>
+              <TableCell style={{ width: "2vw" }} />
+              <TableCell style={{ width: "5vw" }}>
                 <b>Task</b>
               </TableCell>
-              <TableCell align='center'>
+              <TableCell align="center" style={{ width: "16vw" }}>
                 <b>Class</b>
                 <Select
                   value={classFilter}
                   onChange={(e) => setClassFilter(e.target.value as string)}
-                  style={{ width: "160px", marginLeft: "1vw" }}>
-                  <MenuItem value='.'>All</MenuItem>
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
                   {filterOptions?.classes?.map((cls: string, i: number) => (
                     <MenuItem key={`cls${i}`} value={cls}>
                       {cls}
@@ -241,13 +242,14 @@ export default function TeacherTaskBoard(props: any) {
                   ))}
                 </Select>
               </TableCell>
-              <TableCell align='center'>
+              <TableCell align="center" style={{ width: "16vw" }}>
                 <b>Type</b>
                 <Select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value as string)}
-                  style={{ width: "160px", marginLeft: "1vw" }}>
-                  <MenuItem value='.'>All</MenuItem>
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
                   {filterOptions?.taskTypes?.map((tsktp: string, i: number) => (
                     <MenuItem key={`tsktp${i}`} value={tsktp}>
                       {tsktp}
@@ -255,16 +257,16 @@ export default function TeacherTaskBoard(props: any) {
                   ))}
                 </Select>
               </TableCell>
-              <TableCell align='right'>
+              <TableCell align="center" style={{ width: "8vw" }}>
                 <b>Lesson</b>
               </TableCell>
-              <TableCell align='right'>
-                <b>deadline</b>
+              <TableCell align="center" style={{ width: "8vw" }}>
+                <b>Deadline</b>
               </TableCell>
-              <TableCell align='right'>
-                <b>Submittions&nbsp;(%)</b>
+              <TableCell align="center" style={{ width: "10vw" }}>
+                <b>Submissions&nbsp;(%)</b>
               </TableCell>
-              <TableCell align='right'>
+              <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
             </TableRow>
@@ -277,7 +279,10 @@ export default function TeacherTaskBoard(props: any) {
         </Table>
       </TableContainer>
       {Array.isArray(taskArray) && taskArray.length === 0 && (
-        <h1>No results Found :\</h1>
+        <Center>
+          <h1>No results Found</h1>
+          <SentimentVeryDissatisfiedIcon style={{ fontSize: "10em" }} />
+        </Center>
       )}
     </>
   );
