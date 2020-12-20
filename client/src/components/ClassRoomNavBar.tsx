@@ -110,13 +110,6 @@ function ClassRoomNavBar() {
                   <Notifications style={{ marginRight: 10, color: "white" }} />
                 </Badge>
               </IconButton>
-              <StyledMenu
-                //@ts-ignore
-                id='customized-menu'
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}></StyledMenu>
             </>
 
             <AccountCircleIcon

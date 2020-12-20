@@ -56,7 +56,7 @@ const TilesRow = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
-  margin-bottom: 12vh;
+  margin-bottom: 30vh;
 `;
 
 const Content = styled.div`

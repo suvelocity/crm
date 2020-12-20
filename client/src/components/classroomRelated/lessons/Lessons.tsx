@@ -26,7 +26,7 @@ export default function Lessons() {
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
   const [filter, setFilter] = React.useState<string>("");
   const [selectedClass, setSelectedClass] = React.useState<number>(
-    classesToTeacher[0] ? classesToTeacher[0].classId : 0
+    classesToTeacher[0] && classesToTeacher[0].classId
   );
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,13 +76,21 @@ export default function Lessons() {
 
   useEffect(() => {
     (async () => {
+      try {
+        await setSelectedClass(classesToTeacher[0].classId);
+      } catch (error) {}
+    })();
+  }, [classesToTeacher]);
+
+  useEffect(() => {
+    (async () => {
       const allLessons = await fetchClassLessons();
-      console.log(allLessons);
       setLessons(allLessons);
       setFilteredLessons(allLessons);
       setLoading(false);
     })();
-  }, [open, selectedClass]);
+  }, [selectedClass]);
+  console.log(selectedClass);
 
   return (
     <Loading size={30} loading={loading}>

@@ -144,7 +144,6 @@ export function TasksFidget() {
       console.log(e);
     }
   };
-  console.log(incompletedTasks);
 
   return (
     <Wrapper style={{ height: "100%" }}>

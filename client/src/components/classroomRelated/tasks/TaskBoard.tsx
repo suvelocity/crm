@@ -15,7 +15,6 @@ export default function TaskBoard() {
   const [loading, setLoading] = useState<boolean>(true);
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   const DashboardContainer = styled.div`
     background-color: ${({ theme }: { theme: any }) => theme.colors.background};

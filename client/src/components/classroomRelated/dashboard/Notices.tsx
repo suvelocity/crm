@@ -21,7 +21,7 @@ function Notices() {
   const classesToTeacher = useRecoilValue(classesOfTeacher);
   const [notices, setNotices] = useState<INotice[] | undefined>([]);
   const [selectedClass, setSelectedClass] = useState<number>(
-    classesToTeacher[0] ? classesToTeacher[0].classId : 0
+    classesToTeacher[0] && classesToTeacher[0].classId
   );
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
@@ -30,7 +30,6 @@ function Notices() {
   const [open, setOpen] = React.useState(false);
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(classesToTeacher);
 
   const handleOpen = () => {
     setOpen(true);
@@ -48,6 +47,14 @@ function Notices() {
       />
     </div>
   );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await setSelectedClass(classesToTeacher[0].classId);
+      } catch (error) {}
+    })();
+  }, [classesToTeacher]);
 
   const getNotices = async () => {
     try {
@@ -78,13 +85,11 @@ function Notices() {
       );
 
       Swal.fire("Notice deleted successfully!", "", "success");
-      console.log(`notice ${id} deleted sucssesfuly`);
     } catch (error) {
       //todo error handler
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
-  // console.log(classesToTeacher[0]);
 
   return (
     <Loading size={30} loading={loading}>
