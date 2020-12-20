@@ -63,7 +63,7 @@ export default function QuizzesList() {
     };
     const fetchUserSubmissions = async () => {
       const userSubmissions: UserSubmission[] = (
-        await network.get(`/api/v1/fieldsubmission/1`)
+        await network.get(`/api/v1/fieldsubmission/bystudent/1`)
       ).data;
       setUserSubmissions(userSubmissions);
     };

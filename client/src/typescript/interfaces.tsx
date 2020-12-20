@@ -245,7 +245,7 @@ export type IOption = {
   id: number,
   title: string
 }
-interface IField {
+export type IField = {
   id: number,
   title: string,
   Options: IOption[]
@@ -262,6 +262,6 @@ export type IFormExtended = {
   Fields: IField[]  
 }
 export type IAnswer = {
-  questionId: number, 
-  answerId: number
+  fieldId: number, 
+  optionId: number
 };

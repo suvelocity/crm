@@ -20,13 +20,12 @@ export default function FormRouter() {
   useEffect(() => {
     const fetchForm = async () => {
       const form: IFormExtended = (await network.get(`/api/v1/form/${id}`)).data;
-      console.log(form);
       setForm(form);
     };
     fetchForm();
   },[]);
   if(form) {
-    return (form.isQuiz === true) ? <QuizPage id={form.id}/> : <FormPage id={form.id}/>
+    return (form.isQuiz === true) ? <QuizPage form={form}/> : <FormPage form={form}/>
   } else {
     return (
       <div></div>
