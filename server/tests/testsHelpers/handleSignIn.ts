@@ -2,7 +2,7 @@
 import { User, RefreshToken } from "../../models";
 import { usersMock, usersCardentials } from "../mocks";
 require("dotenv").config();
-const request = require("supertest");
+import request from "supertest";
 import server from "../../app";
 
 export const handleSignIn = async (userType: string) => {
