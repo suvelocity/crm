@@ -64,6 +64,8 @@ export default function AddNotice({
           labelId='demo-controlled-open-select-label'
           id='demo-controlled-open-select'
           open={open}
+          style={{ padding: "5px", marginBottom: "10px" }}
+          variant='outlined'
           onClose={handleClose}
           onOpen={handleOpen}
           value={type}
@@ -74,6 +76,7 @@ export default function AddNotice({
         </Select>
       </FormControl>
       <TextField
+        style={{ padding: "5px", marginBottom: "10px" }}
         onChange={(e) => {
           setBody(e.target.value);
         }}
@@ -85,7 +88,7 @@ export default function AddNotice({
         variant='outlined'
       />
 
-      <Button variant='contained' color='secondary' onClick={sendNotice}>
+      <Button variant='outlined' color='inherit' onClick={sendNotice}>
         send
       </Button>
     </div>

@@ -145,11 +145,19 @@ export default function Teacher() {
   );
 
   return (
-    <div style={{ position: "relative", minHeight: "50vh" }}>
+    <div
+      style={{
+        position: "relative",
+        minHeight: "50vh",
+        marginTop: "5vh",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "90%",
+      }}>
       <TeacherTaskBoard user={user} />
       <StyledButton onClick={() => setOpen(true)}>
         <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
-        New Task
+        New Taskasdasdasd
       </StyledButton>
       <GlobalStyle />
 

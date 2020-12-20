@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula='1fr 1fr 1fr' height='20vh'>
+      <TilesRow repeatFormula='1fr 1fr 1fr' height='15vh'>
         <InformationTile>
           <TasksFidget />
         </InformationTile>
@@ -52,6 +52,7 @@ const TilesRow = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
+  margin-bottom: 12vh;
 `;
 
 const Content = styled.div`

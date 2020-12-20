@@ -85,7 +85,7 @@ function Notices() {
             <Select
               style={{
                 boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-                marginLeft: "15px",
+                marginLeft: "5%",
                 marginTop: "auto",
                 marginBottom: "auto",
                 backgroundColor: "white",
@@ -93,11 +93,14 @@ function Notices() {
               value={classFilter}
               variant='outlined'
               color='primary'
+              defaultValue='cyber4s place holer'
               onChange={(e: any) => {
                 setClassFilter(e.target.value);
               }}>
-              <MenuItem value='manual'>cyber4s place holer</MenuItem>
-              <MenuItem value='challengeMe'>shit class</MenuItem>
+              <MenuItem value='cyber4s place holer'>
+                cyber4s place holer
+              </MenuItem>
+              <MenuItem value='shit class'>shit class</MenuItem>
             </Select>
 
             <Button
@@ -181,7 +184,7 @@ const FilterContainer = styled.div`
   padding-bottom: 40px;
   padding-top: 40px;
   background-color: ${({ theme }: { theme: any }) => theme.colors.container};
-  width: 90%;
+  width: 50%;
   margin-left: auto;
   margin-right: auto;
 `;
@@ -195,7 +198,7 @@ const NoticeContainer = styled.div`
   width: 50%;
   margin-left: auto;
   margin-right: auto;
-  max-height: 28vh;
+  max-height: 35vh;
   overflow-y: scroll;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 

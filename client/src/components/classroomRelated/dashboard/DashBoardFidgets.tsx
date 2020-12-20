@@ -220,7 +220,7 @@ export function LessonsFidget() {
 
 export function ScheduleFidget() {
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
           <Headline>Schedule</Headline>

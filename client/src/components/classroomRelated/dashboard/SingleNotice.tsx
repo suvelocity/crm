@@ -27,6 +27,7 @@ export default function SingleNotice(props: any) {
       }}>
       <Collapse in={open}>
         <Alert
+          style={{ display: "flex" }}
           severity={notice.type == "regular" ? "info" : "error"}
           action={
             <IconButton
@@ -49,9 +50,10 @@ export default function SingleNotice(props: any) {
           <strong> {notice.body}</strong>
 
           {userType === "teacher" && (
-            <div className='single-notice-buttons'>
+            <div className='single-notice-buttons' style={{}}>
               <Button
                 variant='outlined'
+                style={{ marginTop: "10px", alignSelf: "flex-end" }}
                 onClick={() => {
                   deleteNotice(notice.id);
                 }}>
@@ -63,7 +65,7 @@ export default function SingleNotice(props: any) {
       </Collapse>
       {!open && (
         <Button
-          color='secondary'
+          color='primary'
           onClick={() => {
             setOpen(true);
           }}>
