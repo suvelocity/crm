@@ -10,6 +10,8 @@ import styled from "styled-components";
 import { ILesson } from "../../../typescript/interfaces";
 import Lesson from "./Lesson";
 import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,6 +21,7 @@ export default function Lessons() {
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
   const [filter, setFilter] = React.useState<string>("");
+  const [classFilter, setClassFilter] = React.useState<string>("");
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -38,7 +41,6 @@ export default function Lessons() {
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  const classId = 1;
 
   const handleOpen = () => {
     setOpen(true);
@@ -58,7 +60,7 @@ export default function Lessons() {
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
-        `/api/v1/lesson/byclass/${classId}`
+        `/api/v1/lesson/byclass/${user.classId}`
       );
       return Array.isArray(lessons) ? lessons : [];
     } catch {
@@ -75,36 +77,65 @@ export default function Lessons() {
     })();
   }, [open]);
 
+  console.log(user);
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>
         <TextField
-          variant="outlined"
-          style={{ textAlign: "center" }}
-          label="Search"
+          variant='outlined'
+          style={{
+            boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+            textAlign: "center",
+            backgroundColor: "white",
+            marginLeft: "5%",
+          }}
+          label='Search'
           value={filter}
           onChange={handleFilter}
         />
-      </FilterContainer>
-      <LessonsContainer>
-        {filteredLessons.map((lesson: ILesson, index: number) => (
-          <Lesson lesson={lesson} index={index} key={lesson.id} />
-        ))}
         {(user.userType === "teacher" || user.userType === "admin") && (
           <>
-            <Button variant="outlined" onClick={handleOpen}>
+            <Select
+              style={{
+                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+                marginLeft: "15px",
+                backgroundColor: "white",
+              }}
+              value={classFilter}
+              variant='outlined'
+              onChange={(e: any) => {
+                setClassFilter(e.target.value);
+              }}>
+              <MenuItem value='manual'>cyber4s place holer</MenuItem>
+              <MenuItem value='challengeMe'>shit class</MenuItem>
+            </Select>
+
+            <Button
+              variant='outlined'
+              onClick={handleOpen}
+              style={{
+                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+                marginLeft: "auto",
+                marginRight: "5%",
+                backgroundColor: "white",
+              }}>
               Add Lesson
             </Button>
             <Modal
               open={open}
               onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
+              aria-labelledby='simple-modal-title'
+              aria-describedby='simple-modal-description'>
               {body}
             </Modal>
           </>
         )}
+      </FilterContainer>
+
+      <LessonsContainer>
+        {filteredLessons.map((lesson: ILesson, index: number) => (
+          <Lesson lesson={lesson} index={index} key={lesson.id} />
+        ))}
       </LessonsContainer>
     </Loading>
   );
@@ -113,8 +144,10 @@ export default function Lessons() {
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
-  justify-content: center;
-  padding: 20px;
+
+  /* justify-content: center; */
+  padding-bottom: 40px;
+  padding-top: 40px;
 `;
 // function getModalStyle() {
 //   // const top = 50 + rand();

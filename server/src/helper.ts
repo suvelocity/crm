@@ -7,6 +7,7 @@ import {
   IFccEvent,
   IJob,
   IStudent,
+  ITaskFilter,
   PublicFields,
   PublicFieldsEnum,
   SeqInclude,
@@ -15,6 +16,7 @@ import {
 import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
+import { parse } from "dotenv/types";
 
 //TODO fix types
 export const cancelAllJobsOfStudent: (
@@ -256,5 +258,33 @@ export const fetchFCC: () => void = async () => {
   } catch (err) {
     console.log(err);
     return { success: false, error: err.message };
+  }
+};
+
+export const parseFilters: (stringified: string) => any = (
+  stringfied: string
+) => {
+  try {
+    const parsed: ITaskFilter = JSON.parse(stringfied);
+    const studentClassSynonyms: any = { class: "name" };
+    const studentFilters: string[] = ["class"];
+    const taskFilters: string[] = ["type"];
+
+    return {
+      student: Object.keys(parsed).reduce((obj: any, field: string) => {
+        if (studentFilters.includes(field))
+          //@ts-ignore
+          obj[studentClassSynonyms[field]] = parsed[field];
+        return obj;
+      }, {}),
+      task: Object.keys(parsed).reduce((obj: any, field: string) => {
+        //@ts-ignore
+        if (taskFilters.includes(field)) obj[field] = parsed[field];
+        return obj;
+      }, {}),
+    };
+  } catch (e) {
+    console.log(e);
+    return undefined;
   }
 };
