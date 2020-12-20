@@ -13,7 +13,7 @@ import {
 } from '../../../styles/styledComponents';
 import PersonIcon from '@material-ui/icons/Person';
 import Switch from '@material-ui/core/Switch';
-import { InputLabel, Select, MenuItem } from '@material-ui/core';
+import { InputLabel, Select, MenuItem, TextField } from '@material-ui/core';
 import {
   IMentor,
   SelectInputs,
@@ -146,6 +146,9 @@ function AllMentors() {
               </Select>
             </div>
           ))}
+          <div>
+          <TextField label="Search" />
+          </div>
         </div>
       </Center>
       <br />
