@@ -13,6 +13,13 @@ import {
 } from "../mocks";
 //@ts-ignore
 import { Student, Class, Event, Job } from "../../src/models";
+const newEvent = {
+  relatedId: 1,
+  eventName: "Started application process",
+  userId: 1,
+  date: new Date(),
+  type: "jobs",
+};
 
 let accessToken: string;
 const getAllEvents = async () =>
@@ -73,13 +80,12 @@ describe("Students Tests", () => {
 
   test("Admin should be able to add job events", async (done) => {
     const prevEvents = await getAllEvents();
-    const postedEvent = await sendRequest("post", "/event", accessToken, {
-      relatedId: 1,
-      eventName: "Started application process",
-      userId: 1,
-      date: new Date(),
-      type: "jobs",
-    });
+    const postedEvent = await sendRequest(
+      "post",
+      "/event",
+      accessToken,
+      newEvent
+    );
     expect(postedEvent.status).toBe(200);
     expect(postedEvent.body.id).toBe(4);
     const newEvents = await getAllEvents();
