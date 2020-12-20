@@ -9,10 +9,16 @@ import Button from "@material-ui/core/Button";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import SingleNotice from "./SingleNotice";
+import styled from "styled-components";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import "../../../helpers/cancelScroll.css";
+import { Wrapper, Center } from "../../../styles/styledComponents";
 
 function Notices() {
   const [notices, setNotices] = useState<INotice[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [classFilter, setClassFilter] = React.useState<string>("");
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
@@ -73,42 +79,66 @@ function Notices() {
   return (
     <>
       <Loading size={30} loading={loading}>
-        <div
-          className={classes.noticeContainer}
-          // style={{ backgroundColor: "white" }}
-        >
-          <div>
-            {notices?.map((notice) => (
-              //@ts-ignore
-              <SingleNotice
-                notice={notice}
-                key={notice.id}
-                deleteNotice={deleteNotice}
-                userType={user.userType}
-              />
-            ))}
-          </div>
+        <h1 style={{ marginLeft: "5%" }}>Notices</h1>
+        {user.userType === "teacher" && (
+          <FilterContainer>
+            <Select
+              style={{
+                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+                marginLeft: "5%",
+                marginTop: "auto",
+                marginBottom: "auto",
+                backgroundColor: "white",
+              }}
+              value={classFilter}
+              variant='outlined'
+              color='primary'
+              defaultValue='cyber4s place holer'
+              onChange={(e: any) => {
+                setClassFilter(e.target.value);
+              }}>
+              <MenuItem value='cyber4s place holer'>
+                cyber4s place holer
+              </MenuItem>
+              <MenuItem value='shit class'>shit class</MenuItem>
+            </Select>
 
-          {user.userType === "teacher" && (
-            <div>
-              <Button
-                variant="outlined"
-                onClick={handleOpen}
-                style={{ position: "absolute", bottom: "0" }}
-              >
-                Add Notice
-              </Button>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-              >
-                {body}
-              </Modal>
-            </div>
-          )}
-        </div>
+            <Button
+              variant='outlined'
+              onClick={handleOpen}
+              style={{
+                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+                marginLeft: "auto",
+                marginRight: "5%",
+                backgroundColor: "white",
+                // marginTop: "auto",
+                // marginBottom: "auto",
+                // height: "100%",
+              }}>
+              Add Notice
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby='simple-modal-title'
+              aria-describedby='simple-modal-description'>
+              {body}
+            </Modal>
+          </FilterContainer>
+        )}
+        <NoticeContainer>
+          {/* <Wrapper> */}
+          {notices?.map((notice) => (
+            //@ts-ignore
+            <SingleNotice
+              notice={notice}
+              key={notice.id}
+              deleteNotice={deleteNotice}
+              userType={user.userType}
+            />
+          ))}
+          {/* </Wrapper> */}
+        </NoticeContainer>
       </Loading>
     </>
   );
@@ -144,7 +174,49 @@ const useStyles = makeStyles((theme: Theme) =>
     noticeContainer: {
       position: "relative",
       minHeight: "35vh",
-      padding: "2vh 3vw",
+      padding: "3vw",
     },
   })
 );
+
+const FilterContainer = styled.div`
+  display: flex;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const NoticeContainer = styled.div`
+  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 40px;
+  margin-top: 40px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  max-height: 35vh;
+  overflow-y: scroll;
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
+  /* overflow: hidden; */
+`;
+// const Wrapper = styled.div`
+//   margin: ${(props: { margin: string }) =>
+//     props.margin ? props.margin : "5% auto"};
+//   width: 80%;
+//   padding: ${(props: { padding: string }) =>
+//     props.padding ? props.padding : "40px"};
+//   border-radius: 7px;
+//   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+//   min-width: 300px;
+//   max-width: ${(props: { width: string }) =>
+//     props.width ? props.width : "700px"};
+//   background-color: ${(props: { backgroundColor: string }) =>
+//     props.backgroundColor ? props.backgroundColor : "white"};
+//   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
+//   position: relative;
+// `;

@@ -1,6 +1,6 @@
 import React, { useState, useContext, ChangeEvent } from "react";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { ILesson, ITask } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
@@ -8,7 +8,7 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-interface Task {
+export interface Task {
   lessonId?: number;
   externalId?: number;
   externalLink?: string;
@@ -26,6 +26,7 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
+  lessonTasks?: Task[];
 }
 export default function AddLesson({
   setOpen,
@@ -33,6 +34,7 @@ export default function AddLesson({
   lesson,
   header,
   handleClose,
+  lessonTasks,
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
@@ -47,7 +49,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(lessonTasks ? lessonTasks : []);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -75,7 +77,6 @@ export default function AddLesson({
         tasks.forEach(async (task) => {
           const taskWithLessonId = { ...task, lessonId: addedLesson.id };
           console.log(taskWithLessonId);
-
           await network.post(
             `/api/v1/task/toclass/${user.classId}`,
             taskWithLessonId
@@ -87,7 +88,6 @@ export default function AddLesson({
       Swal.fire("failed", err.message, "error");
     }
   };
-  console.log(tasks);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -148,6 +148,7 @@ export default function AddLesson({
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     const prevTasks = tasks.slice();
+    console.log(change, element);
     switch (element) {
       case "title":
         prevTasks[index].title = change;
@@ -221,7 +222,9 @@ export default function AddLesson({
               handleChange(e, "resource")
             }
           />
-          <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
+          <AddBtn onClick={handleAddResource} style={{ marginLeft: "15px" }}>
+            Add Resource
+          </AddBtn>
         </AddRsourcesContainer>
         <Info>
           {resources.map((resource: string, index: number) => (
@@ -234,8 +237,9 @@ export default function AddLesson({
             </OneInfo>
           ))}
         </Info>
-        <AddBtn onClick={addTask}>Add Task</AddBtn>
+
         <Info>
+          <AddBtn onClick={addTask}>Add Task</AddBtn>
           {tasks.map((task: Task, index: number) => (
             <OneInfo key={index}>
               <AddTask
@@ -248,15 +252,21 @@ export default function AddLesson({
           ))}
         </Info>
       </AddLessonForm>
-      <Submit onClick={handleSubmit}>
+      <Button
+        variant='outlined'
+        onClick={handleSubmit}
+        style={{
+          marginTop: "auto",
+          backgroundColor: "white",
+        }}>
         {header ? header : "Create Lesson"}
-      </Submit>
+      </Button>
     </AddLessonContainer>
   );
 }
 
 const AddBtn = styled(Button)`
-  margin-left: 20px;
+  /* margin-left: 20px; */
 `;
 
 const Input = styled(TextField)`
@@ -268,13 +278,12 @@ const AddRsourcesContainer = styled.div`
   align-items: center;
 `;
 
-const Submit = styled.button`
-  padding: 10px;
-`;
-
 const AddLessonContainer = styled.div`
   display: flex;
   flex-direction: column;
+  /* background-color: ${({ theme }: { theme: any }) => theme.colors.container};
+  color: white; */
+  padding: 20px;
 `;
 
 const AddLessonForm = styled.form`
@@ -282,6 +291,7 @@ const AddLessonForm = styled.form`
   flex-direction: column;
   height: 80vh;
   width: 80vw;
+  overflow-y: scroll;
 `;
 
 const Info = styled.div`
@@ -299,7 +309,7 @@ const OneInfo = styled.div`
 `;
 
 const Link = styled.span`
-  background-color: #3f51b5;
+  background-color: #0a1425;
   border-radius: 8px;
   padding: 5px;
   color: white;

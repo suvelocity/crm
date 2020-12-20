@@ -3,12 +3,14 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ILesson, ITask } from "../../../../../server/src/types";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
+import styled from "styled-components";
 import {
   TitleWrapper,
   H1,
   Wrapper,
   Center,
 } from "../../../styles/styledComponents";
+import sunshine from "../../../media/sunshine.gif";
 const mockTasks = [
   {
     body: "Build challenge app",
@@ -34,10 +36,93 @@ const mockTasks = [
     status: "done",
     by: "Rotem",
   },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
+  {
+    body: "Break into Penthagon's servers",
+    deadline: new Date(),
+    status: "done",
+    by: "Rotem",
+  },
 ];
 
 export function TasksFidget() {
-  const [completedTasks, setCompletedTasks] = useState<ITask[]>([]);
   const [incompletedTasks, setIncompletedTasks] = useState<ITask[]>([]);
 
   const { user } = useContext<any>(AuthContext);
@@ -51,46 +136,41 @@ export function TasksFidget() {
       const { data: allTasks }: { data: ITask[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
-      //only for now, for style purposes.
-      if (allTasks[0]) {
-        setCompletedTasks(
-          allTasks.filter((task: ITask) => task.status === "done")
-        );
-        setIncompletedTasks(
-          allTasks.filter((task: ITask) => task.status !== "done")
-        );
-      } else {
-        setIncompletedTasks(
-          //@ts-ignore
-          mockTasks.filter((task: Itask) => task.status === "done")
-        );
-        setCompletedTasks(
-          //@ts-ignore
-          mockTasks.filter((task: ITask) => task.status !== "done")
-        );
-      }
+
+      setIncompletedTasks(
+        allTasks.filter((task: ITask) => task.status !== "done")
+      );
     } catch (e) {
       console.log(e);
     }
   };
+  console.log(incompletedTasks);
 
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
-          <H1>Tasks</H1>
+          <Headline>My Tasks</Headline>
         </TitleWrapper>
+
+        {incompletedTasks === [] ? (
+          <p>
+            <b>you have incommpleted Tasks!</b>
+
+            {incompletedTasks.map((task: ITask, i: number) => (
+              <li key={`incompTask${i}`}>{task.body}</li>
+            ))}
+          </p>
+        ) : (
+          <img
+            src={sunshine}
+            alt='sunshine'
+            style={{
+              maxHeight: "100px",
+            }}
+          />
+        )}
       </Center>
-      <p>
-        <b>Completed Tasks</b>
-        {completedTasks.map((task: ITask, i: number) => (
-          <li key={`compTask${i}`}>{task.body}</li>
-        ))}
-        <b>Incompleted Tasks</b>
-        {incompletedTasks.map((task: ITask, i: number) => (
-          <li key={`incompTask${i}`}>{task.body}</li>
-        ))}
-      </p>
     </Wrapper>
   );
 }
@@ -123,10 +203,10 @@ export function LessonsFidget() {
   };
 
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
-          <H1>Lessons</H1>
+          <Headline>Lessons</Headline>
         </TitleWrapper>
       </Center>
       <p>
@@ -140,13 +220,29 @@ export function LessonsFidget() {
 
 export function ScheduleFidget() {
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
-          <H1>Schedule</H1>
+          <Headline>Schedule</Headline>
         </TitleWrapper>
       </Center>
       <p>checkpoint 16:00</p>
     </Wrapper>
   );
 }
+export const Headline = styled.h1`
+  padding: 10px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 27px;
+  color: white;
+  /* position: relative; */
+  /* left: -50%;
+  top: -80px; */
+  margin: 0;
+  display: inline;
+  background-color: ${({ theme }: { theme: any }) => theme.colors.item};
+  border-radius: 5px;
+  min-width: 180px;
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  z-index: 2;
+`;

@@ -177,3 +177,8 @@ export interface IMentorProgram {
   endDate: string;
   startDate: string;
 }
+
+export interface ITaskFilter {
+  class: string;
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
+}
