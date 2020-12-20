@@ -116,7 +116,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
       where: { id },
     });
     if (deleted === 0) return res.status(404).json({ error: "Job not found" });
-    await Event.destroy({ where: { jobId: id } });
+    await Event.destroy({ where: { id: id } });
     res.json({ message: "Job deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });

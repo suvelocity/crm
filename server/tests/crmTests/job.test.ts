@@ -13,6 +13,7 @@ import {
 import server from "../../src/app";
 import { jobsTestExpectedResults } from "../mocks/jobs/jobsTestExpectedResults";
 import expectCt from "helmet/dist/middlewares/expect-ct";
+import { isMainThread } from "worker_threads";
 
 let accessToken: string;
 
@@ -29,13 +30,22 @@ const mockAddedJob = {
   position: "test job",
   companyId: 1,
   description: "test description",
-  contact: "Nisim - 054545454",
+  contact: "Nitzan - 054545454",
   location: "Tel Mond, Israel",
   requirements: "be awesome",
   additionalDetails: "Shahar Eliyahu is a MASSIVE snake",
   createdAt: "2020-12-20",
   updatedAt: "2020-12-20",
   deletedAt: null,
+};
+
+const mockUpdate = {
+  position: "updated job",
+  description: "updated description",
+  contact: "updated",
+  location: "Kadima Zoran, Israel",
+  requirements: "Update",
+  additionalDetails: "Shahar Eliyahu is a STILL MASSIVE snake",
 };
 
 describe("Job tests", () => {
@@ -92,6 +102,30 @@ describe("Job tests", () => {
   });
 
   it("Should update all fields of job", async () => {
-    const updatedJob = await patchJobById(2, { a: 1 });
+    const id = 2;
+    const updatedJobMsg = await patchJobById(id, mockUpdate);
+
+    expect(updatedJobMsg.status).toBe(200);
+    expect(updatedJobMsg.body.msg).toBe("Job updated");
+
+    const { body: updatedJob } = await getJobById(id);
+
+    for (let field in mockUpdate) {
+      expect(updatedJob[field]).toBe(mockUpdate[field]);
+    }
+  });
+
+  it("Should delete a job", async () => {
+    const id = 1;
+
+    const preDeletedJob = await getJobById(id);
+    const deletedJobMsg = await deleteJobById(id);
+    const postDeletedJob = await getJobById(id);
+
+    expect(preDeletedJob.deletedAt).toBe(undefined);
+    expect(deletedJobMsg.status).toBe(200);
+    expect(deletedJobMsg.body.message).toBe("Job deleted");
+    expect(postDeletedJob.status).toBe(404);
+    expect(postDeletedJob.body.error).toBe("Job does not exist");
   });
 });
