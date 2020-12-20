@@ -12,7 +12,6 @@ import {
   StyledDiv,
 } from '../../../styles/styledComponents';
 import PersonIcon from '@material-ui/icons/Person';
-import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import { InputLabel, Select, MenuItem } from '@material-ui/core';
 import {
@@ -32,6 +31,7 @@ function AllMentors() {
     Company: '',
     Gender: '',
     Address: '',
+    Available: '',
   });
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
@@ -40,7 +40,7 @@ function AllMentors() {
   useEffect(() => {
     (async () => {
       const { data } = await network.get('/api/v1/M/mentor');
-      data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
+      // data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
       setMentors(data);
       setLoading(false);
       setAllMentors(data);
@@ -53,6 +53,7 @@ function AllMentors() {
       const addressFilters: string[] = Array.from(
         new Set(data.map((mentor: IMentor) => mentor.address))
       );
+      const availableFilters: string[] = ["Available", "Not Available"];
       setFilterOptionsArray([
         {
           filterBy: 'Company',
@@ -65,6 +66,10 @@ function AllMentors() {
         {
           filterBy: 'Address',
           possibleValues: addressFilters,
+        },
+        {
+          filterBy: 'Available',
+          possibleValues: availableFilters,
         },
       ]);
     })();
@@ -81,6 +86,9 @@ function AllMentors() {
     if (category === 'Address') {
       newAttributes = {...newAttributes, Address: filterField}
     }
+    if (category === 'Available') {
+      newAttributes = {...newAttributes, Available: filterField}
+    }
     setFilterAttributes(newAttributes)
     console.log(newAttributes)
   };
@@ -95,6 +103,9 @@ function AllMentors() {
     }
     if (filterAttributes.Gender !== '') {
       newFilteredMentors = newFilteredMentors.filter((mentor)=>mentor.gender === filterAttributes.Gender)
+    }
+    if (filterAttributes.Available !== '') {
+      newFilteredMentors = newFilteredMentors.filter((mentor)=>filterAttributes.Available === 'Available' ? mentor.available === true : mentor.available === false)
     }
     setMentors(newFilteredMentors);
   }, [filterAttributes, allMentors])
@@ -119,7 +130,7 @@ function AllMentors() {
           <H1 color='#c47dfa'>All Mentors</H1>
         </TitleWrapper>
         <br />
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', width: '50%', justifyContent: 'space-around' }}>
           {filterOptionsArray.map((arr) => (
             <div>
               <InputLabel>{arr.filterBy}</InputLabel>
@@ -142,23 +153,24 @@ function AllMentors() {
         <StyledUl>
           {mentors && (
             <li>
-              <TableHeader repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
+              <TableHeader repeatFormula='0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr'>
                 <PersonIcon />
                 <StyledSpan weight='bold'>Name</StyledSpan>
                 <StyledSpan weight='bold'>Company</StyledSpan>
                 <StyledSpan weight='bold'>Email</StyledSpan>
-                <StyledSpan weight='bold'>Phone</StyledSpan>
+                {/* <StyledSpan weight='bold'>Phone</StyledSpan> */}
                 <StyledSpan weight='bold'>Address</StyledSpan>
-                <StyledSpan weight='bold'>Job</StyledSpan>
-                <StyledSpan weight='bold'>Available</StyledSpan>
+                <StyledSpan weight='bold'>Role</StyledSpan>
+                <StyledSpan weight='bold'>Experience</StyledSpan>
                 <StyledSpan weight='bold'>Gender</StyledSpan>
+                <StyledSpan weight='bold'>Available</StyledSpan>
               </TableHeader>
             </li>
           )}
           {mentors &&
             mentors.map((mentor) => (
               <li>
-                <StyledDiv repeatFormula='0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'>
+                <StyledDiv repeatFormula='0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr'>
                   <PersonIcon />
                   <StyledLink color='black' to={`/mentor/${mentor?.id}`}>
                     <StyledSpan weight='bold'>
@@ -167,9 +179,11 @@ function AllMentors() {
                   </StyledLink>
                   <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
                   <StyledSpan>{mentor.email}</StyledSpan>
-                  <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan>
+                  {/* <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan> */}
                   <StyledSpan>{mentor.address}</StyledSpan>
                   <StyledSpan>{mentor.role}</StyledSpan>
+                  <StyledSpan>{mentor.experience}</StyledSpan>
+                  <StyledSpan>{mentor.gender}</StyledSpan>
                   <StyledSpan>
                     <Switch
                       checked={mentor.available}
@@ -181,7 +195,6 @@ function AllMentors() {
                       inputProps={{ 'aria-label': 'primary checkbox' }}
                     />
                   </StyledSpan>
-                  <StyledSpan>{mentor.gender}</StyledSpan>
                 </StyledDiv>
               </li>
             ))}
