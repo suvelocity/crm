@@ -1,4 +1,3 @@
-import { string } from "joi";
 import request from "supertest";
 import server from "../../src/app";
 type requestMethod = "get" | "post" | "put" | "delete" | "patch";

@@ -15,7 +15,7 @@ import {
   newStudent,
 } from "../mocks";
 //@ts-ignore
-import { Student, Class, User } from "../../models";
+import { Student, Class, User } from "../../src/models";
 
 let accessToken: string;
 
