@@ -5,30 +5,20 @@ import {
   Modal,
   Button,
   TextField,
-  FormControl,
-  InputLabel,
-  Tooltip,
-  Select,
-  MenuItem,
-  FormHelperText,
 } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
-import { Center, GridDiv } from "../../../styles/styledComponents";
-import { IEvent, IClass, IMentorProgram } from "../../../typescript/interfaces";
-import { ActionBtn, ErrorBtn } from "../../formRelated";
-//TODO change this later
-import { statuses } from "../../../helpers";
+import { Center } from "../../../styles/styledComponents";
+import { IMentorProgram } from "../../../typescript/interfaces";
 import Swal from "sweetalert2";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { useHistory } from "react-router-dom";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -212,12 +202,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
 
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={handleOpen}
-      >
-        Edit Program
-      </Button>
+        <EditIcon style={{cursor: "pointer"}} onClick={handleOpen}/>
       <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>
