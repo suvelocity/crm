@@ -8,6 +8,7 @@ import {
   getById,
   handleSignIn,
   patchById,
+  post,
 } from "../testsHelpers";
 import server from "../../src/app";
 import { jobsTestExpectedResults } from "../mocks/jobs/jobsTestExpectedResults";
@@ -16,12 +17,26 @@ import expectCt from "helmet/dist/middlewares/expect-ct";
 let accessToken: string;
 
 const getCurrentJobs = async () => await getAll("job", accessToken);
-const getJobById = async (id: number) =>
-  await getById(id, "student", accessToken);
+const getJobById = async (id: number) => await getById(id, "job", accessToken);
+const postNewJob = async (body: object) => await post("job", accessToken, body);
 const patchJobById = async (id: number, body: object) =>
-  await patchById(id, "student", accessToken, body);
+  await patchById(id, "job", accessToken, body);
 const deleteJobById = async (id: number) =>
-  await deleteById(id, "student", accessToken);
+  await deleteById(id, "job", accessToken);
+
+const mockAddedJob = {
+  id: 3,
+  position: "test job",
+  companyId: 1,
+  description: "test description",
+  contact: "Nisim - 054545454",
+  location: "Tel Mond, Israel",
+  requirements: "be awesome",
+  additionalDetails: "Shahar Eliyahu is a MASSIVE snake",
+  createdAt: "2020-12-20",
+  updatedAt: "2020-12-20",
+  deletedAt: null,
+};
 
 describe("Job tests", () => {
   beforeAll(async () => {
@@ -38,18 +53,45 @@ describe("Job tests", () => {
     await server.close();
   });
 
-  it.only("Should get all jobs", async () => {
+  it("Should get all jobs", async () => {
     const allJobs = await getCurrentJobs();
 
     expect(allJobs.status).toBe(200);
     expect(allJobs.body.length).toBe(2);
 
     for (let i in allJobs.body) {
-      console.log(i);
       expect(allJobs.body[i].id).toBe(jobsTestExpectedResults[i].id);
       expect(allJobs.body[i].position).toBe(
         jobsTestExpectedResults[i].position
       );
     }
+  });
+
+  it("Should get a job by id", async () => {
+    const id = 2;
+    const singleJob = await getJobById(id);
+
+    expect(singleJob.status).toBe(200);
+    expect(singleJob.body.id).toBe(id);
+    expect(singleJob.body.position).toBe(
+      jobsTestExpectedResults.find((jter) => jter.id === id).position
+    );
+  });
+
+  it("Should add a job", async () => {
+    const addedJob = await postNewJob(mockAddedJob);
+
+    expect(addedJob.status).toBe(200);
+    for (let field in addedJob.body) {
+      if (field === "createdAt" || field === "updatedAt") {
+        expect(addedJob.body[field].slice(0, 10)).toBe(mockAddedJob[field]);
+      } else {
+        expect(addedJob.body[field]).toBe(mockAddedJob[field]);
+      }
+    }
+  });
+
+  it("Should update all fields of job", async () => {
+    const updatedJob = await patchJobById(2, { a: 1 });
   });
 });
