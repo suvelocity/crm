@@ -275,4 +275,4 @@ export const newStudent = {
   createdAt: "2020-12-18T01:00:12.000Z",
   updatedAt: "2020-12-18T01:00:12.000Z",
   deletedAt: null,
-}
+};

@@ -1,6 +1,6 @@
 export const jobEventExpectedResults = [
   {
-    id: 27,
+    id: 1,
     eventName: "Hired",
     type: "jobs",
     userId: 7,
@@ -34,8 +34,8 @@ export const jobEventExpectedResults = [
       mentorId: null,
       fccAccount: null,
       resumeLink: null,
-      createdAt: "2020-12-17T15:19:12.000Z",
-      updatedAt: "2020-12-17T15:19:12.000Z",
+      createdAt: "2020-12-18T01:00:12.000Z",
+      updatedAt: "2020-12-18T01:00:12.000Z",
       deletedAt: null,
       Class: {
         id: 6,
@@ -54,7 +54,7 @@ export const jobEventExpectedResults = [
     },
   },
   {
-    id: 30,
+    id: 2,
     eventName: "Started application process",
     type: "jobs",
     userId: 9,
@@ -86,8 +86,8 @@ export const jobEventExpectedResults = [
       mentorId: null,
       fccAccount: null,
       resumeLink: null,
-      createdAt: "2020-12-17T15:19:12.000Z",
-      updatedAt: "2020-12-17T15:19:12.000Z",
+      createdAt: "2020-12-18T01:00:12.000Z",
+      updatedAt: "2020-12-18T01:00:12.000Z",
       deletedAt: null,
       Class: {
         id: 6,
@@ -106,7 +106,7 @@ export const jobEventExpectedResults = [
     },
   },
   {
-    id: 29,
+    id: 3,
     eventName: "Canceled",
     type: "jobs",
     userId: 3,
@@ -115,7 +115,7 @@ export const jobEventExpectedResults = [
       comment: "Nitzan Listman was hired for this job ",
     },
     creatorId: 0,
-    date: "2020-12-14T00:00:00.000Z",
+    date: "2020-12-11T00:00:00.000Z",
     createdAt: "2020-12-14T10:01:57.000Z",
     updatedAt: "2020-12-14T10:01:57.000Z",
     deletedAt: null,
@@ -140,8 +140,8 @@ export const jobEventExpectedResults = [
       mentorId: null,
       fccAccount: null,
       resumeLink: null,
-      createdAt: "2020-12-17T15:19:11.000Z",
-      updatedAt: "2020-12-17T15:19:11.000Z",
+      createdAt: "2020-12-18T01:00:12.000Z",
+      updatedAt: "2020-12-18T01:00:12.000Z",
       deletedAt: null,
       Class: {
         id: 3,

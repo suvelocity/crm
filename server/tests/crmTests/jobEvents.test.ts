@@ -15,6 +15,8 @@ import {
 import { Student, Class, Event, Job } from "../../src/models";
 
 let accessToken: string;
+const getAllEvents = async () =>
+  await sendRequest("get", "/event/all", accessToken);
 
 describe("Students Tests", () => {
   beforeAll(async () => {
@@ -35,6 +37,53 @@ describe("Students Tests", () => {
   });
 
   test("Admin should be able to get all job events", async (done) => {
+    const allEvents = await getAllEvents();
+    expect(allEvents.status).toBe(200);
+    expect(allEvents.body.length).toBe(jobEventExpectedResults.length);
+    for (let i = 0; i < allEvents.body.length; i++) {
+      const event = allEvents.body[i];
+      const expectedEvent = jobEventExpectedResults[i];
+      expect(event.Student).toBeDefined();
+      expect(event.Job).toBeDefined();
+      expect(event.eventName).toBe(expectedEvent.eventName);
+      expect(event.Student.firstName).toBe(expectedEvent.Student.firstName);
+    }
+    done();
+  });
+
+  test("Admin should be able to get all job events processes", async (done) => {
+    const allEventsProcesses = await sendRequest(
+      "get",
+      "/event/allprocesses",
+      accessToken
+    );
+    expect(allEventsProcesses.status).toBe(200);
+    expect(allEventsProcesses.body.length).toBe(jobEventExpectedResults.length);
+    for (let i = 0; i < allEventsProcesses.body.length; i++) {
+      const event = allEventsProcesses.body[i];
+      const expectedEvent = jobEventExpectedResults[i];
+      expect(event.Student).toBeDefined();
+      expect(event.Student.Class).toBeDefined();
+      expect(event.Job).toBeDefined();
+      expect(event.eventName).toBe(expectedEvent.eventName);
+      expect(event.Student.firstName).toBe(expectedEvent.Student.firstName);
+    }
+    done();
+  });
+
+  test("Admin should be able to add job events", async (done) => {
+    const prevEvents = await getAllEvents();
+    const postedEvent = await sendRequest("post", "/event", accessToken, {
+      relatedId: 1,
+      eventName: "Started application process",
+      userId: 1,
+      date: new Date(),
+      type: "jobs",
+    });
+    expect(postedEvent.status).toBe(200);
+    expect(postedEvent.body.id).toBe(4);
+    const newEvents = await getAllEvents();
+    expect(prevEvents.length).toBe(newEvents.length);
     done();
   });
 });
