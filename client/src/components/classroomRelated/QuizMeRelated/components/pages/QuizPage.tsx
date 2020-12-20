@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 interface IProps {
-  id: number;
+  form: IFormExtended;
 }
 
 export default function QuizPage(props: IProps) {
-  const id = props.id;
+  const form = props.form;
   // const { id } = useParams();
   const classes = useStyles();
 
@@ -74,7 +74,9 @@ export default function QuizPage(props: IProps) {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const quiz = (await network.get(`/api/v1/form/${id}`)).data;
+      const quiz = (await network.get(`/api/v1/form/${form.id}`)).data;
+      // console.log(quiz);
+      
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -83,7 +85,7 @@ export default function QuizPage(props: IProps) {
   useEffect(() => {
     const countdown = setInterval(() => {
       if (seconds > 0) {
-        console.log(seconds);
+        // console.log(seconds);
         setSeconds((seconds) => seconds - 1);
       } else if (seconds === 0) {
         if (minutes > 0) {
@@ -100,11 +102,10 @@ export default function QuizPage(props: IProps) {
     };
   }, [seconds, minutes]);
 
-  const findSelectedAnswerIdByTitle = (title: string): number => {
-    const currentFieldsArray: IOption[] = quiz!.Fields[currentQuestionIndex]
-      .Options;
-    const selectedAnswer: any = currentFieldsArray.find(
-      (field) => field.title === title
+  const findSelectedAnswerIdByTitle = (title: any): number => {
+    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex].Options;
+    const selectedAnswer: any = currentOptionsArray.find(
+      (option) => option.title === title
     );
     const id = selectedAnswer ? selectedAnswer.id : -1;
     return id;
@@ -112,13 +113,14 @@ export default function QuizPage(props: IProps) {
   const onAnswerSelect = (selectedAnswerId: number, interval?: any): void => {
     if (!quizIsOver) {
       console.log(selectedAnswerId);
+      const newAnswer =  {
+        //@ts-ignore
+        fieldId: quiz.Fields[currentQuestionIndex].id,
+        optionId: selectedAnswerId,
+      };
       setAnswers([
         ...answers,
-        {
-          //@ts-ignore
-          questionId: quiz.Fields[currentQuestionIndex].id,
-          answerId: selectedAnswerId,
-        },
+        newAnswer
       ]);
       //@ts-ignore
       if (quiz.Fields.length - 1 > currentQuestionIndex) {
@@ -129,18 +131,22 @@ export default function QuizPage(props: IProps) {
         if (interval) {
           clearInterval(interval);
         }
-        submitQuiz();
+        submitQuiz(newAnswer);
       }
     }
   };
-  const submitQuiz = async () => {
+  const submitQuiz = async (newAnswer: IAnswer) => {
     try {
       setQuizIsOver(true);
-      // await network.post("/submissions", {
-      //   userId: 3, // 3
-      //   formId: quiz.id, // 1
-      //   answersSelected: answers,
-      // });
+      const answersArray = [...answers, newAnswer];
+      const studentId = 1;
+      const sub = {
+        studentId,
+        answersArray
+      };
+      console.log(sub);
+      await network.post("/api/v1/fieldsubmission/quiz", sub);
+
       setFinishTitle("Well done, quiz submitted successfully");
     } catch (error) {
       const errorMessage = error.response.data.message;
@@ -174,12 +180,9 @@ export default function QuizPage(props: IProps) {
                       button
                       disableGutters
                       key={index}
-                      onClick={(e) =>
-                        onAnswerSelect(
-                          //@ts-ignore
-                          findSelectedAnswerIdByTitle(e.target.value)
-                        )
-                      }
+                      onClick={(e) => {onAnswerSelect( //@ts-ignore
+                          findSelectedAnswerIdByTitle(e.target.innerText)
+                      )}}
                       className={classes.field}
                     >
                       <ListItemText

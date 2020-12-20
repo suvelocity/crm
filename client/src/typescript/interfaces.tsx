@@ -245,7 +245,7 @@ export type IOption = {
   id: number,
   title: string
 }
-interface IField {
+export type IField = {
   id: number,
   title: string,
   Options: IOption[]

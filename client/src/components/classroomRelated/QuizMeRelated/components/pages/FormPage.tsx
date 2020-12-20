@@ -1,56 +1,96 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, List, ListItem, ListItemText, Typography, Chip } from "@material-ui/core";
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
-import { IFormExtended, IAnswer, IOption } from "../../../../../typescript/interfaces";
-
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Chip,
+} from "@material-ui/core";
+import network from "../../../../../helpers/network";
+import { IFormExtended, IField } from "../../../../../typescript/interfaces";
 const useStyles = makeStyles((theme) => ({
-  quizWrapper: {
-    display: 'flex',
-    justifyContent: 'center'
+  formWrapper: {
+    display: "flex",
+    justifyContent: "center",
   },
-  quiz: {
-    width: '65vw',
-    maxWidth: '65vw',
+  form: {
+    width: "65vw",
+    maxWidth: "65vw",
     backgroundColor: theme.palette.background.paper,
-    padding: '1em 1.5em',
-  },
-  questionTitle: {
-    fontSize: '2em',
-    fontWeight: 600
-  },
-  timeRemaining: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '0.5em'
-  },
-  clockIcon: {
-    margin: '0 0.25em'
+    padding: "1em 1.5em",
   },
   field: {
-    cursor: "pointer",
-    margin: "0.75em 0",
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.secondary.main,  
-    padding: "0.5em",
-    fontSize: '1.5em',
-    fontWeight: 500
+    margin: "1em 0",
+    backgroundColor: "#7cc6e6",
+    maxWidth: "100%",
   },
-  chipContainer: {
-    display: 'flex',
-    justifyContent: 'center'
-  }
+  input: {},
 }));
 
 interface IProps {
-  id: number
+  form: IFormExtended;
 }
 
 export default function FormPage(props: IProps) {
-  const id = props.id;
+  const form = props.form;
   const classes = useStyles();
+  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+  const [submissionSuccessful, setSubmissionSuccessful] = useState<boolean>();
+  const { register, handleSubmit, watch, errors } = useForm();
+  const onSubmit = async (formSubmission: any) => { 
+    setFormSubmitted(true);
+    try {
+      const studentId = 1;
+      // console.log(submission.formSubmission);
+      let fieldSubsArr = [];
+      for (const sub in formSubmission) {
+        fieldSubsArr.push({
+          studentId,
+          fieldId: Number(sub),
+          textualAnswer: formSubmission[sub]
+        });
+      };
+      await network.post(`/api/v1/fieldsubmission/form`, fieldSubsArr);
+      setSubmissionSuccessful(true);
+    }
+    catch(error) {
+      setSubmissionSuccessful(false);
+      console.log(error);
+    }
+  };
 
-  return <div>Form Page</div>
+  return (
+    <Container className={classes.formWrapper}>
+      <Container className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {form.Fields.map((field, index) => (
+            <div key={index}>
+                {/* LABEL */}
+                <div>
+                  <label htmlFor={field.id.toString()}>{field.title}</label>
+                </div>
+
+                {/* INPUT */}
+                <div>
+                  <input
+                    ref={register({ required: true })}
+                    name={field.id.toString()}
+                    placeholder="Your answer"
+                  />
+                  {errors[field.title] && (
+                    <span>This field is required</span>
+                  )}
+                </div>
+            </div>
+          ))}
+          <div>
+            <input type="submit" />
+          </div>
+        </form>
+      </Container>
+    </Container>
+  );
 }

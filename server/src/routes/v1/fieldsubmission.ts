@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 //@ts-ignore
-import { FieldSubmission, Quiz, Field, SelectedOption, Option  } from "../../models";
+import { FieldSubmission, Form, Field, SelectedOption, Option } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 
@@ -9,6 +9,7 @@ import {
   quizSubmissionSchemaToPut,
 } from "../../validations";
 import { IQuizSubmission } from "../../types";
+import { required } from "joi";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 // GET QUIZ-SUBMISSIONS BY studentId
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/bystudent/:id", async (req: Request, res: Response) => {
   const submissions = await FieldSubmission.findAll({
     raw: true,
     include: [
@@ -80,30 +81,6 @@ router.get("/:id/full", async (req: Request, res: Response) => {
   return res.json(submissions);
 });
 
-// GET FORM-SUBMISSIONS WITH CONTENT BY fromId
-router.get("/byform/:id/full", async (req: Request, res: Response) => {
-  const submissions = await FieldSubmission.findAll({
-    raw: true,
-    include: [
-      {
-        model: Field,
-        required: false,
-        as: "fields",
-        attributes: ["id", 'title']
-      },
-      {
-        model: SelectedOption,
-        attributes: [],
-        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
-      }
-    ],
-    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
-    // group: ['formId'],
-    where: db.Sequelize.where(db.Sequelize.col("fields.form_id"), req.params.id)
-  });
-  return res.json(submissions);
-});
-
 // GET FIELD-SUBMISSIONS WITH CONTENT BY studentId
 router.get("/bystudent/:id/full", async (req: Request, res: Response) => {
   const submissions = await FieldSubmission.findAll({
@@ -128,6 +105,87 @@ router.get("/bystudent/:id/full", async (req: Request, res: Response) => {
     }
   });
   return res.json(submissions);
+});
+
+// GET FORM-SUBMISSIONS WITH CONTENT BY fromId
+router.get("/byform/:id/full", async (req: Request, res: Response) => {
+  const submissions = await FieldSubmission.findAll({
+    raw: true,
+    include: [
+      {
+        model: Field,
+        required: false,
+        as: "fields",
+        attributes: ["id", 'title']
+      },
+      {
+        model: SelectedOption,
+        attributes: [],
+        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
+      }
+    ],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
+    // group: ['formId'],
+    where: db.Sequelize.where(db.Sequelize.col("fields.form_id"), req.params.id)
+  });
+  return res.json(submissions);
+});
+
+
+
+router.post('/form', async (req: Request, res: Response) => {
+  try {
+    const body = req.body;
+    // const { studentId, fieldId, textualAnswer } = body;
+    const fieldSubsArr = body.map((fieldSub: any) => ({
+      studentId: fieldSub.studentId,
+      fieldId: fieldSub.fieldId,
+      textualAnswer: fieldSub.textualAnswer
+    }));
+    // const { error } = FormSubmission.validate(formSubmission);
+    // if(error) {return res.status(400).json(error.message)}; 
+    // const formattedFormSubmission = formSubmission.map(())
+    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubsArr)
+    return res.json("field subs created successfully")
+  }
+  catch(error) {
+    return res.status(400).json(error.message);
+  }
+});
+router.post('/quiz', async (req: Request, res: Response) => {
+  try {
+    const body = req.body;
+    const answers = body.answersArray; /// validate
+    const { studentId } = body; 
+    let fieldSubs: any = [];
+    answers.forEach((answer: any) => {
+      fieldSubs.push({
+        studentId,
+        fieldId: answer.fieldId
+      });
+    });
+
+    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs, {returning: true});
+    console.log("created field subs: " ,createdFieldSubmissions);
+    const optionSubs: any = [];
+    createdFieldSubmissions.forEach((fieldSub: any) => {
+      const fieldSubmissionsId = fieldSub.id;
+      console.log("fieldSubmissionsId: ", fieldSubmissionsId);
+      
+      const fieldId = fieldSub.fieldId;
+      const optionId = answers.find((answer: any) => answer.fieldId === fieldId).optionId;
+      optionSubs.push({
+        fieldSubmissionsId,
+        optionId
+      });
+    });
+    const createdSelectedOptions = await SelectedOption.bulkCreate(optionSubs);
+    return res.json({createdFieldSubmissions, createdSelectedOptions});
+    // return res.json(fieldSubs);
+  }
+  catch(error) {
+    return res.status(400).json(error.message);
+  }
 });
 
 
