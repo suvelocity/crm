@@ -265,3 +265,23 @@ export type IAnswer = {
   questionId: number, 
   answerId: number
 };
+
+export type IAnswered = {
+  optionId: number, 
+  optionTitle: string
+};
+
+export interface AnsweredFiled {
+  id: number,
+  title: string,
+  answer : IAnswered 
+}
+
+export type QuizSubmission = { 
+  id: number,
+  studentid : number,
+  fieldid: number,
+  fieldstitle: string,
+  answerid: number,
+  answertitle: string 
+}

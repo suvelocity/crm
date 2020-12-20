@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true,
     paranoid: true,
     modelName: 'SelectedOption',
+    tableName: "selectedoptions"
   });
   return SelectedOption;
 };

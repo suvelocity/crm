@@ -7,6 +7,7 @@ import "./QuizMe.css";
 import Home from "./components/pages/Home";
 import FormRouter from "./components/FormRouter";
 import NavBar from "./components/NavBar";
+import QuizSubmissionsRouter from "./components/QuizSubmissionsRouter";
 
 const useStyles = makeStyles({
   container: {
@@ -25,6 +26,8 @@ function QuizMe() {
         <NavBar />
           <Switch>
             <Route exact path="/quizme/form/:id" component={FormRouter}/>
+            <Route path="/quizme/fieldsubmission/byform/:id" component={QuizSubmissionsRouter} />
+            {/* <Route path="/quizme/api/v1/fieldsubmission/byForm/:id/full" component={QuizSubmissionsRouter()} /> */}
             {/* <Route exact path="/quizme/form/:id" component={FormPage} /> */}
             {/* <Route exact path="/statistics" component={UserStats} /> */}
             <Route path="/quizme/" component={Home} />

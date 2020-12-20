@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 //@ts-ignore
-import { FieldSubmission, Quiz, Field } from "../../models";
+import { FieldSubmission, Quiz, Field, SelectedOption, Option  } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 
@@ -43,6 +43,35 @@ router.get("/:id", async (req: Request, res: Response) => {
       },
     ],
     attributes: [[db.Sequelize.col("fields.form_id"), "formId"]],
+    where: {
+      studentId: req.params.id
+    }
+  });
+  return res.json(submissions);
+});
+// GET QUIZ-SUBMISSIONS WITH CONTENT BY studentId
+router.get("/:id/full", async (req: Request, res: Response) => {
+  const submissions = await FieldSubmission.findAll({
+    raw: true,
+    include: [
+      {
+        model: Field,
+        required: false,
+        as: "fields",
+        attributes: ["id", 'title']
+      },
+      {
+        model: SelectedOption,
+        attributes: [],
+        include: [
+          {
+            model: Option, 
+            attributes: ['id', 'title']
+          }
+        ]    
+      }
+    ],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
     group: ['formId'],
     where: {
       studentId: req.params.id
@@ -50,6 +79,57 @@ router.get("/:id", async (req: Request, res: Response) => {
   });
   return res.json(submissions);
 });
+
+// GET FORM-SUBMISSIONS WITH CONTENT BY fromId
+router.get("/byform/:id/full", async (req: Request, res: Response) => {
+  const submissions = await FieldSubmission.findAll({
+    raw: true,
+    include: [
+      {
+        model: Field,
+        required: false,
+        as: "fields",
+        attributes: ["id", 'title']
+      },
+      {
+        model: SelectedOption,
+        attributes: [],
+        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
+      }
+    ],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
+    // group: ['formId'],
+    where: db.Sequelize.where(db.Sequelize.col("fields.form_id"), req.params.id)
+  });
+  return res.json(submissions);
+});
+
+// GET FIELD-SUBMISSIONS WITH CONTENT BY studentId
+router.get("/bystudent/:id/full", async (req: Request, res: Response) => {
+  const submissions = await FieldSubmission.findAll({
+    raw: true,
+    include: [
+      {
+        model: Field,
+        required: false,
+        as: "fields",
+        attributes: ["id", 'title']
+      },
+      {
+        model: SelectedOption,
+        attributes: [],
+        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
+      }
+    ],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
+    // group: ['formId'],
+    where: {
+      studentId: req.params.id
+    }
+  });
+  return res.json(submissions);
+});
+
 
 // POST A NEW SUBMISSION
 // router.post("/", async (req: Request, res: Response) => {

@@ -92,8 +92,10 @@ export default function QuizzesList() {
                     {
                       //@ts-ignore
                       userSubmissions.some((sub) => sub.formId === form.id) ? (
-                        //@ts-ignore
-                        <CheckCircleOutline edge="end" />
+                        // <Link to={`/quizme/fieldsubmission/byform/${form.id}/full`}>
+                         //@ts-ignore
+                        <CheckCircleOutline edge="end"/>
+                       
                       ) : (
                         //@ts-ignore
                         <RadioButtonUncheckedIcon edge="end" />
