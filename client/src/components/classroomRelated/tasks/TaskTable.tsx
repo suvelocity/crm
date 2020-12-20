@@ -96,14 +96,16 @@ export default function DataGridDemo(props: any) {
           variant='outlined'
           onClick={handleOpen}
           disabled={selection.length === 1 ? false : true}
-          color={selection.length === 1 ? "secondary" : "default"}>
+          color={selection.length === 1 ? "secondary" : "default"}
+        >
           Submit selected task
         </Button>
         <Modal
           open={open}
           onClose={handleClose}
           aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'>
+          aria-describedby='simple-modal-description'
+        >
           {body}
         </Modal>
       </div>

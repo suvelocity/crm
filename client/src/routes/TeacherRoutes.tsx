@@ -39,11 +39,9 @@ export default function TeacherRoutes() {
           className: classRoom.Class.name,
         }))
       );
-
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
-
   useEffect(() => {
     (async () => {
       await fetchTeacherData();

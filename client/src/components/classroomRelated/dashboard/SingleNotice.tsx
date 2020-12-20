@@ -10,7 +10,6 @@ import CloseIcon from "@material-ui/icons/Close";
 export default function SingleNotice(props: any) {
   const { notice, deleteNotice, userType } = props;
   const [open, setOpen] = React.useState(true);
-  console.log(notice);
 
   return (
     <div
@@ -24,7 +23,8 @@ export default function SingleNotice(props: any) {
         padding: "20px",
         // backgroundColor: "#2C3034",
         font: "25px",
-      }}>
+      }}
+    >
       <Collapse in={open}>
         <Alert
           style={{ display: "flex" }}
@@ -36,10 +36,12 @@ export default function SingleNotice(props: any) {
               size='small'
               onClick={() => {
                 setOpen(false);
-              }}>
+              }}
+            >
               <CloseIcon fontSize='inherit' />
             </IconButton>
-          }>
+          }
+        >
           <AlertTitle>
             <b>
               <u>
@@ -56,7 +58,8 @@ export default function SingleNotice(props: any) {
                 style={{ marginTop: "10px", alignSelf: "flex-end" }}
                 onClick={() => {
                   deleteNotice(notice.id);
-                }}>
+                }}
+              >
                 delete for students
               </Button>
             </div>
@@ -68,7 +71,8 @@ export default function SingleNotice(props: any) {
           color='primary'
           onClick={() => {
             setOpen(true);
-          }}>
+          }}
+        >
           Re-open
         </Button>
       )}

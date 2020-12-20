@@ -153,7 +153,8 @@ export default function Teacher() {
         marginLeft: "auto",
         marginRight: "auto",
         width: "90%",
-      }}>
+      }}
+    >
       <StyledButton onClick={() => setOpen(true)}>
         <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
         New Task
@@ -166,7 +167,8 @@ export default function Teacher() {
         open={open}
         onClose={handleClose}
         aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
+        aria-describedby='simple-modal-description'
+      >
         {body}
       </Modal>
     </div>

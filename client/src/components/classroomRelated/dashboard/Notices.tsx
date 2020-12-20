@@ -62,6 +62,7 @@ function Notices() {
         `/api/v1/notice/byclass/${selectedClass}`
       );
       setLoading(false);
+      console.log("data", data);
       setNotices(data);
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -109,7 +110,8 @@ function Notices() {
             // defaultValue={classesToTeacher[0].classId}
             onChange={(e: any) => {
               setSelectedClass(e.target.value);
-            }}>
+            }}
+          >
             {classesToTeacher?.map((teacherClass: any) => (
               <MenuItem value={teacherClass.classId}>
                 {teacherClass.Class.name}
@@ -129,19 +131,21 @@ function Notices() {
               // marginTop: "auto",
               // marginBottom: "auto",
               // height: "100%",
-            }}>
+            }}
+          >
             Add Notice
           </Button>
           <Modal
             open={open}
             onClose={handleClose}
             aria-labelledby='simple-modal-title'
-            aria-describedby='simple-modal-description'>
+            aria-describedby='simple-modal-description'
+          >
             {body}
           </Modal>
         </FilterContainer>
       )}
-      <NoticeContainer>
+      <div style={{ height: 300, overflowY: "scroll" }}>
         {notices?.map((notice) => (
           //@ts-ignore
           <SingleNotice
@@ -151,7 +155,7 @@ function Notices() {
             userType={user.userType}
           />
         ))}
-      </NoticeContainer>
+      </div>
     </Loading>
   );
 }
@@ -209,13 +213,12 @@ const NoticeContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
-  width: 50%;
+  /* width: 50%; */
   margin-left: auto;
   margin-right: auto;
   max-height: 48vh;
   overflow-y: scroll;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  /* overflow: hidden; */
 `;
 // const NoticeBoard = styled.div`
 //   background-color: ${({ theme }: { theme: any }) => theme.colors.container};

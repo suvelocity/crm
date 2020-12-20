@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Teacher, Notice } from "../../models";
+import { Teacher, Notice, Class } from "../../models";
 import { INotice } from "../../types";
 import { noticeSchema } from "../../validations";
 
@@ -37,6 +37,7 @@ router.get("/byclass/:id", async (req: Request, res: Response) => {
       include: [{ model: Teacher, attributes: ["firstName", "lastName"] }],
       order: [["createdAt", "DESC"]],
     });
+
     if (notices) return res.json(notices);
     res.status(404).json({ error: "notices not found" });
   } catch (error) {
