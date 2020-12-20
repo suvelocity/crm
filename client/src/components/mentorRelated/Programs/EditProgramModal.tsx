@@ -138,6 +138,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
                 },
               })}
               label="Program Name"
+              defaultValue={program.name}
             />
             <br />
             <br />
@@ -212,11 +213,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
   return (
     <>
       <Button
-        // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
-        // style={{ position: "relative" }}
-        // style={{ display: "block", margin: "4vh auto" }}
         variant="contained"
-        // color="primary"
         onClick={handleOpen}
       >
         Edit Program
