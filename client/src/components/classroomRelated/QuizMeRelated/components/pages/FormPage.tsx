@@ -37,11 +37,11 @@ interface IProps {
 export default function FormPage(props: IProps) {
   const form = props.form;
   const classes = useStyles();
-  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
-  const [submissionSuccessful, setSubmissionSuccessful] = useState<boolean>();
+  // const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+  const [finishTitle, setFinishTitle] = useState<string>();
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = async (formSubmission: any) => { 
-    setFormSubmitted(true);
+    // setFormSubmitted(true);
     try {
       const studentId = 1;
       // console.log(submission.formSubmission);
@@ -54,15 +54,15 @@ export default function FormPage(props: IProps) {
         });
       };
       await network.post(`/api/v1/fieldsubmission/form`, fieldSubsArr);
-      setSubmissionSuccessful(true);
+      setFinishTitle("Well done, from submitted successfully");
     }
     catch(error) {
-      setSubmissionSuccessful(false);
+      setFinishTitle(error.message);
       console.log(error);
     }
   };
 
-  return (
+  return (!finishTitle) ? (
     <Container className={classes.formWrapper}>
       <Container className={classes.form}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,5 +92,7 @@ export default function FormPage(props: IProps) {
         </form>
       </Container>
     </Container>
-  );
+  ) : (
+    <div>{finishTitle}</div>
+  )
 }
