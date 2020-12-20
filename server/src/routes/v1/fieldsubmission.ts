@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 //@ts-ignore
-import { FieldSubmission, Form, Field, SelectedOption, Option } from "../../models";
+import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 
@@ -122,6 +122,10 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
         model: SelectedOption,
         attributes: [],
         include: [{model: Option, attributes: ['id', 'title'], required: true}]    
+      }, 
+      {
+        model: Student, 
+        attributes: ['firstName','lastName' ]
       }
     ],
     attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],

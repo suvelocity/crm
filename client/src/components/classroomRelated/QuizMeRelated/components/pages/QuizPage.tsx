@@ -118,6 +118,7 @@ export default function QuizPage(props: IProps) {
         fieldId: quiz.Fields[currentQuestionIndex].id,
         optionId: selectedAnswerId,
       };
+      //@ts-ignore
       setAnswers([
         ...answers,
         newAnswer

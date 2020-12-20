@@ -262,8 +262,8 @@ export type IFormExtended = {
   Fields: IField[]  
 }
 export type IAnswer = {
-  questionId: number, 
-  answerId: number
+  fieldId: number, 
+  optionId: number
 };
 
 export type IAnswered = {
