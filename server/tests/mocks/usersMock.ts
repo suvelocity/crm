@@ -1,5 +1,5 @@
 import { IUser } from "../../types";
-const bcrypt = require("bcryptjs");
+import bcrypt from "bcryptjs";
 
 export const usersMock: IUser[] = [
   {
