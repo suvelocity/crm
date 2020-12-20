@@ -15,11 +15,13 @@ import Paper from "@material-ui/core/Paper";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
+import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
 import { set } from "lodash";
 import { MenuItem, Select } from "@material-ui/core";
 import { ITask } from "../../../typescript/interfaces";
-import { Center } from "../../../styles/styledComponents";
+import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import styled from "styled-components";
 
 const useRowStyles = makeStyles({
   root: {
@@ -110,7 +112,11 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell align="center">
           {Math.floor(calculatedSubmissionRate)}%
         </TableCell>
-        <TableCell align="center">{row.externalLink}</TableCell>
+        <TableCell align="center">
+          <StyledAtavLink href={row.externalLink}>
+            <LinkIcon />
+          </StyledAtavLink>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>

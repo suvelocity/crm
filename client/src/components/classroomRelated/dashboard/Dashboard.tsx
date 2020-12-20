@@ -13,7 +13,7 @@ export default function Dashboard() {
   return (
     <DashboardContainer>
       {user.userType === "student" && (
-        <TilesRow repeatFormula='1fr 1fr 1fr' height='15vh'>
+        <TilesRow repeatFormula="1fr 1fr 1fr" height="15vh">
           <InformationTile>
             <TasksFidget />
           </InformationTile>
@@ -45,7 +45,7 @@ const InformationTile = styled.div`
 
 // background-color: blue;
 const TilesRow = styled.div`
-  position: relative;
+  /* position: relative; */
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
   display: grid;

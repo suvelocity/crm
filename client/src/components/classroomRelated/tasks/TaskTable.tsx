@@ -15,15 +15,15 @@ const columns: ColDef[] = [
   { field: "lesson", headerName: "Lesson", flex: 1 },
   { field: "type", headerName: "Type", width: 100 },
   {
-    field: "endDate",
+    field: "deadline",
     headerName: "Deadline",
-    type: "date",
+    type: "string",
     width: 300,
   },
   {
     field: "link",
     headerName: "External Link",
-    type: "date",
+    type: "string",
     flex: 1,
   },
   {
@@ -37,7 +37,49 @@ const columns: ColDef[] = [
     width: 300,
   },
 ];
-
+const separateToValues = (dateTimeBigger: number, dateTimeSmaller: number) => {
+  let diff = dateTimeBigger - dateTimeSmaller;
+  const Minute = 1000 * 60;
+  const HourInMs = Minute * 60;
+  const dayInMs = HourInMs * 24;
+  const weekInMs = dayInMs * 7;
+  const array = [
+    { value: weekInMs, name: "weeks" },
+    { value: dayInMs, name: "days" },
+    { value: HourInMs, name: "hours" },
+    { value: Minute, name: "minutes" },
+  ];
+  const result = [];
+  for (let i = 0; i < array.length && result.length < 2; i++) {
+    const unit = array[i];
+    const name = unit.name;
+    let amount = Math.floor(diff / unit.value);
+    if (amount > 0) {
+      diff = diff - amount * unit.value;
+      if (amount === 1) {
+        result.push({ amount, name: name.slice(0, name.length - 1) });
+      } else {
+        result.push({ amount, name });
+      }
+    }
+  }
+  const whatToSend = `${result[0].amount} ${result[0].name} and ${result[1].amount} ${result[1].name}`;
+  return whatToSend;
+};
+const manipulateDate = (date: string) => {
+  const DateFromString = new Date(date);
+  const dueDateTime = DateFromString.getTime();
+  const timeNow = Date.now();
+  const relevent = dueDateTime > timeNow;
+  console.log(relevent);
+  let returnVal;
+  if (relevent) {
+    returnVal = separateToValues(dueDateTime, timeNow);
+  } else {
+    returnVal = separateToValues(timeNow, dueDateTime);
+  }
+  return returnVal;
+};
 export default function DataGridDemo(props: any) {
   const [selection, setSelection] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -49,13 +91,15 @@ export default function DataGridDemo(props: any) {
 
   const rows =
     myTasks?.map((task: any) => {
+      console.log(task);
       return {
         id: task.id,
         taskId: task.Task.id,
         taskName: task.Task.body,
         lesson: task.Task?.Lesson?.title || "not in a lesson",
         type: task.Task.type,
-        deadline: task.Task.endDate,
+        deadline: manipulateDate(task.Task.endDate), //.split("T").join(" At ").slice(0, 19),
+        link: task.Task.externalLink,
         status: task.status,
         submitLink: task.submitLink,
       };
@@ -93,17 +137,19 @@ export default function DataGridDemo(props: any) {
       </div>
       <div>
         <Button
-          variant='outlined'
+          variant="outlined"
           onClick={handleOpen}
           disabled={selection.length === 1 ? false : true}
-          color={selection.length === 1 ? "secondary" : "default"}>
+          color={selection.length === 1 ? "secondary" : "default"}
+        >
           Submit selected task
         </Button>
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'>
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
           {body}
         </Modal>
       </div>

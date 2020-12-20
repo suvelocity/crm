@@ -1,6 +1,10 @@
 import { AxiosResponse } from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { ILesson, ITask } from "../../../../../server/src/types";
+import {
+  ILesson,
+  ITask,
+  ITaskofStudent,
+} from "../../../../../server/src/types";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";
@@ -9,121 +13,15 @@ import {
   H1,
   Wrapper,
   Center,
+  StyledAtavLink,
 } from "../../../styles/styledComponents";
 import sunshine from "../../../media/sunshine.gif";
-const mockTasks = [
-  {
-    body: "Build challenge app",
-    deadline: new Date(),
-    status: "pending",
-    by: "Guy",
-  },
-  {
-    body: "Spotify app",
-    deadline: new Date(),
-    status: "done",
-    by: "Nir",
-  },
-  {
-    body: "rebuild challengeMe",
-    deadline: new Date(),
-    status: "done",
-    by: "Tomer",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-  {
-    body: "Break into Penthagon's servers",
-    deadline: new Date(),
-    status: "done",
-    by: "Rotem",
-  },
-];
+import LinkIcon from "@material-ui/icons/Link";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITask[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
+    []
+  );
 
   const { user } = useContext<any>(AuthContext);
 
@@ -133,12 +31,12 @@ export function TasksFidget() {
 
   const fetchTasks: () => Promise<void> = async () => {
     try {
-      const { data: allTasks }: { data: ITask[] } = await network.get(
+      const { data: allTasks }: { data: ITaskofStudent[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
 
       setIncompletedTasks(
-        allTasks.filter((task: ITask) => task.status !== "done")
+        allTasks.filter((task: ITaskofStudent) => task.status !== "done")
       );
     } catch (e) {
       console.log(e);
@@ -151,36 +49,40 @@ export function TasksFidget() {
         <TitleWrapper>
           <Headline>My Tasks</Headline>
         </TitleWrapper>
+      </Center>
 
-        {incompletedTasks === [] ? (
-          <p>
-            <b>you have incommpleted Tasks!</b>
+      {incompletedTasks.length !== 0 ? (
+        <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
+          <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2>
 
-            {incompletedTasks.map((task: ITask, i: number) => (
-              <li key={`incompTask${i}`}>{task.body}</li>
-            ))}
-          </p>
-        ) : (
+          {incompletedTasks.map((task: ITaskofStudent, i: number) => (
+            <li key={`incompTask${i}`}>
+              {/* @ts-ignore */}
+              {task.Task.title}, from {task.Task.Lesson.title} lesson,{" "}
+              {/* @ts-ignore */}
+              {task.Task.type}
+              {/* @ts-ignore */}
+              <StyledAtavLink href={task.Task.externalLink}>
+                <LinkIcon />
+              </StyledAtavLink>
+            </li>
+          ))}
+        </div>
+      ) : (
+        <Center>
           <img
             src={sunshine}
-            alt='sunshine'
+            alt="sunshine"
             style={{
               maxHeight: "100px",
             }}
           />
-        )}
-      </Center>
+        </Center>
+      )}
     </Wrapper>
   );
 }
 
-const mockLessons = [
-  {
-    title: "React basics",
-    Teacher: "Guy",
-    time: "9:30",
-  },
-];
 export function LessonsFidget() {
   const [todayLessons, settodayLessons] = useState<ILesson[]>([]);
   const { user } = useContext<any>(AuthContext);
@@ -197,10 +99,10 @@ export function LessonsFidget() {
       settodayLessons(allLessons);
     } catch (e) {
       console.log(e);
-      settodayLessons((mockLessons as unknown) as ILesson[]);
     }
   };
 
+  console.log(todayLessons);
   return (
     <Wrapper style={{ height: "100%" }}>
       <Center>
@@ -208,11 +110,16 @@ export function LessonsFidget() {
           <Headline>Lessons</Headline>
         </TitleWrapper>
       </Center>
-      <p>
+      <div style={{ lineHeight: "2em", fontSize: "1.3em" }}>
         {todayLessons.map((lesson: any, i: number) => (
-          <li key={`lsn${i}`}>{lesson.title}</li>
+          <li key={`lsn${i}`}>
+            <>{lesson.title}</>, with{" "}
+            <>
+              {lesson.Teacher.firsnName} {lesson.Teacher.lastName}
+            </>
+          </li>
         ))}{" "}
-      </p>
+      </div>
     </Wrapper>
   );
 }
