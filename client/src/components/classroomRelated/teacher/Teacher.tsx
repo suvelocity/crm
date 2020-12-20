@@ -8,10 +8,11 @@ import { teacherStudents, classesOfTeacher } from "../../../atoms";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import AddTask from "../lessons/AddTask";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
 import { IClass, IStudent } from "../../../typescript/interfaces";
+import { relative } from "path";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -144,9 +145,22 @@ export default function Teacher() {
   );
 
   return (
-    <div>
+    <div
+      style={{
+        position: "relative",
+        minHeight: "50vh",
+        marginTop: "5vh",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "90%",
+      }}>
+      <TeacherTaskBoard user={user} />
+      <StyledButton onClick={() => setOpen(true)}>
+        <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
+        New Taskasdasdasd
+      </StyledButton>
       <GlobalStyle />
-      <AddCircleIcon onClick={() => setOpen(true)} />
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -154,10 +168,19 @@ export default function Teacher() {
         aria-describedby='simple-modal-description'>
         {body}
       </Modal>
-      <TeacherTaskBoard user={user} />
     </div>
   );
 }
+
+const TeacherContainer = styled.div`
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  height: 100vh;
+  width: 90%;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+`;
 
 const modalStyle = {
   top: `50%`,
@@ -177,3 +200,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const StyledButton = styled.div`
+  position: absolute;
+  background-color: rgb(65, 85, 181);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 2em;
+  color: white;
+  bottom: -10vh;
+  left: 2vw;
+  box-shadow: 0 4px 4px 2px rgba(10, 12, 19, 0.78);
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+
+  :hover {
+    transform: translate(4px, 0);
+  }
+`;

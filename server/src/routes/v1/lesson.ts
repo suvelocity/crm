@@ -49,6 +49,21 @@ router.get("/byclass/:id", async (req: Request, res: Response) => {
   }
 });
 
+router.get('/tasks/:lessonId', async (req, res) => {
+  try{
+    const {lessonId} = req.params;
+    if(!lessonId){
+      return res.status(400).json({message: 'missing Id in Params'})
+    }
+    const tasks : ITask[] = await Task.findAll({
+      where: {lessonId: lessonId}
+    });
+    res.json(tasks);
+  }catch(error){
+    res.status(500).json({ error: error.message });
+  }
+})
+
 //find a lesson by id
 router.get("/byid/:id", async (req: Request, res: Response) => {
   try {
