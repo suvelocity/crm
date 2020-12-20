@@ -87,6 +87,7 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 //posts a single toask to 1 or more students
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
@@ -158,6 +159,33 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
       return res.status(200).json("task updated");
     }
     return res.status(200).json({ error: "can only update manual task" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.patch("/:id", async (req: Request, res: Response) => {
+  try {
+    const task = req.body;
+    const { error } = taskSchema.validate(task);
+    if (error) return res.status(400).json({ error: error.message });
+    const {id} = req.params;
+    if(!id) return res.status(400).json({error: 'task id not supplied'})
+    const updated = await Task.update(task, {
+      where: {id},
+    });
+    return res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const deleted = await Task.destroy({where: {id: req.params.id}})
+    const deleteFromStudents = await TaskofStudent.destroy({where: {taskId: req.params.id}});
+    console.log(deleteFromStudents)
+    return res.status(200).json({message: `Task deleted from ${deleted} lesson and ${deleteFromStudents} students`});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

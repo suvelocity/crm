@@ -97,9 +97,10 @@ function Notices() {
     <Loading size={30} loading={loading}>
       {user.userType === "teacher" && classesToTeacher && (
         <FilterContainer>
-          <FormControl>
-            <InputLabel>Class</InputLabel>
+          <FormControl variant="outlined">
+            <InputLabel id="demo-mutiple-name-label">Class</InputLabel>
             <Select
+              labelId="demo-mutiple-name-label"
               style={{
                 width: 250,
                 // boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
@@ -109,7 +110,6 @@ function Notices() {
                 // backgroundColor: "white",
               }}
               value={selectedClass}
-              variant="outlined"
               color="primary"
               // defaultValue={classesToTeacher[0].classId}
               onChange={(e: any) => {

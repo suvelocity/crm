@@ -147,5 +147,6 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
-  top: 25px;
+  top:  ${(props: { top: string }) =>
+    props.top || "25px"}
 `;

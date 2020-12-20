@@ -2,6 +2,8 @@ import React from "react";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 import styled from "styled-components";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import {
@@ -43,7 +45,7 @@ export default function AddTask({
   ) => {
     handleChange(toChange, index, e.target.value);
   };
-
+  console.log(task);
   const removeTask = () => {
     handleRemove(index, "task");
   };
@@ -62,7 +64,7 @@ export default function AddTask({
       </Tooltip>
       <Select
         style={selectStyle}
-        value={task.type}
+        defaultValue={task.type}
         variant="outlined"
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           changer(e, "type");
@@ -77,25 +79,33 @@ export default function AddTask({
         <Input
           variant="outlined"
           label="Link to task"
-          value={task.externalLink}
+          defaultValue={task.externalLink}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e, "externalLink");
           }}
         />
       ) : (
-        <Select //TODO change to challenge type
-          style={selectStyle}
-          value={task.title}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "title");
-          }}
-          variant="outlined"
-          defaultValue="Pick a Task"
-        >
-          <MenuItem value={"challenge1"}>challenge1</MenuItem>
-          <MenuItem value={"challenge2"}>challenge2</MenuItem>
-          <MenuItem value={"challenge3"}>challenge3</MenuItem>
-        </Select>
+        <FormControl>
+          <InputLabel
+            style={{ textAlign: "center" }}
+            id={`challengeLabel${index}`}
+          >
+            <pre> Pick a Challenge</pre>
+          </InputLabel>
+          <Select //TODO change to challenge type
+            labelId={`challengeLabel${index}`}
+            style={selectStyle}
+            defaultValue={task.title}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              changer(e, "title");
+            }}
+            variant="outlined"
+          >
+            <MenuItem value={"challenge1"}>challenge1</MenuItem>
+            <MenuItem value={"challenge2"}>challenge2</MenuItem>
+            <MenuItem value={"challenge3"}>challenge3</MenuItem>
+          </Select>
+        </FormControl>
       )}
       <>
         <Input
