@@ -84,12 +84,12 @@ function NavAppBar() {
               <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to="/mentor">
+          {/* <StyledLink to="/mentor">
             <DrawerItem onClick={() => setOpen(false)}>
               Mentors
               <MentorIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          </StyledLink>
+          </StyledLink> */}
           <StyledLink to="/company/all">
             <DrawerItem onClick={() => setOpen(false)}>
               Companies

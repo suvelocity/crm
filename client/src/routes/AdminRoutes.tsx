@@ -33,9 +33,9 @@ export function AdminRoutes() {
           <Route path="/student">
             <AdminStudentsRoutes />
           </Route>
-          <Route path="/mentor">
+          {/* <Route path="/mentor">
             <AdminMentorRoutes />
-          </Route>
+          </Route> */}
           <Route path="*">
             <div>404 Not Found</div>
           </Route>
