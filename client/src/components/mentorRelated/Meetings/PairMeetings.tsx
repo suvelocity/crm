@@ -32,8 +32,7 @@ function PairMeetings() {
     try {
       const { data }: { data: IPairMeetings } = await network.get(
         `/api/V1/M/meeting/${id}`
-      );
-      console.log(data);
+      );    
       setMeetings(data);
       setLoading(false);
     } catch (error) {
@@ -45,22 +44,6 @@ function PairMeetings() {
     getMeetings();
   }, []);
 
-  //   const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
-  //     const sortedEvents = events?.concat(newEvent).sort(sortByDate);
-  //     setEvents(sortedEvents);
-  //   };
-
-  //   const removeFromEventLog: (eventId: number) => void = (eventId: number) => {
-  //     const index: number | undefined = events?.findIndex(
-  //       (event: IEvent) => event.id === eventId
-  //     );
-  //     if (!index) {
-  //       Swal.fire("Error occurred", " event not found", "error");
-  //       return;
-  //     }
-  //     const updated = events?.slice(0, index).concat(events.slice(index + 1));
-  //     setEvents(updated);
-  //   };
   const classesType = { primary: classes.primary };
 
   return (
@@ -130,12 +113,12 @@ function PairMeetings() {
               <H1 color="#c47dfa">Meetings</H1>
             </TitleWrapper>
           </Center>
-            {meetings?.Meetings && <MeetingsLog meeting={meetings.Meetings} />}
+            {meetings?.Meetings && <MeetingsLog meeting={meetings.Meetings} getMeetings={getMeetings} />}
           </div>
         </GridDiv>
       </Loading>
       <Center>
-      <NewMeetingModal />
+      <NewMeetingModal id={id} getMeetings={getMeetings}  />
       </Center>
     </Wrapper>
   );

@@ -8,10 +8,13 @@
     "migrate": "npx sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",
     "dev": "NODE_ENV=development nodemon -r dotenv/config index.ts",
-    "start": "node build",
     "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
-    "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
+    "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all",
+    "start": "node out/.",
+    "build": "tsc --build tsconfig.json",
+    "spinup:prod": "npm run migrate && npm run start"
   },
+  "proxy": "http://localhost:8080",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -33,6 +36,7 @@
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.16",
@@ -41,11 +45,19 @@
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "~4.0.5"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.19",
-    "jest": "^26.6.3",
+    <<
+    <<
+    << < HEAD "@types/jest": "^26.0.19",
+    ===
+    ===
+    =
+    "@types/lodash": "^4.14.165",
+    >>>
+    >>>
+    > dev "jest": "^26.6.3",
     "supertest": "^6.0.1"
   }
 }

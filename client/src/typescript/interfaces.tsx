@@ -89,9 +89,12 @@ export interface IEvent {
   relatedId?: number;
   entry?: { [key: string]: any };
   date: string;
+  type: eventTypes;
   Student?: IStudent;
   Job?: IJob;
 }
+
+type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc"
 
 type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
@@ -220,14 +223,14 @@ export interface ILesson {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
+  lessonId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  status: string;
-  body: string;
+  status: "active" | "disabled";
+  body?: string;
 }
 
 export type ThemeType = "dark" | "light";
