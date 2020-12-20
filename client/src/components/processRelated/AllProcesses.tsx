@@ -40,6 +40,8 @@ function AllProcesses() {
         `${process.Student!.firstName} ${process.Student!.lastName}`,
         process.Job!.position,
         process.eventName,
+        process.Student!.Class.name,
+        process.Student!.Class.course,
         formatToIsraeliDate(process.date),
       ];
       for (let value of arrOfProcessesValue) {
@@ -91,9 +93,10 @@ function AllProcesses() {
         <StyledUl>
           {filteredProcesses && (
             <li>
-              <TableHeader>
+              <TableHeader repeatFormula="0.5fr 1.5fr 1.8fr 1.5fr 1.8fr 1.25fr">
                 <TimelineIcon />
                 <StyledSpan weight="bold">Student</StyledSpan>
+                <StyledSpan weight="bold">Class</StyledSpan>
                 <StyledSpan weight="bold">Job</StyledSpan>
                 <StyledSpan weight="bold">Status</StyledSpan>
                 <StyledSpan weight="bold">Date</StyledSpan>
@@ -107,12 +110,17 @@ function AllProcesses() {
                   to={`/process/${process.Student!.id}/${process.Job!.id}`}
                   color="black"
                 >
-                  <StyledDiv>
+                  <StyledDiv repeatFormula="0.5fr 1.5fr 1.8fr 1.5fr 1.8fr 1.25fr">
                     <TimelineIcon />
                     <StyledSpan weight="bold">
                       {capitalize(process.Student!.firstName)}{" "}
                       {capitalize(process.Student!.lastName)}
                     </StyledSpan>
+                    <StyledSpan>{`${capitalize(
+                      process.Student!.Class.name
+                    )} (${capitalize(process.Student!.Class.course)} - ${
+                      process.Student!.Class.cycleNumber
+                    })`}</StyledSpan>
                     <StyledSpan>{capitalize(process.Job!.position)}</StyledSpan>
                     <StyledSpan>{process.eventName}</StyledSpan>
                     <StyledSpan>{formatToIsraeliDate(process.date)}</StyledSpan>

@@ -2,17 +2,11 @@ import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import GroupIcon from '@material-ui/icons/Group';
 import StorageIcon from '@material-ui/icons/Storage';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { useHistory, useLocation } from "react-router-dom";
-import {
-  StyledLink,
-} from "../../styles/styledComponents";
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {

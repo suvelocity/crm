@@ -18,9 +18,10 @@ export interface IStudent {
   additionalDetails: string;
   mentorId: number | null;
   mentor?: IMentor | null;
-<<<<<<< HEAD
   MentorStudents? : IPair[]
   Events: IEvent[];
+  resumeLink?: string;
+  fccAccount?: string;
 }
 
 export interface IPair {
@@ -31,11 +32,6 @@ export interface IPair {
   Mentor? : IMentor
 }
 
-=======
-  Events: IEvent[];
-}
-
->>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 export interface IJob {
   id?: number;
   Company: ICompany;
@@ -93,17 +89,20 @@ export interface IEvent {
   relatedId?: number;
   entry?: { [key: string]: any };
   date: string;
+  type: eventTypes;
   Student?: IStudent;
   Job?: IJob;
 }
 
+type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc"
+
 type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class: string;
-  Course: string;
-  JobStatus: string;
-  Name: string;
+  Class: string[];
+  Course: string[];
+  JobStatus: string[];
+  Name: string[];
 }
 export interface Name {
   firstName: string;
@@ -122,12 +121,12 @@ export interface IMentor {
   email: string;
   phone: string;
   address: string;
-  job: string;
+  role: string;
+  experience: number;
   available: boolean;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
-<<<<<<< HEAD
   student?:number;
   MentorStudents?:IMentorStusent[]
 }
@@ -148,27 +147,24 @@ export interface IMentorProgramDashboard {
   firstName: string;
   lastName: string;
   MentorStudents: Partial<IMentorStusent>[];
-=======
-}
-
-export interface MentorClassDashboard {
-  id?: number;
-  firstName: string;
-  lastName: string;
-  Class: Partial<IClass>;
-  Mentor: IMentor;
-  Meetings: Partial<IMeeting>[];
->>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 }
 
 export interface IMeeting {
   id?: number;
   date: string;
-  mentorId: number;
-  studentId: number;
+  pairId:number;
   place: string;
+  occurred:boolean;
+  mentorFeedback:string;
+  studentFeedback:string;
+  title:string;
 }
-<<<<<<< HEAD
+export interface IPairMeetings {
+  id?:number;
+  Mentor:Partial<IMentor>;
+  Student:Partial<IStudent>;
+  Meetings: IMeeting[];
+}
 
 export interface IMentorProgram{
   id?: number;
@@ -179,8 +175,6 @@ export interface IMentorProgram{
   startDate: string;
 }
 
-=======
->>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 export interface IUser {
   id?: number;
   userType: string;
@@ -229,14 +223,21 @@ export interface ILesson {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
+  lessonId?: number;
   externalId?: number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
   type: string;
-  status: string;
-  body: string;
+  status: "active" | "disabled";
+  body?: string;
 }
 
 export type ThemeType = "dark" | "light";
+
+export interface filterMentorObject {
+  Company: string;
+  Gender: string;
+  Address: string;
+  Available: string;
+}
