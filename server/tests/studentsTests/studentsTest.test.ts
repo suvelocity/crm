@@ -23,7 +23,7 @@ const getCurrentStudents = async () => await getAll('student', accessToken)
 const getStudentById = async (id: number) => await getById(id, 'student', accessToken)
 const patchStudentById = async (id: number, body: object) => await patchById(id, 'student', accessToken, body)
 const deleteStudentById = async (id: number) => await deleteById(id, 'student', accessToken)
-console.log('--------------------------------', process.env.NODE_ENV)
+
 describe("Students Tests", () => {
   beforeAll(async () => {
     await Student.destroy({ truncate: true, force: true });

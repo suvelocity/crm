@@ -5,7 +5,8 @@ import {
   extractRefreshTokenFull,
   extractAccessTokenFull,
   sendRequest,
-  toCamelCase
+  toCamelCase,
+  getAll
 } from "../testsHelpers";
 import server from "../../app";
 import {
@@ -18,15 +19,13 @@ import { Company, Class, User } from "../../models";
 
 let accessToken: string;
     
-  const getCurrentCompanies = async () => await sendRequest('get', `/company/all`, accessToken);
-  const getStudentById = async (id:number) => await sendRequest('get', `/student/byId/${id}`, accessToken)
-  const patchStudentById = async (id:number, body: object) => await sendRequest('patch', `/student/${id}`, accessToken, body)
-  const deleteStudentById = async(id:number) => await sendRequest('delete', `/student/${id}`, accessToken);
+  const getCurrentCompanies = async () => await getAll('company', accessToken)
+
+
 
   const compareProperties = (arg1:object, arg2:object, properties:string[]) => 
   properties.forEach((prop: string) => {
-    console.log(prop, toCamelCase(prop), arg2)
-    expect(arg1[prop]).toBe(arg2[toCamelCase(prop)])
+    expect(arg1[prop]).toBe(arg2[prop])
   });
 
 describe("Company Tests", () => {
