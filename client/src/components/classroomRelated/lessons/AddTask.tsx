@@ -142,42 +142,51 @@ export default function AddTask({
             "aria-label": "change date",
           }}
         />
+        <br />
       </MuiPickersUtilsProvider>
-      <Select
-        style={selectStyle}
-        value={task.status}
-        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          changer(e, "status");
-        }}
-        variant="outlined"
-        defaultValue="Pick a Status"
-      >
-        <MenuItem value={"active"}>active</MenuItem>
-        <MenuItem value={"disabled"}>disabled</MenuItem>
-      </Select>
-      {students && studentsToTask !== undefined && (
+      <FormControl variant="standard">
+        <InputLabel>Active / Disabled</InputLabel>
         <Select
-          multiple
-          variant="outlined"
-          // defaultValue={students.map((student) => {
-          //   return student.id;
-          // })}
-          defaultValue={[]}
+          style={selectStyle}
+          value={task.status}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "students");
+            changer(e, "status");
           }}
+          defaultValue="Pick a Status"
         >
-          {students.map((student: any) => {
-            console.log(student);
-
-            return (
-              <MenuItem key={student.id} value={student.id}>
-                {`${student.className} ${student.firstName} ${student.lastName}`}
-              </MenuItem>
-            );
-          })}
+          <MenuItem value={"active"}>active</MenuItem>
+          <MenuItem value={"disabled"}>disabled</MenuItem>
         </Select>
+      </FormControl>
+      <br />
+      {students && studentsToTask !== undefined && (
+        <FormControl variant="standard">
+          <InputLabel>Students</InputLabel>
+          <Select
+            multiple
+            // defaultValue={students.map((student) => {
+            //   return student.id;
+            // })}
+            style={{ width: "60vw" }}
+            defaultValue={[]}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              changer(e, "students");
+            }}
+          >
+            {students.map((student: any) => {
+              console.log(student);
+
+              return (
+                <MenuItem key={student.id} value={student.id}>
+                  {`${student.className} ${student.firstName} ${student.lastName}`}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
       )}
+      <br />
+      <br />
     </div>
   );
 }
