@@ -43,7 +43,6 @@ function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c;
-  console.log(d)
   return d;
 }
 
@@ -63,13 +62,16 @@ export async function pairing(s: any[], m: any[]) {
 
   geoS.forEach((student, i) => {
     const mentorsList: any[] = geoM.map((mentor: any) => {
-      mentor.distance = getDistance(
-        student.geo.lat,
-        student.geo.lng,
-        mentor.geo.lat,
-        mentor.geo.lng
-      );
-      return mentor;
+      return {
+        id: mentor.id,
+        address: mentor.address,
+        distance: getDistance(
+          student.geo.lat,
+          student.geo.lng,
+          mentor.geo.lat,
+          mentor.geo.lng
+        )
+      }
     });
     mentorsList.sort((a: any, b: any) => {
       if (a.distance > b.distance) {
@@ -92,6 +94,14 @@ export async function pairing(s: any[], m: any[]) {
 //     })
 //   );
     console.log(final)
+}
+
+function sum(array: any[]) {
+  let count = 0;
+  array.forEach((element: any) => {
+    count =+ element.distance
+  });
+  return count
 }
 
 function studentRec(final: any[], student: any) : any[] {
@@ -121,10 +131,11 @@ function studentRec(final: any[], student: any) : any[] {
     //   currStudent,
     //   "fighting on",
     //   otherStudent.mentor[0].address
-    //   );
+      //   )
+      ;
     if (
-      otherStudent.mentor[1].distance - otherStudent.mentor[0].distance >
-      currStudent.mentor[1].distance - currStudent.mentor[0].distance
+      sum(otherStudent.mentor) > sum(currStudent.mentor)
+    
     ) {
       // console.log(
       //   currStudent.address,
@@ -158,6 +169,7 @@ function studentRec(final: any[], student: any) : any[] {
       currStudent.mentor[0].address
     );
       if (currStudentI === -1) final.push(currStudent);
+      console.log(final)
       return final
   }
   
