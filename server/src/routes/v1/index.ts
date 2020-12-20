@@ -26,4 +26,4 @@ router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
 
 router.use(unknownEndpoint);
-module.exports = router;
+export default router;
