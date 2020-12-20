@@ -2,6 +2,10 @@ import {
   handleSignIn,
   extractAccessTokenFull,
   sendRequest,
+  getAll,
+  getById,
+  deleteById,
+  patchById
 } from "../testsHelpers";
 import server from "../../app";
 import {
@@ -15,14 +19,10 @@ import { Student, Class, User } from "../../models";
 
 let accessToken: string;
 
-const getCurrentStudents = async () =>
-  await sendRequest("get", `/student/all`, accessToken);
-const getStudentById = async (id: number) =>
-  await sendRequest("get", `/student/byId/${id}`, accessToken);
-const patchStudentById = async (id: number, body: object) =>
-  await sendRequest("patch", `/student/${id}`, accessToken, body);
-const deleteStudentById = async (id: number) =>
-  await sendRequest("delete", `/student/${id}`, accessToken);
+const getCurrentStudents = async () => await getAll('student', accessToken)
+const getStudentById = async (id: number) => await getById(id, 'student', accessToken)
+const patchStudentById = async (id: number, body: object) => await patchById(id, 'student', accessToken, body)
+const deleteStudentById = async (id: number) => await deleteById(id, 'student', accessToken)
 
 describe("Students Tests", () => {
   beforeAll(async () => {

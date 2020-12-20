@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { ILesson, ITask } from "../../../../../server/types";
+import { ILesson, ITask } from "../../../../../server/src/types";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";

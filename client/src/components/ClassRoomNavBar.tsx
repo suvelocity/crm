@@ -23,6 +23,7 @@ import { StyledLink } from "../styles/styledComponents";
 import SchoolIcon from "@material-ui/icons/School";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import TodayIcon from "@material-ui/icons/Today";
+import QuizIcon from '@material-ui/icons/ListAlt';
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import StreetviewIcon from "@material-ui/icons/Streetview";
 import { AuthContext } from "../helpers";
@@ -148,7 +149,17 @@ function ClassRoomNavBar() {
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
+<<<<<<< HEAD
           {/* <StyledLink to='/schedhule'>
+=======
+          <StyledLink to='/quizme'>
+            <DrawerItem onClick={() => setOpen(false)}>
+              QuizMe
+              <QuizIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to='/schedhule'>
+>>>>>>> origin/testing-crm
             <DrawerItem onClick={() => setOpen(false)}>
               Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
