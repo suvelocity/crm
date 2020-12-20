@@ -2,14 +2,22 @@ import { Request, Response , Router } from "express";
 import {meetingSchema, meetingSchemaToPut} from "../../../validations"
 //@ts-ignore
 import { Student, Mentor, Meeting, Class} from "../../../models";
+<<<<<<< HEAD
+import { IDashboard, IMeeting } from "../../../types";
+=======
 import { IDeshbord, IMeeting } from "../../../types";
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 
 const router = Router();
 
 // get class deshbord table:
 router.get('/class/:id', async (req: Request, res: Response) => {
     try{
+<<<<<<< HEAD
+        const classTableData:IDashboard[] = await Student.findAll({
+=======
         const classTableData:IDeshbord[] = await Student.findAll({
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
             attributes:["id", "firstName", "lastName"],
             where:{classId:req.params.id},
             include:[
@@ -36,7 +44,11 @@ router.get('/class/:id', async (req: Request, res: Response) => {
 // get student meets:
 router.get('/student/:id', async (req: Request, res: Response) => {
     try{
+<<<<<<< HEAD
+        const studentMeets:IDashboard = await Student.findOne({
+=======
         const studentMeets:IDeshbord = await Student.findOne({
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
             attributes:["id", "firstName", "lastName"],
             where:{id:req.params.id},
             include:[

@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
       });
       this.hasMany(models.Meeting, {
+<<<<<<< HEAD
+        foreignKey: "studentId",
+        onDelete: "cascade",
+        hooks: true,
+      });
+      this.hasMany(models.MentorStudent, {
+=======
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
         foreignKey: "studentId",
         onDelete: "cascade",
         hooks: true,

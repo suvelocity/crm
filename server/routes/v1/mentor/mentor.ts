@@ -1,11 +1,34 @@
 import { Request, Response, Router } from 'express';
 //@ts-ignore
+<<<<<<< HEAD
+import { Student,Mentor,Meeting,Class,MentorProgram,MentorStudent, } from '../../../models';
+=======
 import { Mentor, Student, Meeting,Class } from '../../../models';
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 import { mentorSchema, mentorSchemaToPut } from '../../../validations';
 import { IMentor } from '../../../types';
 
 const router = Router();
 
+<<<<<<< HEAD
+router.get('/available', async (req: Request, res: Response) => {
+  try {
+    const allMentors: any[] = await Mentor.findAll({
+      where: {
+        available: true
+      },
+      include: [{
+        model: MentorStudent,
+      }]
+    });
+    res.json(allMentors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+=======
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 // Get all mentors
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -17,6 +40,10 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 // Get all information about specific mentor
 router.get('/:id', async (req: Request, res: Response) => {
   try {
@@ -24,6 +51,20 @@ router.get('/:id', async (req: Request, res: Response) => {
       where: { id: req.params.id },
       include: [
         {
+<<<<<<< HEAD
+          model: MentorStudent,
+          include: [
+            {
+              model:MentorProgram,
+              attributes: ["name"]
+            },
+            {
+              model:Student,
+              attributes: ["firstName", "lastName"]
+            }
+          ]
+        },
+=======
           model: Student,
           include: [
             {
@@ -35,6 +76,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         {
           model: Meeting,
         },
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
       ],
     });
 

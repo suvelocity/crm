@@ -10,7 +10,11 @@ const unknownEndpoint = (req: Request, res: Response) => {
 };
 
 router.use("/auth", require("./auth"));
+<<<<<<< HEAD
+router.use(checkToken);
+=======
 // router.use(checkToken);
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 router.use("/class", require("./class"));
 router.use("/job", require("./job"));
 router.use("/student", require("./student"));

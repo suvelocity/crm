@@ -11,10 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Meeting,{
+<<<<<<< HEAD
+        foreignKey: "mentorId",
+        onDelete: "cascade",
+        hooks: true,
+      });
+      this.hasMany(models.MentorStudent,{
+        foreignKey: "mentorId",
+        onDelete: "cascade",
+        hooks: true,
+=======
         foreignKey: "mentorId"   
       });
       this.hasMany(models.Student,{
         foreignKey: "mentorId"   
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
       });
     }
   };

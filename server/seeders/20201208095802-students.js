@@ -20,7 +20,10 @@ module.exports = {
           created_at: new Date(),
           updated_at:new Date(),
           class_id:1,
+<<<<<<< HEAD
+=======
           mentor_id:1
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
         },
         {
           id:2,
@@ -63,7 +66,10 @@ module.exports = {
           created_at:new Date(),
           updated_at:new Date(),
           class_id:3,
+<<<<<<< HEAD
+=======
           mentor_id:3
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
         },
         {
           id:4,

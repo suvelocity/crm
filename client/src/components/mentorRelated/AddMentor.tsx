@@ -37,8 +37,12 @@ const AddMentor: React.FC = () => {
 
   const onSubmit = async (data: IMentor) => {
     try {
+<<<<<<< HEAD
+        data.available = true;      
+=======
         data.available = true;
         console.log(data);        
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
         await network.post("/api/v1/M/mentor/", data);
         history.push("/mentor/all");
     } catch (e) {
@@ -179,8 +183,65 @@ const AddMentor: React.FC = () => {
                 )
               ) : null}
               <br />
+<<<<<<< HEAD
+            <TextField
+                id="role"
+                name="role"
+                inputRef={register({
+                  required: "role is required",
+                })}
+                label="Role"
+              />
+              {!empty ? (
+                errors.role ? (
+                  <Tooltip title={errors.role.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
             </div>
             <div>
+            <TextField
+                id="experience"
+                name="experience"
+                type="number"
+                inputRef={register({
+                    required: "experience is required",
+                    valueAsNumber:true,
+                })}
+                label="Experience"
+              />
+              {!empty ? (
+                errors.experience ? (
+                  <Tooltip title={errors.experience.message}>
+                    <IconButton style={{ cursor: "default" }}>
+                      <ErrorOutlineIcon
+                        style={{ width: "30px", height: "30px" }}
+                        color="error"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <IconButton style={{ cursor: "default" }}>
+                    <DoneIcon color="action" />
+                  </IconButton>
+                )
+              ) : null}
+              <br />
+=======
+            </div>
+            <div>
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
               <GoogleMaps
                 id='address'
                 name='address'
@@ -228,6 +289,8 @@ const AddMentor: React.FC = () => {
                   defaultValue="female"
                 />
               </FormControl>
+<<<<<<< HEAD
+=======
               {!empty ? (
                 errors.classId ? (
                   <Tooltip title={errors.classId.message}>
@@ -244,11 +307,14 @@ const AddMentor: React.FC = () => {
                   </IconButton>
                 )
               ) : null}
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
               <br />
             </div>
           </GridDiv>
           <br />
           <br />
+<<<<<<< HEAD
+=======
           <TextField
             id="job"
             multiline
@@ -261,6 +327,7 @@ const AddMentor: React.FC = () => {
           />
           <br />
           <br />
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
           <Button
             id="submitButton"
             variant="contained"

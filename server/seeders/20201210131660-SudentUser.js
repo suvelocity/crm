@@ -21,7 +21,11 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete(
+<<<<<<< HEAD
+      "Users",
+=======
       "People",
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
       { email: "student@student.com" },
       {}
     );

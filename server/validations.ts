@@ -143,6 +143,8 @@ export const meetingSchema = Joi.object({
   studentId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
   date: Joi.date().min(new Date()).allow(null, ""),
+<<<<<<< HEAD
+=======
 });
 
 export const meetingSchemaToPut = Joi.object({
@@ -174,4 +176,62 @@ export const mentorSchemaToPut = Joi.object({
 
 export const studentMentorIdPut = Joi.object({
   mentorId: Joi.number(),
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
 });
+
+export const meetingSchemaToPut = Joi.object({
+  place: Joi.string().allow(null, ""),
+  date: Joi.date().min(new Date()).allow(null, ""),
+});
+
+export const mentorSchema = Joi.object({
+  name: Joi.string().required(),
+  company: Joi.string().allow(null, ""),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  address: Joi.string().required(),
+  job: Joi.string().allow(null, ""),
+  available: Joi.boolean().allow(null, ""),
+  gender: Joi.string().required(),
+});
+
+export const mentorSchemaToPut = Joi.object({
+  name: Joi.string().allow(null, ""),
+  company: Joi.string().allow(null, ""),
+  email: Joi.string().allow(null, ""),
+  phone: Joi.string().allow(null, ""),
+  address: Joi.string().allow(null, ""),
+  job: Joi.string().allow(null, ""),
+  available: Joi.boolean().allow(null, ""),
+  gender: Joi.string().allow(null, ""),
+});
+
+export const mentorProgramSchema = Joi.object({
+  classId: Joi.number().required(),
+  name: Joi.string().required(),
+  open: Joi.boolean().required(),
+  startDate: Joi.date().required(),
+  endDate: Joi.date().required(),
+});
+
+export const mentorProgramSchemaToPut = Joi.object({
+  classId: Joi.number().allow(null, ""),
+  name: Joi.string().allow(null, ""),
+  open: Joi.boolean().allow(null, ""),
+  startDate: Joi.date().allow(null, ""),
+  endDate: Joi.date().allow(null, ""),
+});
+
+
+export const mentorStudentSchema = Joi.object({
+  mentorProgramId: Joi.number().required(),
+  mentorId: Joi.number().required(),
+  studentId: Joi.number().required(),
+});
+
+export const mentorStudentSchemaToPut = Joi.object({
+  mentorProgramId: Joi.number().allow(null, ""),
+  mentorId: Joi.number().allow(null, ""),
+  studentId: Joi.number().allow(null, ""),
+});
+

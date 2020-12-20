@@ -14,7 +14,10 @@ module.exports = {
           cycle_number: 1,
           zoom_link: "www.zoom.com",
           additional_details: "none",
+<<<<<<< HEAD
+=======
           mentor_project:true,
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -27,7 +30,10 @@ module.exports = {
           cycle_number: 2,
           zoom_link: "www.zoom.com",
           additional_details: "none",
+<<<<<<< HEAD
+=======
           mentor_project:false,
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -40,7 +46,10 @@ module.exports = {
           cycle_number: 1,
           zoom_link: "www.zoom.com",
           additional_details: "none",
+<<<<<<< HEAD
+=======
           mentor_project:true,
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
           created_at: new Date(),
           updated_at: new Date(),
         },

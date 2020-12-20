@@ -35,6 +35,11 @@ const SingleMentor: React.FC = () => {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/${id}`
     );
+<<<<<<< HEAD
+    console.log(data);
+    
+=======
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
     setMentor(data);
     setLoading(false);
   }, [id, setMentor, setLoading]);
@@ -138,13 +143,39 @@ const SingleMentor: React.FC = () => {
                     secondary={capitalize(mentor[0]?.gender)}
                   />
                 </ListItem>
+<<<<<<< HEAD
+                {/* programs */}
+                {mentor[0]?.MentorStudents![0] && (
+                  <>
+=======
                 {/* Students */}
                 {mentor[0]?.Students && (
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
                   <ListItem>
                     <ListItemIcon>
                       <AssignmentIndIcon />
                     </ListItemIcon>
                     <ListItemText
+<<<<<<< HEAD
+                      primary="programs"
+                      secondary={mentor[0]?.MentorStudents.map((program) => {
+                        return <div>{capitalize(program.MentorProgram!.name)}</div>
+                      })}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <AssignmentIndIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="students"
+                      secondary={mentor[0]?.MentorStudents.map((program) => {
+                        return <div>{`${capitalize(program.Student!.firstName)} ${capitalize(program.Student!.lastName)}`}</div>
+                      })}
+                    />
+                  </ListItem>
+                  </>
+=======
                       primary="Students"
                       secondary={mentor[0]?.Students.map((student) => {
                         return `
@@ -157,6 +188,7 @@ const SingleMentor: React.FC = () => {
                       })}
                     />
                   </ListItem>
+>>>>>>> 660706bdb5dd7d40b47883afb379e03ee50f67bf
                 )}
               </List>
             </GridDiv>
