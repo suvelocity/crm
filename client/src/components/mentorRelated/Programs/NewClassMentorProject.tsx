@@ -304,11 +304,12 @@ function NewClassMentorProject() {
                             </StyledSpan>
                             <StyledSpan>{student.address}</StyledSpan>
                             <StyledSpan>
-                              <Droppable droppableId={`${i}`}>
-                                {(provided) => (
+                              <Droppable droppableId={`${i}`} ignoreContainerClipping>
+                                {(provided, snapshot) => (
                                   <div
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
+                                    style={{ width: snapshot.isDraggingOver ? 0 : '' }}
                                   >
                                     {student.mentor && (
                                       <StyledDiv repeatFormula="1.5fr 1fr">

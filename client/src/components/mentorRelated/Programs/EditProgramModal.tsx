@@ -146,6 +146,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
                         <FormControlLabel
                         control={
                           <Switch
+                          checked={programOpen}
                             onChange={()=>setProgramOpen(!programOpen)}
                             name="checkedB"
                             color="primary"
