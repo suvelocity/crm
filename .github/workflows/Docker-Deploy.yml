@@ -55,19 +55,19 @@ jobs:
         mv .env ./client/.env
 
     # Install Dependencies (So the Docker Image Has The Latest Client Version)
-    - name: Install dependencies
+    - name: Client Install dependencies
       run: npm ci --only=production
-      working-directory: ./client
-
-    # Build production build (So the Docker Image Has The Latest Build Version)
-    - name: Create production build
-      run: CI=false npm run build:prod
       working-directory: ./client
 
     # Install Server Dependencies
     - name: Server Install dependencies
       run: npm ci --only=production
       working-directory: ./server
+
+    # Build production build (So the Docker Image Has The Latest Build Version)
+    - name: Create production build
+      run: CI=false npm run build:prod
+      working-directory: ./client
 
     # Compile Typescript for production build 
     - name: Compile Typescript for production build
