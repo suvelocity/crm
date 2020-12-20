@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "migrate": "npx sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",
-    "dev": "nodemon -r dotenv/config index.ts",
+    "dev": "NODE_ENV=development nodemon -r dotenv/config index.ts",
     "start": "node build",
     "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
     "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
@@ -17,6 +17,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.8",
     "@types/jsonwebtoken": "^8.5.0",
@@ -24,6 +27,7 @@
     "@types/node": "^14.14.6",
     "@types/nodemailer": "^6.4.0",
     "axios": "^0.21.0",
+    "babel-jest": "^26.6.3",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -43,6 +47,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.165",
+    "@types/jest": "^26.0.19",
     "jest": "^26.6.3",
     "supertest": "^6.0.1"
   }

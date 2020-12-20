@@ -129,7 +129,8 @@ router.post("/", async (req: Request, res: Response) => {
       type: "student",
     };
     const user = await User.create(userToCreate);
-    if (user) {
+    if (user && process.env.NODE_ENV !== 'test') {
+      console.log('SENDING MAIL')
       transporter.sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
@@ -168,7 +169,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     });
     if (deleted === 0)
       return res.status(404).json({ message: "Student not found" });
-    await Event.destroy({ where: { studentId: id } });
+    await Event.destroy({ where: { userId: id, type: "student" } });
     res.json({ message: "Student deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
