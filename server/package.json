@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "migrate": "npx sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",
-    "dev": "NODE_ENV=development nodemon -r dotenv/config index.ts",
+    "dev": "NODE_ENV=development nodemon -r dotenv/config ./src/index.ts",
     "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
     "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all",
     "start": "node out/.",
