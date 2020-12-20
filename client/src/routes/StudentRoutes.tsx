@@ -5,9 +5,9 @@ import ErrorBoundary from "../helpers/ErrorBoundary";
 import Dashboard from '../components/classroomRelated/dashboard/Dashboard';
 import Lessons from '../components/classroomRelated/lessons/Lessons';
 import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
-import Tasks from '../components/classroomRelated/tasks/Tasks';
+import Tasks from '../components/classroomRelated/tasks/TaskBoard';
 import ClassRoomNavBar from '../components/ClassRoomNavBar';
-
+import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
 export function StudentRoutes() {
   return (
     <>
@@ -27,12 +27,15 @@ export function StudentRoutes() {
           <Route path="/tasks">
             <Tasks />
           </Route>
+          <Route path="/quizme">
+            <QuizMe />
+          </Route>
           <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>
         </div>
       </ErrorBoundary>
-  </>
+    </>
   );
 }

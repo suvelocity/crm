@@ -1,12 +1,12 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import {
   validEmailRegex,
   validNameRegex,
   validPhoneNumberRegex,
   validCompanyRegex
-} from "../../helpers/patterns";
+} from "../../../helpers/patterns";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
@@ -23,10 +23,10 @@ import {
   TitleWrapper,
   H1,
   Center,
-} from "../../styles/styledComponents";
-import { IMentor } from "../../typescript/interfaces";
+} from "../../../styles/styledComponents";
+import { IMentor } from "../../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
-import GoogleMaps from "../GeoSearch";
+import GoogleMaps from "../../GeoSearch";
 import Swal from "sweetalert2";
 
 

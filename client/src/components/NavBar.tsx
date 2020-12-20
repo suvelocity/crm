@@ -14,6 +14,7 @@ import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
 import { useHistory } from "react-router-dom";
 import ClassIcon from "@material-ui/icons/Class";
+import MentorIcon from "@material-ui/icons/SupervisedUserCircle";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -86,7 +87,7 @@ function NavAppBar() {
           {/* <StyledLink to="/mentor">
             <DrawerItem onClick={() => setOpen(false)}>
               Mentors
-              <ClassIcon style={{ position: "absolute", right: 10 }} />
+              <MentorIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink> */}
           <StyledLink to="/company/all">

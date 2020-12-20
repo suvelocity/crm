@@ -1,6 +1,18 @@
 import { Router, Response, Request } from "express";
-//@ts-ignore
-import { Student, Company, Job, Event, Class, User } from "../../models";
+import {
+  //TODO fix
+  //@ts-ignore
+  Student,
+  //@ts-ignore
+  Event,
+  //@ts-ignore
+  Class,
+  //@ts-ignore
+  User,
+  //@ts-ignore
+  TeacherofClass,
+  //@ts-ignore
+} from "../../models";
 import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
@@ -20,6 +32,24 @@ const mailOptions = (to: string, password: string) => ({
 });
 
 const router = Router();
+
+router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
+  try {
+    const teacherId: string = req.params.teacherId;
+    const teacherClasses: any | null = await TeacherofClass.findAll({
+      include: [{ model: Class, attributes: ["id"], include: [Student] }],
+      where: { teacherId },
+    });
+
+    if (teacherClasses) {
+      return res.json(teacherClasses);
+    } else {
+      return res.status(404).send("Teacher don`t have classes");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.get("/all", async (req: Request, res: Response) => {
   //@ts-ignore

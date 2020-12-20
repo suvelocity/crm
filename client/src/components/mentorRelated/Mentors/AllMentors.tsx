@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import network from '../../helpers/network';
+import network from '../../../helpers/network';
 import {
   H1,
   Wrapper,
@@ -10,7 +10,7 @@ import {
   TableHeader,
   StyledUl,
   StyledDiv,
-} from '../../styles/styledComponents';
+} from '../../../styles/styledComponents';
 import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
@@ -19,10 +19,10 @@ import {
   IMentor,
   SelectInputs,
   filterMentorObject,
-} from '../../typescript/interfaces';
+} from '../../../typescript/interfaces';
 import { Loading } from 'react-loading-wrapper';
 import 'react-loading-wrapper/dist/index.css';
-import { formatPhone, capitalize } from '../../helpers/general';
+import { formatPhone, capitalize } from '../../../helpers/general';
 
 function AllMentors() {
   const [mentors, setMentors] = useState<IMentor[]>([]);
@@ -134,18 +134,6 @@ function AllMentors() {
               </Select>
             </div>
           ))}
-          <StyledLink to='/mentor/add'>
-            <Button
-              variant='contained'
-              style={{
-                backgroundColor: '#c47dfa',
-                color: 'white',
-                marginLeft: 10,
-              }}
-            >
-              new mentor
-            </Button>
-          </StyledLink>
         </div>
       </Center>
       <br />

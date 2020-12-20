@@ -12,6 +12,7 @@ module.exports = {
           password: bcrypt.hashSync("student123!", 10),
           related_id: 1,
           type: "student",
+          related_id:1,
           created_at: new Date(),
           updated_at: new Date(),
         },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import {
   H1,
   Wrapper,
@@ -10,12 +10,12 @@ import {
   StyledUl,
   StyledDiv,
   TableHeader,
-} from "../../styles/styledComponents";
-import { IMentorProgram } from "../../typescript/interfaces";
+} from "../../../styles/styledComponents";
+import { IMentorProgram } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
-import { capitalize } from "../../helpers/general";
+import { capitalize } from "../../../helpers/general";
 import EditProgramModal from "./EditProgramModal";
 
 const MentorPrograms: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import network from "../../helpers/network";
+import network from "../../../helpers/network";
 import {
   H1,
   Wrapper,
@@ -10,19 +10,19 @@ import {
   StyledUl,
   StyledDiv,
   TableHeader,
-} from "../../styles/styledComponents";
+} from "../../../styles/styledComponents";
 import { Button } from "@material-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import {
   IClass,
   IMentorProgramDashboard,
   IMentorProgram,
-} from "../../typescript/interfaces";
+} from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
-import { capitalize } from "../../helpers/general";
-import SimpleModal from "./Modal";
+import { capitalize } from "../../../helpers/general";
+import SimpleModal from "../Modal";
 
 const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
