@@ -5,7 +5,7 @@ export const extractAccessToken = (token: string) =>
   token.split("accessToken=")[1].split("; ")[0];
 
 export const extractRefreshTokenFull = (res: any) =>
-  res.headers["set-cookie"][0].split("refreshToken=")[1].split("; ")[0];
+  extractRefreshToken(res.headers["set-cookie"][0]);
 
 export const extractAccessTokenFull = (res: any) =>
-  res.headers["set-cookie"][1].split("accessToken=")[1].split("; ")[0];
+  extractAccessToken(res.headers["set-cookie"][1]);
