@@ -12,17 +12,19 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula='1fr 1fr 1fr' height='20vh'>
-        <InformationTile>
-          <TasksFidget />
-        </InformationTile>
-        <InformationTile>
-          <LessonsFidget />
-        </InformationTile>
-        <InformationTile>
-          <ScheduleFidget />
-        </InformationTile>
-      </TilesRow>
+      {user.userType === "student" && (
+        <TilesRow repeatFormula='1fr 1fr 1fr' height='15vh'>
+          <InformationTile>
+            <TasksFidget />
+          </InformationTile>
+          <InformationTile>
+            <LessonsFidget />
+          </InformationTile>
+          <InformationTile>
+            <ScheduleFidget />
+          </InformationTile>
+        </TilesRow>
+      )}
       <Notices />
     </DashboardContainer>
   );
@@ -30,6 +32,7 @@ export default function Dashboard() {
 
 const DashboardContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   width: 100%;
   height: 100vh;
 `;
@@ -53,6 +56,7 @@ const TilesRow = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
+  margin-bottom: 30vh;
 `;
 
 const Content = styled.div`

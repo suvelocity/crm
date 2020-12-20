@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
-    "migrate": "npx sequelize db:migrate",
-    "spinup": "npm run migrate && npm run seed && npm run dev",
-    "dev": "NODE_ENV=development nodemon -r dotenv/config ./src/index.ts",
-    "seed": "npx sequelize db:seed:undo:all && npx sequelize db:seed:all",
-    "fetch": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all",
     "start": "node out/.",
+    "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
     "build": "tsc --build tsconfig.json",
-    "spinup:prod": "npm run migrate && npm run start"
+    "migrate": "cd src && sequelize db:migrate",
+    "spinup": "npm run migrate && npm run seed && npm run dev",
+    "spinup:prod": "npm run migrate && npm run start",
+    "dev": "cd src && nodemon -r dotenv/config index.ts",
+    "seed": "cd src && sequelize db:seed:undo:all && npx sequelize db:seed:all",
+    "fetch": "cd src && sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
   "proxy": "http://localhost:8080",
   "keywords": [],

@@ -13,12 +13,17 @@ import styled from "styled-components";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import "../../../helpers/cancelScroll.css";
+import { useRecoilValue } from "recoil";
+import { classesOfTeacher } from "../../../atoms";
 import { Wrapper, Center } from "../../../styles/styledComponents";
 
 function Notices() {
+  const classesToTeacher = useRecoilValue(classesOfTeacher);
   const [notices, setNotices] = useState<INotice[] | undefined>([]);
+  const [selectedClass, setSelectedClass] = useState<number>(
+    classesToTeacher[0] && classesToTeacher[0].classId
+  );
   const [loading, setLoading] = useState<boolean>(true);
-  const [classFilter, setClassFilter] = React.useState<string>("");
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
@@ -35,22 +40,33 @@ function Notices() {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <AddNotice updateLocal={setNotices} closeModal={handleClose} />
+      <AddNotice
+        updateLocal={setNotices}
+        closeModal={handleClose}
+        classId={selectedClass}
+      />
     </div>
   );
-  const classIdPlaceHolder = 1;
 
-  const getNotices = useCallback(async () => {
+  useEffect(() => {
+    (async () => {
+      try {
+        await setSelectedClass(classesToTeacher[0].classId);
+      } catch (error) {}
+    })();
+  }, [classesToTeacher]);
+
+  const getNotices = async () => {
     try {
       const { data }: { data: INotice[] } = await network.get(
-        `/api/v1/notice/byclass/${classIdPlaceHolder}`
+        `/api/v1/notice/byclass/${selectedClass}`
       );
       setLoading(false);
       setNotices(data);
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
-  }, []);
+  };
 
   useEffect(() => {
     try {
@@ -59,7 +75,7 @@ function Notices() {
       Swal.fire("Error Occurred", error.message, "error");
     }
     //eslint-disable-next-line
-  }, []);
+  }, [selectedClass]);
 
   const deleteNotice = async (id: number) => {
     try {
@@ -69,7 +85,6 @@ function Notices() {
       );
 
       Swal.fire("Notice deleted successfully!", "", "success");
-      console.log(`notice ${id} deleted sucssesfuly`);
     } catch (error) {
       //todo error handler
       Swal.fire("Error Occurred", error.message, "error");
@@ -77,67 +92,67 @@ function Notices() {
   };
 
   return (
-    <>
-      <Loading size={30} loading={loading}>
-        <h1 style={{ marginLeft: "5%" }}>Notices</h1>
-        {user.userType === "teacher" && (
-          <FilterContainer>
-            <Select
-              style={{
-                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-                marginLeft: "15px",
-                marginTop: "auto",
-                marginBottom: "auto",
-                backgroundColor: "white",
-              }}
-              value={classFilter}
-              variant='outlined'
-              color='primary'
-              onChange={(e: any) => {
-                setClassFilter(e.target.value);
-              }}>
-              <MenuItem value='manual'>cyber4s place holer</MenuItem>
-              <MenuItem value='challengeMe'>shit class</MenuItem>
-            </Select>
-
-            <Button
-              variant='outlined'
-              onClick={handleOpen}
-              style={{
-                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-                marginLeft: "auto",
-                marginRight: "5%",
-                backgroundColor: "white",
-                // marginTop: "auto",
-                // marginBottom: "auto",
-                // height: "100%",
-              }}>
-              Add Notice
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'>
-              {body}
-            </Modal>
-          </FilterContainer>
-        )}
-        <NoticeContainer>
-          {/* <Wrapper> */}
-          {notices?.map((notice) => (
-            //@ts-ignore
-            <SingleNotice
-              notice={notice}
-              key={notice.id}
-              deleteNotice={deleteNotice}
-              userType={user.userType}
-            />
-          ))}
-          {/* </Wrapper> */}
-        </NoticeContainer>
-      </Loading>
-    </>
+    <Loading size={30} loading={loading}>
+      {user.userType === "teacher" && classesToTeacher && (
+        <FilterContainer>
+          <Select
+            style={{
+              boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+              marginLeft: "5%",
+              marginTop: "auto",
+              marginBottom: "auto",
+              backgroundColor: "white",
+            }}
+            value={selectedClass}
+            variant='outlined'
+            color='primary'
+            // defaultValue={classesToTeacher[0].classId}
+            onChange={(e: any) => {
+              setSelectedClass(e.target.value);
+            }}>
+            {classesToTeacher?.map((teacherClass: any) => (
+              <MenuItem value={teacherClass.classId}>
+                {teacherClass.Class.name}
+              </MenuItem>
+            ))}
+            {/* <MenuItem value='cyber4s place holer'>cyber4s place holer</MenuItem>
+            <MenuItem value='shit class'>shit class</MenuItem> */}
+          </Select>
+          <Button
+            variant='outlined'
+            onClick={handleOpen}
+            style={{
+              boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+              marginLeft: "auto",
+              marginRight: "5%",
+              backgroundColor: "white",
+              // marginTop: "auto",
+              // marginBottom: "auto",
+              // height: "100%",
+            }}>
+            Add Notice
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='simple-modal-title'
+            aria-describedby='simple-modal-description'>
+            {body}
+          </Modal>
+        </FilterContainer>
+      )}
+      <NoticeContainer>
+        {notices?.map((notice) => (
+          //@ts-ignore
+          <SingleNotice
+            notice={notice}
+            key={notice.id}
+            deleteNotice={deleteNotice}
+            userType={user.userType}
+          />
+        ))}
+      </NoticeContainer>
+    </Loading>
   );
 }
 
@@ -180,40 +195,39 @@ const FilterContainer = styled.div`
   display: flex;
   padding-bottom: 40px;
   padding-top: 40px;
-  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const NoticeContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 40px;
-  margin-top: 40px;
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.container};  */
   width: 50%;
   margin-left: auto;
   margin-right: auto;
-  max-height: 28vh;
+  /* margin-top: 5vh; */
+`;
+
+const NoticeContainer = styled.div`
+  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 40px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  max-height: 48vh;
   overflow-y: scroll;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-
   /* overflow: hidden; */
 `;
-// const Wrapper = styled.div`
-//   margin: ${(props: { margin: string }) =>
-//     props.margin ? props.margin : "5% auto"};
-//   width: 80%;
-//   padding: ${(props: { padding: string }) =>
-//     props.padding ? props.padding : "40px"};
-//   border-radius: 7px;
+// const NoticeBoard = styled.div`
+//   background-color: ${({ theme }: { theme: any }) => theme.colors.container};
+//   color: ${({ theme }: { theme: any }) => theme.colors.font};
+//   display: flex;
+//   flex-direction: column;
+//   padding-bottom: 40px;
+//   width: 50%;
+//   margin-left: auto;
+//   margin-right: auto;
+//   max-height: 35vh;
+//   overflow-y: scroll;
 //   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-//   min-width: 300px;
-//   max-width: ${(props: { width: string }) =>
-//     props.width ? props.width : "700px"};
-//   background-color: ${(props: { backgroundColor: string }) =>
-//     props.backgroundColor ? props.backgroundColor : "white"};
-//   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
-//   position: relative;
+//   /* overflow: hidden; */
 // `;

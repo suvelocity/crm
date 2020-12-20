@@ -114,14 +114,6 @@ function ClassRoomNavBar() {
                   <Notifications style={{ marginRight: 10, color: "white" }} />
                 </Badge>
               </IconButton>
-              <StyledMenu
-                //@ts-ignore
-                id="customized-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              ></StyledMenu>
             </>
 
             <AccountCircleIcon
@@ -167,16 +159,12 @@ function ClassRoomNavBar() {
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          {user.userType == "student" && (
-            <StyledLink to="/tasks">
-              <DrawerItem onClick={() => setOpen(false)}>
-                Tasks
-                <AssignmentLateIcon
-                  style={{ position: "absolute", right: 10 }}
-                />
-              </DrawerItem>
-            </StyledLink>
-          )}
+          <StyledLink to="/tasks">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Tasks
+              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
 
           {/* {user.userType == "teacher" && (
             <StyledLink to='/teacher'>

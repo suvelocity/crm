@@ -30,6 +30,12 @@ export function StudentRoutes() {
             <Route path="/quizme">
               <QuizMe />
             </Route>
+            <Route path="/tasks">
+              <Tasks />
+            </Route>
+            <Route path="/quizme">
+              <QuizMe />
+            </Route>
             <Route path="*">
               <div>404 Not Found</div>
             </Route>

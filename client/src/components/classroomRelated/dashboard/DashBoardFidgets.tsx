@@ -144,7 +144,6 @@ export function TasksFidget() {
       console.log(e);
     }
   };
-  console.log(incompletedTasks);
 
   return (
     <Wrapper style={{ height: "100%" }}>
@@ -220,7 +219,7 @@ export function LessonsFidget() {
 
 export function ScheduleFidget() {
   return (
-    <Wrapper style={{ height: "60%" }}>
+    <Wrapper style={{ height: "100%" }}>
       <Center>
         <TitleWrapper>
           <Headline>Schedule</Headline>

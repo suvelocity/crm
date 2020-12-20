@@ -6,7 +6,6 @@ import styled from "styled-components";
 export default function TeacherContainer() {
   return (
     <TeacherDashContainer>
-      <Notices />
       <Teacher />
     </TeacherDashContainer>
   );

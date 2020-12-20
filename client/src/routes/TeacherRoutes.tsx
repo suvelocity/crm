@@ -9,7 +9,7 @@ import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
-import QuizPage from "../components/classroomRelated/QuizMeRelated/components/QuizPage";
+import QuizPage from "../components/classroomRelated/QuizMeRelated/components/pages/QuizPage";
 
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
@@ -40,8 +40,6 @@ export default function TeacherRoutes() {
         }))
       );
 
-      console.log(teacherStudents);
-
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
@@ -59,7 +57,7 @@ export default function TeacherRoutes() {
       <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
           <Route exact path="/">
-            <TeacherContainer />
+            <Dashboard />
           </Route>
           <Route path="/lessons">
             <Lessons />
@@ -68,15 +66,13 @@ export default function TeacherRoutes() {
             <Schedhule />
           </Route>
           <Route path="/tasks">
-            <TaskBoard />
+            <TeacherContainer />
           </Route>
-          {/* <Route path='/teacher'>
-            <Teacher />
-          </Route> */}
           <Route exact path="/quizme">
             <QuizMe />
           </Route>
           <Route exact path="/quizme/quiz/:id">
+            {/* @ts-ignore */}
             <QuizPage />
           </Route>
           <Route path="*">

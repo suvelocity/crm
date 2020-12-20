@@ -7,6 +7,7 @@ import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Submit from "./Submit";
+import styled from "styled-components";
 
 const columns: ColDef[] = [
   { field: "taskId", headerName: "#", width: 50 },
@@ -52,7 +53,7 @@ export default function DataGridDemo(props: any) {
         id: task.id,
         taskId: task.Task.id,
         taskName: task.Task.body,
-        lesson: task.Task.Lesson.title,
+        lesson: task.Task?.Lesson?.title || "not in a lesson",
         type: task.Task.type,
         deadline: task.Task.endDate,
         status: task.status,
@@ -78,8 +79,8 @@ export default function DataGridDemo(props: any) {
   );
 
   return (
-    <div>
-      <div style={{ height: 630, width: "100%" }}>
+    <TaskTableConatiner>
+      <div style={{ height: 630, width: "100%", color: "white" }}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -106,7 +107,7 @@ export default function DataGridDemo(props: any) {
           {body}
         </Modal>
       </div>
-    </div>
+    </TaskTableConatiner>
   );
 }
 
@@ -136,6 +137,18 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
+      color: `${({ theme }: { theme: any }) => theme.colors.font}`,
     },
   })
 );
+
+const TaskTableConatiner = styled.div`
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+`;

@@ -145,12 +145,21 @@ export default function Teacher() {
   );
 
   return (
-    <div style={{ position: "relative", minHeight: "50vh" }}>
-      <TeacherTaskBoard user={user} />
+    <div
+      style={{
+        position: "relative",
+        minHeight: "50vh",
+        marginTop: "5vh",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "90%",
+      }}>
       <StyledButton onClick={() => setOpen(true)}>
         <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
         New Task
       </StyledButton>
+      <TeacherTaskBoard user={user} />
+
       <GlobalStyle />
 
       <Modal
@@ -195,7 +204,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StyledButton = styled.div`
   position: absolute;
-  background-color: rgb(65, 85, 181);
+  background-color: rgb(8, 16, 31);
   display: flex;
   justify-content: center;
   align-items: center;
