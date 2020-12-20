@@ -8,8 +8,8 @@ import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
-import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
-import QuizPage from '../components/classroomRelated/QuizMeRelated/components/QuizPage'
+import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
+import QuizPage from "../components/classroomRelated/QuizMeRelated/components/QuizPage";
 
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
@@ -56,35 +56,34 @@ export default function TeacherRoutes() {
     <ErrorBoundary>
       <ClassRoomNavBar />
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id='interface-container' style={{ flexGrow: 1 }}>
+      <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <TeacherContainer />
           </Route>
-          <Route path='/lessons'>
+          <Route path="/lessons">
             <Lessons />
           </Route>
-          {/* <Route path='/schedhule'>
+          <Route path="/schedhule">
             <Schedhule />
-          </Route> */}
-          {/* <Route path='/tasks'>
+          </Route>
+          <Route path="/tasks">
             <TaskBoard />
-          </Route> */}
+          </Route>
           {/* <Route path='/teacher'>
             <Teacher />
-          </Route>
+          </Route> */}
           <Route exact path="/quizme">
             <QuizMe />
           </Route>
           <Route exact path="/quizme/quiz/:id">
             <QuizPage />
           </Route>
-          <Route path='*'>
+          <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>
       </div>
-      {/* </div> */}
     </ErrorBoundary>
   );
 }

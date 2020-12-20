@@ -1,6 +1,6 @@
 export * from "./students";
 export * from "./usersMock";
-export * from "./classesMock";
+export * from "./classes";
 export * from "./companyMock";
 export * from "./users";
 export * from "./events";

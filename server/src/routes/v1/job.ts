@@ -102,7 +102,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
     const updated = await Job.update(req.body, {
       where: { id: req.params.id },
     });
-    if (updated[0] === 1) return res.json({ msg: "Job updated" });
+    if (updated[0] === 1) return res.json({ message: "Job updated" });
     res.status(404).json({ error: "Job not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });

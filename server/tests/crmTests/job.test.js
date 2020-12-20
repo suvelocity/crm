@@ -12,18 +12,15 @@ import {
 } from "../testsHelpers";
 import server from "../../src/app";
 import { jobsTestExpectedResults } from "../mocks/jobs/jobsTestExpectedResults";
-import expectCt from "helmet/dist/middlewares/expect-ct";
-import { isMainThread } from "worker_threads";
 
-let accessToken: string;
+let accessToken;
 
 const getCurrentJobs = async () => await getAll("job", accessToken);
-const getJobById = async (id: number) => await getById(id, "job", accessToken);
-const postNewJob = async (body: object) => await post("job", accessToken, body);
-const patchJobById = async (id: number, body: object) =>
+const getJobById = async (id) => await getById(id, "job", accessToken);
+const postNewJob = async (body) => await post("job", accessToken, body);
+const patchJobById = async (id, body) =>
   await patchById(id, "job", accessToken, body);
-const deleteJobById = async (id: number) =>
-  await deleteById(id, "job", accessToken);
+const deleteJobById = async (id) => await deleteById(id, "job", accessToken);
 
 const mockAddedJob = {
   id: 3,
@@ -106,7 +103,7 @@ describe("Job tests", () => {
     const updatedJobMsg = await patchJobById(id, mockUpdate);
 
     expect(updatedJobMsg.status).toBe(200);
-    expect(updatedJobMsg.body.msg).toBe("Job updated");
+    expect(updatedJobMsg.body.message).toBe("Job updated");
 
     const { body: updatedJob } = await getJobById(id);
 

@@ -23,7 +23,7 @@ import { StyledLink } from "../styles/styledComponents";
 import SchoolIcon from "@material-ui/icons/School";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import TodayIcon from "@material-ui/icons/Today";
-import QuizIcon from '@material-ui/icons/ListAlt';
+import QuizIcon from "@material-ui/icons/ListAlt";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import StreetviewIcon from "@material-ui/icons/Streetview";
 import { AuthContext } from "../helpers";
@@ -68,24 +68,26 @@ function ClassRoomNavBar() {
     sideBar: "#18191b", */}
       {/* //todo add my color somehow */}
       <AppBar
-        position='static'
+        position="static"
         // style={{ backgroundColor: currentTheme === "dark" && "#18191b" }}
       >
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
-            color='inherit'
-            edge='start'
-            aria-label='menu'>
+            color="inherit"
+            edge="start"
+            aria-label="menu"
+          >
             <Menu />
           </IconButton>
           <Typography
-            variant='h4'
+            variant="h4"
             style={{
               marginRight: 15,
               marginTop: "auto",
               marginBottom: "auto",
-            }}>
+            }}
+          >
             Classroom
           </Typography>
           <DarkModeToggle
@@ -94,29 +96,32 @@ function ClassRoomNavBar() {
             size={50}
           />
           <Typography
-            variant='h6'
+            variant="h6"
             style={{
               display: "flex",
               position: "absolute",
               right: 10,
               marginRight: 10,
-            }}>
+            }}
+          >
             <>
               <IconButton
                 onClick={handleClick}
-                color='inherit'
-                style={{ color: "red", marginRight: 10 }}>
-                <Badge color='secondary' badgeContent={10}>
+                color="inherit"
+                style={{ color: "red", marginRight: 10 }}
+              >
+                <Badge color="secondary" badgeContent={10}>
                   <Notifications style={{ marginRight: 10, color: "white" }} />
                 </Badge>
               </IconButton>
               <StyledMenu
                 //@ts-ignore
-                id='customized-menu'
+                id="customized-menu"
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}></StyledMenu>
+                onClose={handleClose}
+              ></StyledMenu>
             </>
 
             <AccountCircleIcon
@@ -131,42 +136,39 @@ function ClassRoomNavBar() {
         </Toolbar>
       </AppBar>
       <Drawer
-        anchor='left'
+        anchor="left"
         open={open}
         onClose={() => {
           setOpen(false);
-        }}>
+        }}
+      >
         <StyledDrawer>
-          <StyledLink to='/'>
+          <StyledLink to="/">
             <DrawerItem onClick={() => setOpen(false)}>
               Dashboard
               <DashboardIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/lessons'>
+          <StyledLink to="/lessons">
             <DrawerItem onClick={() => setOpen(false)}>
               Lessons
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-<<<<<<< HEAD
-          {/* <StyledLink to='/schedhule'>
-=======
-          <StyledLink to='/quizme'>
+          <StyledLink to="/quizme">
             <DrawerItem onClick={() => setOpen(false)}>
               QuizMe
               <QuizIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/schedhule'>
->>>>>>> origin/testing-crm
+          <StyledLink to="/schedhule">
             <DrawerItem onClick={() => setOpen(false)}>
               Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          </StyledLink> */}
+          </StyledLink>
           {user.userType == "student" && (
-            <StyledLink to='/tasks'>
+            <StyledLink to="/tasks">
               <DrawerItem onClick={() => setOpen(false)}>
                 Tasks
                 <AssignmentLateIcon
