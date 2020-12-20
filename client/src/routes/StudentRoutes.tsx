@@ -8,6 +8,7 @@ import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/TaskBoard';
 import ClassRoomNavBar from '../components/ClassRoomNavBar';
 import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
+import PairMeetings from '../components/mentorRelated/Meetings/PairMeetings'
 export function StudentRoutes() {
   return (
     <>
@@ -29,6 +30,9 @@ export function StudentRoutes() {
           </Route>
           <Route path="/quizme">
             <QuizMe />
+          </Route>
+          <Route path="/mentor/:id">
+            <PairMeetings />
           </Route>
           <Route path="*">
             <div>404 Not Found</div>
