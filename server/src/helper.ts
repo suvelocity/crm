@@ -17,7 +17,6 @@ import { Student, Company, Job, Event, Class } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
-
 //TODO fix types
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -219,10 +218,9 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-
     const fccEvents: IFccEvent[] = (
       await axios.post(
-        "https://europe-west1-crm-fcc-scraper.cloudfunctions.net/crm-fcc-scraper",
+        'https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper',
         {
           usernames,
           date,
