@@ -27,6 +27,7 @@ interface Props {
   lesson?: ILesson;
   header?: string;
   lessonTasks?: Task[];
+  classId: number;
 }
 export default function AddLesson({
   setOpen,
@@ -35,6 +36,7 @@ export default function AddLesson({
   header,
   handleClose,
   lessonTasks,
+  classId,
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
@@ -58,7 +60,7 @@ export default function AddLesson({
     e.preventDefault();
     try {
       const lessonToAdd: ILesson = {
-        classId: Number(user.classId),
+        classId,
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql

@@ -19,9 +19,11 @@ import { AuthContext } from "../../../helpers";
 export default function Lesson({
   lesson,
   index,
+  classId,
 }: {
   lesson: ILesson;
   index: number;
+  classId: number;
 }) {
   const [modalState, setModalState] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,6 +71,7 @@ export default function Lesson({
         lesson={lessonState}
         header='Edit Lesson'
         lessonTasks={tasks}
+        classId={classId}
       />
     </div>
   );
@@ -112,6 +115,9 @@ export default function Lesson({
                     </Link>
                   )}
             </ResourcesLinks>
+            <StyledTask>
+              <h1>hello</h1>
+            </StyledTask>
           </Loading>
         </StyledDetails>
       </StyledAccordion>
@@ -125,6 +131,12 @@ export default function Lesson({
     </LessonContainer>
   );
 }
+const StyledTask = styled.div`
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
 
 const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
@@ -169,11 +181,4 @@ const Link = styled.a`
   border-radius: 8px;
   padding: 5px;
   color: white;
-`;
-
-const styledTask = styled.div`
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `;

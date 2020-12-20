@@ -12,16 +12,22 @@ import Lesson from "./Lesson";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import { classesOfTeacher } from "../../../atoms";
+import { useRecoilValue } from "recoil";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
+  const classesToTeacher = useRecoilValue(classesOfTeacher);
+
   const classes = useStyles();
   // const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState<boolean>(false);
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
   const [filter, setFilter] = React.useState<string>("");
-  const [classFilter, setClassFilter] = React.useState<string>("");
+  const [selectedClass, setSelectedClass] = React.useState<number>(
+    classesToTeacher[0] ? classesToTeacher[0].classId : 0
+  );
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -53,14 +59,14 @@ export default function Lessons() {
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
-      <AddLesson setOpen={setOpen} />
+      <AddLesson setOpen={setOpen} classId={selectedClass} />
     </div>
   );
 
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
-        `/api/v1/lesson/byclass/${user.classId}`
+        `/api/v1/lesson/byclass/${selectedClass}`
       );
       return Array.isArray(lessons) ? lessons : [];
     } catch {
@@ -71,13 +77,13 @@ export default function Lessons() {
   useEffect(() => {
     (async () => {
       const allLessons = await fetchClassLessons();
+      console.log(allLessons);
       setLessons(allLessons);
       setFilteredLessons(allLessons);
       setLoading(false);
     })();
-  }, [open]);
+  }, [open, selectedClass]);
 
-  console.log(user);
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>
@@ -101,13 +107,16 @@ export default function Lessons() {
                 marginLeft: "15px",
                 backgroundColor: "white",
               }}
-              value={classFilter}
+              value={selectedClass}
               variant='outlined'
               onChange={(e: any) => {
-                setClassFilter(e.target.value);
+                setSelectedClass(e.target.value);
               }}>
-              <MenuItem value='manual'>cyber4s place holer</MenuItem>
-              <MenuItem value='challengeMe'>shit class</MenuItem>
+              {classesToTeacher?.map((teacherClass: any) => (
+                <MenuItem value={teacherClass.classId}>
+                  {teacherClass.Class.name}
+                </MenuItem>
+              ))}
             </Select>
 
             <Button
@@ -133,9 +142,15 @@ export default function Lessons() {
       </FilterContainer>
 
       <LessonsContainer>
-        {filteredLessons.map((lesson: ILesson, index: number) => (
-          <Lesson lesson={lesson} index={index} key={lesson.id} />
-        ))}
+        {classesToTeacher &&
+          filteredLessons.map((lesson: ILesson, index: number) => (
+            <Lesson
+              lesson={lesson}
+              index={index}
+              key={lesson.id}
+              classId={selectedClass}
+            />
+          ))}
       </LessonsContainer>
     </Loading>
   );

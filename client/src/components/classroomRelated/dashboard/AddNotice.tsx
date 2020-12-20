@@ -17,18 +17,18 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import { AuthContext } from "../../../helpers";
 
-const classIdPlaceHolder = 1;
 const createdByPlaceHolder = 1;
 
 export default function AddNotice({
   updateLocal,
   closeModal,
+  classId,
 }: {
   updateLocal: React.Dispatch<React.SetStateAction<INotice[] | undefined>>;
   closeModal: () => void;
+  classId: number | undefined;
 }) {
   const { user }: any = useContext(AuthContext);
-  const [notices, setNotices] = useState<INotice[] | null>();
   const [body, setBody] = useState("");
   const [type, setType] = useState("regular");
   const [open, setOpen] = useState(false);
@@ -48,10 +48,10 @@ export default function AddNotice({
   const sendNotice = async () => {
     try {
       const { data }: { data: INotice } = await network.post(`/api/v1/notice`, {
-        classId: user.classId, //todo add class selector
+        classId, //todo add class selector
         type,
         body,
-        createdBy: createdByPlaceHolder,
+        createdBy: user.id,
       });
       updateLocal((prev: INotice[] | undefined) => prev?.concat(data));
       //fix this. not clsoing for some reason
@@ -79,7 +79,7 @@ export default function AddNotice({
           onChange={handleChange}>
           <MenuItem value={"regular"}>regular</MenuItem>
           <MenuItem value={"important"}>important</MenuItem>
-          <MenuItem value={"critical"}>critical</MenuItem>
+          {/* <MenuItem value={"critical"}>critical</MenuItem> */}
         </Select>
       </FormControl>
       <TextField

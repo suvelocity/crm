@@ -45,6 +45,7 @@ export default function TeacherRoutes() {
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
+  console.log(students);
 
   useEffect(() => {
     (async () => {
@@ -59,7 +60,7 @@ export default function TeacherRoutes() {
       <div id='interface-container' style={{ flexGrow: 1 }}>
         <Switch>
           <Route exact path='/'>
-            <TeacherContainer />
+            <Dashboard />
           </Route>
           <Route path='/lessons'>
             <Lessons />
@@ -68,11 +69,8 @@ export default function TeacherRoutes() {
             <Schedhule />
           </Route>
           <Route path='/tasks'>
-            <TaskBoard />
+            <TeacherContainer />
           </Route>
-          {/* <Route path='/teacher'>
-            <Teacher />
-          </Route> */}
           <Route exact path='/quizme'>
             <QuizMe />
           </Route>

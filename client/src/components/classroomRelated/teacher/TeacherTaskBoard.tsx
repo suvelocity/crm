@@ -170,11 +170,11 @@ export default function TeacherTaskBoard(props: any) {
         { params: { filters: filter } }
       );
       // console.log(data);
-      const newArray = await data.map((task: any) => {
-        task.TaskofStudents.forEach((taskofstudent: any) => {
-          console.log(taskofstudent);
-        });
-      });
+      // const newArray = await data.map((task: any) => {
+      //   task.TaskofStudents.forEach((taskofstudent: any) => {
+      //     console.log(taskofstudent);
+      //   });
+      // });
 
       setTeacherTasks(data);
     } catch (error) {
