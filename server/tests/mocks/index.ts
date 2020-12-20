@@ -4,4 +4,4 @@ export * from "./classesMock";
 export * from "./studentsTestExpectedResult";
 export * from "./companyMock";
 export * from "./users";
-export * from "./jobsMock";
+export * from "./jobs/jobsMock";
