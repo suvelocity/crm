@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 //@ts-ignore
-import { Quiz, Field, Option, QuizSubmission, Student } from "../../models";
+import { Form, Field, Option } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { quizSchema, quizSchemaToPut } from "../../validations";
@@ -8,13 +8,12 @@ import { IQuiz } from "../../types";
 
 const router = Router();
 
-// GET ALL QUIZZES
+// GET ALL FORMS
 router.get('/all', async (req: Request, res: Response) => {
-  
-  const quizzes = await Quiz.findAll({
-    attributes: ['id', 'name']
+  const forms = await Form.findAll({
+    attributes: ['id', 'name', 'isQuiz']
   });
-  return res.json(quizzes);
+  return res.json(forms);
 });
 
 // GET SUBMISSIONS OF QUIZ
@@ -28,11 +27,11 @@ router.get('/all', async (req: Request, res: Response) => {
 
 // GET QUIZ BY ID
 router.get('/:id', async (req: Request, res: Response) => {
-  const quiz = await Quiz.findByPk(req.params.id, {
-    attributes: ["id", "name"],
+  const form = await Form.findByPk(req.params.id, {
+    attributes: ["id", "name", "isQuiz"],
     include: [{model: Field, attributes: ["id", "title"], include: [{model: Option, attributes: ['id', 'title']}]}]
   });
-  return res.json(quiz);
+  return res.json(form);
 });
 
 // GET QUESTIONS OF QUIZ

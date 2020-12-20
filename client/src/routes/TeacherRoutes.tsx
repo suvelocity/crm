@@ -9,7 +9,7 @@ import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import Teacher from "../components/classroomRelated/teacher/Teacher";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
-import QuizPage from '../components/classroomRelated/QuizMeRelated/components/QuizPage'
+import QuizPage from '../components/classroomRelated/QuizMeRelated/components/pages/QuizPage'
 
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
@@ -67,11 +67,8 @@ export default function TeacherRoutes() {
           <Route path='/teacher'>
             <Teacher />
           </Route>
-          <Route exact path="/quizme">
+          <Route path="/quizme">
             <QuizMe />
-          </Route>
-          <Route exact path="/quizme/quiz/:id">
-            <QuizPage />
           </Route>
           <Route path='*'>
             <div>404 Not Found</div>

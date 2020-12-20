@@ -22,8 +22,8 @@ router.use("/lesson", require("./lesson"));
 router.use("/task", require("./task"));
 router.use("/notice", require("./notice"));
 // quizme routes
-router.use("/quiz", require("./quiz"));
+router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
 
 router.use(unknownEndpoint);
-module.exports = router;
+export default router;
