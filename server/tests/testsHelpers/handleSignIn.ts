@@ -4,6 +4,7 @@ import { usersMock, usersCardentials } from "../mocks";
 require("dotenv").config();
 import request from "supertest";
 import server from "../../app";
+const AUTH_URL = "/api/v1/auth/signin";
 
 export const handleSignIn = async (userType: string) => {
   await User.destroy({ truncate: true, force: true });
@@ -12,17 +13,11 @@ export const handleSignIn = async (userType: string) => {
   try {
     switch (userType) {
       case "student":
-        return await request(server)
-          .post("/api/v1/auth/signin")
-          .send(usersCardentials[0]);
+        return await request(server).post(AUTH_URL).send(usersCardentials[0]);
       case "teacher":
-        return await request(server)
-          .post("/api/v1/auth/signin")
-          .send(usersCardentials[1]);
+        return await request(server).post(AUTH_URL).send(usersCardentials[1]);
       case "admin":
-        return await request(server)
-          .post("/api/v1/auth/signin")
-          .send(usersCardentials[2]);
+        return await request(server).post(AUTH_URL).send(usersCardentials[2]);
     }
   } catch (e) {
     return e;
