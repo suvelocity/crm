@@ -25,7 +25,9 @@ router.get('/available', async (req: Request, res: Response) => {
 // Get all mentors
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const allMentors: any[] = await Mentor.findAll({});
+    const allMentors: any[] = await Mentor.findAll({
+      order:[["available","DESC"]],
+    });
 
     res.json(allMentors);
   } catch (err) {
@@ -110,7 +112,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// delete meeting
+// delete mentor
 router.patch('/delete', async (req, res) => {
   try {
     const { mentorId } = req.body;
