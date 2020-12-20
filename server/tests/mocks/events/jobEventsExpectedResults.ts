@@ -1,7 +1,7 @@
 export const jobEventExpectedResults = [
   {
     id: 27,
-    eventName: "Canceled",
+    eventName: "Hired",
     type: "jobs",
     userId: 7,
     relatedId: "2",
@@ -37,6 +37,20 @@ export const jobEventExpectedResults = [
       createdAt: "2020-12-17T15:19:12.000Z",
       updatedAt: "2020-12-17T15:19:12.000Z",
       deletedAt: null,
+      Class: {
+        id: 6,
+        course: "Cyber4s",
+        name: "A cyber force",
+        startingDate: "2020-12-17T15:19:12.000Z",
+        endingDate: "2020-12-17T15:19:12.000Z",
+        cycleNumber: 1,
+        zoomLink: "https://sncentral.zoom.us/j/99857324080#success",
+        additionalDetails: "",
+        mentorProject: false,
+        createdAt: "2020-12-17T15:19:12.000Z",
+        updatedAt: "2020-12-17T15:19:12.000Z",
+        deletedAt: null,
+      },
     },
   },
   {

@@ -1,7 +1,7 @@
 export const jobEventMock = [
   {
     id: 27,
-    eventName: "Canceled",
+    eventName: "Hired",
     type: "jobs",
     userId: 7,
     relatedId: "2",
@@ -10,6 +10,8 @@ export const jobEventMock = [
     },
     creatorId: 0,
     date: "2020-12-14T00:00:00.000Z",
+    createdAt: "2020-12-14T10:01:57.000Z",
+    updatedAt: "2020-12-14T10:01:57.000Z",
   },
   {
     id: 30,
@@ -20,6 +22,8 @@ export const jobEventMock = [
     entry: null,
     creatorId: 0,
     date: "2020-12-13T22:00:00.000Z",
+    createdAt: "2020-12-14T17:02:03.000Z",
+    updatedAt: "2020-12-14T17:02:03.000Z",
   },
   {
     id: 29,
@@ -32,5 +36,7 @@ export const jobEventMock = [
     },
     creatorId: 0,
     date: "2020-12-14T00:00:00.000Z",
+    createdAt: "2020-12-14T10:01:57.000Z",
+    updatedAt: "2020-12-14T10:01:57.000Z",
   },
 ];
