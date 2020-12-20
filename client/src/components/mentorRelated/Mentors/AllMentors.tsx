@@ -120,6 +120,7 @@ function AllMentors() {
       });
       const { data } = await network.get('/api/v1/M/mentor');
       setMentors(data);
+      setAllMentors(data);
     }
   };
 
