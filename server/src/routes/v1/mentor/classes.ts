@@ -42,9 +42,9 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   try {
-    const id = req.params.id
+    const id = parseInt(req.params.id)
     const deleted = await MentorStudent.destroy({
       where: {
         id: id
