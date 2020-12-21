@@ -42,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    underscored: true,
     modelName: 'FieldSubmission',
     paranoid: true,
     tableName: 'fieldsubmissions'

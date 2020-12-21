@@ -168,24 +168,26 @@ router.post('/quiz', async (req: Request, res: Response) => {
         fieldId: answer.fieldId
       });
     });
-
-    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs, {returning: true});
-    console.log("created field subs: " ,createdFieldSubmissions);
+    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs);
+    const createdFieldSubmissionsWithId = await FieldSubmission.findAll({
+      where: {
+        studentId: fieldSubs[0].studentId,
+        createdAt: createdFieldSubmissions[0].createdAt
+      },
+      attributes: ['id', 'fieldId']
+    });
     const optionSubs: any = [];
-    createdFieldSubmissions.forEach((fieldSub: any) => {
-      const fieldSubmissionsId = fieldSub.id;
-      console.log("fieldSubmissionsId: ", fieldSubmissionsId);
-      
+    createdFieldSubmissionsWithId.forEach((fieldSub: any) => {
+      const fieldSubmissionId = fieldSub.id;
       const fieldId = fieldSub.fieldId;
       const optionId = answers.find((answer: any) => answer.fieldId === fieldId).optionId;
       optionSubs.push({
-        fieldSubmissionsId,
+        fieldSubmissionId,
         optionId
       });
     });
     const createdSelectedOptions = await SelectedOption.bulkCreate(optionSubs);
     return res.json({createdFieldSubmissions, createdSelectedOptions});
-    // return res.json(fieldSubs);
   }
   catch(error) {
     return res.status(400).json(error.message);

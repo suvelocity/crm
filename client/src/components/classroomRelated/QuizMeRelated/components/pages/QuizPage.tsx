@@ -147,9 +147,9 @@ export default function QuizPage(props: IProps) {
       };
       console.log(sub);
       await network.post("/api/v1/fieldsubmission/quiz", sub);
-
       setFinishTitle("Well done, quiz submitted successfully");
     } catch (error) {
+      setQuizIsOver(true);
       const errorMessage = error.response.data.message;
       setFinishTitle(errorMessage);
     }
