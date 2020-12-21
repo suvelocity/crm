@@ -1,7 +1,5 @@
 import React from "react";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
+import {Select, TextField, Tooltip, InputLabel, MenuItem, FormControl, makeStyles} from "@material-ui/core";
 import styled from "styled-components";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import {
@@ -9,18 +7,42 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import Tooltip from "@material-ui/core/Tooltip";
 import { IStudent } from "../../../typescript/interfaces";
+import ChallengeSelector from './ChallengeSelector'
+import {ITask} from '../../../typescript/interfaces'
+import { formatDiagnostic } from "typescript";
 
-interface Task {
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
+// interface Task {
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
+interface addTaskProps {
+  task: ITask;
+  index?: number;
+  handleChange: (element: string, index: number, change: any) => void;
+  handleRemove: (index: number, name: string) => void;
+  students?: IStudent[];
+  studentsToTask?: number[];
 }
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+  "create-task":{
+    border:'1px black solid'
+  }
+}));
+
 
 export default function AddTask({
   task,
@@ -29,100 +51,112 @@ export default function AddTask({
   handleRemove,
   students,
   studentsToTask,
-}: {
-  task: Task;
-  index?: number;
-  handleChange: (element: string, index: number, change: any) => void;
-  handleRemove: (index: number, name: string) => void;
-  students?: IStudent[];
-  studentsToTask?: number[];
-}) {
+}:addTaskProps) {
+
+  const classes = useStyles();
+
   const changer = (
-    e: React.ChangeEvent<{ value: unknown }>,
-    toChange: string
+    value:any,
+    fieldToChange: string
   ) => {
-    handleChange(toChange, index, e.target.value);
+    handleChange(fieldToChange, index, value);
   };
 
   const removeTask = () => {
     handleRemove(index, "task");
   };
-
   return (
-    <div
-      className='create-task'
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}>
-      <hr />
-      <Tooltip title='Remove task'>
+    <Form key={index} className='create-task'>
+      <Tooltip title='Remove task' style={{alignSelf:'flex-end'}}>
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
-      <Select
-        style={selectStyle}
-        value={task.type}
+      
+      <FormControl id='task-title' variant="outlined" className={classes.formControl} >
+        <Input label='Task title'
+        // disabled={task.type === "manual" ? false : true}
         variant='outlined'
-        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          changer(e, "type");
-        }}>
-        <MenuItem value='manual'>manual</MenuItem>
-        <MenuItem value='challengeMe'>challengeMe</MenuItem>
-        <MenuItem value='fcc'>fcc</MenuItem>
-        <MenuItem value='quiz'>quiz</MenuItem>
-      </Select>
-      {task.type === "manual" ? (
-        <Input
+        value={task.title}
+        onChange={(
+          e: React.ChangeEvent<{ value: unknown }>
+          ) => {
+            changer(e.target.value, "title");
+        }}
+        required={true}
+        />   
+      </FormControl>    
+      {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
+
+      <FormControl id='task-type' variant="outlined" className={classes.formControl} >
+        <InputLabel id="task-type-label">Task Type</InputLabel>
+        <Select 
+          // id='task-type'
+          labelId="task-type-label"
+          id="task-type"
+          label="task-type"
+          required={true}
+          style={selectStyle}
+          value={task.type}
           variant='outlined'
-          label='Link to task'
-          value={task.externalLink}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "externalLink");
-          }}
-        />
-      ) : (
-        <Select //TODO change to challenge type
+            changer(e.target.value, "type");
+            changer(null, "externalId");
+            changer(null, "externalLink");
+          }}>
+          <MenuItem value='manual'>manual</MenuItem>
+          <MenuItem value='challengeMe'>challengeMe</MenuItem>
+          {/* TODO <MenuItem value='fcc'>fcc</MenuItem> */}
+          <MenuItem value='quiz'>quiz</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl id='external' variant="outlined" className={classes.formControl} >
+      {task.type === "manual" 
+        ? <Input label='Link to task'
+            variant='outlined'
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              changer(e.target.value, "externalLink");
+            }}
+            value={task.externalLink}
+          />
+        : <ChallengeSelector type={task.type}
+            selectedValue={task.externalId}
+          changeValue={changer}/>
+          
+          /*<Select //TODO change to challenge type
           style={selectStyle}
           value={task.title}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "title");
+            changer(e.target.value, "title");
           }}
           variant='outlined'
           defaultValue='Pick a Task'>
           <MenuItem value={"challenge1"}>challenge1</MenuItem>
           <MenuItem value={"challenge2"}>challenge2</MenuItem>
           <MenuItem value={"challenge3"}>challenge3</MenuItem>
-        </Select>
-      )}
-      <>
-        <Input
-          disabled={task.type === "manual" ? false : true}
-          variant='outlined'
-          label='Task title'
-          value={task.title}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "title");
-          }}
-        />
-      </>
-      <Input
+          </Select>*/
+        }
+      </FormControl>
+
+      <FormControl id='task-description' variant="outlined" className={classes.formControl} >
+      <TextField label='Task Description'
         variant='outlined'
-        label='Task Description'
+        multiline
         value={task.body}
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          changer(e, "body");
+          changer(e.target.value, "body");
         }}
       />
-      <hr />
+      </FormControl>
+
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          disableToolbar
+        <KeyboardDatePicker className={classes.formControl} label='Deadline'
+          // disableToolbar
           minDate={new Date()}
           variant='inline'
-          format='MM/dd/yyyy'
+          format='dd/MM/yyyy'
           margin='normal'
           id='date-picker-inline'
-          label='Deadline'
+          inputVariant='outlined'
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{
@@ -130,26 +164,35 @@ export default function AddTask({
           }}
         />
       </MuiPickersUtilsProvider>
-      <Select
-        style={selectStyle}
-        value={task.status}
-        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          changer(e, "status");
-        }}
-        variant='outlined'
-        defaultValue='Pick a Status'>
-        <MenuItem value={"active"}>active</MenuItem>
-        <MenuItem value={"disabled"}>disabled</MenuItem>
-      </Select>
+
+      <FormControl id='status' variant="outlined" className={classes.formControl} >
+      
+        <InputLabel id="task-status-label">Status</InputLabel>
+        <Select defaultValue='Pick a Status'
+          // id='task-status'
+          labelId="task-status-label"
+          id="task-status"
+          label="status"
+          style={selectStyle}
+          value={task.status}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            changer(e.target.value, "status");
+          }}
+          variant='outlined'>
+          <MenuItem value={"active"}>active</MenuItem>
+          <MenuItem value={"disabled"}>disabled</MenuItem>
+        </Select>
+      </FormControl>
+     
       {students && studentsToTask !== undefined && (
-        <Select
+        <Select 
           multiple
           variant='outlined'
           defaultValue={students.map((student) => {
             return student.id;
           })}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e, "students");
+            changer(e.target.value, "students");
           }}>
           {students.map((student: any) => {
             console.log(student);
@@ -162,13 +205,27 @@ export default function AddTask({
           })}
         </Select>
       )}
-    </div>
+
+    </Form>
   );
 }
 
 const Input = styled(TextField)`
   margin-top: 5px;
   margin-bottom: 5px;
+`;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column; 
+  min-width:220px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius:7px;
+  /* border:.8px double black; */
+  box-shadow: 1px 2px 7px 0px rgba(0,0,0,0.1);
+  padding: 10px;
+  /* background-color: rgba(0, 0, 0, 0.05); */
+
 `;
 
 const selectStyle = { marginTop: "5px", marginBottom: "5px" };

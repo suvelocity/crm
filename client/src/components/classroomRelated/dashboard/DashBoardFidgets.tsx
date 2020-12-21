@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { ILesson, ITask } from "../../../../../server/src/types";
+import { ILesson, ITask, ITaskofStudent } from "../../../../../server/src/types";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";
@@ -123,7 +123,7 @@ const mockTasks = [
 ];
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITask[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
 
   const { user } = useContext<any>(AuthContext);
 
@@ -133,12 +133,12 @@ export function TasksFidget() {
 
   const fetchTasks: () => Promise<void> = async () => {
     try {
-      const { data: allTasks }: { data: ITask[] } = await network.get(
+      const { data: allTasks }: { data: ITaskofStudent[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
 
       setIncompletedTasks(
-        allTasks.filter((task: ITask) => task.status !== "done")
+        allTasks.filter((task: ITaskofStudent) => task.status !== "done")
       );
     } catch (e) {
       console.log(e);
@@ -152,12 +152,12 @@ export function TasksFidget() {
           <Headline>My Tasks</Headline>
         </TitleWrapper>
 
-        {incompletedTasks === [] ? (
+        {/* {incompletedTasks === [] ? (
           <p>
             <b>you have incommpleted Tasks!</b>
 
-            {incompletedTasks.map((task: ITask, i: number) => (
-              <li key={`incompTask${i}`}>{task.body}</li>
+            {incompletedTasks.map((task: ITaskofStudent, i: number) => (
+              // <li key={`incompTask${i}`}>{task.body}</li>
             ))}
           </p>
         ) : (
@@ -168,7 +168,7 @@ export function TasksFidget() {
               maxHeight: "100px",
             }}
           />
-        )}
+        )} */}
       </Center>
     </Wrapper>
   );

@@ -1,6 +1,5 @@
 import React, { useState, useContext, ChangeEvent } from "react";
 import styled from "styled-components";
-import { ILesson, ITask } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
@@ -8,17 +7,18 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-export interface Task {
-  lessonId?: number;
-  externalId?: number;
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
-}
+import { ILesson, ITask } from "../../../typescript/interfaces";
+// export interface Task {
+//   lessonId?: number;
+//   externalId?: number;
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
 
 interface Props {
   setOpen: Function;
@@ -26,7 +26,7 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
-  lessonTasks?: Task[];
+  lessonTasks?: ITask[];
   classId: number;
 }
 export default function AddLesson({
@@ -51,7 +51,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<Task[]>(lessonTasks ? lessonTasks : []);
+  const [tasks, setTasks] = useState<ITask[]>(lessonTasks ? lessonTasks : []);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -240,9 +240,9 @@ export default function AddLesson({
           ))}
         </Info>
 
-        <Info>
+        <Info style={{marginBottom:'10%'}}>
           <AddBtn onClick={addTask}>Add Task</AddBtn>
-          {tasks.map((task: Task, index: number) => (
+          {tasks.map((task: ITask, index: number) => (
             <OneInfo key={index}>
               <AddTask
                 handleChange={handleTaskChange}
@@ -258,8 +258,13 @@ export default function AddLesson({
         variant='outlined'
         onClick={handleSubmit}
         style={{
+          position:"absolute",
+          bottom:'5%',
+          left:'50%',
+          transform:'translate(-50%)',
           marginTop: "auto",
           backgroundColor: "white",
+          boxShadow:' 0 0 8px 2px rgba(0,0,0,.1)'
         }}>
         {header ? header : "Create Lesson"}
       </Button>
@@ -292,8 +297,10 @@ const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  width: 80vw;
+  /* width: 80vw; */
+  min-width:300px;
   overflow-y: scroll;
+  padding:5px;
 `;
 
 const Info = styled.div`

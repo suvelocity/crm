@@ -12,7 +12,7 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      {user.userType === "student" && (
+      {/* {user.userType === "student" && (
         <TilesRow repeatFormula='1fr 1fr 1fr' height='15vh'>
           <InformationTile>
             <TasksFidget />
@@ -24,7 +24,7 @@ export default function Dashboard() {
             <ScheduleFidget />
           </InformationTile>
         </TilesRow>
-      )}
+      )} */}
       <Notices />
     </DashboardContainer>
   );

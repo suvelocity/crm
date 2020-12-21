@@ -181,6 +181,9 @@ export const modalStyle = {
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
   overflowY: "scroll",
+  height:'85vh',
+  width:'80vw',
+  minWidth:'400px'
 };
 
 export const useStyles = makeStyles((theme: Theme) =>
