@@ -4,9 +4,11 @@ import {Form} from '../../models'
 import {IForm} from '../../types'
 import {Sequelize,Op} from 'sequelize'
 import axios from 'axios'
+require('dotenv').config()
 const router= Router()
 
-const {CM_ACCESS} = process.env
+const {CM_ACCESS,PORT} = process.env
+console.log('access', CM_ACCESS,PORT)
 if (!CM_ACCESS){
   console.trace( 'ChallengeMe Access Token Missing!')
 }

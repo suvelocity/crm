@@ -328,6 +328,7 @@ const AddBtn = styled(Button)`
 `
 const CreateLessonButton = styled(Button)`
   position:absolute;
+  width:fit-content;
   bottom:0%;
   left:50%;
   transform:translate(-50%);
