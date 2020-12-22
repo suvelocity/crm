@@ -14,7 +14,9 @@ import {
   SeqInclude,
 } from "./types";
 //@ts-ignore
-import { Student, Company, Job, Event, Class, TaskofStudent } from "./models";
+import { Student, Company, Job, Event } from "./models";
+//@ts-ignore
+import { Class, TaskofStudent, Task } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
@@ -237,6 +239,32 @@ export const fetchFCC: () => void = async () => {
       const { id: userId } = studentsData.find(
         (sd: any) => sd.fcc_account === username
       );
+      const newSolvedChallengesIds: string[] = userEvents.progress.map(
+        (challenge: any) => challenge.id
+      );
+
+      TaskofStudent.findAll({
+        where: { student_id: userId, status: !"done", type: "fcc" },
+        include: [{ model: Task, attributes: ["id", "externalId"] }],
+      }).then((unfinishedTOS: any) => {
+        console.log(unfinishedTOS);
+        console.log(typeof unfinishedTOS);
+        Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
+          unfinishedTask = unfinishedTask.toJSON();
+          console.log(unfinishedTask);
+          console.log(newSolvedChallengesIds);
+          let match = newSolvedChallengesIds.includes(
+            unfinishedTask.Task.externalId
+          );
+          console.log(match);
+          if (match)
+            TaskofStudent.update(
+              { status: "done" },
+              { where: { id: unfinishedTask.id } }
+            );
+        });
+      });
+
       return userEvents.progress.map((challenge: any) => {
         const parsedEvent: IEvent = {
           relatedId: challenge.id,
@@ -253,7 +281,7 @@ export const fetchFCC: () => void = async () => {
     });
 
     await Event.bulkCreate(parsedEvents);
-    await updateStudentTaskState(parsedEvents);
+    // await updateStudentTaskState(parsedEvents);
 
     console.log(fccEvents[1]);
     return { success: true, newEvents: parsedEvents.length };
@@ -265,9 +293,9 @@ export const fetchFCC: () => void = async () => {
 
 export const updateStudentTaskState: (
   events: IEvent[]
-) => Promise<void> = async (events: IEvent[]) => {
+) => Promise<any[] | undefined> = async (events: IEvent[]) => {
   try {
-    await Promise.all(
+    return Promise.all(
       // events.map((event: IEvent) =>
       //   TaskofStudent.findOne({
       //     where: { student_id: event.userId, task_id: event.relatedId },
@@ -277,7 +305,14 @@ export const updateStudentTaskState: (
         TaskofStudent.update(
           { status: "done" },
           {
-            where: { student_id: event.userId, task_id: event.relatedId },
+            where: { student_id: event.userId },
+            include: [
+              {
+                model: Task,
+                where: { external_id: event.relatedId },
+                required: true,
+              },
+            ],
             // returning:true // to get back the updated row
           }
         )

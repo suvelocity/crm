@@ -18,7 +18,7 @@ module.exports = {
         first_name: "Nitzan",
         last_name: "Listman",
         id_number: "123432159",
-        email: "nitzanjl@gmail.com",
+        email: "student@student.com",
         phone: "0529363490",
         age: 24,
         address: "Tel Mond, Israel",
