@@ -8,12 +8,13 @@ import {
   IJob,
   IStudent,
   ITaskFilter,
+  ITaskofStudent,
   PublicFields,
   PublicFieldsEnum,
   SeqInclude,
 } from "./types";
 //@ts-ignore
-import { Student, Company, Job, Event, Class } from "./models";
+import { Student, Company, Job, Event, Class, TaskofStudent } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
@@ -219,10 +220,10 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-
+    console.log(usernames);
     const fccEvents: IFccEvent[] = (
       await axios.post(
-        "https://europe-west1-crm-fcc-scraper.cloudfunctions.net/crm-fcc-scraper",
+        "https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper",
         {
           usernames,
           date,
@@ -252,12 +253,38 @@ export const fetchFCC: () => void = async () => {
     });
 
     await Event.bulkCreate(parsedEvents);
+    await updateStudentTaskState(parsedEvents);
 
     console.log(fccEvents[1]);
     return { success: true, newEvents: parsedEvents.length };
   } catch (err) {
     console.log(err);
     return { success: false, error: err.message };
+  }
+};
+
+export const updateStudentTaskState: (
+  events: IEvent[]
+) => Promise<void> = async (events: IEvent[]) => {
+  try {
+    await Promise.all(
+      // events.map((event: IEvent) =>
+      //   TaskofStudent.findOne({
+      //     where: { student_id: event.userId, task_id: event.relatedId },
+      //   }).then((tosRecord: any) => tosRecord.update({ status: "done" }))
+      // )
+      events.map((event: IEvent) =>
+        TaskofStudent.update(
+          { status: "done" },
+          {
+            where: { student_id: event.userId, task_id: event.relatedId },
+            // returning:true // to get back the updated row
+          }
+        )
+      )
+    );
+  } catch (e) {
+    console.log(e);
   }
 };
 
