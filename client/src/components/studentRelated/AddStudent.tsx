@@ -208,7 +208,6 @@ function AddStudent(props: Props) {
               <FormControl
                 style={{ width: 195 }}
                 error={Boolean(errors.languages)}
-                id="languages"
               >
                 <InputLabel>Languages</InputLabel>
                 <Controller
@@ -216,6 +215,8 @@ function AddStudent(props: Props) {
                     <Select multiple>
                       {Object.keys(languages).map((key: string) => (
                         <MenuItem
+                          //@ts-ignore
+                          id={languages[key].name}
                           //@ts-ignore
                           key={languages[key].name}
                           //@ts-ignore
@@ -227,6 +228,7 @@ function AddStudent(props: Props) {
                       ))}
                     </Select>
                   }
+                  id="languages"
                   name="languages"
                   control={control}
                   defaultValue={
@@ -273,13 +275,14 @@ function AddStudent(props: Props) {
                   as={
                     <Select>
                       {classes.map((clss: IClass) => (
-                        <MenuItem key={clss.id} value={clss.id}>
+                        <MenuItem key={clss.id} value={clss.id} id={clss.name}>
                           {clss.name}
                         </MenuItem>
                       ))}
                     </Select>
                   }
                   name="classId"
+                  id="classId"
                   rules={{ required: "Class is required" }}
                   control={control}
                   defaultValue={props.student ? props.student.Class.id : ""}
@@ -332,7 +335,7 @@ function AddStudent(props: Props) {
                 id="maritalStatus"
                 name="maritalStatus"
                 defaultValue={props.student ? props.student.maritalStatus : ""}
-                inputRef={register({ required: "Marital status is required" })}
+                inputRef={register()}
                 label="Marital Status"
               />
               {!empty ? (
@@ -350,6 +353,7 @@ function AddStudent(props: Props) {
                 label="Number of children"
                 defaultValue={props.student ? props.student.children : 0}
                 inputRef={register({
+                  required: "Number of children is required",
                   min: {
                     value: 0,
                     message: "Negative children are not allowed",
@@ -369,9 +373,7 @@ function AddStudent(props: Props) {
                 id="citizenship"
                 name="citizenship"
                 defaultValue={props.student ? props.student.citizenship : ""}
-                inputRef={register({
-                  required: "Citizenship is required",
-                })}
+                inputRef={register()}
                 label="Citizenship"
               />
               {!empty ? (
