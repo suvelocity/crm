@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { ITask } from "../../../typescript/interfaces";
+import { ITask, ITaskofStudent } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
@@ -9,9 +9,13 @@ import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
 import TaskTable from "./TaskTable";
 import Nofitication from "./Nofitication";
+import SingleTask from "./SingleTask";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
 
 export default function TaskBoard() {
-  const [myTasks, setMyTasks] = useState<ITask[] | null>();
+  const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();
+  const [unfinishedTasks, setUnfinishedTasks] = useState<ITask[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -20,6 +24,16 @@ export default function TaskBoard() {
     background-color: ${({ theme }: { theme: any }) => theme.colors.background};
     width: 100%;
     height: 100vh;
+  `;
+
+  const Carus = styled(Carousel)`
+    background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+    width: 36%;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-top: 5vh; */
+    margin-bottom: 5vh;
   `;
   const Content = styled.div`
     color: ${({ theme }: { theme: any }) => theme.colors.font};
@@ -30,7 +44,19 @@ export default function TaskBoard() {
       const { data }: { data: ITask[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
-      setMyTasks(data);
+
+      setFinishedTasks(() => {
+        const finished = data.filter((task: any) => {
+          return task.status === "done";
+        });
+        return finished;
+      });
+      setUnfinishedTasks(() => {
+        const unfinished = data.filter((task: any) => {
+          return task.status !== "done";
+        });
+        return unfinished;
+      });
       setLoading(false);
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -45,12 +71,20 @@ export default function TaskBoard() {
     }
     //eslint-disable-next-line
   }, []);
+  console.log(unfinishedTasks);
+
   return (
     <DashboardContainer>
       <Content>
         <Loading size={30} loading={loading}>
-          <Nofitication myTasks={myTasks} />
-          <TaskTable myTasks={myTasks} />
+          <Carus showArrows={true}>
+            {/* <Nofitication myTasks={myTasks} /> */}
+            {unfinishedTasks?.map((unfinishedTask: any) => (
+              <SingleTask task={unfinishedTask} />
+            ))}
+          </Carus>
+          <h2>History </h2>
+          <TaskTable myTasks={finishedTasks} />
         </Loading>
       </Content>
     </DashboardContainer>
