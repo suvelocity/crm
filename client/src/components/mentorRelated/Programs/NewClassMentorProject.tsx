@@ -12,7 +12,7 @@ import {
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
@@ -31,8 +31,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
   const [mentors, setMentors] = useState<IMentor[]>([]);
+  const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>('');
   const { id } = useParams();
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
@@ -87,6 +89,30 @@ function NewClassMentorProject() {
     //eslint-disable-next-line
   }, [cls, getMentors]);
 
+  useEffect(() => {
+    if (searchValue !== '') {
+      setFilteredMentors(
+        mentors.filter(
+          (mentor) =>
+            mentor.name
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.address
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.company
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.role
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase())
+        )
+      );
+    } else {
+      setFilteredMentors(mentors);
+    }
+  }, [searchValue, mentors]);
+
   const onDropLeftEnd = (result: any) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -125,6 +151,7 @@ function NewClassMentorProject() {
       newCls!.Students = itemsStudents;
       setCls(newCls);
       setMentors(itemsMentor);
+      setSearchValue('');
     }
   };
 
@@ -222,6 +249,10 @@ function NewClassMentorProject() {
 
   const resetMentors = (mentorizeClass: IClass | undefined) => {
     getClass();
+  };
+
+  const changeSearchValue = (value: string) => {
+    setSearchValue(value);
   };
 
   // const assignMentors = (mentorizeClass: IClass | undefined) => {
@@ -374,6 +405,15 @@ function NewClassMentorProject() {
             </Center>
             <br />
             <Loading loading={loading} size={30}>
+            <div>
+            <TextField
+              label='Search'
+              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                changeSearchValue(e.target.value as string);
+              }}
+              value={searchValue}
+            />
+          </div>
               <StyledUl>
                 <li>
                   <TableHeader repeatFormula="0.5fr 2fr 1fr 1fr 1fr 1fr">
@@ -388,11 +428,11 @@ function NewClassMentorProject() {
                 <Droppable droppableId="mentors">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                      {mentors &&
-                        mentors.sort(
+                      {filteredMentors &&
+                        filteredMentors.sort(
                           (a, b) => (a.student || 0) - (b.student || 0)
                         ) &&
-                        mentors.map((mentor, i) => (
+                        filteredMentors.map((mentor, i) => (
                           <Draggable key={i} draggableId={`${i}`} index={i}>
                             {(provided) => (
                               <li
