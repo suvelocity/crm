@@ -140,8 +140,12 @@ function AddStudent(props: Props) {
                 defaultValue={props.student ? props.student.idNumber : ""}
                 inputRef={register({
                   maxLength: {
+                    value: 10,
+                    message: "ID need to be 9 or 10 letters long",
+                  },
+                  minLength: {
                     value: 9,
-                    message: "ID need to be 9 letters long",
+                    message: "ID need to be 9 or 10 letters long",
                   },
                   pattern: {
                     value: onlyNumbersRegex,
