@@ -11,6 +11,7 @@ import { ThemeProvider } from "styled-components";
 import jwt from "jsonwebtoken";
 //@ts-ignore
 import { PublicRoutes, AdminRoutes, StudentRoutes } from "./routes";
+import {fixedPairing, s ,m} from './components/mentorRelated/PairingByDistance'
 const { REACT_APP_REFRESH_TOKEN_SECRET } = process.env;
 
 
@@ -20,6 +21,7 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState("light");
   useEffect(() => {
     (async () => {
+      await fixedPairing(s, m);
       try {
         const previousTheme = localStorage.getItem("theme");
         if (previousTheme) {

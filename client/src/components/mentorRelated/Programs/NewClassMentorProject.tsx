@@ -25,6 +25,8 @@ import SimpleModal from "../Modal";
 import Modal from '@material-ui/core/Modal';
 import Swal from "sweetalert2";
 import { StudentRoutes } from "../../../routes";
+import { fixedPairing } from '../PairingByDistance';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
@@ -41,7 +43,6 @@ function NewClassMentorProject() {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/M/classes/byId/${query}/${id}`
     );
-    // data.Students = data.Students.filter((student) => !student.mentorId);
     data.Students = data.Students.map((student) => {
       student.mentor = student.MentorStudents![0]
         ? student.MentorStudents![0].Mentor
@@ -106,6 +107,7 @@ function NewClassMentorProject() {
       const itemsStudents: Omit<IStudent, "Class">[] = Array.from(
         cls!.Students || []
       );
+      console.log(itemsStudents)
       const [reorderedMentor]: IMentor[] = itemsMentor.splice(
         result.source.index,
         1
@@ -126,9 +128,7 @@ function NewClassMentorProject() {
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
       const newCls: IClass | undefined = cls;
       newCls!.Students = itemsStudents;
-      newCls!.Students.sort((a, b) => {
-        return a.mentor ? 1 : -1;
-      });
+      console.log(newCls!.Students)
       setCls(newCls);
       setMentors(itemsMentor);
     }
@@ -145,11 +145,19 @@ function NewClassMentorProject() {
     setMentors(newMentors);
     const newCls: IClass | undefined = cls;
     newCls!.Students[i].mentor = null;
-    newCls!.Students.sort((a, b) => {
+    // newCls!.Students.sort((a, b) => {
+    //   return a.mentor ? 1 : -1;
+    // });
+    setCls(newCls);
+  };
+
+  const availableSort=()=>{
+    const newCls: IClass | undefined = cls;
+      newCls!.Students.sort((a, b) => {
       return a.mentor ? 1 : -1;
     });
     setCls(newCls);
-  };
+  }
   
 
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
@@ -244,6 +252,35 @@ function NewClassMentorProject() {
     } else console.log("not enough mentors");
   };
 
+  const addressGenerator = async () => {
+    if (cls) {
+      try {
+        const newCls: IClass | undefined = cls;
+        const emptyMentors: IMentor[] = mentors.filter(mentor => !mentor.student || mentor.student === 0)
+        const newMentors: IMentor[] = Array.from(mentors)
+        const studentsWithMentor = newCls.Students.filter(student => student.mentor)
+        const students = newCls.Students.filter(student => !student.mentor)
+        const pairs = await fixedPairing(students, emptyMentors)
+        pairs && pairs.forEach(student => {
+          const currMentor = student.mentor
+          const mentorIndex = newMentors.findIndex((mentor: IMentor) => mentor.id === currMentor?.id)
+          if (mentorIndex > -1) {
+            newMentors[mentorIndex].student ? newMentors[mentorIndex].student!++ : newMentors[mentorIndex].student = 1
+          }
+        })
+        console.log(newMentors)
+        setMentors(newMentors)
+        pairs.sort((a,b) => a.id -b.id)
+        newCls!.Students = [...pairs, ...studentsWithMentor]
+        console.log(newCls)
+        setCls(newCls)
+      } catch (error) {
+        Swal.fire("Error Occurred", error.message, "error");
+      }
+      
+    }
+  }
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
@@ -270,28 +307,30 @@ function NewClassMentorProject() {
               <TitleWrapper>
                 <H1 color={"#c47dfa"}>
                   Students In Class
-                  <Button style={{marginLeft:5}} onClick={() => assignMentors(cls)}>Generate</Button>
-                  <Button onClick={() => resetMentors(cls)}>Reset</Button>
                 </H1>
               </TitleWrapper>
               <div style={{ color: "red" }}>{error}</div>
+        <Button color="secondary" variant="contained" onClick={() => resetMentors(cls)}>Reset</Button>
+        <Button color="primary" variant="contained" onClick={async () => await addressGenerator()}>Generate</Button>
             </Center>
             <br />
             <Loading loading={loading} size={30}>
               <StyledUl>
                 {cls?.Students && (
                   <li>
-                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr">
+                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr 0.1fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">Name</StyledSpan>
                       <StyledSpan weight="bold">Address</StyledSpan>
                       <StyledSpan weight="bold">Select Mentor</StyledSpan>
+                      <ExpandMoreIcon style={{cursor:"pointer"}} onClick={availableSort}/>
                     </TableHeader>
                   </li>
                 )}
                 {cls?.Students &&
                   cls?.Students!.map(
                     (student: Omit<IStudent, "Class">, i: number) => {
+                      console.log(student)
                       let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
                       return (
                         <li key={student.id} style={{ backgroundColor: color }}>
