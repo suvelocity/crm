@@ -139,6 +139,7 @@ function AddStudent(props: Props) {
                 name="idNumber"
                 defaultValue={props.student ? props.student.idNumber : ""}
                 inputRef={register({
+                  required: "ID number is required",
                   maxLength: {
                     value: 10,
                     message: "ID need to be 9 or 10 letters long",
@@ -206,12 +207,13 @@ function AddStudent(props: Props) {
               <br />
               <FormControl
                 style={{ width: 195 }}
-                error={Boolean(errors.classId)}
+                error={Boolean(errors.languages)}
+                id="languages"
               >
                 <InputLabel>Languages</InputLabel>
                 <Controller
                   as={
-                    <Select multiple displayEmpty>
+                    <Select multiple>
                       {Object.keys(languages).map((key: string) => (
                         <MenuItem
                           //@ts-ignore
@@ -221,17 +223,15 @@ function AddStudent(props: Props) {
                         >
                           {/* @ts-ignore */}
                           {`${languages[key].name}`}
-                          {/* , ${languages[key].nativeName}`} */}
                         </MenuItem>
                       ))}
                     </Select>
                   }
                   name="languages"
-                  rules={{ required: "Languages is required" }}
+                  control={control}
                   defaultValue={
                     props.student ? props.student.languages.split(", ") : []
                   }
-                  control={control}
                 />
               </FormControl>
               {!empty ? (

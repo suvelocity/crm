@@ -189,9 +189,28 @@ describe("Student Tests", () => {
         id: "5fa95377b0cb85412c53e810",
       }
     ).as("apply");
+    cy.route("POST", "**/api/v1/auth/signin", {
+      userType: "admin",
+    }).as("login");
+    cy.setCookie(
+      "refreshToken",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4ifQ.MBOiVFSMgSjxufbOKuEb1wCrHfJ9HuUetIWOrMvOQ6U"
+    );
   });
 
-  it("tests add student form", () => {
+  it("Tests Login", () => {
+    cy.visit("http://localhost:3000");
+    cy.get("#email").type("Admin@admin.com");
+    cy.get("#password").type("Admin@admin.com");
+    cy.get("#login").click();
+    cy.wait("@login");
+    cy.contains("Welcome to CRM");
+  });
+
+  it.only("tests add student form", () => {
+    cy.route("POST", "**/api/v1/auth/token", {
+      userType: "admin",
+    });
     const inputs = [
       {
         field: "email",
@@ -318,6 +337,9 @@ describe("Student Tests", () => {
   });
 
   it("should be able to add and delete jobs for student", () => {
+    cy.route("POST", "**/api/v1/auth/token", {
+      userType: "admin",
+    });
     cy.visit("http://localhost:3000/student/5fa95377b0cb85412c53e810");
     cy.wait("@student");
     cy.wait("@jobs");
@@ -562,9 +584,16 @@ describe("Job Tests", () => {
         id: "5faab4f31c0521fc2fe8a09b",
       }
     ).as("apply");
+    cy.setCookie(
+      "refreshToken",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4ifQ.MBOiVFSMgSjxufbOKuEb1wCrHfJ9HuUetIWOrMvOQ6U"
+    );
   });
 
   it("tests add job form", () => {
+    cy.route("POST", "**/api/v1/auth/token", {
+      userType: "admin",
+    });
     const inputs = [
       {
         field: "company",
@@ -608,6 +637,9 @@ describe("Job Tests", () => {
   });
 
   it("should be able to add and delete students for job", () => {
+    cy.route("POST", "**/api/v1/auth/token", {
+      userType: "admin",
+    });
     cy.visit("http://localhost:3000/job/5faab4f31c0521fc2fe8a09b");
     cy.wait("@job");
     cy.wait("@students");
