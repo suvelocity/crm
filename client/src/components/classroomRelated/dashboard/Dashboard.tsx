@@ -12,16 +12,14 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
+      {/* {//todo fix responsive and long texts} */}
       {user.userType === "student" && (
-        <TilesRow repeatFormula="1fr 1fr 1fr" height="15vh">
+        <TilesRow repeatFormula='1fr 1fr' height='25vh'>
           <InformationTile>
             <TasksFidget />
           </InformationTile>
           <InformationTile>
             <LessonsFidget />
-          </InformationTile>
-          <InformationTile>
-            <ScheduleFidget />
           </InformationTile>
         </TilesRow>
       )}
@@ -38,6 +36,8 @@ const DashboardContainer = styled.div`
 `;
 
 const InformationTile = styled.div`
+  /* max-height: 40vh; */
+  /* overflow-y: auto; */
   height: auto;
   width: auto;
 `;
@@ -48,6 +48,7 @@ const TilesRow = styled.div`
   /* position: relative; */
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
+  /* max-height: 20vh; */
   display: grid;
   grid-template-columns: ${(props: any) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};

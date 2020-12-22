@@ -61,7 +61,7 @@ function Notices() {
   const getNotices = async () => {
     try {
       const { data }: { data: INotice[] } = await network.get(
-        `/api/v1/notice/byclass/${selectedClass}`
+        `/api/v1/notice/byclass/${selectedClass ? selectedClass : user.classId}`
       );
       setLoading(false);
       setNotices(data);
@@ -97,7 +97,7 @@ function Notices() {
     <Loading size={30} loading={loading}>
       {user.userType === "teacher" && classesToTeacher && (
         <FilterContainer>
-          <FormControl color="primary" variant="outlined">
+          <FormControl color='primary' variant='outlined'>
             <InputLabel>Class</InputLabel>
             <Select
               style={{
@@ -111,8 +111,7 @@ function Notices() {
               // defaultValue={classesToTeacher[0].classId}
               onChange={(e: any) => {
                 setSelectedClass(e.target.value);
-              }}
-            >
+              }}>
               {classesToTeacher?.map((teacherClass: any) => (
                 <MenuItem value={teacherClass.classId}>
                   {teacherClass.Class.name}
@@ -123,7 +122,7 @@ function Notices() {
             </Select>
           </FormControl>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={handleOpen}
             style={{
               boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
@@ -133,16 +132,14 @@ function Notices() {
               // marginTop: "auto",
               // marginBottom: "auto",
               // height: "100%",
-            }}
-          >
+            }}>
             Add Notice
           </Button>
           <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
+            aria-labelledby='simple-modal-title'
+            aria-describedby='simple-modal-description'>
             {body}
           </Modal>
         </FilterContainer>
