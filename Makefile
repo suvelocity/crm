@@ -67,6 +67,7 @@ start-app:
 			--env-file=.env \
 			-p ${SERVER_PORT}:${SERVER_PORT} \
 			$(REMOTE_TAG) \
+			${CMDTORUN} \
 			'
 
 initialize:
