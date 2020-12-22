@@ -5,19 +5,14 @@ import {
   H1,
   Wrapper,
   TitleWrapper,
-  StyledLink,
   Center,
-  StyledSpan,
-  StyledUl,
-  StyledDiv,
-  TableHeader,
   GridDiv,
 } from "../../../styles/styledComponents";
+import { capitalize} from "../../../helpers/general";
 import { IClass, IMentorProgram } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { useForm, Controller } from "react-hook-form";
-import { validCompanyRegex } from "../../../helpers/patterns";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
@@ -98,8 +93,16 @@ const NewProgram: React.FC = () => {
                               <MenuItem
                                 key={i}
                                 value={cls.id}
-                                onClick={()=>setProgramName(`${cls.name}: ${cls.cycleNumber}- M Program`)}
-                              >{`${cls.name}-${cls.cycleNumber}`}</MenuItem>
+                                onClick={()=>setProgramName(`${capitalize(
+                                  cls.name
+                                 )} (${capitalize(cls.course)} - ${
+                                   cls.cycleNumber
+                                 })- M Program`)}
+                              >{`${capitalize(
+                               cls.name
+                              )} (${capitalize(cls.course)} - ${
+                                cls.cycleNumber
+                              })`}</MenuItem>
                             );
                           })}
                       </Select>

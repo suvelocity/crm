@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Quiz extends Model {
+  class Form extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "creatorId"
       });
       this.hasMany(models.Field, {
-        foreignKey: "quizId",
+        foreignKey: "formId",
       });
       // this.hasMany(models.QuizSubmission, {
       //   foreignKey: "quizId",
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       // });
     }
   }
-  Quiz.init(
+  Form.init(
     {
       name: {
         type: DataTypes.STRING,
@@ -33,14 +33,19 @@ module.exports = (sequelize, DataTypes) => {
       creatorId: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      isQuiz: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       }
     },
     {
       sequelize,
       underscored: true,
-      modelName: "Quiz",
+      modelName: "Form",
+      tableName: 'forms',
       paranoid: true,
     }
   );
-  return Quiz;
+  return Form;
 };

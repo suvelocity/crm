@@ -10,6 +10,7 @@ import {
   TitleWrapper,
   Center,
   GridDiv,
+  EditDiv
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -25,15 +26,19 @@ import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import HourglassEmptyOutlinedIcon from '@material-ui/icons/HourglassEmptyOutlined';
 import WcIcon from "@material-ui/icons/Wc";
 import WorkIcon from "@material-ui/icons/Work";
+import EditIcon from "@material-ui/icons/Edit";
 import { capitalize } from "../../../helpers/general";
 import { formatPhone } from "../../../helpers/general";
+import AddMentor from "./AddMentor";
+import Modal from "@material-ui/core/Modal";
 
 const SingleMentor: React.FC = () => {
   const [mentor, setMentor] = useState<IMentor[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [ModalState, setModalState] = useState<boolean>(false)
   const { id } = useParams();
 
-  const getStudent = useCallback(async () => {
+  const getMentor = useCallback(async () => {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/${id}`
     );
@@ -43,9 +48,15 @@ const SingleMentor: React.FC = () => {
     setLoading(false);
   }, [id, setMentor, setLoading]);
 
+  const handleClose = () => {
+    setModalState(false);
+    setLoading(true);
+    getMentor();
+  };
+
   useEffect(() => {
     try {
-      getStudent();
+      getMentor();
     } catch (e) {
       console.log(e.message);
     }
@@ -61,7 +72,11 @@ const SingleMentor: React.FC = () => {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
+        <EditDiv onClick={() => setModalState(true)}>
+            <EditIcon />
+          </EditDiv>
           {mentor && mentor[0] && (
+            <>
             <GridDiv repeatFormula="1fr 1fr 1fr">
               <List>
                 {/* {Name} */}
@@ -181,6 +196,25 @@ const SingleMentor: React.FC = () => {
                 )}
               </List>
             </GridDiv>
+            <Modal
+            open={ModalState}
+            onClose={() => setModalState(false)}
+            style={{ overflow: "scroll" }}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {!mentor ? (
+              <div>oops</div>
+            ) : (
+              <AddMentor
+                handleClose={handleClose}
+                update={true}
+                mentor={mentor[0]}
+                header="Edit Mentor"
+              />
+            )}
+              </Modal>
+              </>
           )}
         </Loading>
       </Wrapper>

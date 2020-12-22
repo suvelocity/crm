@@ -239,4 +239,50 @@ export interface filterMentorObject {
   Company: string;
   Gender: string;
   Address: string;
+  Available: string;
+}
+
+export type IOption = {
+  id: number,
+  title: string
+}
+export type IField = {
+  id: number,
+  title: string,
+  Options: IOption[]
+};
+export type IForm = {
+  id: number,
+  name: string,
+  isQuiz: boolean
+}
+export type IFormExtended = {
+  id: number,
+  name: string,
+  isQuiz: boolean,
+  Fields: IField[]  
+}
+export type IAnswer = {
+  fieldId: number, 
+  optionId: number
+};
+
+export type IAnswered = {
+  optionId: number, 
+  optionTitle: string
+};
+
+export interface AnsweredFiled {
+  id: number,
+  title: string,
+  answer : IAnswered 
+}
+
+export type QuizSubmission = { 
+  id: number,
+  studentid : number,
+  fieldid: number,
+  fieldstitle: string,
+  answerid: number,
+  answertitle: string 
 }
