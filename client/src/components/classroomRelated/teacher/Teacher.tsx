@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { IClass, IStudent, ITask } from "../../../typescript/interfaces";
 import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
 import { relative } from "path";
+import { Loading } from "react-loading-wrapper";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -156,40 +157,41 @@ export default function Teacher() {
     </div>
   );
 
-  console.log(loaded);
-  return loaded ? (
-    <div
-      style={{
-        minHeight: "50vh",
-        marginTop: "10vh",
-        marginLeft: "auto",
-        marginRight: "auto",
-        width: "90%",
-      }}
-    >
-      <Center>
-        <TitleWrapper>
-          <H1 color="rgb(8, 16, 31)">My Tasks</H1>
-        </TitleWrapper>
-      </Center>
-      <StyledButton onClick={() => setOpen(true)}>
-        <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
-        New Task
-      </StyledButton>
-      <TeacherTaskBoard user={user} />
-
-      <GlobalStyle />
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
+  return (
+    <Loading loading={!loaded}>
+      <div
+        style={{
+          minHeight: "50vh",
+          marginTop: "10vh",
+          marginLeft: "auto",
+          marginRight: "auto",
+          width: "90%",
+        }}
       >
-        {body}
-      </Modal>
-    </div>
-  ) : null;
+        <Center>
+          <TitleWrapper>
+            <H1 color="rgb(8, 16, 31)">My Tasks</H1>
+          </TitleWrapper>
+        </Center>
+        <StyledButton onClick={() => setOpen(true)}>
+          <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
+          New Task
+        </StyledButton>
+        <TeacherTaskBoard user={user} />
+
+        <GlobalStyle />
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+      </div>
+    </Loading>
+  );
 }
 
 const TeacherContainer = styled.div`
