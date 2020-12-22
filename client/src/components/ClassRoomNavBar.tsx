@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useCallback,useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -28,12 +28,15 @@ import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import StreetviewIcon from "@material-ui/icons/Streetview";
 import { AuthContext } from "../helpers";
 import { ThemeContext } from "../helpers";
+import network from "../helpers/network";
+import {IStudent} from "../typescript/interfaces";
 //@ts-ignore
 import DarkModeToggle from "react-dark-mode-toggle";
 import "./classroomNavBar.css";
 
 function ClassRoomNavBar() {
   const [open, setOpen] = useState(false);
+  const [mentorProgram, setMentorProgram] = useState<IStudent>();
 
   const handleDrawer = () => {
     setOpen(true);
@@ -50,6 +53,19 @@ function ClassRoomNavBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const getMentors = useCallback(async()=>{
+    try{
+      const{data}:{data:IStudent} = await network.get(`/api/V1/M/student/${user.id}`)
+      setMentorProgram(data)
+    }catch(err){
+      alert(err.message);
+    }
+  },[user])
+
+   useEffect(()=>{
+    getMentors()
+   },[])
 
   const handleChangeTheme = () => {
     const isDark = currentTheme === "dark";
@@ -168,6 +184,15 @@ function ClassRoomNavBar() {
                 <StreetviewIcon style={{ position: "absolute", right: 10 }} />
               </DrawerItem>
             </StyledLink>
+          )}
+          {(mentorProgram && mentorProgram.MentorStudents![0]) && (
+            <StyledLink to={`/mentor/${mentorProgram.MentorStudents![0].id}`}>
+              <DrawerItem onClick={() => setOpen(false)}>
+                mentors
+                <StreetviewIcon style={{ position: "absolute", right: 10 }} />
+              </DrawerItem>
+            </StyledLink>
+          )}
           )} */}
           <DrawerItem style={{ alignContent: "flex-end" }}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />

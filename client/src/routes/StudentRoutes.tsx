@@ -2,12 +2,13 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
-import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
-import Lessons from "../components/classroomRelated/lessons/Lessons";
-import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
-import Tasks from "../components/classroomRelated/tasks/TaskBoard";
-import ClassRoomNavBar from "../components/ClassRoomNavBar";
-import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
+import Dashboard from '../components/classroomRelated/dashboard/Dashboard';
+import Lessons from '../components/classroomRelated/lessons/Lessons';
+import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
+import Tasks from '../components/classroomRelated/tasks/TaskBoard';
+import ClassRoomNavBar from '../components/ClassRoomNavBar';
+import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
+import PairMeetings from '../components/mentorRelated/Meetings/PairMeetings'
 export function StudentRoutes() {
   return (
     <>
@@ -23,9 +24,6 @@ export function StudentRoutes() {
             </Route>
             <Route path="/schedhule">
               <Schedhule />
-            </Route>
-            <Route path="/tasks">
-              <Tasks />
             </Route>
             <Route path="/quizme">
               <QuizMe />

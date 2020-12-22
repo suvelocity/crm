@@ -51,17 +51,18 @@ export default function TeacherRoutes() {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <ClassRoomNavBar />
-      {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id="interface-container" style={{ flexGrow: 1 }}>
+    <div id="interface-container" style={{ flexGrow: 1 }}>
+    <ClassRoomNavBar />
+    {/* <div id='classroom-container' style={{display:"flex"}} > */}
         <Switch>
           <Route exact path="/">
             <Dashboard />
           </Route>
+        <ErrorBoundary>
           <Route path="/lessons">
             <Lessons />
           </Route>
+        </ErrorBoundary>
           <Route path="/schedhule">
             <Schedhule />
           </Route>
@@ -80,6 +81,5 @@ export default function TeacherRoutes() {
           </Route>
         </Switch>
       </div>
-    </ErrorBoundary>
   );
 }

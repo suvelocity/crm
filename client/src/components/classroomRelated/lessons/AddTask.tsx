@@ -71,19 +71,6 @@ export default function AddTask({
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
       
-      <FormControl id='task-title' variant="outlined" className={classes.formControl} >
-        <Input label='Task title'
-        // disabled={task.type === "manual" ? false : true}
-        variant='outlined'
-        value={task.title}
-        onChange={(
-          e: React.ChangeEvent<{ value: unknown }>
-          ) => {
-            changer(e.target.value, "title");
-        }}
-        required={true}
-        />   
-      </FormControl>    
       {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
 
       <FormControl id='task-type' variant="outlined" className={classes.formControl} >
@@ -136,6 +123,20 @@ export default function AddTask({
           </Select>*/
         }
       </FormControl>
+
+      <FormControl id='task-title' variant="outlined" className={classes.formControl} >
+        <Input label='Task title'
+        // disabled={task.type === "manual" ? false : true}
+        variant='outlined'
+        value={task.title}
+        onChange={(
+          e: React.ChangeEvent<{ value: unknown }>
+          ) => {
+            changer(e.target.value, "title");
+        }}
+        required={true}
+        />   
+      </FormControl>    
 
       <FormControl id='task-description' variant="outlined" className={classes.formControl} >
       <TextField label='Task Description'
@@ -226,4 +227,6 @@ const Form = styled.form`
 
 `;
 
-const selectStyle = { marginTop: "5px", marginBottom: "5px" };
+const selectStyle = {
+   marginTop: "5px", marginBottom: "5px" 
+  };

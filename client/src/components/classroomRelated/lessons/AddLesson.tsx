@@ -230,20 +230,18 @@ export default function AddLesson({
   return (
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
-        <Input
-          variant="outlined"
-          label="Lesson name"
+        <Input label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
           aria-describedby="my-helper-text"
           required={true}
+          variant="outlined"
         />
 
-        <Input
+        <Input label="Lesson content"
           variant="outlined"
-          label="Lesson content"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -251,13 +249,12 @@ export default function AddLesson({
           required={true}
           multiline
         />
-        <Input
-          variant="outlined"
-          label="Zoom link"
+        <Input label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
+          variant="outlined"
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
@@ -327,7 +324,6 @@ export default function AddLesson({
     </AddLessonContainer>
   );
 }
-
 const AddBtn = styled(Button)`
   transition: 1sec;
   align-self: center;
@@ -336,10 +332,11 @@ const AddBtn = styled(Button)`
   min-width: fit-content;
 `;
 const CreateLessonButton = styled(Button)`
-  position: absolute;
-  bottom: 0%;
-  left: 50%;
-  transform: translate(-50%);
+  position:absolute;
+  width:fit-content;
+  bottom:0%;
+  left:50%;
+  transform:translate(-50%);
   margin-top: auto;
   background-color: #fefefe;
   box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);

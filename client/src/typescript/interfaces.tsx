@@ -55,6 +55,15 @@ export interface IClass {
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
 }
+export interface IClassOfTeacher {
+  id: number
+  Class: Pick<IClass,'id'|'name'|'Students'>;
+  classId: number
+  createdAt?: Date
+  deletedAt?: Date|null
+  teacherId: number
+  updatedAt?:Date
+}
 
 export interface ICompany {
   id?: number;
@@ -253,6 +262,8 @@ export interface filterMentorObject {
   Company: string;
   Gender: string;
   Address: string;
+  Available: string;
+  Search: string;
 }
 
 export type IOption = {
