@@ -119,9 +119,11 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   exclude: number[]
 ) => {
   //@ts-ignore
+  console.log(array);
+  console.log(exclude);
   return array.filter(
     (elem: number, i: number) =>
-      !exclude.includes(elem) && array.indexOf(elem) === i
+      !exclude.includes(Number(elem)) && array.indexOf(elem) === i
   );
 };
 
