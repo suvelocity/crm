@@ -26,7 +26,7 @@ router.get('/available', async (req: Request, res: Response) => {
 router.get('/', async (req: Request, res: Response) => {
   try {
     const allMentors: any[] = await Mentor.findAll({
-      order:[["available","DESC"]],
+      // order:[["available","DESC"]],
     });
 
     res.json(allMentors);
