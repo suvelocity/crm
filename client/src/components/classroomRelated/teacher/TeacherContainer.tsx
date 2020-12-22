@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Teacher from "./Teacher";
 import Notices from "../dashboard/Notices";
 import styled from "styled-components";
+import network from "../../../helpers/network";
 
 export default function TeacherContainer() {
+  // const [doneLoading]
+  // useEffect(() async => {
+  //   const {data} = await network.get("/api/v1/event/updates");
+  // }, []);
   return (
     <TeacherDashContainer>
       <Teacher />
