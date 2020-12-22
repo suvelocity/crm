@@ -105,6 +105,7 @@ export default function Lessons() {
           labelId="class-select-label"
           id="class-select"
           style={{
+            height:'fit-content',
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
             marginLeft: "15px",
             backgroundColor: "white",
@@ -153,6 +154,8 @@ export default function Lessons() {
         <TextField label='Search'
           value={filter}
           style={{
+            borderRadius:'4px',
+            height:'fit-content',
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
             textAlign: "center",
             backgroundColor: "white",
@@ -240,7 +243,7 @@ export default function Lessons() {
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
-
+  height: fit-content;
   /* justify-content: center; */
   padding-bottom: 40px;
   padding-top: 40px;
