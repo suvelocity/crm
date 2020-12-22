@@ -4,7 +4,7 @@ import { Form, Field, Option } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { quizSchema, quizSchemaToPut } from "../../validations";
-import { IQuiz } from "../../types";
+import { IForm } from "../../types";
 
 const router = Router();
 
@@ -44,14 +44,14 @@ router.get('/:id', async (req: Request, res: Response) => {
 // POST A NEW QUIZ
 // router.post('/', async (req: Request, res: Response) => {
 //   try {
-//     let body: IQuiz = req.body;
-//     const newQuiz: IQuiz = {
+//     let body: IForm = req.body;
+//     const newQuiz: IForm = {
 //       name: body.name,
 //       createdBy: body.createdBy
 //     }
 //     const { error } = quizSchema.validate(newQuiz);
 //     if(error) return res.status(400).json({ error: error.message });
-//     const createdQuiz: IQuiz = await Quiz.create(req.body);
+//     const createdQuiz: IForm = await Quiz.create(req.body);
 //     res.json(createdQuiz);
 //   }
 //   catch (error) {

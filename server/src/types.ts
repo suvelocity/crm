@@ -97,8 +97,8 @@ export interface ITask {
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: string;
-  status: string;
+  type: 'manual'|'challengeMe'|'fcc'|'quiz';
+  status: 'active'|'disabled';
   title: string;
   body?: string;
 }
@@ -138,12 +138,12 @@ export interface IMentor {
   available: boolean;
   gender: string;
 }
-export interface IQuiz {
+export interface IForm {
   id?: number;
   name: string;
   createdBy: number;
 }
-export interface IQuizSubmission {
+export interface IFormSubmission {
   id?: number;
   quizId: number;
   studentId: number;

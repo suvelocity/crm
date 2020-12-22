@@ -7,6 +7,7 @@ import { Student, Lesson, Event, TeacherofClass } from "../../models";
 import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
+import challenges from './challenges'
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -45,6 +46,99 @@ const createTask = async (req: Request, res: Response) => {
   });
   return task;
 };
+
+router.use('/challenges',challenges)
+
+router.get("/byteacherid/:id", async (req: Request, res: Response) => {
+  const { filters } = req.query;
+  const parsedFilters = parseFilters(filters as string);
+
+  try {
+    const tosWhereCLause: any = {
+      created_by: req.params.id,
+    };
+    const studentWhereClause: any = parsedFilters.student;
+    Object.assign(tosWhereCLause, parsedFilters.task);
+    console.log(tosWhereCLause);
+    console.log(studentWhereClause);
+
+    const myTasks: any[] = await Task.findAll({
+      where: tosWhereCLause,
+      include: [
+        {
+          model: TaskofStudent,
+          attributes: ["studentId", "status", "submitLink", "updatedAt"],
+          required: true,
+          include: [
+            {
+              model: Student,
+              attributes: ["firstName", "lastName"],
+              required: true,
+              include: [
+                {
+                  model: Class,
+                  required: true,
+                  attributes: ["id", "name", "endingDate"],
+                  where: studentWhereClause,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Lesson,
+          attributes: ["title"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.json(myTasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/options/:id", async (req: Request, res: Response) => {
+  const id: string = req.params.id;
+  console.log(id);
+  if (!id) res.status(400).json({ error: "Malformed data" });
+  const options: any = {};
+
+  try {
+    const classes: any[] = await TeacherofClass.findAll({
+      where: { teacher_id: id },
+      attributes: ["id"],
+      include: [{ model: Class, attributes: ["name"] }],
+    });
+
+    options.classes = classes.map((cls: any) => cls.Class.name);
+    options.taskTypes = ["fcc", "Manual", "challengeMe", "quiz"];
+
+    res.json(options);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/bystudentid/:id", async (req: Request, res: Response) => {
+  try {
+    const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
+      where: { student_id: req.params.id },
+      attributes: ["id", "status", "submitLink"],
+      include: [
+        {
+          model: Task,
+          include: [{ model: Lesson, attributes: ["id", "title"] }],
+        },
+      ],
+    });
+    return res.json(myTasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 //todo support post of array of tasks
 //posts a single task to entire class
@@ -116,24 +210,6 @@ router.post("/tostudents", async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/bystudentid/:id", async (req: Request, res: Response) => {
-  try {
-    const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
-      where: { student_id: req.params.id },
-      attributes: ["id", "status", "submitLink"],
-      include: [
-        {
-          model: Task,
-          include: [{ model: Lesson, attributes: ["id", "title"] }],
-        },
-      ],
-    });
-    return res.json(myTasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -258,75 +334,5 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byteacherid/:id", async (req: Request, res: Response) => {
-  const { filters } = req.query;
-  const parsedFilters = parseFilters(filters as string);
 
-  try {
-    const tosWhereCLause: any = {
-      created_by: req.params.id,
-    };
-    const studentWhereClause: any = parsedFilters.student;
-    Object.assign(tosWhereCLause, parsedFilters.task);
-    console.log(tosWhereCLause);
-    console.log(studentWhereClause);
-
-    const myTasks: any[] = await Task.findAll({
-      where: tosWhereCLause,
-      include: [
-        {
-          model: TaskofStudent,
-          attributes: ["studentId", "status", "submitLink", "updatedAt"],
-          required: true,
-          include: [
-            {
-              model: Student,
-              attributes: ["firstName", "lastName"],
-              required: true,
-              include: [
-                {
-                  model: Class,
-                  required: true,
-                  attributes: ["id", "name", "endingDate"],
-                  where: studentWhereClause,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: Lesson,
-          attributes: ["title"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-
-    return res.json(myTasks);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/options/:id", async (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  console.log(id);
-  if (!id) res.status(400).json({ error: "Malformed data" });
-  const options: any = {};
-
-  try {
-    const classes: any[] = await TeacherofClass.findAll({
-      where: { teacher_id: id },
-      attributes: ["id"],
-      include: [{ model: Class, attributes: ["name"] }],
-    });
-
-    options.classes = classes.map((cls: any) => cls.Class.name);
-    options.taskTypes = ["fcc", "Manual", "challengeMe", "quiz"];
-
-    res.json(options);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 module.exports = router;

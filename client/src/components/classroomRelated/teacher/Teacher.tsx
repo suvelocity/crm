@@ -11,8 +11,8 @@ import AddTask from "../lessons/AddTask";
 import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
+import { IClass, IStudent,ITask } from "../../../typescript/interfaces";
 import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
-import { IClass, IStudent } from "../../../typescript/interfaces";
 import { relative } from "path";
 
 const GlobalStyle = createGlobalStyle`
@@ -21,23 +21,24 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-interface Task {
-  lessonId?: number;
-  externalId?: number;
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
-}
+// interface ITask {
+//   lessonId?: number;
+//   externalId?: number;
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
 
 export default function Teacher() {
-  const getBaseTask = (): Task => ({
+  const getBaseTask = (): ITask => ({
     createdBy: user.id,
     endDate: new Date(),
     title: "",
+    externalLink:'',
     type: "manual",
     status: "active",
   });
@@ -65,7 +66,7 @@ export default function Teacher() {
   const { user } = useContext(AuthContext);
   const classes = useStyles();
 
-  const [task, setTask] = useState<Task>(getBaseTask());
+  const [task, setTask] = useState<ITask>(getBaseTask());
   const [studentsToTask, setStudentsToTask] = useState<number[]>(
     students.map((student: IStudent) => student!.id!)
   );
@@ -117,7 +118,7 @@ export default function Teacher() {
       createdBy: user.id,
       endDate: new Date(),
       title: "",
-      type: "menual",
+      type: "manual",
       status: "active",
     });
   };
