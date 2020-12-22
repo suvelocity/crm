@@ -186,7 +186,7 @@ export const modalStyle = {
   overflowY: "scroll",
   height:'85vh',
   width:'80vw',
-  minWidth:'400px'
+  minWidth:'400px',
   zIndex: 20,
 };
 
