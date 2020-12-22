@@ -37,8 +37,6 @@ function NewClassMentorProject() {
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
 
-  // console.log(pairing(cls?.Students!, []))
-
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/M/classes/byId/${query}/${id}`
@@ -57,7 +55,6 @@ function NewClassMentorProject() {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/available`
     );
-    console.log(data);
     const mentorList = data.map((mentor) => {
       let count = 0;
       cls?.Students.forEach((student) => {
@@ -68,7 +65,6 @@ function NewClassMentorProject() {
       mentor.student = count;
       return mentor;
     });
-    console.log(mentorList);
     setMentors(mentorList);
     setLoading(false);
   }, []);
@@ -143,24 +139,23 @@ function NewClassMentorProject() {
     setMentors(newMentors);
     const newCls: IClass | undefined = cls;
     newCls!.Students[i].mentor = null;
-    // newCls!.Students.sort((a, b) => {
-    //   return a.mentor ? 1 : -1;
-    // });
     setCls(newCls);
   };
 
-  // const availableSort = () => {
-  //   console.log("here");
-  //   const newCls: IClass | undefined = cls;
-  //   newCls!.Students.sort((a, b) => {
-  //     return a.mentor ? 1 : -1;
-  //   });
-  //   setCls(newCls)
-  // }
+  const availableSort = () => {
+    console.log("here");
+    // @ts-ignore
+    const newCls: IClass = {...cls};
+    newCls!.Students.sort((a, b) => {
+      return a.mentor ? 1 : -1;
+    });
+    console.log(cls)
+    console.log(newCls)
+    setCls(newCls)
+  }
   
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
     try {    
-      console.log("student", student);
       if (student.MentorStudents![0]) {
         if (student.mentor) {
           await network.put(
@@ -183,8 +178,6 @@ function NewClassMentorProject() {
           mentorId: student.mentor!.id,
           studentId: student.id,
         });
-
-        console.log("post");
       }
     } catch {
       return student.firstName + student.lastName;
@@ -266,11 +259,9 @@ function NewClassMentorProject() {
             newMentors[mentorIndex].student ? newMentors[mentorIndex].student!++ : newMentors[mentorIndex].student = 1
           }
         })
-        console.log(newMentors)
         setMentors(newMentors)
         pairs.sort((a,b) => a.id -b.id)
         newCls!.Students = [...pairs, ...studentsWithMentor]
-        console.log(newCls)
         setCls(newCls)
       } catch (error) {
         Swal.fire("Error Occurred", error.message, "error");
@@ -321,14 +312,13 @@ function NewClassMentorProject() {
                       <StyledSpan weight="bold">Name</StyledSpan>
                       <StyledSpan weight="bold">Address</StyledSpan>
                       <StyledSpan weight="bold">Select Mentor</StyledSpan>
-                      <ExpandMoreIcon style={{cursor:"pointer"}} /*onClick={availableSort}*//>
+                      <ExpandMoreIcon style={{cursor:"pointer"}} onClick={availableSort}/>
                     </TableHeader>
                   </li>
                 )}
                 {cls?.Students &&
                   cls?.Students!.map(
                     (student: Omit<IStudent, "Class">, i: number) => {
-                      console.log(student)
                       let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
                       return (
                         <li key={student.id} style={{ backgroundColor: color }}>
