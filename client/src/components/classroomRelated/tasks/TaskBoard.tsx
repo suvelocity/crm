@@ -12,6 +12,8 @@ import Nofitication from "./Nofitication";
 import SingleTask from "./SingleTask";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
+import Modal from "@material-ui/core/Modal";
+import Submit from "./Submit";
 
 export default function TaskBoard() {
   const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();
@@ -19,6 +21,10 @@ export default function TaskBoard() {
   const [loading, setLoading] = useState<boolean>(true);
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [c] = React.useState(getModalStyle);
+  const [currentTask, setCurrentTask] = useState<number>();
 
   const DashboardContainer = styled.div`
     background-color: ${({ theme }: { theme: any }) => theme.colors.background};
@@ -71,18 +77,62 @@ export default function TaskBoard() {
     }
     //eslint-disable-next-line
   }, []);
-  console.log(unfinishedTasks);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = (currentId: number) => {
+    setOpen(true);
+    setCurrentTask(currentId);
+  };
+
+  //modal and submit
+  const handleSubmit = async (url: string) => {
+    try {
+      const { data } = await network.put(`/api/v1/task/submit/${currentTask}`, {
+        url: url,
+      });
+      handleClose();
+      if (data.error) {
+        Swal.fire("Error Occurred", data.error, "error");
+      }
+    } catch (error) {
+      handleClose();
+      Swal.fire("Error Occurred", error.message, "error");
+    }
+  };
+
+  const body = (
+    //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <Submit setOpen={setOpen} handleSubmit={handleSubmit} />
+    </div>
+  );
 
   return (
     <DashboardContainer>
       <Content>
         <Loading size={30} loading={loading}>
           <Carus showArrows={true}>
-            {/* <Nofitication myTasks={myTasks} /> */}
-            {unfinishedTasks?.map((unfinishedTask: any) => (
-              <SingleTask task={unfinishedTask} />
-            ))}
+            {unfinishedTasks ? (
+              unfinishedTasks?.map((unfinishedTask: any) => (
+                <SingleTask
+                  task={unfinishedTask}
+                  handleOpen={handleOpen}
+                  handleClose={handleClose}
+                />
+              ))
+            ) : (
+              <h1>no tasks</h1>
+            )}
           </Carus>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='simple-modal-title'
+            aria-describedby='simple-modal-description'>
+            {body}
+          </Modal>
           <h2>History </h2>
           <TaskTable myTasks={finishedTasks} />
         </Loading>
@@ -90,3 +140,40 @@ export default function TaskBoard() {
     </DashboardContainer>
   );
 }
+
+//modal
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      position: "absolute",
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      color: `${({ theme }: { theme: any }) => theme.colors.font}`,
+    },
+  })
+);
+export const modalStyle = {
+  top: `50%`,
+  left: `50%`,
+  transform: `translate(-${50}%, -${50}%)`,
+  overflowY: "scroll",
+  zIndex: 20,
+};

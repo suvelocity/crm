@@ -11,13 +11,13 @@ import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import taskImg from "../../../media/TaskManagementBlog.jpg";
 import PublishIcon from "@material-ui/icons/Publish";
 import LinkIcon from "@material-ui/icons/Link";
+import network from "../../../helpers/network";
+import Swal from "sweetalert2";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,11 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function SingleTask(props: any) {
-  const { task } = props;
-  console.log(task);
-
-  const classes = useStyles();
+  const { task, handleOpen, handleClose } = props;
   const [expanded, setExpanded] = React.useState(false);
+  const classes = useStyles();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -86,6 +84,9 @@ export default function SingleTask(props: any) {
       <CardActions disableSpacing>
         <IconButton
           aria-label='submit button'
+          onClick={() => {
+            handleOpen(task.id);
+          }}
           disabled={task.Task.type !== "manual" ? true : false}>
           <PublishIcon />
         </IconButton>
