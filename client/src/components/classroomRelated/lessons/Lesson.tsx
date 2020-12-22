@@ -69,7 +69,7 @@ export default function Lesson({
         setOpen={setModalState}
         update={true}
         lesson={lessonState}
-        header='Edit Lesson'
+        header="Edit Lesson"
         lessonTasks={tasks}
         classId={classId}
       />
@@ -78,59 +78,60 @@ export default function Lesson({
 
   return (
     <LessonContainer>
-      <StyledAccordion>
-        <StyledSummery
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls='panel1a-content'
-          id='panel1a-header'>
-          {"#" + (index + 1) + " " + lessonState.title}
-        </StyledSummery>
-        <hr style={{ width: "90%" }} />
-        <StyledDetails>{lessonState.body}</StyledDetails>
-        <StyledDetails>
-          <Loading size={30} loading={loading}>
-            {user.userType === "teacher" && (
-              <EditDiv
-                onClick={() => setModalState(true)}
-                style={{ marginRight: "15px" }}>
+      <div>
+        <StyledAccordion>
+          <StyledSummery
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            {"#" + (index + 1) + " " + lessonState.title}
+          </StyledSummery>
+          <hr />
+          <StyledDetails>{lessonState.body}</StyledDetails>
+          <StyledDetails>
+            <Loading size={30} loading={loading}>
+              <EditDiv top="90px" onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
-            )}
-            <ResourcesLinks>
-              {lessonState.resource?.includes("%#splitingResource#%")
-                ? lessonState.resource
-                    .split("%#splitingResource#%")
-                    .map((resource: string, index: number) => (
-                      <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
-                          {resource}
-                        </Link>
-                      </ResourcesLink>
-                    ))
-                : //@ts-ignore
-                  lessonState.resource?.length > 0 && (
-                    //@ts-ignore
-                    <Link target='_blank' href={lessonState.resource}>
-                      {lessonState.resource}
-                    </Link>
-                  )}
-            </ResourcesLinks>
-            <StyledTask>
-              <h1>hello</h1>
-            </StyledTask>
-          </Loading>
-        </StyledDetails>
-      </StyledAccordion>
+              <ResourcesLinks>
+                {lessonState.resource?.includes("%#splitingResource#%")
+                  ? lessonState.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target="_blank" href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lessonState.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target="_blank" href={lessonState.resource}>
+                        {lessonState.resource}
+                      </Link>
+                    )}
+              </ResourcesLinks>
+              <StyledTask>
+                <h1>hello</h1>
+              </StyledTask>
+            </Loading>
+          </StyledDetails>
+        </StyledAccordion>
+      </div>
       <Modal
         open={modalState}
         onClose={() => setModalState(false)}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
         {body}
       </Modal>
     </LessonContainer>
   );
 }
+
 const StyledTask = styled.div`
   margin-top: 15px;
   display: flex;

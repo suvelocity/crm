@@ -67,7 +67,7 @@ export default function Lessons() {
   const fetchClassLessons = async () => {
     try {
       const { data: lessons } = await network.get(
-        `/api/v1/lesson/byclass/${selectedClass}`
+        `/api/v1/lesson/byclass/${selectedClass ? selectedClass : user.classId}`
       );
       return Array.isArray(lessons) ? lessons : [];
     } catch {
@@ -91,7 +91,6 @@ export default function Lessons() {
       setLoading(false);
     })();
   }, [selectedClass]);
-  console.log(selectedClass);
 
   return (
     <Loading size={30} loading={loading}>
@@ -188,6 +187,7 @@ export const modalStyle = {
   height:'85vh',
   width:'80vw',
   minWidth:'400px'
+  zIndex: 20,
 };
 
 export const useStyles = makeStyles((theme: Theme) =>

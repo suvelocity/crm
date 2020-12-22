@@ -54,33 +54,32 @@ export default function TeacherRoutes() {
     <ErrorBoundary>
       <ClassRoomNavBar />
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id='interface-container' style={{ flexGrow: 1 }}>
+      <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Dashboard />
           </Route>
-          <Route path='/lessons'>
+          <Route path="/lessons">
             <Lessons />
           </Route>
-          <Route path='/schedhule'>
+          <Route path="/schedhule">
             <Schedhule />
           </Route>
-          <Route path='/tasks'>
+          <Route path="/tasks">
             <TeacherContainer />
           </Route>
-          <Route exact path='/quizme'>
+          <Route exact path="/quizme">
             <QuizMe />
           </Route>
-          <Route exact path='/quizme/quiz/:id'>
+          <Route exact path="/quizme/quiz/:id">
             {/* @ts-ignore */}
             <QuizPage />
           </Route>
-          <Route path='*'>
+          <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>
       </div>
-      {/* </div> */}
     </ErrorBoundary>
   );
 }

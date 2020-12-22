@@ -5,9 +5,9 @@ import {
   getAll,
   getById,
   deleteById,
-  patchById
+  patchById,
 } from "../testsHelpers";
-import server from "../../app";
+import server from "../../src/app";
 import {
   studentsMock,
   classesMock,
@@ -15,14 +15,17 @@ import {
   newStudent,
 } from "../mocks";
 //@ts-ignore
-import { Student, Class, User } from "../../models";
+import { Student, Class, User } from "../../src/models";
 
 let accessToken: string;
 
-const getCurrentStudents = async () => await getAll('student', accessToken)
-const getStudentById = async (id: number) => await getById(id, 'student', accessToken)
-const patchStudentById = async (id: number, body: object) => await patchById(id, 'student', accessToken, body)
-const deleteStudentById = async (id: number) => await deleteById(id, 'student', accessToken)
+const getCurrentStudents = async () => await getAll("student", accessToken);
+const getStudentById = async (id: number) =>
+  await getById(id, "student", accessToken);
+const patchStudentById = async (id: number, body: object) =>
+  await patchById(id, "student", accessToken, body);
+const deleteStudentById = async (id: number) =>
+  await deleteById(id, "student", accessToken);
 
 describe("Students Tests", () => {
   beforeAll(async () => {

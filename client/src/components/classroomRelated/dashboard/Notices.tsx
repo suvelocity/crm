@@ -12,6 +12,8 @@ import SingleNotice from "./SingleNotice";
 import styled from "styled-components";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 import "../../../helpers/cancelScroll.css";
 import { useRecoilValue } from "recoil";
 import { classesOfTeacher } from "../../../atoms";
@@ -59,7 +61,7 @@ function Notices() {
   const getNotices = async () => {
     try {
       const { data }: { data: INotice[] } = await network.get(
-        `/api/v1/notice/byclass/${selectedClass}`
+        `/api/v1/notice/byclass/${selectedClass ? selectedClass : user.classId}`
       );
       setLoading(false);
       setNotices(data);
@@ -95,29 +97,30 @@ function Notices() {
     <Loading size={30} loading={loading}>
       {user.userType === "teacher" && classesToTeacher && (
         <FilterContainer>
-          <Select
-            style={{
-              boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-              marginLeft: "5%",
-              marginTop: "auto",
-              marginBottom: "auto",
-              backgroundColor: "white",
-            }}
-            value={selectedClass}
-            variant='outlined'
-            color='primary'
-            // defaultValue={classesToTeacher[0].classId}
-            onChange={(e: any) => {
-              setSelectedClass(e.target.value);
-            }}>
-            {classesToTeacher?.map((teacherClass: any) => (
-              <MenuItem value={teacherClass.classId}>
-                {teacherClass.Class.name}
-              </MenuItem>
-            ))}
-            {/* <MenuItem value='cyber4s place holer'>cyber4s place holer</MenuItem>
+          <FormControl color='primary' variant='outlined'>
+            <InputLabel>Class</InputLabel>
+            <Select
+              style={{
+                width: 250,
+                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+                marginTop: "auto",
+                marginBottom: "auto",
+                backgroundColor: "white",
+              }}
+              value={selectedClass}
+              // defaultValue={classesToTeacher[0].classId}
+              onChange={(e: any) => {
+                setSelectedClass(e.target.value);
+              }}>
+              {classesToTeacher?.map((teacherClass: any) => (
+                <MenuItem value={teacherClass.classId}>
+                  {teacherClass.Class.name}
+                </MenuItem>
+              ))}
+              {/* <MenuItem value='cyber4s place holer'>cyber4s place holer</MenuItem>
             <MenuItem value='shit class'>shit class</MenuItem> */}
-          </Select>
+            </Select>
+          </FormControl>
           <Button
             variant='outlined'
             onClick={handleOpen}

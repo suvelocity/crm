@@ -148,12 +148,12 @@ function ClassRoomNavBar() {
               <QuizIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/schedhule'>
+          {/* <StyledLink to="/schedhule">
             <DrawerItem onClick={() => setOpen(false)}>
               Schedhule
               <TodayIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          </StyledLink>
+          </StyledLink> */}
           <StyledLink to='/tasks'>
             <DrawerItem onClick={() => setOpen(false)}>
               Tasks

@@ -64,19 +64,20 @@ export default function AddNotice({
     }
   };
   return (
-    <div id='post-notice' style={{ display: "flex", flexDirection: "column" }}>
+    <div id="post-notice" style={{ display: "flex", flexDirection: "column" }}>
       <FormControl>
-        <InputLabel id='demo-controlled-open-select-label'>Type</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">Type</InputLabel>
         <Select
-          labelId='demo-controlled-open-select-label'
-          id='demo-controlled-open-select'
+          labelId="demo-controlled-open-select-label"
+          id="demo-controlled-open-select"
           open={open}
           style={{ padding: "5px", marginBottom: "10px" }}
-          variant='outlined'
+          variant="outlined"
           onClose={handleClose}
           onOpen={handleOpen}
           value={type}
-          onChange={handleChange}>
+          onChange={handleChange}
+        >
           <MenuItem value={"regular"}>regular</MenuItem>
           <MenuItem value={"important"}>important</MenuItem>
           {/* <MenuItem value={"critical"}>critical</MenuItem> */}
@@ -87,15 +88,15 @@ export default function AddNotice({
         onChange={(e) => {
           setBody(e.target.value);
         }}
-        id='outlined-multiline-static'
-        label='notice'
+        id="outlined-multiline-static"
+        label="notice"
         multiline
         rows={5}
         // defaultValue='Default Value'
-        variant='outlined'
+        variant="outlined"
       />
 
-      <Button variant='outlined' color='inherit' onClick={sendNotice}>
+      <Button variant="outlined" color="inherit" onClick={sendNotice}>
         send
       </Button>
     </div>

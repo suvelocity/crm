@@ -1,9 +1,9 @@
 //@ts-ignore
-import { User, RefreshToken } from "../../models";
+import { RefreshToken, User } from "../../src/models";
 import { usersMock, usersCardentials } from "../mocks";
 require("dotenv").config();
 import request from "supertest";
-import server from "../../app";
+import server from "../../src/app";
 const AUTH_URL = "/api/v1/auth/signin";
 
 export const handleSignIn = async (userType: string) => {

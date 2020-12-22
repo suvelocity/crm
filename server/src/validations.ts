@@ -209,7 +209,6 @@ export const mentorProgramSchemaToPut = Joi.object({
   endDate: Joi.date().allow(null, ""),
 });
 
-
 export const mentorStudentSchema = Joi.object({
   mentorProgramId: Joi.number().required(),
   mentorId: Joi.number().required(),
@@ -232,15 +231,14 @@ export const quizSchemaToPut = Joi.object({
   createdBy: Joi.number().allow(null, ""),
 });
 
-
 export const quizSubmissionSchema = Joi.object({
   quizId: Joi.number().required(),
   studentId: Joi.number().required(),
-  rank: Joi.number().required()
+  rank: Joi.number().required(),
 });
 
 export const quizSubmissionSchemaToPut = Joi.object({
   quizId: Joi.number().allow(null, ""),
   studentId: Joi.number().allow(null, ""),
-  rank: Joi.number().allow(null, "")
+  rank: Joi.number().allow(null, ""),
 });
