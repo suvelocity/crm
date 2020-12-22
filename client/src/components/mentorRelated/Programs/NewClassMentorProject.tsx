@@ -93,6 +93,30 @@ function NewClassMentorProject() {
     //eslint-disable-next-line
   }, [cls, getMentors]);
 
+  useEffect(() => {
+    if (searchValue !== '') {
+      setFilteredMentors(
+        mentors.filter(
+          (mentor) =>
+            mentor.name
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.address
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.company
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase()) ||
+            mentor.role
+              .toLocaleLowerCase()
+              .includes(searchValue.toLocaleLowerCase())
+        )
+      );
+    } else {
+      setFilteredMentors(mentors);
+    }
+  }, [searchValue, mentors]);
+
   const onDropLeftEnd = (result: any) => {
     const { source, destination } = result;
     if (!destination) return;
