@@ -11,7 +11,7 @@ import AddTask from "../lessons/AddTask";
 import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
-import { IClass, IStudent,ITask } from "../../../typescript/interfaces";
+import { IClass, IStudent, ITask } from "../../../typescript/interfaces";
 import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
 import { relative } from "path";
 
@@ -38,7 +38,7 @@ export default function Teacher() {
     createdBy: user.id,
     endDate: new Date(),
     title: "",
-    externalLink:'',
+    externalLink: "",
     type: "manual",
     status: "active",
   });
@@ -70,6 +70,14 @@ export default function Teacher() {
   const [studentsToTask, setStudentsToTask] = useState<number[]>(
     students.map((student: IStudent) => student!.id!)
   );
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    network.get("/api/v1/event/updates").then((data: any) => {
+      console.log(data);
+      setLoaded(data.data.success);
+    });
+  }, []);
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     switch (element) {
@@ -148,7 +156,8 @@ export default function Teacher() {
     </div>
   );
 
-  return (
+  console.log(loaded);
+  return loaded ? (
     <div
       style={{
         minHeight: "50vh",
@@ -180,7 +189,7 @@ export default function Teacher() {
         {body}
       </Modal>
     </div>
-  );
+  ) : null;
 }
 
 const TeacherContainer = styled.div`

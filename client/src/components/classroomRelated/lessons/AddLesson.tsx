@@ -1,5 +1,5 @@
 import React, { useState, useContext, ChangeEvent } from "react";
-import {ILesson, ITask} from '../../../typescript/interfaces'
+import { ILesson, ITask } from "../../../typescript/interfaces";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -94,7 +94,7 @@ export default function AddLesson({
           tasksToAdd.map((task) => {
             const taskWithLessonId = { ...task, lessonId: lesson.id };
             return network.post(
-              `/api/v1/task/toclass/${user.classId}`,
+              `/api/v1/task/toclass/${classId}`,
               taskWithLessonId
             );
           })
@@ -113,7 +113,7 @@ export default function AddLesson({
           tasks.map((task) => {
             const taskWithLessonId = { ...task, lessonId: addedLesson.id };
             return network.post(
-              `/api/v1/task/toclass/${user.classId}`,
+              `/api/v1/task/toclass/${classId}`,
               taskWithLessonId
             );
           })
@@ -182,7 +182,7 @@ export default function AddLesson({
         type: "manual",
         endDate: new Date(),
         title: "",
-        externalLink:'',
+        externalLink: "",
         status: "active",
       },
       ...prev,
@@ -265,7 +265,11 @@ export default function AddLesson({
               handleChange(e, "resource")
             }
           />
-          <AddBtn variant='outlined' onClick={handleAddResource} style={{ marginLeft: "15px" }}>
+          <AddBtn
+            variant="outlined"
+            onClick={handleAddResource}
+            style={{ marginLeft: "15px" }}
+          >
             Add Resource
           </AddBtn>
         </AddRsourcesContainer>
@@ -282,8 +286,13 @@ export default function AddLesson({
           ))}
         </Info>
 
-        <Info className={tasks.length&&'open'} style={{marginBottom:'10%'}}>
-          <AddBtn variant='outlined' onClick={addTask}>Add Task</AddBtn>
+        <Info
+          className={tasks.length && "open"}
+          style={{ marginBottom: "10%" }}
+        >
+          <AddBtn variant="outlined" onClick={addTask}>
+            Add Task
+          </AddBtn>
           {tasks.map((task: ITask, index: number) => (
             <OneInfo key={index}>
               <AddTask
@@ -297,10 +306,10 @@ export default function AddLesson({
         </Info>
       </AddLessonForm>
       <CreateLessonButton
-        variant='outlined'
+        variant="outlined"
         onClick={handleSubmit}
         // style={{
-          
+
         //   position:"absolute",
         //   bottom:'5%',
         //   left:'50%',
@@ -309,19 +318,19 @@ export default function AddLesson({
         //   backgroundColor: "white",
         //   boxShadow:' 0 0 8px 2px rgba(0,0,0,.1)'
         // }}
-        >
+      >
         {header ? header : "Create Lesson"}
       </CreateLessonButton>
     </AddLessonContainer>
   );
 }
 const AddBtn = styled(Button)`
-  transition:1sec;
-  align-self:center;
-  margin:3px;
-  box-shadow: 0 0 4px 2px rgba(0,0,0,.1);
-  min-width:fit-content;
-`
+  transition: 1sec;
+  align-self: center;
+  margin: 3px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
+  min-width: fit-content;
+`;
 const CreateLessonButton = styled(Button)`
   position:absolute;
   width:fit-content;
@@ -329,8 +338,8 @@ const CreateLessonButton = styled(Button)`
   left:50%;
   transform:translate(-50%);
   margin-top: auto;
-  background-color:#fefefe;
-  box-shadow: 0 0 8px 2px rgba(0,0,0,.1)
+  background-color: #fefefe;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
 `;
 
 const Input = styled(TextField)`
@@ -355,22 +364,22 @@ const AddLessonForm = styled.form`
   flex-direction: column;
   height: 80vh;
   /* width: 80vw; */
-  min-width:300px;
+  min-width: 300px;
   overflow-y: scroll;
-  padding:5px;
+  padding: 5px;
 `;
 
 const Info = styled.div`
-  &.open{
-    height:110%;
-    transition:1sec;
-    margin-bottom:10%;
+  &.open {
+    height: 110%;
+    transition: 1sec;
+    margin-bottom: 10%;
   }
-  height:5%;
-  min-height:fit-content;
+  height: 5%;
+  min-height: fit-content;
   //TODO rename
   display: flex;
-  transition:.5s;
+  transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
 `;
