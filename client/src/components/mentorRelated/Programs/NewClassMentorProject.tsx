@@ -107,7 +107,6 @@ function NewClassMentorProject() {
       const itemsStudents: Omit<IStudent, "Class">[] = Array.from(
         cls!.Students || []
       );
-      console.log(itemsStudents)
       const [reorderedMentor]: IMentor[] = itemsMentor.splice(
         result.source.index,
         1
@@ -128,7 +127,6 @@ function NewClassMentorProject() {
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
       const newCls: IClass | undefined = cls;
       newCls!.Students = itemsStudents;
-      console.log(newCls!.Students)
       setCls(newCls);
       setMentors(itemsMentor);
     }
@@ -151,15 +149,15 @@ function NewClassMentorProject() {
     setCls(newCls);
   };
 
-  const availableSort=()=>{
-    const newCls: IClass | undefined = cls;
-      newCls!.Students.sort((a, b) => {
-      return a.mentor ? 1 : -1;
-    });
-    setCls(newCls);
-  }
+  // const availableSort = () => {
+  //   console.log("here");
+  //   const newCls: IClass | undefined = cls;
+  //   newCls!.Students.sort((a, b) => {
+  //     return a.mentor ? 1 : -1;
+  //   });
+  //   setCls(newCls)
+  // }
   
-
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
     try {    
       console.log("student", student);
@@ -233,24 +231,24 @@ function NewClassMentorProject() {
     getClass();
   };
 
-  const assignMentors = (mentorizeClass: IClass | undefined) => {
-    const mentorNeededCount: number = mentorizeClass!.Students.filter(
-      (student) => !(student.mentor || student.mentorId)
-    ).length;
-    if (mentorNeededCount <= mentors.length) {
-      let mentorsCount: number = 0;
-      for (let i = 0; i < mentorizeClass!.Students.length; i++) {
-        const student = mentorizeClass!.Students[i];
-        if (student.mentorId || student.mentor) continue;
-        else {
-          student.mentor = mentors[mentorsCount];
-          mentorsCount++;
-        }
-      }
-      setMentors(mentors.slice(-(mentors.length - mentorsCount)));
-      setCls(mentorizeClass);
-    } else console.log("not enough mentors");
-  };
+  // const assignMentors = (mentorizeClass: IClass | undefined) => {
+  //   const mentorNeededCount: number = mentorizeClass!.Students.filter(
+  //     (student) => !(student.mentor || student.mentorId)
+  //   ).length;
+  //   if (mentorNeededCount <= mentors.length) {
+  //     let mentorsCount: number = 0;
+  //     for (let i = 0; i < mentorizeClass!.Students.length; i++) {
+  //       const student = mentorizeClass!.Students[i];
+  //       if (student.mentorId || student.mentor) continue;
+  //       else {
+  //         student.mentor = mentors[mentorsCount];
+  //         mentorsCount++;
+  //       }
+  //     }
+  //     setMentors(mentors.slice(-(mentors.length - mentorsCount)));
+  //     setCls(mentorizeClass);
+  //   } else console.log("not enough mentors");
+  // };
 
   const addressGenerator = async () => {
     if (cls) {
@@ -318,12 +316,12 @@ function NewClassMentorProject() {
               <StyledUl>
                 {cls?.Students && (
                   <li>
-                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr 0.1fr">
+                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr 0.05fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">Name</StyledSpan>
                       <StyledSpan weight="bold">Address</StyledSpan>
                       <StyledSpan weight="bold">Select Mentor</StyledSpan>
-                      <ExpandMoreIcon style={{cursor:"pointer"}} onClick={availableSort}/>
+                      <ExpandMoreIcon style={{cursor:"pointer"}} /*onClick={availableSort}*//>
                     </TableHeader>
                   </li>
                 )}
