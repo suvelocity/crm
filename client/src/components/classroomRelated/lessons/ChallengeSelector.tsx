@@ -26,7 +26,6 @@ function ChallengeSelector({
   selectedValue,
   changeValue,
   type}:ChallengeSelectorProps):JSX.Element|null {
-  console.log(type)
   const loadChallenges = async (query:string)=>{
     try{
       const {data} = await network.get(`/api/v1/task/challenges/${type}?name=${query}`)
@@ -60,11 +59,19 @@ function ChallengeSelector({
         control:(provided)=>{return{...provided,height:50}},
       }}
       isClearable
+      on
       defaultOptions={true}
       backspaceRemovesValue={false}
       placeholder={`search in ${site}`}
       loadOptions={loadChallenges}
-      onChange={(value)=>{
+      onChange={(value,action)=>{
+        // console.log('v',value)
+        // console.log('a',action)
+        if(action.action === 'clear'){
+          changeValue(null,'externalId')
+          changeValue(null,'externalLink')
+
+        }
         if(value){
           const {value:id,label:name} = value
           changeValue(id,'externalId')

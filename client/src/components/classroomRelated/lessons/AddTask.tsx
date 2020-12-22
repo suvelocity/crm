@@ -195,8 +195,6 @@ export default function AddTask({
             changer(e.target.value, "students");
           }}>
           {students.map((student: any) => {
-            console.log(student);
-
             return (
               <MenuItem key={student.id} value={student.id}>
                 {`${student.className} ${student.firstName} ${student.lastName}`}

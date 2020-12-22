@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Button from "@material-ui/core/Button";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { Fade } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import { Loading } from "react-loading-wrapper";
 import AddLesson from "./AddLesson";
@@ -56,7 +57,7 @@ export default function Lessons() {
     setOpen(false);
   };
 
-  const body = (
+  const body = (    
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} classId={selectedClass} />
@@ -143,7 +144,9 @@ export default function Lessons() {
               onClose={handleClose}
               aria-labelledby='simple-modal-title'
               aria-describedby='simple-modal-description'>
-              {body}
+              <Fade in={open} timeout={600}  >
+                {body}
+              </Fade>
             </Modal>
           </>
         )}
@@ -177,6 +180,7 @@ const FilterContainer = styled.div`
 //   // const left = 50 + rand();
 
 export const modalStyle = {
+  transition:'.5sec',
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,

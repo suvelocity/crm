@@ -37,6 +37,7 @@ export default function Teacher() {
     createdBy: user.id,
     endDate: new Date(),
     title: "",
+    externalLink:'',
     type: "manual",
     status: "active",
   });
