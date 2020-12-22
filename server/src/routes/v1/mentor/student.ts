@@ -11,6 +11,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   try {
     const classes: IClass[] = await Student.findOne({
         where: { id: req.params.id },
+        required:false,
         include:[
             {
                 model:MentorStudent,
