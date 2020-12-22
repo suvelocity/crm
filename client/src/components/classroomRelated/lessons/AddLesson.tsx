@@ -230,20 +230,18 @@ export default function AddLesson({
   return (
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
-        <Input
-          variant="outlined"
-          label="Lesson name"
+        <Input label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
           aria-describedby="my-helper-text"
           required={true}
+          variant="outlined"
         />
 
-        <Input
+        <Input label="Lesson content"
           variant="outlined"
-          label="Lesson content"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -251,13 +249,12 @@ export default function AddLesson({
           required={true}
           multiline
         />
-        <Input
-          variant="outlined"
-          label="Zoom link"
+        <Input label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
+          variant="outlined"
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
@@ -318,7 +315,6 @@ export default function AddLesson({
     </AddLessonContainer>
   );
 }
-
 const AddBtn = styled(Button)`
   transition:1sec;
   align-self:center;
