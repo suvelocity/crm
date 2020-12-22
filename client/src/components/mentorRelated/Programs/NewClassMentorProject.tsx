@@ -155,6 +155,7 @@ function NewClassMentorProject() {
       newCls!.Students = itemsStudents;
       setCls(newCls);
       setMentors(itemsMentor);
+      setSearchValue('');
     }
   };
 
@@ -420,6 +421,7 @@ function NewClassMentorProject() {
               onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                 changeSearchValue(e.target.value as string);
               }}
+              value={searchValue}
             />
           </div>
               <StyledUl>
