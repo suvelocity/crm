@@ -254,6 +254,7 @@ export interface filterMentorObject {
   Gender: string;
   Address: string;
   Available: string;
+  Search: string;
 }
 
 export type IOption = {

@@ -22,6 +22,8 @@ import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
 import SimpleModal from "../Modal";
+import Modal from '@material-ui/core/Modal';
+import Swal from "sweetalert2";
 import { StudentRoutes } from "../../../routes";
 
 function NewClassMentorProject() {
@@ -29,8 +31,6 @@ function NewClassMentorProject() {
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
@@ -150,10 +150,11 @@ function NewClassMentorProject() {
     });
     setCls(newCls);
   };
+  
 
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
-    try {
-      console.log(student);
+    try {    
+      console.log("student", student);
       if (student.MentorStudents![0]) {
         if (student.mentor) {
           await network.put(
@@ -165,7 +166,7 @@ function NewClassMentorProject() {
             }
           );
         } else {
-          await network.delete(
+          await network.patch(
             `/api/v1/M/classes/${student.MentorStudents![0].id}`
           );
         }
@@ -184,53 +185,37 @@ function NewClassMentorProject() {
     }
   };
 
+  const promptAreYouSure: () => Promise<boolean> = async () => {
+    const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
+    const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
+    return Swal.fire({
+      title: "Are you sure?",
+      text:
+      `${dontHaveMentor.length} students in this class not linked to a mentor
+      Would you like to link ${newMentorsToDb.length} students anyway?`,
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#2fa324",
+      confirmButtonText: "continue",
+    }).then((result) => {
+      if (result.isConfirmed) return true;
+      return false;
+    });
+  };
+
   const createProgram = async () => {
     try {
-      const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
+      const newMentorsToDb = cls!.Students.filter((student) => student.mentor || student.MentorStudents![0]);
       const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
       if (dontHaveMentor.length > 0) {
-        setModalBody(
-          <div>
-            <div
-              style={{ color: "red", fontWeight: "bold" }}
-            >{`${dontHaveMentor.length} students in this class not linked to a mentor`}</div>
-            <StyledSpan>{`Would you like to link ${newMentorsToDb.length} students anyway?`}</StyledSpan>
-            <div>
-              <Button
-                style={{ backgroundColor: "green" }}
-                onClick={() =>
-                  cls!.Students.forEach((student: Omit<IStudent, "Class">) => {
-                    saveMentor(student).then(async () => {
-                      setModalBody(
-                        <div
-                          style={{ color: "green" }}
-                        >{`${newMentorsToDb.length} students have new mentors!`}</div>
-                      );
-                      history.push("/mentor");
-                    });
-                  })
-                }
-              >
-                Continue
-              </Button>
-              <Button
-                style={{ backgroundColor: "red" }}
-                onClick={() => setModalOpen(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        );
-        setModalOpen(true);
-      } else {
-        newMentorsToDb.forEach(async (student) => {
-          if (student.mentorId !== student.mentor?.id) {
-            await saveMentor(student);
-          }
-        });
-        history.push("/mentor");
+        const proceed: boolean = await promptAreYouSure();
+        if (!proceed) return;
       }
+      newMentorsToDb.forEach(async (student) => {
+          await saveMentor(student);
+      });
+      history.push("/mentor");
     } catch (err) {
       console.log(err);
     }
@@ -319,11 +304,12 @@ function NewClassMentorProject() {
                             </StyledSpan>
                             <StyledSpan>{student.address}</StyledSpan>
                             <StyledSpan>
-                              <Droppable droppableId={`${i}`}>
-                                {(provided) => (
+                              <Droppable droppableId={`${i}`} ignoreContainerClipping>
+                                {(provided, snapshot) => (
                                   <div
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
+                                    style={{ width: snapshot.isDraggingOver ? 0 : '' }}
                                   >
                                     {student.mentor && (
                                       <StyledDiv repeatFormula="1.5fr 1fr">
@@ -416,11 +402,6 @@ function NewClassMentorProject() {
             </Loading>
           </Wrapper>
         </DragDropContext>
-        <SimpleModal
-          open={modalOpen}
-          setOpen={setModalOpen}
-          modalBody={modalBody}
-        />
       </div>
     </div>
   );
