@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { ILesson,ITask } from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -9,7 +9,7 @@ import { EditDiv } from "../../../styles/styledComponents";
 import { useState, useCallback, useEffect, useContext } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
-import AddLesson, { Task } from "./AddLesson";
+import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
@@ -28,7 +28,7 @@ export default function Lesson({
   const [modalState, setModalState] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<ITask[]>([]);
   const { user }: any = useContext(AuthContext);
   const classes = useStyles();
   const getLessons = useCallback(async () => {
@@ -42,7 +42,7 @@ export default function Lesson({
   }, [loading]);
   const getTasks = useCallback(async () => {
     try {
-      const { data: tasks }: { data: Task[] } = await network.get(
+      const { data: tasks }: { data: ITask[] } = await network.get(
         `/api/v1/lesson/tasks/${lesson.id}`
       );
       setTasks(tasks);

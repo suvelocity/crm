@@ -1,6 +1,6 @@
 import React, { useState, useContext, ChangeEvent } from "react";
+import {ILesson, ITask} from '../../../typescript/interfaces'
 import styled from "styled-components";
-import { ILesson, ITask } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
@@ -9,19 +9,20 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-export interface Task {
-  id?: number;
-  createdAt?: number;
-  updatedAt?: number;
-  deletedAt?: number;
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
-}
+
+// export interface Task {
+//   id?: number;
+//   createdAt?: number;
+//   updatedAt?: number;
+//   deletedAt?: number;
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
 
 interface Props {
   setOpen: Function;
@@ -29,7 +30,7 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
-  lessonTasks?: Task[];
+  lessonTasks?: ITask[];
   classId: number;
 }
 export default function AddLesson({
@@ -43,7 +44,7 @@ export default function AddLesson({
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
-  const [tasksToDelete, setTasksToDelete] = useState<Task[]>([]);
+  const [tasksToDelete, setTasksToDelete] = useState<ITask[]>([]);
   const [zoomLink, setZoomLink] = useState<string>(
     lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
   );
@@ -55,7 +56,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<Task[]>(lessonTasks ? lessonTasks : []);
+  const [tasks, setTasks] = useState<ITask[]>(lessonTasks ? lessonTasks : []);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -181,6 +182,7 @@ export default function AddLesson({
         type: "manual",
         endDate: new Date(),
         title: "",
+        externalLink:'',
         status: "active",
       },
       ...prev,
@@ -196,6 +198,10 @@ export default function AddLesson({
         break;
       case "date":
         prevTasks[index].endDate = change;
+        setTasks(prevTasks);
+        break;
+      case "externalId":
+        prevTasks[index].externalLink = change;
         setTasks(prevTasks);
         break;
       case "externalLink":
@@ -262,7 +268,7 @@ export default function AddLesson({
               handleChange(e, "resource")
             }
           />
-          <AddBtn onClick={handleAddResource} style={{ marginLeft: "15px" }}>
+          <AddBtn variant='outlined' onClick={handleAddResource} style={{ marginLeft: "15px" }}>
             Add Resource
           </AddBtn>
         </AddRsourcesContainer>
@@ -279,9 +285,9 @@ export default function AddLesson({
           ))}
         </Info>
 
-        <Info>
-          <AddBtn onClick={addTask}>Add Task</AddBtn>
-          {tasks.map((task: Task, index: number) => (
+        <Info className={tasks.length&&'open'} style={{marginBottom:'10%'}}>
+          <AddBtn variant='outlined' onClick={addTask}>Add Task</AddBtn>
+          {tasks.map((task: ITask, index: number) => (
             <OneInfo key={index}>
               <AddTask
                 handleChange={handleTaskChange}
@@ -293,22 +299,41 @@ export default function AddLesson({
           ))}
         </Info>
       </AddLessonForm>
-      <Button
-        variant="outlined"
+      <CreateLessonButton
+        variant='outlined'
         onClick={handleSubmit}
-        style={{
-          marginTop: "auto",
-          backgroundColor: "white",
-        }}
-      >
+        // style={{
+          
+        //   position:"absolute",
+        //   bottom:'5%',
+        //   left:'50%',
+        //   transform:'translate(-50%)',
+        //   marginTop: "auto",
+        //   backgroundColor: "white",
+        //   boxShadow:' 0 0 8px 2px rgba(0,0,0,.1)'
+        // }}
+        >
         {header ? header : "Create Lesson"}
-      </Button>
+      </CreateLessonButton>
     </AddLessonContainer>
   );
 }
 
 const AddBtn = styled(Button)`
-  /* margin-left: 20px; */
+  transition:1sec;
+  align-self:center;
+  margin:3px;
+  box-shadow: 0 0 4px 2px rgba(0,0,0,.1);
+  min-width:fit-content;
+`
+const CreateLessonButton = styled(Button)`
+  position:absolute;
+  bottom:0%;
+  left:50%;
+  transform:translate(-50%);
+  margin-top: auto;
+  background-color:#fefefe;
+  box-shadow: 0 0 8px 2px rgba(0,0,0,.1)
 `;
 
 const Input = styled(TextField)`
@@ -332,13 +357,23 @@ const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  width: 80vw;
+  /* width: 80vw; */
+  min-width:300px;
   overflow-y: scroll;
+  padding:5px;
 `;
 
 const Info = styled.div`
+  &.open{
+    height:110%;
+    transition:1sec;
+    margin-bottom:10%;
+  }
+  height:5%;
+  min-height:fit-content;
   //TODO rename
   display: flex;
+  transition:.5s;
   /* flex-direction: column; */
   align-items: flex-start;
 `;
