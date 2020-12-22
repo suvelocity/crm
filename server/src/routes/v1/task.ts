@@ -7,7 +7,7 @@ import { Student, Lesson, Event, TeacherofClass } from "../../models";
 import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
-import challenges from './challenges'
+import challenges from "./challenges";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -47,7 +47,7 @@ const createTask = async (req: Request, res: Response) => {
   return task;
 };
 
-router.use('/challenges',challenges)
+router.use("/challenges", challenges);
 
 router.get("/byteacherid/:id", async (req: Request, res: Response) => {
   const { filters } = req.query;
@@ -138,7 +138,6 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 //todo support post of array of tasks
 //posts a single task to entire class
@@ -245,10 +244,10 @@ router.patch("/:id", async (req: Request, res: Response) => {
     const task = req.body;
     const { error } = taskSchema.validate(task);
     if (error) return res.status(400).json({ error: error.message });
-    const {id} = req.params;
-    if(!id) return res.status(400).json({error: 'task id not supplied'})
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ error: "task id not supplied" });
     const updated = await Task.update(task, {
-      where: {id},
+      where: { id },
     });
     return res.status(200).json(updated);
   } catch (error) {
@@ -258,10 +257,14 @@ router.patch("/:id", async (req: Request, res: Response) => {
 
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
-    const deleted = await Task.destroy({where: {id: req.params.id}})
-    const deleteFromStudents = await TaskofStudent.destroy({where: {taskId: req.params.id}});
-    console.log(deleteFromStudents)
-    return res.status(200).json({message: `Task deleted from ${deleted} lesson and ${deleteFromStudents} students`});
+    const deleted = await Task.destroy({ where: { id: req.params.id } });
+    const deleteFromStudents = await TaskofStudent.destroy({
+      where: { taskId: req.params.id },
+    });
+    console.log(deleteFromStudents);
+    return res.status(200).json({
+      message: `Task deleted from ${deleted} lesson and ${deleteFromStudents} students`,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -333,6 +336,5 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 module.exports = router;

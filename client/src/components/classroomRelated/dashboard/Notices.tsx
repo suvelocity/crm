@@ -108,6 +108,8 @@ function Notices() {
                 backgroundColor: "white",
               }}
               value={selectedClass}
+              // defaultValue={selectedClass}
+              placeholder={"hello"}
               // defaultValue={classesToTeacher[0].classId}
               onChange={(e: any) => {
                 setSelectedClass(e.target.value);

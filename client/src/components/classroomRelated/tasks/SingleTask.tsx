@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       maxWidth: 700,
       width: 700,
+      //   padding: ?15,
       //   marginTop: "5vh",
     },
     media: {
