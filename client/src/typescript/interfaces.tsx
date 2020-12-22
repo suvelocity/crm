@@ -221,14 +221,19 @@ export interface ILesson {
   createdBy: number;
 }
 
+export type taskType = 'manual'|'challengeMe'|'fcc'|'quiz';
 export interface ITask {
   id?: number;
+  createdAt?: number;
+  updatedAt?: number;
+  deletedAt?: number;
+  title:string;
   lessonId?: number;
-  externalId?: number;
+  externalId?: string;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: string;
+  type: taskType;
   status: "active" | "disabled";
   body?: string;
 }

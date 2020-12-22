@@ -17,9 +17,7 @@ import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
-    []
-  );
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
 
   const { user } = useContext<any>(AuthContext);
 
