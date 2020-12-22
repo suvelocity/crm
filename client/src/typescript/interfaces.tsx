@@ -224,6 +224,9 @@ export interface ILesson {
 export type taskType = 'manual'|'challengeMe'|'fcc'|'quiz';
 export interface ITask {
   id?: number;
+  createdAt?: number;
+  updatedAt?: number;
+  deletedAt?: number;
   title:string;
   lessonId?: number;
   externalId?: string;
