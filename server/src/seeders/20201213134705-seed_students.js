@@ -31,6 +31,7 @@ module.exports = {
         citizenship: "Israeli",
         additional_details: ".",
         class_id: 6,
+        fcc_account: "nitzo",
         created_at: new Date(),
         updated_at: new Date(),
       },
