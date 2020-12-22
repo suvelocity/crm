@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('quizzes', {
+    await queryInterface.createTable('forms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,6 +15,11 @@ module.exports = {
       creator_id: {
         type: Sequelize.INTEGER,
         allowNull: false
+      },
+      is_quiz: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       created_at: {
         allowNull: false,
@@ -32,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('quizzes');
+    await queryInterface.dropTable('forms');
   }
 };

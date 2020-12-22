@@ -10,7 +10,7 @@ const unknownEndpoint = (req: Request, res: Response) => {
 };
 
 router.use("/auth", require("./auth"));
-router.use(checkToken);
+// router.use(checkToken);
 router.use("/class", require("./class"));
 router.use("/job", require("./job"));
 router.use("/student", require("./student"));
@@ -22,8 +22,8 @@ router.use("/lesson", require("./lesson"));
 router.use("/task", require("./task"));
 router.use("/notice", require("./notice"));
 // quizme routes
-router.use("/quiz", require("./quiz"));
+router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
 
 router.use(unknownEndpoint);
-module.exports = router;
+export default router;
