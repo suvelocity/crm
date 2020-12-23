@@ -26,9 +26,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Add Server .env file #making 2 files until we figure out the file scope issue
         run:  | 
-            echo "ENV_FILE" > .env
+            echo "$ENV_FILE" > .env
             mv .env ./src/.env
-            echo "ENV_FILE" > .env
+            echo "$ENV_FILE" > .env
         working-directory: ./server
       - name: Install Server dependencies
         run: npm i
