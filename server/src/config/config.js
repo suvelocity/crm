@@ -13,8 +13,8 @@ module.exports = {
   },
   test: {
     username: "root",
-    password: process.env.MYSQL_PASSWORD,
-    database: "crm_test",
+    password: process.env.MYSQL_PASSWORD || null,
+    database: process.env.MYSQL_DATABASE || "crm_test",
     host: "127.0.0.1",
     dialect: "mysql",
     define: {
