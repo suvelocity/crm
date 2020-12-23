@@ -152,7 +152,7 @@ describe("Student Tests", () => {
     cy.route("POST", "**/api/v1/auth/token", {
       userType: "admin",
     });
-    cy.route("POST", "**/api/v1/class/all", [
+    cy.route("GET", "**/api/v1/class/all", [
       {
         id: 6,
         course: "Cyber4s",
@@ -322,7 +322,7 @@ describe("Student Tests", () => {
     cy.url().should("equal", "http://localhost:3000/student/all");
   });
 
-  it("should be able to add and delete jobs for student", () => {
+  it("should be able to add jobs for student", () => {
     const student = {
       id: 9,
       firstName: "Amir",
@@ -448,7 +448,7 @@ describe("Student Tests", () => {
       },
     ];
     cy.route("GET", "**/api/v1/job/all", jobs).as("jobs");
-    cy.route("GET", "**/api/v1/student/byId/9", student).as("student");
+    cy.route("GET", "**/api/v1/student/byId/9?only=jobs", student).as("student");
     cy.route("POST", "**/api/v1/event").as("apply");
     cy.route("POST", "**/api/v1/auth/token", {
       userType: "admin",

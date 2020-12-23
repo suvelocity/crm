@@ -20,7 +20,6 @@ import { Class, TaskofStudent, Task } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
-
 //TODO fix types
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -155,11 +154,13 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
 export const getQuery: (
   specificFields?: PublicFields[],
   omitRelations?: boolean,
-  onlyActive?: boolean
+  onlyActive?: boolean,
+  only?: string
 ) => any = (
   specificFields: string[] | undefined = undefined,
   omitRelations: boolean = false,
-  onlyActive: boolean = false
+  onlyActive: boolean = false,
+  only:string = "none"
 ) => {
   const include: SeqInclude[] = [
     {
@@ -174,6 +175,8 @@ export const getQuery: (
   if (!omitRelations) {
     const includeEvents: SeqInclude = {
       model: Event,
+      where: only ? {type: only} : {},
+      required:false,
       include: [
         {
           model: Job,
@@ -186,7 +189,7 @@ export const getQuery: (
         },
       ],
     };
-
+    
     include.push(includeEvents);
   }
 
@@ -224,10 +227,9 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-    console.log(usernames);
     const fccEvents: IFccEvent[] = (
       await axios.post(
-        "https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper",
+        'https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper',
         {
           usernames,
           date,
