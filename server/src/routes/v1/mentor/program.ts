@@ -1,12 +1,10 @@
 import { Request, Response, Router } from "express";
 import {
-  meetingSchema,
-  meetingSchemaToPut,
   mentorProgramSchema,
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import {Student,Mentor,Meeting,Class,MentorProgram,MentorStudent,} from "../../../models";
+import {Student,Mentor,Meeting,MentorProgram,MentorStudent,MentorForm} from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
 
 const router = Router();
@@ -60,6 +58,24 @@ router.get("/dashboard/:id", async (req: Request, res: Response) => {
       ],
     });
     res.json(programTableData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// get all program forms:
+router.get("/forms/:id", async (req: Request, res: Response) => {
+  try {
+    const programForms = await MentorProgram.findOne({
+      where: { id: req.params.id},
+      attributes: ["id"],
+      include: [
+        {
+          model: MentorForm ,
+        },
+      ],
+    });
+    res.json(programForms);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

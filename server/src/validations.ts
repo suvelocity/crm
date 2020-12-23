@@ -220,6 +220,18 @@ export const mentorStudentSchemaToPut = Joi.object({
   mentorId: Joi.number().allow(null, ""),
   studentId: Joi.number().allow(null, ""),
 });
+export const mentorFormSchema = Joi.object({
+  programId: Joi.number().required(),
+  url: Joi.string().required(),
+  answerUrl: Joi.string().required(),
+  title: Joi.string().required(),
+});
+export const mentorFormSchemaToPut = Joi.object({
+  programId: Joi.number().allow(null, ""),
+  url: Joi.string().allow(null, ""),
+  answerUrl: Joi.string().allow(null, ""),
+  title: Joi.string().allow(null, ""),
+});
 
 export const quizSchema = Joi.object({
   name: Joi.string().required(),

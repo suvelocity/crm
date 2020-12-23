@@ -151,21 +151,26 @@ export interface IFormSubmission {
 }
 
 type meeting = { date: string };
-// type class = {name: string, cycleNumber: number}
 
 export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  // Class: class;
   Mentor: IMentor;
   Meetings: meeting[];
 }
+
 export interface IMeeting {
   id?: number;
   mentorId: number;
   studentId: number;
   place: string;
+}
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  title: string;
 }
 
 export interface IFccEvent {}
