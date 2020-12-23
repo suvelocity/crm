@@ -134,7 +134,7 @@ export default function Field({ ////////// RFC
   };
   const changeOption = (index: number, fieldIndex: number, title?: string, isCorrect?: boolean) => {
     const optionsArr = options.slice();
-    if(title) {
+    if(title || title=== "") {
       optionsArr[index].title = title;
     };
     setOptions(optionsArr);
@@ -146,18 +146,17 @@ export default function Field({ ////////// RFC
       optionsArr = optionsArr.map((option: IOption, index: number) => (
         (index === correctOptionIndex) ? {...option, isCorrect: true} : {...option, isCorrect: false}
       ));
-      console.log("optionsArr: ", optionsArr);
       setOptions(optionsArr);
       changeField(fieldIndex, undefined, undefined, optionsArr);
     } 
   };
   return (
     <div className={classes.field}>
-      <label htmlFor={`field.${fieldIndex}.title`}>
+      <label htmlFor={`field[${fieldIndex}].title`}>
         Question number {fieldIndex + 1}
       </label>
       <select // SELECT FIELD TYPE 
-        name={`fields.${fieldIndex}.typeId`}
+        name={`fields[${fieldIndex}].typeId`}
         ref={register}
         onChange={(e) => {
           console.log(e.target.value)
@@ -173,7 +172,7 @@ export default function Field({ ////////// RFC
           // OPEN QUESTION 
           <input // field title
             ref={register({ required: true })}
-            name={`fields.${fieldIndex}.title`}
+            name={`fields[${fieldIndex}].title`}
             placeholder="Your Question"
             onChange={(e) => changeField(fieldIndex, undefined, e.target.value)}
             value={value}
@@ -182,7 +181,7 @@ export default function Field({ ////////// RFC
             <>
               <input // field title
               ref={register({ required: true })}
-              name={`fields.${fieldIndex}.title`}
+              name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
               onChange={(e) => changeField(fieldIndex, undefined, e.target.value)}
               value={value}
@@ -193,7 +192,8 @@ export default function Field({ ////////// RFC
             {options.map((option: IOption, index: number) => ( // OPTIONS 
               <Option key={index}
                       index={index}
-                      fieldIndex={fieldIndex} 
+                      fieldIndex={fieldIndex}
+                      register={register} 
                       deleteOption={deleteOption} 
                       changeOption={changeOption}
                       selectCorrectOption={selectCorrectOption}
