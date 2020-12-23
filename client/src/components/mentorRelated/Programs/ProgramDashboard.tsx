@@ -120,7 +120,12 @@ const ProgramDashboard: React.FC = () => {
                           row.MentorStudents[0].Meetings.length}
                       </StyledSpan>
                       <StyledSpan>
-                      <StyledLink to={`/mentor/meeting/${row.MentorStudents[0].id}`} color="black"><Button>Show</Button></StyledLink>
+                        <StyledLink
+                          to={`/mentor/meeting/${row.MentorStudents[0].id}`}
+                          color="black"
+                        >
+                          <Button>Show</Button>
+                        </StyledLink>
                       </StyledSpan>
                     </>
                   ) : (
@@ -135,8 +140,13 @@ const ProgramDashboard: React.FC = () => {
                     <Button
                       onClick={async () => {
                         setModalBody(
-                          <div>
-                            <H1>Pick Mentor</H1>
+                          <Wrapper width="80%">
+                            <Center>
+                              <TitleWrapper>
+                                <H1>Pick Mentor</H1>
+                              </TitleWrapper>
+                            </Center>
+                            <br/>
                             <StyledUl>
                               {availableMentors.map((mentor) => (
                                 <li>
@@ -180,19 +190,22 @@ const ProgramDashboard: React.FC = () => {
                                 </li>
                               ))}
                             </StyledUl>
-                          </div>
+                            </Wrapper>
                         );
                         setModalOpen(true);
                       }}
                     >
-                      <EditIcon/>
+                      <EditIcon />
                     </Button>
                   </StyledSpan>
                 </StyledDiv>
               </li>
             ))}
         </StyledUl>
-        <Button style={{ backgroundColor: "#fa8c84" }} onClick={() => endProgram()}>
+        <Button
+          style={{ backgroundColor: "#fa8c84" }}
+          onClick={() => endProgram()}
+        >
           End Program
         </Button>
         <Button
@@ -203,6 +216,13 @@ const ProgramDashboard: React.FC = () => {
         >
           Edit Program
         </Button>
+        <a href="https://docs.google.com/forms/u/0/" target="_blank">
+        <Button
+          style={{ backgroundColor: "#fa8c84", margin: 5 }}
+        >
+          send form
+        </Button>
+        </a>
         <SimpleModal
           open={modalOpen}
           setOpen={setModalOpen}
