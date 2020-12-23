@@ -116,6 +116,7 @@ export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
+  required?: boolean;
   where?: {};
 }
 

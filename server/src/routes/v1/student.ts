@@ -10,10 +10,10 @@ import {
   //@ts-ignore
   User,
   //@ts-ignore
-  TeacherofClass,
+  TeacherofClass, Job, Company
   //@ts-ignore
 } from "../../models";
-import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
+import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
@@ -76,9 +76,17 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const student: IStudent | null = await Student.findByPk(id, getQuery());
-
+    const only = String(req.query.only);
+  
+    const student: any | null = await Student.findByPk(id, getQuery(
+      undefined,
+      false,
+      false,
+      only
+    ))
+    
     if (student) {
+      // student.Events = student.Events.filter((event: any, i:number) =>event.dataValues.type ==='job');
       return res.json(student);
     } else {
       return res.status(404).json({ error: "student does not exist" });
