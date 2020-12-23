@@ -1,24 +1,28 @@
 import React, { useState, useContext, ChangeEvent } from "react";
-import styled from "styled-components";
 import { ILesson, ITask } from "../../../typescript/interfaces";
+import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
+import "../../../App.css";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-export interface Task {
-  lessonId?: number;
-  externalId?: number;
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
-}
+
+// export interface Task {
+//   id?: number;
+//   createdAt?: number;
+//   updatedAt?: number;
+//   deletedAt?: number;
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
 
 interface Props {
   setOpen: Function;
@@ -26,7 +30,8 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
-  lessonTasks?: Task[];
+  lessonTasks?: ITask[];
+  classId: number;
 }
 export default function AddLesson({
   setOpen,
@@ -35,9 +40,11 @@ export default function AddLesson({
   header,
   handleClose,
   lessonTasks,
+  classId,
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
+  const [tasksToDelete, setTasksToDelete] = useState<ITask[]>([]);
   const [zoomLink, setZoomLink] = useState<string>(
     lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
   );
@@ -49,7 +56,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<Task[]>(lessonTasks ? lessonTasks : []);
+  const [tasks, setTasks] = useState<ITask[]>(lessonTasks ? lessonTasks : []);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -58,7 +65,7 @@ export default function AddLesson({
     e.preventDefault();
     try {
       const lessonToAdd: ILesson = {
-        classId: Number(user.classId),
+        classId,
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
@@ -66,7 +73,35 @@ export default function AddLesson({
         createdBy: user.id,
       };
       if (update && lesson) {
+        console.log("tasks", tasks);
         await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
+        const tasksToUpdate = tasks
+          .slice()
+          .filter((task) => task.hasOwnProperty("id"));
+        await Promise.all(
+          tasksToUpdate.map((task) => {
+            const taskId = task.id;
+            const taskToSend = { ...task };
+            delete taskToSend.id;
+            delete taskToSend.createdAt;
+            delete taskToSend.updatedAt;
+            delete taskToSend.deletedAt;
+            return network.patch(`/api/v1/task/${taskId}`, taskToSend);
+          })
+        );
+        const tasksToAdd = tasks.filter((task) => !task.hasOwnProperty("id"));
+        await Promise.all(
+          tasksToAdd.map((task) => {
+            const taskWithLessonId = { ...task, lessonId: lesson.id };
+            return network.post(
+              `/api/v1/task/toclass/${classId}`,
+              taskWithLessonId
+            );
+          })
+        );
+        await Promise.all(
+          tasksToDelete.map((task) => network.delete(`/api/v1/task/${task.id}`))
+        );
         handleClose && handleClose();
       } else {
         const { data: addedLesson }: { data: ILesson } = await network.post(
@@ -74,14 +109,15 @@ export default function AddLesson({
           lessonToAdd
         );
 
-        tasks.forEach(async (task) => {
-          const taskWithLessonId = { ...task, lessonId: addedLesson.id };
-          console.log(taskWithLessonId);
-          await network.post(
-            `/api/v1/task/toclass/${user.classId}`,
-            taskWithLessonId
-          );
-        });
+        await Promise.all(
+          tasks.map((task) => {
+            const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+            return network.post(
+              `/api/v1/task/toclass/${classId}`,
+              taskWithLessonId
+            );
+          })
+        );
         setOpen(false);
       }
     } catch (err) {
@@ -126,7 +162,13 @@ export default function AddLesson({
         break;
       case "task":
         const prevTasks = tasks.slice();
-        prevTasks.splice(index, 1);
+        const toDelete = prevTasks.splice(index, 1)[0];
+        if (toDelete.hasOwnProperty("id")) {
+          const updateDeleted = tasksToDelete.slice();
+          updateDeleted.push(toDelete);
+          console.log(updateDeleted);
+          setTasksToDelete(updateDeleted);
+        }
         setTasks(prevTasks);
         break;
     }
@@ -140,6 +182,7 @@ export default function AddLesson({
         type: "manual",
         endDate: new Date(),
         title: "",
+        externalLink: "",
         status: "active",
       },
       ...prev,
@@ -148,7 +191,6 @@ export default function AddLesson({
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     const prevTasks = tasks.slice();
-    console.log(change, element);
     switch (element) {
       case "title":
         prevTasks[index].title = change;
@@ -156,6 +198,10 @@ export default function AddLesson({
         break;
       case "date":
         prevTasks[index].endDate = change;
+        setTasks(prevTasks);
+        break;
+      case "externalId":
+        prevTasks[index].externalLink = change;
         setTasks(prevTasks);
         break;
       case "externalLink":
@@ -184,20 +230,18 @@ export default function AddLesson({
   return (
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
-        <Input
-          variant='outlined'
-          label='Lesson name'
+        <Input label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby='my-helper-text'
+          aria-describedby="my-helper-text"
           required={true}
+          variant="outlined"
         />
 
-        <Input
-          variant='outlined'
-          label='Lesson content'
+        <Input label="Lesson content"
+          variant="outlined"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -205,24 +249,27 @@ export default function AddLesson({
           required={true}
           multiline
         />
-        <Input
-          variant='outlined'
-          label='Zoom link'
+        <Input label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
+          variant="outlined"
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
-            variant='outlined'
-            label='Resource'
+            variant="outlined"
+            label="Resource"
             value={resource}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleChange(e, "resource")
             }
           />
-          <AddBtn onClick={handleAddResource} style={{ marginLeft: "15px" }}>
+          <AddBtn
+            variant="outlined"
+            onClick={handleAddResource}
+            style={{ marginLeft: "15px" }}
+          >
             Add Resource
           </AddBtn>
         </AddRsourcesContainer>
@@ -230,17 +277,23 @@ export default function AddLesson({
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}>
-              <Tooltip title='delete resource'>
+              onClick={() => handleRemove(index, "resource")}
+            >
+              <Tooltip title="delete resource">
                 <Link>{resource}</Link>
               </Tooltip>
             </OneInfo>
           ))}
         </Info>
 
-        <Info>
-          <AddBtn onClick={addTask}>Add Task</AddBtn>
-          {tasks.map((task: Task, index: number) => (
+        <Info
+          className={tasks.length && "open"}
+          style={{ marginBottom: "10%" }}
+        >
+          <AddBtn variant="outlined" onClick={addTask}>
+            Add Task
+          </AddBtn>
+          {tasks.map((task: ITask, index: number) => (
             <OneInfo key={index}>
               <AddTask
                 handleChange={handleTaskChange}
@@ -252,21 +305,41 @@ export default function AddLesson({
           ))}
         </Info>
       </AddLessonForm>
-      <Button
-        variant='outlined'
+      <CreateLessonButton
+        variant="outlined"
         onClick={handleSubmit}
-        style={{
-          marginTop: "auto",
-          backgroundColor: "white",
-        }}>
+        // style={{
+
+        //   position:"absolute",
+        //   bottom:'5%',
+        //   left:'50%',
+        //   transform:'translate(-50%)',
+        //   marginTop: "auto",
+        //   backgroundColor: "white",
+        //   boxShadow:' 0 0 8px 2px rgba(0,0,0,.1)'
+        // }}
+      >
         {header ? header : "Create Lesson"}
-      </Button>
+      </CreateLessonButton>
     </AddLessonContainer>
   );
 }
-
 const AddBtn = styled(Button)`
-  /* margin-left: 20px; */
+  transition: 1sec;
+  align-self: center;
+  margin: 3px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
+  min-width: fit-content;
+`;
+const CreateLessonButton = styled(Button)`
+  position:absolute;
+  width:fit-content;
+  bottom:0%;
+  left:50%;
+  transform:translate(-50%);
+  margin-top: auto;
+  background-color: #fefefe;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
 `;
 
 const Input = styled(TextField)`
@@ -290,13 +363,23 @@ const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  width: 80vw;
+  /* width: 80vw; */
+  min-width: 300px;
   overflow-y: scroll;
+  padding: 5px;
 `;
 
 const Info = styled.div`
+  &.open {
+    height: 110%;
+    transition: 1sec;
+    margin-bottom: 10%;
+  }
+  height: 5%;
+  min-height: fit-content;
   //TODO rename
   display: flex;
+  transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
 `;

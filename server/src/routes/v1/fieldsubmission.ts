@@ -8,7 +8,7 @@ import {
   quizSubmissionSchema,
   quizSubmissionSchemaToPut,
 } from "../../validations";
-import { IQuizSubmission } from "../../types";
+import { IFormSubmission } from "../../types";
 import { required } from "joi";
 
 const router = Router();
@@ -239,15 +239,15 @@ router.post('/quiz', async (req: Request, res: Response) => {
 // });
 // router.post('/', async (req: Request, res: Response) => {
 //   try {
-//     let body: IQuizSubmission = req.body;
-//     const newQuizSubmission: IQuizSubmission = {
+//     let body: IFormSubmission = req.body;
+//     const newQuizSubmission: IFormSubmission = {
 //       quizId: body.quizId,
 //       studentId: body.studentId,
 //       rank: body.rank
 //     }
 //     const { error } = quizSubmissionSchema.validate(newQuizSubmission);
 //     if(error) return res.status(400).json({ error: error.message });
-//     const createdQuizSubmission: IQuizSubmission = await Quiz.create(req.body);
+//     const createdQuizSubmission: IFormSubmission = await Quiz.create(req.body);
 //     res.json(createdQuizSubmission);
 //   }
 //   catch (error) {

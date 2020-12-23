@@ -47,7 +47,6 @@ describe("Company Tests", () => {
       compareProperties(companyMock[i], allCompanies.body[i],
         ['id', 'name', 'location', 'description', 'contactName',
       'contactNumber', 'contactPosition'])
-
     }
     done();
   });

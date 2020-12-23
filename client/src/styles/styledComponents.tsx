@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
-  position: relative;
+  /* position: relative; */
 `;
 
 export const Center = styled.div`
@@ -147,5 +147,21 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
-  top: 25px;
+  top: ${(props: { top: string }) => props.top || "25px"};
+`;
+
+export const StyledAtavLink = styled.a`
+  cursor: pointer;
+  transition: 0.2s;
+  :hover {
+    text-decoration: none;
+    color: rgb(20, 35, 220);
+  }
+  :visited,
+  :focus,
+  :active,
+  :any-link {
+    text-decoration: none;
+    color: black;
+  }
 `;

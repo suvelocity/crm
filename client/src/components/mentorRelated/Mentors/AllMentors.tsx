@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import network from '../../../helpers/network';
 import {
   H1,
@@ -32,6 +32,7 @@ function AllMentors() {
     Gender: '',
     Address: '',
     Available: '',
+    Search: '',
   });
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
@@ -53,7 +54,7 @@ function AllMentors() {
       const addressFilters: string[] = Array.from(
         new Set(data.map((mentor: IMentor) => mentor.address))
       );
-      const availableFilters: string[] = ["Available", "Not Available"];
+      const availableFilters: string[] = ['Available', 'Not Available'];
       setFilterOptionsArray([
         {
           filterBy: 'Company',
@@ -78,37 +79,73 @@ function AllMentors() {
   const filterFunc = (category: string, filterField: string): void => {
     let newAttributes: filterMentorObject = filterAttributes;
     if (category === 'Company') {
-      newAttributes = {...newAttributes, Company: filterField}
+      newAttributes = { ...newAttributes, Company: filterField };
     }
     if (category === 'Gender') {
-      newAttributes = {...newAttributes, Gender: filterField}
+      newAttributes = { ...newAttributes, Gender: filterField };
     }
     if (category === 'Address') {
-      newAttributes = {...newAttributes, Address: filterField}
+      newAttributes = { ...newAttributes, Address: filterField };
     }
     if (category === 'Available') {
-      newAttributes = {...newAttributes, Available: filterField}
+      newAttributes = { ...newAttributes, Available: filterField };
     }
-    setFilterAttributes(newAttributes)
-    console.log(newAttributes)
+    if (category === 'Search') {
+      newAttributes = { ...newAttributes, Search: filterField };
+    }
+    setFilterAttributes(newAttributes);
+    console.log(newAttributes);
   };
 
   useEffect(() => {
     let newFilteredMentors = allMentors;
     if (filterAttributes.Address !== '') {
-      newFilteredMentors = newFilteredMentors.filter((mentor)=>mentor.address === filterAttributes.Address)
+      newFilteredMentors = newFilteredMentors.filter(
+        (mentor) => mentor.address === filterAttributes.Address
+      );
     }
     if (filterAttributes.Company !== '') {
-      newFilteredMentors = newFilteredMentors.filter((mentor)=>mentor.company === filterAttributes.Company)
+      newFilteredMentors = newFilteredMentors.filter(
+        (mentor) => mentor.company === filterAttributes.Company
+      );
     }
     if (filterAttributes.Gender !== '') {
-      newFilteredMentors = newFilteredMentors.filter((mentor)=>mentor.gender === filterAttributes.Gender)
+      newFilteredMentors = newFilteredMentors.filter(
+        (mentor) => mentor.gender === filterAttributes.Gender
+      );
     }
     if (filterAttributes.Available !== '') {
-      newFilteredMentors = newFilteredMentors.filter((mentor)=>filterAttributes.Available === 'Available' ? mentor.available === true : mentor.available === false)
+      newFilteredMentors = newFilteredMentors.filter((mentor) =>
+        filterAttributes.Available === 'Available'
+          ? mentor.available === true
+          : mentor.available === false
+      );
+    }
+    if (filterAttributes.Search !== '') {
+      newFilteredMentors = newFilteredMentors.filter(
+        (mentor) =>
+          mentor.name
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase()) ||
+          mentor.company
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase()) ||
+          mentor.email
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase()) ||
+          mentor.address
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase()) ||
+          mentor.role
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase()) ||
+          mentor.gender
+            .toLocaleLowerCase()
+            .includes(filterAttributes.Search.toLocaleLowerCase())
+      );
     }
     setMentors(newFilteredMentors);
-  }, [filterAttributes, allMentors])
+  }, [filterAttributes, allMentors]);
 
   const changeAvailabilityOfMentor = async (
     id: number | undefined,
@@ -131,7 +168,13 @@ function AllMentors() {
           <H1 color='#c47dfa'>All Mentors</H1>
         </TitleWrapper>
         <br />
-        <div style={{ display: 'flex', width: '50%', justifyContent: 'space-around' }}>
+        <div
+          style={{
+            display: 'flex',
+            width: '50%',
+            justifyContent: 'space-around',
+          }}
+        >
           {filterOptionsArray.map((arr) => (
             <div>
               <InputLabel>{arr.filterBy}</InputLabel>
@@ -148,7 +191,12 @@ function AllMentors() {
             </div>
           ))}
           <div>
-          <TextField label="Search" />
+            <TextField
+              label='Search'
+              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                filterFunc('Search', e.target.value as string);
+              }}
+            />
           </div>
         </div>
       </Center>

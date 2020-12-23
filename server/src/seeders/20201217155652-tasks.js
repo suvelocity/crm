@@ -46,7 +46,7 @@ module.exports = {
         {
           id: 17,
           lesson_id: null,
-          external_id: "youtubeId",
+          external_id: "5a24bbe0dba28a8d3cbd4c5d",
           external_link: "youtube",
           created_by: 999999,
           end_date: d,

@@ -14,10 +14,10 @@ import {
 import { Button } from "@material-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import {
-  IClass,
   IMentorProgramDashboard,
   IMentorProgram,
 } from "../../../typescript/interfaces";
+import EditIcon from "@material-ui/icons/Edit";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
@@ -185,21 +185,21 @@ const ProgramDashboard: React.FC = () => {
                         setModalOpen(true);
                       }}
                     >
-                      Edit
+                      <EditIcon/>
                     </Button>
                   </StyledSpan>
                 </StyledDiv>
               </li>
             ))}
         </StyledUl>
-        <Button style={{ backgroundColor: "red" }} onClick={() => endProgram()}>
+        <Button style={{ backgroundColor: "#fa8c84" }} onClick={() => endProgram()}>
           End Program
         </Button>
         <Button
           onClick={() =>
             history.push(`/mentor/new/${id}?class=${programdetails?.classId}`)
           }
-          style={{ backgroundColor: "red", margin: 10 }}
+          style={{ backgroundColor: "#fa8c84", margin: 10 }}
         >
           Edit Program
         </Button>

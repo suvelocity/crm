@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { ILesson,ITask } from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -9,7 +9,7 @@ import { EditDiv } from "../../../styles/styledComponents";
 import { useState, useCallback, useEffect, useContext } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
-import AddLesson, { Task } from "./AddLesson";
+import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
@@ -19,14 +19,16 @@ import { AuthContext } from "../../../helpers";
 export default function Lesson({
   lesson,
   index,
+  classId,
 }: {
   lesson: ILesson;
   index: number;
+  classId: number;
 }) {
   const [modalState, setModalState] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<ITask[]>([]);
   const { user }: any = useContext(AuthContext);
   const classes = useStyles();
   const getLessons = useCallback(async () => {
@@ -40,7 +42,7 @@ export default function Lesson({
   }, [loading]);
   const getTasks = useCallback(async () => {
     try {
-      const { data: tasks }: { data: Task[] } = await network.get(
+      const { data: tasks }: { data: ITask[] } = await network.get(
         `/api/v1/lesson/tasks/${lesson.id}`
       );
       setTasks(tasks);
@@ -67,64 +69,75 @@ export default function Lesson({
         setOpen={setModalState}
         update={true}
         lesson={lessonState}
-        header='Edit Lesson'
+        header="Edit Lesson"
         lessonTasks={tasks}
+        classId={classId}
       />
     </div>
   );
 
   return (
     <LessonContainer>
-      <StyledAccordion>
-        <StyledSummery
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls='panel1a-content'
-          id='panel1a-header'>
-          {"#" + (index + 1) + " " + lessonState.title}
-        </StyledSummery>
-        <hr style={{ width: "90%" }} />
-        <StyledDetails>{lessonState.body}</StyledDetails>
-        <StyledDetails>
-          <Loading size={30} loading={loading}>
-            {user.userType === "teacher" && (
-              <EditDiv
-                onClick={() => setModalState(true)}
-                style={{ marginRight: "15px" }}>
+      <div>
+        <StyledAccordion>
+          <StyledSummery
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            {"#" + (index + 1) + " " + lessonState.title}
+          </StyledSummery>
+          <hr />
+          <StyledDetails>{lessonState.body}</StyledDetails>
+          <StyledDetails>
+            <Loading size={30} loading={loading}>
+              <EditDiv top="90px" onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
-            )}
-            <ResourcesLinks>
-              {lessonState.resource?.includes("%#splitingResource#%")
-                ? lessonState.resource
-                    .split("%#splitingResource#%")
-                    .map((resource: string, index: number) => (
-                      <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
-                          {resource}
-                        </Link>
-                      </ResourcesLink>
-                    ))
-                : //@ts-ignore
-                  lessonState.resource?.length > 0 && (
-                    //@ts-ignore
-                    <Link target='_blank' href={lessonState.resource}>
-                      {lessonState.resource}
-                    </Link>
-                  )}
-            </ResourcesLinks>
-          </Loading>
-        </StyledDetails>
-      </StyledAccordion>
+              <ResourcesLinks>
+                {lessonState.resource?.includes("%#splitingResource#%")
+                  ? lessonState.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target="_blank" href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lessonState.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target="_blank" href={lessonState.resource}>
+                        {lessonState.resource}
+                      </Link>
+                    )}
+              </ResourcesLinks>
+              <StyledTask>
+                <h1>hello</h1>
+              </StyledTask>
+            </Loading>
+          </StyledDetails>
+        </StyledAccordion>
+      </div>
       <Modal
         open={modalState}
         onClose={() => setModalState(false)}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
         {body}
       </Modal>
     </LessonContainer>
   );
 }
+
+const StyledTask = styled.div`
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
 
 const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
@@ -169,11 +182,4 @@ const Link = styled.a`
   border-radius: 8px;
   padding: 5px;
   color: white;
-`;
-
-const styledTask = styled.div`
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `;
