@@ -12,17 +12,17 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula='1fr 1fr 1fr' height='15vh'>
-        <InformationTile>
-          <TasksFidget />
-        </InformationTile>
-        <InformationTile>
-          <LessonsFidget />
-        </InformationTile>
-        <InformationTile>
-          <ScheduleFidget />
-        </InformationTile>
-      </TilesRow>
+      {/* {//todo fix responsive and long texts} */}
+      {user.userType === "student" && (
+        <TilesRow repeatFormula='1fr 1fr' height='25vh'>
+          <InformationTile>
+            <TasksFidget />
+          </InformationTile>
+          <InformationTile>
+            <LessonsFidget />
+          </InformationTile>
+        </TilesRow>
+      )}
       <Notices />
     </DashboardContainer>
   );
@@ -30,11 +30,14 @@ export default function Dashboard() {
 
 const DashboardContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   width: 100%;
   height: 100vh;
 `;
 
 const InformationTile = styled.div`
+  /* max-height: 40vh; */
+  /* overflow-y: auto; */
   height: auto;
   width: auto;
 `;
@@ -42,9 +45,10 @@ const InformationTile = styled.div`
 
 // background-color: blue;
 const TilesRow = styled.div`
-  position: relative;
+  /* position: relative; */
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
+  /* max-height: 20vh; */
   display: grid;
   grid-template-columns: ${(props: any) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
@@ -53,7 +57,7 @@ const TilesRow = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
-  margin-bottom: 12vh;
+  margin-bottom: 30vh;
 `;
 
 const Content = styled.div`

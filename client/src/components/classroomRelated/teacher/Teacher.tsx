@@ -11,8 +11,10 @@ import AddTask from "../lessons/AddTask";
 import styled, { createGlobalStyle } from "styled-components";
 import { Button } from "@material-ui/core";
 import Swal from "sweetalert2";
-import { IClass, IStudent } from "../../../typescript/interfaces";
+import { IClass, IStudent, ITask } from "../../../typescript/interfaces";
+import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
 import { relative } from "path";
+import { Loading } from "react-loading-wrapper";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -20,23 +22,24 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-interface Task {
-  lessonId?: number;
-  externalId?: number;
-  externalLink?: string;
-  createdBy: number;
-  endDate: Date;
-  type: string;
-  title: string;
-  body?: string;
-  status: "active" | "disabled";
-}
+// interface ITask {
+//   lessonId?: number;
+//   externalId?: number;
+//   externalLink?: string;
+//   createdBy: number;
+//   endDate: Date;
+//   type: string;
+//   title: string;
+//   body?: string;
+//   status: "active" | "disabled";
+// }
 
 export default function Teacher() {
-  const getBaseTask = (): Task => ({
+  const getBaseTask = (): ITask => ({
     createdBy: user.id,
     endDate: new Date(),
     title: "",
+    externalLink: "",
     type: "manual",
     status: "active",
   });
@@ -46,6 +49,8 @@ export default function Teacher() {
     if (studentsToTask.length === 0)
       return Swal.fire("Error", "no student selected", "error");
     try {
+      task.createdBy = user.id;
+      console.log(task);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
@@ -62,10 +67,18 @@ export default function Teacher() {
   const { user } = useContext(AuthContext);
   const classes = useStyles();
 
-  const [task, setTask] = useState<Task>(getBaseTask());
+  const [task, setTask] = useState<ITask>(getBaseTask());
   const [studentsToTask, setStudentsToTask] = useState<number[]>(
     students.map((student: IStudent) => student!.id!)
   );
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    network.get("/api/v1/event/updates").then((data: any) => {
+      console.log(data);
+      setLoaded(data.data.success);
+    });
+  }, []);
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     switch (element) {
@@ -114,7 +127,7 @@ export default function Teacher() {
       createdBy: user.id,
       endDate: new Date(),
       title: "",
-      type: "menual",
+      type: "manual",
       status: "active",
     });
   };
@@ -138,37 +151,46 @@ export default function Teacher() {
         task={task}
         studentsToTask={studentsToTask}
       />
-      <Button variant='contained' onClick={postTask}>
+      <Button variant="contained" onClick={postTask}>
         add task
       </Button>
     </div>
   );
 
   return (
-    <div
-      style={{
-        position: "relative",
-        minHeight: "50vh",
-        marginTop: "5vh",
-        marginLeft: "auto",
-        marginRight: "auto",
-        width: "90%",
-      }}>
-      <TeacherTaskBoard user={user} />
-      <StyledButton onClick={() => setOpen(true)}>
-        <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
-        New Taskasdasdasd
-      </StyledButton>
-      <GlobalStyle />
+    <Loading loading={!loaded}>
+      <div
+        style={{
+          minHeight: "50vh",
+          marginTop: "10vh",
+          marginLeft: "auto",
+          marginRight: "auto",
+          width: "90%",
+        }}
+      >
+        <Center>
+          <TitleWrapper>
+            <H1 color="rgb(8, 16, 31)">My Tasks</H1>
+          </TitleWrapper>
+        </Center>
+        <StyledButton onClick={() => setOpen(true)}>
+          <AddCircleIcon style={{ fontSize: "1.3em", marginRight: "0.5vw" }} />{" "}
+          New Task
+        </StyledButton>
+        <TeacherTaskBoard user={user} />
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
-        {body}
-      </Modal>
-    </div>
+        <GlobalStyle />
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+      </div>
+    </Loading>
   );
 }
 
@@ -202,17 +224,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const StyledButton = styled.div`
-  position: absolute;
-  background-color: rgb(65, 85, 181);
+  /* position: absolute; */
+  background-color: rgb(28, 46, 51);
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
   padding: 10px;
+  margin: 2vh 0;
   border-radius: 10px;
-  font-size: 2em;
+  font-size: 1.2em;
   color: white;
-  bottom: -10vh;
-  left: 2vw;
+  /* bottom: -10vh; */
+  /* left: 2vw; */
   box-shadow: 0 4px 4px 2px rgba(10, 12, 19, 0.78);
   cursor: pointer;
   transition: 0.1s ease-in-out;

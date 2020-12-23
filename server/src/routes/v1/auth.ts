@@ -61,7 +61,7 @@ router.post("/signin", async (req: Request, res: Response) => {
       where: { email },
     });
     if (!user)
-      return res.json(400).json({ error: "Email or password are incorrect" });
+      return res.status(400).json({ error: "Email or password are incorrect" });
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({ error: "Email or password are incorrect" });
     }
