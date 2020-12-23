@@ -15,6 +15,7 @@ import { IClass, IStudent, ITask } from "../../../typescript/interfaces";
 import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
 import { relative } from "path";
 import { Loading } from "react-loading-wrapper";
+import { flatMap } from "lodash";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
@@ -56,9 +57,7 @@ export default function Teacher() {
   const classes = useStyles();
 
   const [task, setTask] = useState<ITask>(getBaseTask());
-  const [studentsToTask, setStudentsToTask] = useState<number[]>(
-    students.map((student: IStudent) => student!.id!)
-  );
+  const [studentsToTask, setStudentsToTask] = useState<number[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -79,6 +78,9 @@ export default function Teacher() {
       case "externalLink":
         setTask((prev) => ({ ...prev, externalLink: change }));
         break;
+      case "externalId":
+        setTask((prev) => ({ ...prev, externalId: change }));
+        break;
       case "type":
         setTask((prev) => ({ ...prev, type: change }));
         break;
@@ -92,20 +94,11 @@ export default function Teacher() {
         setTask((prev) => ({ ...prev, status: change }));
         break;
       case "students":
-        const prevStudents = studentsToTask.slice();
-        const studentALreadyExistsIndex = prevStudents.findIndex(
-          (id) => change[1] === id
+        setStudentsToTask(
+          flatMap(change, (clsArr: number[]) =>
+            clsArr.slice(1).filter((cell) => !!cell)
+          )
         );
-        if (studentALreadyExistsIndex > -1) {
-          prevStudents.splice(studentALreadyExistsIndex, 1);
-          setStudentsToTask(prevStudents);
-        } else {
-          setStudentsToTask((prev) => [
-            ...prev,
-            change.filter((e: any) => !isNaN(e))[0],
-          ]);
-        }
-        break;
     }
   };
 
@@ -137,14 +130,16 @@ export default function Teacher() {
         handleRemove={handleRemove}
         handleChange={handleTaskChange}
         task={task}
-        studentsToTask={studentsToTask}
+        // studentsToTask={studentsToTask}
+        teacherClasses={classesToTeacher}
       />
-      <Button variant='contained' onClick={postTask}>
+      <Button variant="contained" onClick={postTask}>
         add task
       </Button>
     </div>
   );
 
+  console.log(studentsToTask);
   return (
     <Loading loading={!loaded}>
       <div
@@ -154,10 +149,11 @@ export default function Teacher() {
           marginLeft: "auto",
           marginRight: "auto",
           width: "90%",
-        }}>
+        }}
+      >
         <Center>
           <TitleWrapper>
-            <H1 color='rgb(8, 16, 31)'>My Tasks</H1>
+            <H1 color="rgb(8, 16, 31)">My Tasks</H1>
           </TitleWrapper>
         </Center>
         <StyledButton onClick={() => setOpen(true)}>
@@ -171,8 +167,9 @@ export default function Teacher() {
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'>
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
           {body}
         </Modal>
       </div>
