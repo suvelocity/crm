@@ -101,9 +101,8 @@ export default function Lessons() {
 
   const TeacherControls =()=>(
     <>
-        <Select label='Class'
+        <Select id="class-select"
           labelId="class-select-label"
-          id="class-select"
           style={{
             height:'fit-content',
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",

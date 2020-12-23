@@ -33,7 +33,7 @@ interface addTaskProps {
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 120
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -66,7 +66,10 @@ export default function AddTask({
     handleRemove(index, "task");
   };
   return (
-    <Form key={index} className='create-task'>
+    <Form key={index} className='create-task' style={{
+    maxWidth:'85vw'
+
+    }}>
       <Tooltip title='Remove task' style={{alignSelf:'flex-end'}}>
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
@@ -188,6 +191,7 @@ export default function AddTask({
       {students && studentsToTask !== undefined && (
         <Select 
           multiple
+          // style={}
           variant='outlined'
           defaultValue={students.map((student) => {
             return student.id;
