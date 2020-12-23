@@ -8,32 +8,36 @@ import Schedhule from '../components/classroomRelated/schedhule/Schedhule'
 import Tasks from '../components/classroomRelated/tasks/TaskBoard';
 import ClassRoomNavBar from '../components/ClassRoomNavBar';
 import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
+import PairMeetings from '../components/mentorRelated/Meetings/PairMeetings'
 export function StudentRoutes() {
   return (
     <>
       <ErrorBoundary>
-        <ClassRoomNavBar/>
-        <div style={{flexGrow: 1}}>
-        <Switch>
-          <Route exact path="/">
-          <Dashboard />
-          </Route>
-          <Route path="/lessons">
-            <Lessons />
-          </Route>
-          <Route path="/schedhule">
-            <Schedhule />
-          </Route>
-          <Route path="/tasks">
-            <Tasks />
-          </Route>
-          <Route path="/quizme">
-            <QuizMe />
-          </Route>
-          <Route path="*">
-            <div>404 Not Found</div>
-          </Route>
-        </Switch>
+        <ClassRoomNavBar />
+        <div style={{ flexGrow: 1 }}>
+          <Switch>
+            <Route exact path="/">
+              <Dashboard />
+            </Route>
+            <Route path="/lessons">
+              <Lessons />
+            </Route>
+            <Route path="/schedhule">
+              <Schedhule />
+            </Route>
+            <Route path="/quizme">
+              <QuizMe />
+            </Route>
+            <Route path="/tasks">
+              <Tasks />
+            </Route>
+            <Route path="/quizme">
+              <QuizMe />
+            </Route>
+            <Route path="*">
+              <div>404 Not Found</div>
+            </Route>
+          </Switch>
         </div>
       </ErrorBoundary>
     </>

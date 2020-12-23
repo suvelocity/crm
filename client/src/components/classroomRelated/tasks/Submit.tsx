@@ -7,27 +7,12 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 
 export default function SubmitTask(props: any) {
-  const { taskId, handleClose } = props;
+  const { taskId, handleClose, handleSubmit } = props;
   const [url, setUrl] = useState("");
 
   //   const handleClose = () => {
   //     setOpen(false);
   //   };
-
-  const submitTask = async () => {
-    try {
-      const { data } = await network.put(`/api/v1/task/submit/${taskId}`, {
-        url: url,
-      });
-      handleClose();
-      if (data.error) {
-        Swal.fire("Error Occurred", data.error, "error");
-      }
-    } catch (error) {
-      handleClose();
-      Swal.fire("Error Occurred", error.message, "error");
-    }
-  };
 
   return (
     <div id='post-notice' style={{ display: "flex", flexDirection: "column" }}>
@@ -42,7 +27,12 @@ export default function SubmitTask(props: any) {
         variant='outlined'
       />
 
-      <Button variant='contained' color='secondary' onClick={submitTask}>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => {
+          handleSubmit(url);
+        }}>
         Submit
       </Button>
     </div>

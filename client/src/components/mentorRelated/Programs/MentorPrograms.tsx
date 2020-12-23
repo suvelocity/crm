@@ -44,11 +44,9 @@ const MentorPrograms: React.FC = () => {
         <StyledUl>
           {programs && (
             <li>
-              <TableHeader repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1.5fr">
+              <TableHeader repeatFormula="1fr 2.5fr 1.5fr">
                 <ClassIcon />
                 <StyledSpan weight="bold">Program Name</StyledSpan>
-                <StyledSpan weight="bold">Start Date</StyledSpan>
-                <StyledSpan weight="bold">End Date</StyledSpan>
                 <StyledSpan weight="bold">Edit</StyledSpan>
               </TableHeader>
             </li>
@@ -58,7 +56,7 @@ const MentorPrograms: React.FC = () => {
               const color: string = program.open ? "#b5e8ca" : "#b06363";
               return (
                 <li key={i} style={{ backgroundColor: color }}>
-                  <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 2.5fr 1.5fr">
+                  <StyledDiv repeatFormula="1fr 2.5fr 1.5fr">
                     <ClassIcon />
                     <StyledLink
                       to={`/mentor/program/${program.id}`}
@@ -66,22 +64,6 @@ const MentorPrograms: React.FC = () => {
                     >
                       <StyledSpan weight="bold">
                         {capitalize(program.name)}
-                      </StyledSpan>
-                    </StyledLink>
-                    <StyledLink
-                      to={`/mentor/program/${program.id}`}
-                      color="black"
-                    >
-                      <StyledSpan>
-                        {new Date(program.startDate).toLocaleDateString()}
-                      </StyledSpan>
-                    </StyledLink>
-                    <StyledLink
-                      to={`/mentor/program/${program.id}`}
-                      color="black"
-                    >
-                      <StyledSpan>
-                        {new Date(program.endDate).toLocaleDateString()}
                       </StyledSpan>
                     </StyledLink>
                     <StyledSpan>
