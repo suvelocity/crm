@@ -34,7 +34,7 @@ export default function Lessons() {
   const [filter, setFilter] = React.useState<string>("");
   const [fccChallenges, setFccChallenges] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = React.useState<number>(
-    classesToTeacher[0] && classesToTeacher[0].classId
+    classesToTeacher[0]?.classId
   );
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +124,6 @@ export default function Lessons() {
         defaultValue={selectedClass}
         onChange={(e: any) => {
           const newId = e.target.value;
-          console.log(newId);
           setSelectedClass(newId);
         }}
         variant='outlined'>
@@ -175,7 +174,7 @@ export default function Lessons() {
           onChange={handleFilter}
           variant='outlined'
         />
-        {(user.userType === "teacher" || user.userType === "admin") && (
+        {user.userType === "teacher" && (
           <TeacherControls />
           //    <>
           //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
