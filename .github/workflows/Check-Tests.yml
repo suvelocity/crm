@@ -24,9 +24,12 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v2
-      - name: Add Server .env file
-        run:  echo "ENV_FILE" > .env
-        working-directory: ./server/src
+      - name: Add Server .env file #making 2 files until we figure out the file scope issue
+        run:  | 
+            echo "ENV_FILE" > .env
+            mv .env ./src/.env
+            echo "ENV_FILE" > .env
+        working-directory: ./server
       - name: Install Server dependencies
         run: npm i
         working-directory: ./server
