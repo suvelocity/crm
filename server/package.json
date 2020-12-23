@@ -6,7 +6,7 @@
   "scripts": {
     "fuckin:go": "npm i && npm run schema && npm run migrate && npm run seed && npm run dev ",
     "start": "node out/.",
-    "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
+    "test": "NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
     "build": "tsc --build tsconfig.json",
     "migrate": "cd src && sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",

@@ -8,14 +8,13 @@ import {
   toCamelCase,
   getAll
 } from "../testsHelpers";
-import server from "../../app";
 import {
-    companyMock,
+  companyMock,
   studentsTestExpectedResult,
   newStudent
 } from "../mocks";
 //@ts-ignore
-import { Company, Class, User } from "../../models";
+import { Company, Class, User } from "../../src/models";
 
 let accessToken: string;
     
@@ -34,9 +33,6 @@ describe("Company Tests", () => {
     await Company.bulkCreate(companyMock);
     const authAdmin = await handleSignIn("admin");
     accessToken = extractAccessTokenFull(authAdmin);
-  });
-  afterAll(async () => {
-    await server.close();
   });
 
   test.only("Admin should be able to get all student`s information", async (done) => {
