@@ -181,7 +181,7 @@ function SendMailModal({ id }: { id: number }) {
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpen}>
+      <Button variant="contained" style={{ backgroundColor: "#fa8c84", margin: 10 }} onClick={handleOpen}>
         Send Emails
       </Button>
       <Modal open={open} onClose={handleClose}>

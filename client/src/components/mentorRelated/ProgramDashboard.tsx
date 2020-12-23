@@ -18,7 +18,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../helpers/general";
-import SendMailModal from "./Meetings/SendMailsModal";
+import SendMailModal from "./Programs/SendMailsModal";
 import SimpleModal from './Modal'
 
 const ProgramDashboard: React.FC = () => {

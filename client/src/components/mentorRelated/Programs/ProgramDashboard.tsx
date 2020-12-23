@@ -28,6 +28,7 @@ import AddFormModal from "./AddFormModal";
 import { formatToIsraeliDate } from "../../../helpers/general";
 import Swal from "sweetalert2";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SendMailModal from "./SendMailsModal";
 
 const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -130,6 +131,7 @@ const ProgramDashboard: React.FC = () => {
           Edit Program
         </Button>
         <AddFormModal getForms={getForms} id={id} />
+        <SendMailModal id={id}/>
         <SimpleModal
           open={modalOpen}
           setOpen={setModalOpen}

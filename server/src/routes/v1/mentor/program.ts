@@ -4,7 +4,7 @@ import {
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import { MentorStudent,MentorProgram, Class, Student, Mentor, Meeting} from "../../../models";
+import { MentorStudent,MentorProgram, Class, Student, Mentor, Meeting, MentorForm} from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
 import transporter from "../../../mail";
 
