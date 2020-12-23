@@ -15,10 +15,11 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { IStudent } from "../../../typescript/interfaces";
+import { IClassOfTeacher, IStudent } from "../../../typescript/interfaces";
 import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
 import { formatDiagnostic } from "typescript";
+import ClassAccordion from "./ClassAccordion";
 
 // interface Task {
 //   externalLink?: string;
@@ -35,7 +36,7 @@ interface addTaskProps {
   handleChange: (element: string, index: number, change: any) => void;
   handleRemove: (index: number, name: string) => void;
   students?: IStudent[];
-  studentsToTask?: number[];
+  teacherClasses?: IClassOfTeacher[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,15 +52,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface classList {
+  classId: number;
+  name: string;
+  students: IStudent[];
+}
+
 export default function AddTask({
   task,
   index = 0,
   handleChange,
   handleRemove,
   students,
-  studentsToTask,
+  teacherClasses,
 }: addTaskProps) {
   const classes = useStyles();
+
+  //@ts-ignore
+  const classList: classList[] | undefined = teacherClasses?.map(
+    (cls: IClassOfTeacher) => {
+      return {
+        classId: cls.classId,
+        name: cls.Class.name,
+        students: cls.Class.Students,
+      };
+    }
+  );
 
   const changer = (value: any, fieldToChange: string) => {
     handleChange(fieldToChange, index, value);
@@ -224,26 +242,32 @@ export default function AddTask({
         </Select>
       </FormControl>
 
-      {students && studentsToTask !== undefined && (
-        <Select
-          multiple
-          // style={}
-          variant="outlined"
-          defaultValue={students.map((student) => {
-            return student.id;
-          })}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e.target.value, "students");
-          }}
-        >
-          {students.map((student: any) => {
-            return (
-              <MenuItem key={student.id} value={student.id}>
-                {`${student.className} ${student.firstName} ${student.lastName}`}
-              </MenuItem>
-            );
-          })}
-        </Select>
+      {students && teacherClasses !== undefined && (
+        // <Select
+        //   multiple
+        //   // style={}
+        //   variant="outlined"
+        //   // defaultValue={students.map((student) => {
+        //   //   return student.id;
+        //   // })}
+        //   defaultValue={[]}
+        //   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+        //     changer(e.target.value, "students");
+        //   }}
+        // >
+        //   {students.map((student: any) => {
+        //     return (
+        //       <MenuItem key={student.id} value={student.id}>
+        //         {`${student.className} ${student.firstName} ${student.lastName}`}
+        //       </MenuItem>
+        //     );
+        //   })}
+        // </Select>
+        <ClassAccordion
+          classes={classList!}
+          updatePicks={changer}
+          // pickState={[[true]]}
+        ></ClassAccordion>
       )}
     </Form>
   );

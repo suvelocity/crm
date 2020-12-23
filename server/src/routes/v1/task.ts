@@ -183,9 +183,9 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
     const task = await createTask(req, res);
-    // console.log(task);
+    console.log(task);
     const { idArr } = req.body;
-    // console.log(idArr);
+    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (studentId: number): ITaskofStudent => {
