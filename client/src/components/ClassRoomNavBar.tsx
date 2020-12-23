@@ -43,6 +43,8 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  
+  
   //@ts-ignore
   const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -184,7 +186,7 @@ function ClassRoomNavBar() {
                 <StreetviewIcon style={{ position: "absolute", right: 10 }} />
               </DrawerItem>
             </StyledLink>
-          )}
+          )} */}
           {(mentorProgram && mentorProgram.MentorStudents![0]) && (
             <StyledLink to={`/mentor/${mentorProgram.MentorStudents![0].id}`}>
               <DrawerItem onClick={() => setOpen(false)}>
@@ -193,7 +195,6 @@ function ClassRoomNavBar() {
               </DrawerItem>
             </StyledLink>
           )}
-          )} */}
           <DrawerItem style={{ alignContent: "flex-end" }}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />
           </DrawerItem>

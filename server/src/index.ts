@@ -1,3 +1,4 @@
+require('dotenv').config()
 import app from "./app";
 // require("dotenv").config();
 

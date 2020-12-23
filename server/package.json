@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "fuckin:go": "npm i && npm run schema && npm run migrate && npm run seed && npm run dev ",
     "start": "node out/.",
     "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
     "build": "tsc --build tsconfig.json",
@@ -14,6 +15,7 @@
     "spinup:prod": "npm run migrate:prod && npm run start",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "seed": "cd src && sequelize db:seed:undo:all && npx sequelize db:seed:all",
+    "schema": "cd src && sequelize db:create ",
     "seed:prod": "cd out && sequelize db:seed:undo:all && npx sequelize db:seed:all",
     "fetch": "cd src && sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
