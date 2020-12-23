@@ -4,8 +4,16 @@ import {
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import {Student,Mentor,Meeting,MentorProgram,MentorStudent,MentorForm} from "../../../models";
+import { MentorStudent,MentorProgram, Class, Student, Mentor, Meeting} from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
+import transporter from "../../../mail";
+
+const mailProps = (to: string, subject: string, text: string) => ({
+  from: process.env.EMAIL_USER,
+  to,
+  subject,
+  text,
+});
 
 const router = Router();
 
@@ -13,7 +21,7 @@ const router = Router();
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const allProgram: IMentorProgram[] = await MentorProgram.findAll({
-      order:[['open','DESC']]
+      order: [["open", "DESC"]],
     });
     res.json(allProgram);
   } catch (err) {
@@ -37,12 +45,12 @@ router.get("/dashboard/:id", async (req: Request, res: Response) => {
   try {
     const program = await MentorProgram.findByPk(req.params.id);
     const programTableData = await Student.findAll({
-      attributes: ["id","firstName", "lastName"],
-      where: {classId: program.classId },
+      attributes: ["id", "firstName", "lastName"],
+      where: { classId: program.classId },
       include: [
         {
-          model: MentorStudent ,
-          where: {   
+          model: MentorStudent,
+          where: {
             mentorProgramId: req.params.id,
           },
           required: false,
@@ -132,6 +140,103 @@ router.patch("/delete", async (req, res) => {
     });
     if (deleted) return res.json({ message: "Program deleted" });
     return res.status(404).json({ error: "Program not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/startmails/:id", async (req, res) => {
+  try {
+    const pairs = await MentorStudent.findAll({
+      where: {
+        mentorProgramId: parseInt(req.params.id),
+      },
+      include: [
+        {
+          model: Mentor,
+        },
+        {
+          model: Student,
+        },
+        {
+          model: MentorProgram,
+          attributes: ["name"],
+        },
+      ],
+    });
+
+    await pairs.forEach(async (pair: any) => {
+      await transporter.sendMail(
+        mailProps(
+          pair.Student.email,
+          pair.MentorProgram.name,
+          `Welcome to ${pair.MentorProgram.name} \n \n
+         In the next few weeks you gonna have someone to talk, consult and learn about what you need to know for your next job. \n
+         We hope you will grow from this opportunity and wish you the best. \n
+         Please do not forget to help us keep treack your meeting and feedbacks via http://35.226.223.57:8080/mentor/meeting/${pair.id} \n
+         Your mentor: \n
+          -  ${pair.Mentor.name} \n
+          -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
+          -  company: ${pair.Mentor.company} \n
+          -  role: ${pair.Mentor.role}`
+        ), (error: any) => res.status(500).json({ error: error.message })
+      );
+
+      await transporter.sendMail(
+        mailProps(
+          pair.Mentor.email,
+          pair.MentorProgram.name,
+          `Welcome to ${pair.MentorProgram.name} \n \n  
+         Thank you so much for volunteering to take part in our project \n 
+         Your student: \n 
+          -  ${pair.Student.firstName + " " + pair.Student.lastName}\n
+          -  contact: ${pair.Student.email} / ${pair.Student.phone} \n
+      `
+        ), (error: any) => res.status(500).json({ error: error.message })
+      );
+    });
+    res.json(pairs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/mails/:id", async (req, res) => {
+  try {
+    const pairs = await MentorStudent.findAll({
+      where: {
+        mentorProgramId: parseInt(req.params.id),
+      },
+      include: [
+        {
+          model: Mentor,
+        },
+        {
+          model: Student,
+        },
+      ],
+    });
+    await pairs.forEach((pair: any) => {
+      if (req.query.recievers !== "mentors") {
+        transporter.sendMail(
+          mailProps(
+            pair.Student.email,
+            req.body.title,
+            req.body.content
+          )
+        );
+      };
+      if (req.query.recievers !== "students") {
+        transporter.sendMail(
+          mailProps(
+            pair.Mentor.email,
+            req.body.title,
+            req.body.content
+          )
+        );
+      };
+    })
+    res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
