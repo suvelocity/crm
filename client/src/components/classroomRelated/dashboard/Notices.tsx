@@ -21,10 +21,12 @@ import { Wrapper, Center } from "../../../styles/styledComponents";
 
 function Notices() {
   const classesToTeacher = useRecoilValue(classesOfTeacher);
-  const [notices, setNotices] = useState<INotice[] | undefined>([]);
+  const [notices, setNotices] = useState<INotice[]>([]);
   const [selectedClass, setSelectedClass] = useState<number>(
-    classesToTeacher[0] && classesToTeacher[0].classId
+    classesToTeacher[0]?.classId
   );
+  console.log(selectedClass);
+
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
@@ -60,29 +62,27 @@ function Notices() {
 
   const getNotices = async () => {
     try {
-      const { data }: { data: INotice[] } = await network.get(
+      const { data: notices }: { data: INotice[] } = await network.get(
         `/api/v1/notice/byclass/${selectedClass ? selectedClass : user.classId}`
       );
-      setLoading(false);
-      setNotices(data);
+      return Array.isArray(notices) ? notices : [];
     } catch (error) {
-      Swal.fire("Error Occurred", error.message, "error");
+      return [];
     }
   };
 
   useEffect(() => {
-    try {
-      getNotices();
-    } catch (error) {
-      Swal.fire("Error Occurred", error.message, "error");
-    }
-    //eslint-disable-next-line
+    (async () => {
+      const notices = await getNotices();
+      setNotices(notices);
+      setLoading(false);
+    })();
   }, [selectedClass]);
 
   const deleteNotice = async (id: number) => {
     try {
       await network.delete(`/api/v1/notice/${id}`);
-      setNotices((prev: INotice[] | undefined) =>
+      setNotices((prev: INotice[]) =>
         prev?.filter((notice: INotice) => notice.id !== id)
       );
 
@@ -95,11 +95,14 @@ function Notices() {
 
   return (
     <Loading size={30} loading={loading}>
-      {user.userType === "teacher" && classesToTeacher && (
+      {user.userType === "teacher" && selectedClass && (
         <FilterContainer>
           <FormControl color='primary' variant='outlined'>
-            <InputLabel>Class</InputLabel>
+            {/* <InputLabel>Class</InputLabel> */}
             <Select
+              id='class-select'
+              variant='outlined'
+              labelId='class-select-label'
               style={{
                 width: 250,
                 boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
@@ -108,17 +111,16 @@ function Notices() {
                 backgroundColor: "white",
               }}
               value={selectedClass}
-              // defaultValue={classesToTeacher[0].classId}
+              // defaultValue={selectedClass}
               onChange={(e: any) => {
-                setSelectedClass(e.target.value);
+                const newId = e.target.value;
+                setSelectedClass(newId);
               }}>
               {classesToTeacher?.map((teacherClass: any) => (
                 <MenuItem value={teacherClass.classId}>
                   {teacherClass.Class.name}
                 </MenuItem>
               ))}
-              {/* <MenuItem value='cyber4s place holer'>cyber4s place holer</MenuItem>
-            <MenuItem value='shit class'>shit class</MenuItem> */}
             </Select>
           </FormControl>
           <Button
@@ -145,15 +147,19 @@ function Notices() {
         </FilterContainer>
       )}
       <NoticeContainer>
-        {notices?.map((notice) => (
-          //@ts-ignore
-          <SingleNotice
-            notice={notice}
-            key={notice.id}
-            deleteNotice={deleteNotice}
-            userType={user.userType}
-          />
-        ))}
+        {notices.length ? (
+          notices.map((notice) => (
+            //@ts-ignore
+            <SingleNotice
+              notice={notice}
+              key={notice.id}
+              deleteNotice={deleteNotice}
+              userType={user.userType}
+            />
+          ))
+        ) : (
+          <div>no notices found</div>
+        )}
       </NoticeContainer>
     </Loading>
   );
@@ -199,7 +205,7 @@ const FilterContainer = styled.div`
   padding-bottom: 40px;
   padding-top: 40px;
   /* background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.container};  */
+    theme.colors.container}; */
   width: 50%;
   margin-left: auto;
   margin-right: auto;
@@ -207,7 +213,7 @@ const FilterContainer = styled.div`
 `;
 
 const NoticeContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   display: flex;
   flex-direction: column;
