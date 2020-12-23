@@ -5,8 +5,10 @@ import { IForm } from "../../types";
 import { Sequelize, Op } from "sequelize";
 import axios from "axios";
 const router = Router();
+require("dotenv").config();
 
 const { CM_ACCESS } = process.env;
+
 if (!CM_ACCESS) {
   console.trace("ChallengeMe Access Token Missing!");
 }

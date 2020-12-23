@@ -76,7 +76,6 @@ export default function Lesson({
       />
     </div>
   );
-  console.log(lessonState);
 
   return (
     <LessonContainer>

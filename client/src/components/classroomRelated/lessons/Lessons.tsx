@@ -15,6 +15,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { classesOfTeacher } from "../../../atoms";
 import { useRecoilValue } from "recoil";
+import { fetchSuperChallenges } from "./FccSelector";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,6 +27,7 @@ export default function Lessons() {
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
   const [filter, setFilter] = React.useState<string>("");
+  const [fccChallenges, setFccChallenges] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = React.useState<number>(
     classesToTeacher[0] && classesToTeacher[0].classId
   );
@@ -57,7 +59,7 @@ export default function Lessons() {
     setOpen(false);
   };
 
-  const body = (    
+  const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} classId={selectedClass} />
@@ -74,6 +76,16 @@ export default function Lessons() {
       return [];
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fchallenges = await fetchSuperChallenges();
+        await setFccChallenges(fchallenges);
+      } catch (error) {}
+    })();
+  }, []);
+  console.log(fccChallenges);
 
   useEffect(() => {
     (async () => {
@@ -143,7 +155,7 @@ export default function Lessons() {
               onClose={handleClose}
               aria-labelledby='simple-modal-title'
               aria-describedby='simple-modal-description'>
-              <Fade in={open} timeout={600}  >
+              <Fade in={open} timeout={600}>
                 {body}
               </Fade>
             </Modal>
@@ -179,14 +191,14 @@ const FilterContainer = styled.div`
 //   // const left = 50 + rand();
 
 export const modalStyle = {
-  transition:'.5sec',
+  transition: ".5sec",
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
   overflowY: "scroll",
-  height:'85vh',
-  width:'80vw',
-  minWidth:'400px',
+  height: "85vh",
+  width: "80vw",
+  minWidth: "400px",
   zIndex: 20,
 };
 
