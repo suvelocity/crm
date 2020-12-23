@@ -3,8 +3,8 @@ name: Check Tests
 on:
   pull_request:
     branches: [gcloud, production, dev] # specify the branch you want the deploy to take place from
-  push:
-    branches: [testing-crm, gcloud, production, dev]
+  # push:
+  #   branches: [gcloud, production]
 
 env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
