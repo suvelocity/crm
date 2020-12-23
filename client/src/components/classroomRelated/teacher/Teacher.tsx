@@ -22,18 +22,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-// interface ITask {
-//   lessonId?: number;
-//   externalId?: number;
-//   externalLink?: string;
-//   createdBy: number;
-//   endDate: Date;
-//   type: string;
-//   title: string;
-//   body?: string;
-//   status: "active" | "disabled";
-// }
-
 export default function Teacher() {
   const getBaseTask = (): ITask => ({
     createdBy: user.id,
@@ -151,7 +139,7 @@ export default function Teacher() {
         task={task}
         studentsToTask={studentsToTask}
       />
-      <Button variant="contained" onClick={postTask}>
+      <Button variant='contained' onClick={postTask}>
         add task
       </Button>
     </div>
@@ -166,11 +154,10 @@ export default function Teacher() {
           marginLeft: "auto",
           marginRight: "auto",
           width: "90%",
-        }}
-      >
+        }}>
         <Center>
           <TitleWrapper>
-            <H1 color="rgb(8, 16, 31)">My Tasks</H1>
+            <H1 color='rgb(8, 16, 31)'>My Tasks</H1>
           </TitleWrapper>
         </Center>
         <StyledButton onClick={() => setOpen(true)}>
@@ -184,9 +171,8 @@ export default function Teacher() {
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'>
           {body}
         </Modal>
       </div>

@@ -98,7 +98,7 @@ function Notices() {
       {user.userType === "teacher" && selectedClass && (
         <FilterContainer>
           <FormControl color='primary' variant='outlined'>
-            <InputLabel>Class</InputLabel>
+            {/* <InputLabel>Class</InputLabel> */}
             <Select
               id='class-select'
               variant='outlined'
@@ -205,7 +205,7 @@ const FilterContainer = styled.div`
   padding-bottom: 40px;
   padding-top: 40px;
   /* background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.container};  */
+    theme.colors.container}; */
   width: 50%;
   margin-left: auto;
   margin-right: auto;
@@ -213,7 +213,7 @@ const FilterContainer = styled.div`
 `;
 
 const NoticeContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   display: flex;
   flex-direction: column;

@@ -9,5 +9,6 @@ export const lightTheme = {
     addItem: "#FFFFFF",
     divider: "black",
     accordion: "#dbdef0",
+    card: "#FFFFFF",
   },
 };

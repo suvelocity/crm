@@ -17,8 +17,8 @@ module.exports = {
       [
         {
           id: 10,
-          class_id: 1,
-          title: "DataTypes.STRING",
+          class_id: 6,
+          title: "React Native",
           body:
             "lesson description esson description esson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson descriptionesson description",
           resource: "https://www.youtube.com/",
