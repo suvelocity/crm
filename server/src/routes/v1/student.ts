@@ -10,7 +10,7 @@ import {
   //@ts-ignore
   User,
   //@ts-ignore
-  TeacherofClass, Job, Company
+  TeacherofClass,
   //@ts-ignore
 } from "../../models";
 import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
@@ -76,15 +76,13 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const only = String(req.query.only);
-  
-    const student: any | null = await Student.findByPk(id, getQuery(
-      undefined,
-      false,
-      false,
-      only
-    ))
-    
+    const only = req.query.only;
+
+    const student: any | null = await Student.findByPk(
+      id,
+      getQuery(undefined, false, false, only as string | undefined)
+    );
+
     if (student) {
       // student.Events = student.Events.filter((event: any, i:number) =>event.dataValues.type ==='job');
       return res.json(student);
