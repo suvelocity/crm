@@ -1,1 +1,0 @@
-post http://localhost:8080/api/v1/M/programs/mails/1

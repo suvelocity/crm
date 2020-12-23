@@ -78,7 +78,7 @@ function SendMailModal({ id }: { id: number }) {
   const submitStatus = async (data: any) => {
     handleClose();
     try {
-      await network.post(`/api/V1/M/program/${id}`, data, {
+      await network.post(`/api/V1/M/program/mails/${id}`, data, {
         params: {
           recievers,
         },
@@ -106,8 +106,8 @@ function SendMailModal({ id }: { id: number }) {
               <MenuItem value="mentors">Mentors</MenuItem>
               <MenuItem value="students">Students</MenuItem>
             </Select>
-                      <br />
-                      <br />
+            <br />
+            <br />
             <TextField
               id="subject"
               inputRef={register({
@@ -117,8 +117,8 @@ function SendMailModal({ id }: { id: number }) {
               name="subject"
               label="Subject"
             />
-                      <br />
-                      <br />
+            <br />
+            <br />
             <TextField
               id="content"
               inputRef={register({
@@ -154,6 +154,24 @@ function SendMailModal({ id }: { id: number }) {
               onClick={handleClose}
             >
               cancel
+            </Button>
+            <br />
+            <br />
+            <Button
+              style={{
+                textAlign: "center",
+                margin: 10,
+                backgroundColor: "green",
+              }}
+              variant="contained"
+                          onClick={async () => {
+                              await network.post(`/api/V1/M/program/startmails/${id}`);
+                              handleClose()
+                  
+              }
+              }
+            >
+              start program mail
             </Button>
           </Center>
         </form>

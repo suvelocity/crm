@@ -6,14 +6,7 @@ import {
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import {
-  Student,
-  Mentor,
-  Meeting,
-  Class,
-  MentorProgram,
-  MentorStudent,
-} from "../../../models";
+import { MentorStudent,MentorProgram, Class, Student, Mentor, Meeting} from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
 import transporter from "../../../mail";
 
@@ -156,8 +149,8 @@ router.post("/startmails/:id", async (req, res) => {
       ],
     });
 
-    await pairs.forEach((pair: any) => {
-      transporter.sendMail(
+    await pairs.forEach(async (pair: any) => {
+      await transporter.sendMail(
         mailProps(
           pair.Student.email,
           pair.MentorProgram.name,
@@ -170,10 +163,10 @@ router.post("/startmails/:id", async (req, res) => {
           -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
           -  company: ${pair.Mentor.company} \n
           -  role: ${pair.Mentor.role}`
-        )
+        ), (error: any) => res.status(500).json({ error: error.message })
       );
 
-      transporter.sendMail(
+      await transporter.sendMail(
         mailProps(
           pair.Mentor.email,
           pair.MentorProgram.name,
@@ -183,7 +176,7 @@ router.post("/startmails/:id", async (req, res) => {
           -  ${pair.Student.firstName + " " + pair.Student.lastName}\n
           -  contact: ${pair.Student.email} / ${pair.Student.phone} \n
       `
-        )
+        ), (error: any) => res.status(500).json({ error: error.message })
       );
     });
     res.json(pairs);
@@ -208,7 +201,7 @@ router.post("/mails/:id", async (req, res) => {
       ],
     });
     await pairs.forEach((pair: any) => {
-      if (req.params.recievers !== "mentors") {
+      if (req.query.recievers !== "mentors") {
         transporter.sendMail(
           mailProps(
             pair.Student.email,
@@ -217,7 +210,7 @@ router.post("/mails/:id", async (req, res) => {
           )
         );
       };
-      if (req.params.recievers !== "students") {
+      if (req.query.recievers !== "students") {
         transporter.sendMail(
           mailProps(
             pair.Mentor.email,
@@ -226,7 +219,7 @@ router.post("/mails/:id", async (req, res) => {
           )
         );
       };
-    });
+    })
     res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });

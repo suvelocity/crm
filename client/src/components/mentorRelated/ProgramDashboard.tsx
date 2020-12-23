@@ -18,6 +18,7 @@ import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../helpers/general";
+import SendMailModal from "./Meetings/SendMailsModal";
 import SimpleModal from './Modal'
 
 const ProgramDashboard: React.FC = () => {
@@ -165,6 +166,7 @@ const ProgramDashboard: React.FC = () => {
         </StyledUl>
         <Button style={{backgroundColor: 'red'}} onClick={() => endProgram()}>End Program</Button>
         <Button onClick={() => history.push(`/mentor/new/${id}?class=${programdetails?.classId}`)} style={{ backgroundColor: 'red', margin: 10 }}>Edit Program</Button>
+        <SendMailModal id={id}/>
         <SimpleModal 
           open={modalOpen}
           setOpen={setModalOpen}
