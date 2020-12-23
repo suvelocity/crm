@@ -3,8 +3,8 @@ import { Router, Request, Response } from 'express';
 import { Form, Field, Option } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
-import { formSchema, formSchemaToPut } from "../../validations";
-import { IForm } from "../../types";
+import { fieldSchema, fieldSchemaToPut } from "../../validations";
+import { IField } from "../../types";
 import { networkInterfaces } from 'os';
 import { QueryInterface } from 'sequelize/types';
 
@@ -43,27 +43,14 @@ router.get('/:id', async (req: Request, res: Response) => {
 //   return res.json(questions);
 // });
 
-// POST A NEW FORM 
+// POST A NEW FORM
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { name, creatorId, isQuiz } = req.body;
-    const { error } = formSchema.validate({ name, creatorId, isQuiz });
+    const { title, formId, typeId} = req.body;
+    const { error } = fieldSchema.validate({ title, formId, typeId });
     if (error) return res.status(400).json({ error: error.message });
-    const createdForm: IForm = await Form.create({ name, creatorId, isQuiz });
-    res.json(createdForm);
-  }
-  catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-// POST A NEW FORM FULL 
-router.post('/', async (req: Request, res: Response) => {
-  try {
-    const { name, creatorId, isQuiz } = req.body;
-    const { error } = formSchema.validate({ name, creatorId, isQuiz });
-    if (error) return res.status(400).json({ error: error.message });
-    const createdForm: IForm = await Form.create({ name, creatorId, isQuiz });
-    res.json(createdForm);
+    const createdFields: IField = await Form.bulkCreate({ title, formId, typeId });
+    res.json(createdFields);
   }
   catch (error) {
     res.status(500).json({ error: error.message });

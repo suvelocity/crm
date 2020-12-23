@@ -242,14 +242,18 @@ export interface filterMentorObject {
 }
 
 export type IOption = {
-  id: number,
-  title: string
+  id?: number,
+  title: string,
+  isCorrect?: boolean
 }
 export type IField = {
   id: number,
-  title: string,
-  Options: IOption[]
+  title: string
+  formId?: number
+  typeId?: number
 };
+export type IFieldExtended = IField & {Options?: IOption[]};
+
 export type IForm = {
   id: number,
   name: string,
@@ -259,7 +263,7 @@ export type IFormExtended = {
   id: number,
   name: string,
   isQuiz: boolean,
-  Fields: IField[]  
+  Fields: IFieldExtended[]  
 }
 export type IAnswer = {
   fieldId: number, 

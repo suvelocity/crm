@@ -222,25 +222,38 @@ export const mentorStudentSchemaToPut = Joi.object({
   studentId: Joi.number().allow(null, ""),
 });
 
-export const quizSchema = Joi.object({
+export const formSchema = Joi.object({
   name: Joi.string().required(),
-  createdBy: Joi.number().required(),
+  creatorId: Joi.number().required(),
+  isQuiz: Joi.boolean().allow(null, false),
 });
 
-export const quizSchemaToPut = Joi.object({
+export const formSchemaToPut = Joi.object({
   name: Joi.string().allow(null, ""),
   createdBy: Joi.number().allow(null, ""),
 });
 
 
-export const quizSubmissionSchema = Joi.object({
+export const formSubmissionSchema = Joi.object({
   quizId: Joi.number().required(),
   studentId: Joi.number().required(),
   rank: Joi.number().required()
 });
 
-export const quizSubmissionSchemaToPut = Joi.object({
+export const formSubmissionSchemaToPut = Joi.object({
   quizId: Joi.number().allow(null, ""),
   studentId: Joi.number().allow(null, ""),
   rank: Joi.number().allow(null, "")
+});
+
+export const fieldSchema = Joi.object({
+  title: Joi.string().required(),
+  formId: Joi.number().required(),
+  typeId: Joi.number().allow(null, 1)
+});
+
+export const fieldSchemaToPut = Joi.object({
+  title: Joi.string().allow(null, ""),
+  formId: Joi.string().allow(null, ""),
+  typeId: Joi.string().allow(null, "")
 });
