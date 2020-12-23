@@ -71,51 +71,55 @@ export default function AddTask({
   return (
     <Form
       key={index}
-      className='create-task'
+      className="create-task"
       style={{
         maxWidth: "85vw",
-      }}>
-      <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
+      }}
+    >
+      <Tooltip title="Remove task" style={{ alignSelf: "flex-end" }}>
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
 
       {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
 
       <FormControl
-        id='task-type'
-        variant='outlined'
-        className={classes.formControl}>
-        <InputLabel id='task-type-label'>Task Type</InputLabel>
+        id="task-type"
+        variant="outlined"
+        className={classes.formControl}
+      >
+        <InputLabel id="task-type-label">Task Type</InputLabel>
         <Select
           // id='task-type'
-          labelId='task-type-label'
-          id='task-type'
-          label='task-type'
+          labelId="task-type-label"
+          id="task-type"
+          label="task-type"
           required={true}
           style={selectStyle}
           value={task.type}
-          variant='outlined'
+          variant="outlined"
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "type");
             changer(null, "externalId");
             changer(null, "externalLink");
-          }}>
-          <MenuItem value='manual'>manual</MenuItem>
-          <MenuItem value='challengeMe'>challengeMe</MenuItem>
-          <MenuItem value='fcc'>fcc</MenuItem>
-          <MenuItem value='quiz'>quiz</MenuItem>
+          }}
+        >
+          <MenuItem value="manual">manual</MenuItem>
+          <MenuItem value="challengeMe">challengeMe</MenuItem>
+          <MenuItem value="fcc">fcc</MenuItem>
+          <MenuItem value="quiz">quiz</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl
-        id='external'
-        variant='outlined'
-        className={classes.formControl}>
+        id="external"
+        variant="outlined"
+        className={classes.formControl}
+      >
         {
           task.type === "manual" ? (
             <Input
-              label='Link to task'
-              variant='outlined'
+              label="Link to task"
+              variant="outlined"
               onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                 changer(e.target.value, "externalLink");
               }}
@@ -145,13 +149,14 @@ export default function AddTask({
       </FormControl>
 
       <FormControl
-        id='task-title'
-        variant='outlined'
-        className={classes.formControl}>
+        id="task-title"
+        variant="outlined"
+        className={classes.formControl}
+      >
         <Input
-          label='Task title'
+          label="Task title"
           // disabled={task.type === "manual" ? false : true}
-          variant='outlined'
+          variant="outlined"
           value={task.title}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "title");
@@ -161,12 +166,13 @@ export default function AddTask({
       </FormControl>
 
       <FormControl
-        id='task-description'
-        variant='outlined'
-        className={classes.formControl}>
+        id="task-description"
+        variant="outlined"
+        className={classes.formControl}
+      >
         <TextField
-          label='Task Description'
-          variant='outlined'
+          label="Task Description"
+          variant="outlined"
           multiline
           value={task.body}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -178,14 +184,14 @@ export default function AddTask({
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           className={classes.formControl}
-          label='Deadline'
+          label="Deadline"
           // disableToolbar
           minDate={new Date()}
-          variant='inline'
-          format='dd/MM/yyyy'
-          margin='normal'
-          id='date-picker-inline'
-          inputVariant='outlined'
+          variant="inline"
+          format="dd/MM/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          inputVariant="outlined"
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{
@@ -195,22 +201,24 @@ export default function AddTask({
       </MuiPickersUtilsProvider>
 
       <FormControl
-        id='status'
-        variant='outlined'
-        className={classes.formControl}>
-        <InputLabel id='task-status-label'>Status</InputLabel>
+        id="status"
+        variant="outlined"
+        className={classes.formControl}
+      >
+        <InputLabel id="task-status-label">Status</InputLabel>
         <Select
-          defaultValue='Pick a Status'
+          defaultValue="Pick a Status"
           // id='task-status'
-          labelId='task-status-label'
-          id='task-status'
-          label='status'
+          labelId="task-status-label"
+          id="task-status"
+          label="status"
           style={selectStyle}
           value={task.status}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "status");
           }}
-          variant='outlined'>
+          variant="outlined"
+        >
           <MenuItem value={"active"}>active</MenuItem>
           <MenuItem value={"disabled"}>disabled</MenuItem>
         </Select>
@@ -220,13 +228,14 @@ export default function AddTask({
         <Select
           multiple
           // style={}
-          variant='outlined'
+          variant="outlined"
           defaultValue={students.map((student) => {
             return student.id;
           })}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "students");
-          }}>
+          }}
+        >
           {students.map((student: any) => {
             return (
               <MenuItem key={student.id} value={student.id}>
@@ -248,6 +257,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   min-width: 220px;
+  width: 60vw;
   margin-top: 5px;
   margin-bottom: 5px;
   border-radius: 7px;

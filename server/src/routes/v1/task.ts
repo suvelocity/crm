@@ -59,8 +59,6 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
     };
     const studentWhereClause: any = parsedFilters.student;
     Object.assign(tosWhereCLause, parsedFilters.task);
-    console.log(tosWhereCLause);
-    console.log(studentWhereClause);
 
     const myTasks: any[] = await Task.findAll({
       where: tosWhereCLause,
@@ -185,13 +183,14 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
     const task = await createTask(req, res);
-
+    // console.log(task);
     const { idArr } = req.body;
+    // console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
-        (student: any): ITaskofStudent => {
+        (studentId: number): ITaskofStudent => {
           return {
-            studentId: student.id,
+            studentId: studentId,
             //@ts-ignore
             taskId: task.id,
             //@ts-ignore
