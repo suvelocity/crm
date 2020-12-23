@@ -1,132 +1,6 @@
-describe("Student Tests", () => {
+describe("Auth Tests", () => {
   beforeEach(() => {
-    const jobs = [
-      {
-        students: [
-          {
-            email: "amird812@gmail.com",
-            firstName: "Amir",
-            lastName: "Debbie",
-            phone: "0545610405",
-            idNumber: "222222222",
-            additionalDetails: "222",
-            class: "asdasd",
-            address: "Moran 6",
-            age: "11",
-            id: "5faaf564b151f757b4d37bf1",
-          },
-          {
-            email: "shahar@gmail.com",
-            firstName: "shahar",
-            lastName: "eliyahu",
-            phone: "0509877219",
-            idNumber: "318433539",
-            additionalDetails: "i love potato and potato love me yaya",
-            class: "potato loving course",
-            address: "potato town babyyyy",
-            age: "21",
-            id: "5fa95377b0cb85412c53e810",
-          },
-          {
-            email: "mail@mail.com",
-            firstName: "amir",
-            lastName: "DaSnake",
-            phone: "054-4844774",
-            idNumber: "238928327",
-            additionalDetails: "shahar stupid",
-            class: "cyber4s",
-            address: "Herzeliya",
-            age: "22",
-            id: "5faad9c9b151f757b4d37bf0",
-          },
-        ],
-        company: "Listboy",
-        position: "ceo",
-        requirements: "v",
-        location: "TEl AVIV",
-        id: "5faab4f31c0521fc2fe8a09b",
-      },
-      {
-        students: [
-          {
-            email: "mail@mail.com",
-            firstName: "amir",
-            lastName: "DaSnake",
-            phone: "054-4844774",
-            idNumber: "238928327",
-            additionalDetails: "shahar stupid",
-            class: "cyber4s",
-            address: "Herzeliya",
-            age: "22",
-            id: "5faad9c9b151f757b4d37bf0",
-          },
-          {
-            email: "shahar@gmail.com",
-            firstName: "shahar",
-            lastName: "eliyahu",
-            phone: "0509877219",
-            idNumber: "318433539",
-            additionalDetails: "i love potato and potato love me yaya",
-            class: "potato loving course",
-            address: "potato town babyyyy",
-            age: "21",
-            id: "5fa95377b0cb85412c53e810",
-          },
-          {
-            email: "amird812@gmail.com",
-            firstName: "Amir",
-            lastName: "Debbie",
-            phone: "0545610405",
-            idNumber: "222222222",
-            additionalDetails: "222",
-            class: "asdasd",
-            address: "Moran 6",
-            age: "11",
-            id: "5faaf564b151f757b4d37bf1",
-          },
-        ],
-        company: "Debiz",
-        position: "Front-end Dev",
-        requirements: "v",
-        location: "TEl ABIB",
-        id: "5faac299a7688464d878470c",
-      },
-      {
-        students: [
-          {
-            email: "nitzan@gmail.com",
-            firstName: "nitzan",
-            lastName: "listman",
-            phone: "0509877219",
-            idNumber: "318433539",
-            additionalDetails: "i love potato and potato love me yaya",
-            class: "liverpool",
-            address: "potato town babyyyy",
-            age: "21",
-            id: "5faabfc39846b32f8093f1df",
-          },
-          {
-            email: "mail@mail.com",
-            firstName: "amir",
-            lastName: "DaSnake",
-            phone: "054-4844774",
-            idNumber: "238928327",
-            additionalDetails: "shahar stupid",
-            class: "cyber4s",
-            address: "Herzeliya",
-            age: "22",
-            id: "5faad9c9b151f757b4d37bf0",
-          },
-        ],
-        company: "Tomer Inc",
-        position: "devs",
-        requirements: "be great",
-        location: "abib",
-        id: "5fac235f83a7712510c2d5f8",
-      },
-    ];
     cy.server();
-
     cy.setCookie(
       "refreshToken",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4ifQ.MBOiVFSMgSjxufbOKuEb1wCrHfJ9HuUetIWOrMvOQ6U"
@@ -143,6 +17,16 @@ describe("Student Tests", () => {
     cy.get("#login").click();
     cy.wait("@login");
     cy.contains("Welcome to CRM");
+  });
+});
+
+describe("Student Tests", () => {
+  beforeEach(() => {
+    cy.server();
+    cy.setCookie(
+      "refreshToken",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4ifQ.MBOiVFSMgSjxufbOKuEb1wCrHfJ9HuUetIWOrMvOQ6U"
+    );
   });
 
   it("tests add student form", () => {
@@ -448,7 +332,9 @@ describe("Student Tests", () => {
       },
     ];
     cy.route("GET", "**/api/v1/job/all", jobs).as("jobs");
-    cy.route("GET", "**/api/v1/student/byId/9?only=jobs", student).as("student");
+    cy.route("GET", "**/api/v1/student/byId/9?only=jobs", student).as(
+      "student"
+    );
     cy.route("POST", "**/api/v1/event").as("apply");
     cy.route("POST", "**/api/v1/auth/token", {
       userType: "admin",
@@ -466,231 +352,8 @@ describe("Student Tests", () => {
 
 describe("Job Tests", () => {
   beforeEach(() => {
-    const job = {
-      students: [
-        {
-          email: "amird812@gmail.com",
-          firstName: "Amir",
-          lastName: "Debbie",
-          phone: "0545610405",
-          idNumber: "222222222",
-          additionalDetails: "222",
-          class: "asdasd",
-          address: "Moran 6",
-          age: "11",
-          id: "5faaf564b151f757b4d37bf1",
-        },
-        {
-          email: "shahar@gmail.com",
-          firstName: "shahar",
-          lastName: "eliyahu",
-          phone: "0509877219",
-          idNumber: "318433539",
-          additionalDetails: "i love potato and potato love me yaya",
-          class: "potato loving course",
-          address: "potato town babyyyy",
-          age: "21",
-          id: "5fa95377b0cb85412c53e810",
-        },
-        {
-          email: "mail@mail.com",
-          firstName: "amir",
-          lastName: "DaSnake",
-          phone: "054-4844774",
-          idNumber: "238928327",
-          additionalDetails: "shahar stupid",
-          class: "cyber4s",
-          address: "Herzeliya",
-          age: "22",
-          id: "5faad9c9b151f757b4d37bf0",
-        },
-      ],
-      company: "Listboy",
-      position: "ceo",
-      requirements: "v",
-      location: "TEl AVIV",
-      id: "5faab4f31c0521fc2fe8a09b",
-    };
-
-    const students = [
-      {
-        jobs: [
-          {
-            company: "Listboy",
-            position: "ceo",
-            requirements: "v",
-            location: "TEl AVIV",
-            id: "5faab4f31c0521fc2fe8a09b",
-          },
-          {
-            company: "Debiz",
-            position: "Front-end Dev",
-            requirements: "v",
-            location: "TEl ABIB",
-            id: "5faac299a7688464d878470c",
-          },
-          {
-            company: "Tomer Inc",
-            position: "devs",
-            requirements: "be great",
-            location: "abib",
-            id: "5fac235f83a7712510c2d5f8",
-          },
-        ],
-        email: "shahar@gmail.com",
-        firstName: "shahar",
-        lastName: "eliyahu",
-        phone: "0509877219",
-        idNumber: "318433539",
-        additionalDetails: "i love potato and potato love me yaya",
-        class: "potato loving course",
-        address: "potato town babyyyy",
-        age: "21",
-        id: "5fa95377b0cb85412c53e810",
-      },
-      {
-        jobs: [
-          {
-            company: "Tomer Inc",
-            position: "devs",
-            requirements: "be great",
-            location: "abib",
-            id: "5fac235f83a7712510c2d5f8",
-          },
-        ],
-        email: "nitzan@gmail.com",
-        firstName: "nitzan",
-        lastName: "listman",
-        phone: "0509877219",
-        idNumber: "318433539",
-        additionalDetails: "i love potato and potato love me yaya",
-        class: "liverpool",
-        address: "potato town babyyyy",
-        age: "21",
-        id: "5faabfc39846b32f8093f1df",
-      },
-      {
-        jobs: [
-          {
-            company: "Debiz",
-            position: "Front-end Dev",
-            requirements: "v",
-            location: "TEl ABIB",
-            id: "5faac299a7688464d878470c",
-          },
-          {
-            company: "Tomer Inc",
-            position: "devs",
-            requirements: "be great",
-            location: "abib",
-            id: "5fac235f83a7712510c2d5f8",
-          },
-          {
-            company: "Listboy",
-            position: "ceo",
-            requirements: "v",
-            location: "TEl AVIV",
-            id: "5faab4f31c0521fc2fe8a09b",
-          },
-        ],
-        email: "mail@mail.com",
-        firstName: "amir",
-        lastName: "DaSnake",
-        phone: "054-4844774",
-        idNumber: "238928327",
-        additionalDetails: "shahar stupid",
-        class: "cyber4s",
-        address: "Herzeliya",
-        age: "22",
-        id: "5faad9c9b151f757b4d37bf0",
-      },
-      {
-        jobs: [
-          {
-            company: "Listboy",
-            position: "ceo",
-            requirements: "v",
-            location: "TEl AVIV",
-            id: "5faab4f31c0521fc2fe8a09b",
-          },
-          {
-            company: "Debiz",
-            position: "Front-end Dev",
-            requirements: "v",
-            location: "TEl ABIB",
-            id: "5faac299a7688464d878470c",
-          },
-        ],
-        email: "amird812@gmail.com",
-        firstName: "Amir",
-        lastName: "Debbie",
-        phone: "0545610405",
-        idNumber: "222222222",
-        additionalDetails: "222",
-        class: "asdasd",
-        address: "Moran 6",
-        age: "11",
-        id: "5faaf564b151f757b4d37bf1",
-      },
-      {
-        jobs: [],
-        email: "amird@gmail.com",
-        firstName: "Test",
-        lastName: "Debbiedfdsf",
-        phone: "0545610405",
-        idNumber: "222222222",
-        additionalDetails: "sadasd",
-        class: "asdsad",
-        address: "Moran 6",
-        age: "22",
-        id: "5faaf5c1b151f757b4d37bf2",
-      },
-    ];
     cy.server();
-    cy.route("POST", "**/api/v1/job", {
-      message: "ok",
-    }).as("submit");
-    cy.route("GET", "**/api/v1/job/byId/5faab4f31c0521fc2fe8a09b", job).as(
-      "job"
-    );
-    cy.route("GET", "**/api/v1/student/all", students).as("students");
-    cy.route(
-      "PATCH",
-      "**/api/v1/job/modify-students/5faab4f31c0521fc2fe8a09b",
-      {
-        students: [
-          {
-            email: "shahar@gmail.com",
-            firstName: "shahar",
-            lastName: "eliyahu",
-            phone: "0509877219",
-            idNumber: "318433539",
-            additionalDetails: "i love potato and potato love me yaya",
-            class: "potato loving course",
-            address: "potato town babyyyy",
-            age: "21",
-            id: "5fa95377b0cb85412c53e810",
-          },
-          {
-            email: "mail@mail.com",
-            firstName: "amir",
-            lastName: "DaSnake",
-            phone: "054-4844774",
-            idNumber: "238928327",
-            additionalDetails: "shahar stupid",
-            class: "cyber4s",
-            address: "Herzeliya",
-            age: "22",
-            id: "5faad9c9b151f757b4d37bf0",
-          },
-        ],
-        company: "Listboy",
-        position: "ceo",
-        requirements: "v",
-        location: "TEl AVIV",
-        id: "5faab4f31c0521fc2fe8a09b",
-      }
-    ).as("apply");
+
     cy.setCookie(
       "refreshToken",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4ifQ.MBOiVFSMgSjxufbOKuEb1wCrHfJ9HuUetIWOrMvOQ6U"
@@ -698,29 +361,75 @@ describe("Job Tests", () => {
   });
 
   it("tests add job form", () => {
+    cy.route("GET", "**/api/v1/company/all", [
+      {
+        id: 2,
+        name: "Facebook",
+        contactName: "Doron Alon",
+        contactNumber: "0523485940",
+        contactPosition: "CEO",
+        location: "Tel Aviv, Israel",
+        description: "A social network corporation.",
+        createdAt: "2020-12-14T07:17:35.000Z",
+        updatedAt: "2020-12-14T07:17:35.000Z",
+        deletedAt: null,
+      },
+      {
+        id: 3,
+        name: "Microsoft",
+        contactName: "Nitzan Nir",
+        contactNumber: "0545545033",
+        contactPosition: "Head recruiter",
+        location: "Herzliya, Israel",
+        description:
+          "Microsoft Corporation is an American multinational technology company with headquarters in Redmond, Washington. It develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services. ",
+        createdAt: "2020-12-14T07:21:32.000Z",
+        updatedAt: "2020-12-14T07:21:54.000Z",
+        deletedAt: null,
+      },
+    ]).as("companies");
+    cy.route("POST", "**/api/v1/job", {
+      message: "ok",
+    }).as("submit");
     cy.route("POST", "**/api/v1/auth/token", {
       userType: "admin",
     });
+
     const inputs = [
       {
-        field: "company",
-        trueValue: "Amir@mail.com",
+        type: "select",
+        field: "companyId",
+        selector: "Facebook",
       },
       {
+        type: "textfield",
         field: "position",
-        trueValue: "Amir",
+        trueValue: "CEO",
       },
       {
-        field: "location",
-        trueValue: "Debbie",
+        type: "textfield",
+        field: "contact",
+        trueValue: "Yesyes",
       },
       {
+        type: "textfield",
+        field: "description",
+        trueValue: "Tel Aviv",
+      },
+      {
+        type: "textfield",
         field: "requirements",
-        trueValue: "054-7834393",
+        trueValue: "React",
+      },
+      {
+        type: "textfield",
+        field: "location",
+        trueValue: "Tel Aviv",
       },
     ];
 
     cy.visit("http://localhost:3000/job/add");
+    cy.wait("@companies");
     cy.get("#submitButton").click();
     cy.get(
       `[title="Company is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
@@ -732,34 +441,198 @@ describe("Job Tests", () => {
       `[title="Location is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
     );
     cy.get(
+      `[title="Contact is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
+    );
+    cy.get(
+      `[title="Description is required"] > .MuiIconButton-label > .MuiSvgIcon-root`
+    );
+    cy.get(
       `[title="Requirements are required"] > .MuiIconButton-label > .MuiSvgIcon-root`
     );
 
     inputs.forEach((input) => {
-      cy.get(`#${input.field}`).type(input.trueValue);
+      if (input.type === "textfield") {
+        if (input.field === "location") {
+          cy.get(`#${input.field}`).type(input.trueValue + "{enter}");
+        } else {
+          cy.get(`#${input.field}`).type(input.trueValue);
+        }
+      } else if (input.type === "select") {
+        cy.get(`#${input.field}`).click({ force: true });
+        cy.get(`#${input.selector}`).click();
+      }
     });
-    cy.get("#submitButton").click();
     cy.wait("@submit");
     cy.url().should("equal", "http://localhost:3000/job/all");
   });
 
-  it("should be able to add and delete students for job", () => {
+  it("should be able to add students for job", () => {
+    const job = {
+      id: 3,
+      position: "Full stack developer",
+      companyId: 2,
+      description:
+        "A full stack web developer is a person who can develop both client and server software. In addition to mastering HTML and CSS, he/she also knows how to: Program a server (like using PHP, ASP, Python, or Node) Program a database (like using SQL, SQLite, or MongoDB)",
+      contact: "Doron - 0544444444",
+      location: "Tel Aviv, Israel",
+      requirements: "- React. - Node.js. - MongoDB - G-Cloud.",
+      additionalDetails: "",
+      createdAt: "2020-12-14T07:23:54.000Z",
+      updatedAt: "2020-12-14T10:40:45.000Z",
+      deletedAt: null,
+      Events: [],
+      Company: {
+        id: 2,
+        name: "Facebook",
+        contactName: "Doron Alon",
+        contactNumber: "0523485940",
+        contactPosition: "CEO",
+        location: "Tel Aviv, Israel",
+        description: "A social network corporation.",
+        createdAt: "2020-12-14T07:17:35.000Z",
+        updatedAt: "2020-12-14T07:17:35.000Z",
+        deletedAt: null,
+      },
+    };
+    const students = [
+      {
+        id: 9,
+        firstName: "Amir",
+        lastName: "Debbie",
+        idNumber: "209511111",
+        email: "amird812@gmail.com",
+        phone: "0545610405",
+        age: 22,
+        address: "Moran Street 6, Herzliya, Israel",
+        maritalStatus: "single",
+        children: 0,
+        academicBackground: "High school diploma.",
+        militaryService: "Combat intelligence commander. ",
+        workExperience: "",
+        languages: "English, Hebrew",
+        citizenship: "Israel",
+        additionalDetails: "",
+        classId: 6,
+        mentorId: null,
+        fccAccount: null,
+        resumeLink: "",
+        createdAt: "2020-12-14T07:31:00.000Z",
+        updatedAt: "2020-12-14T13:21:10.000Z",
+        deletedAt: null,
+        Class: {
+          id: 6,
+          course: "Cyber4s",
+          name: "Cyber4s",
+          startingDate: "2020-07-01T00:00:00.000Z",
+          endingDate: "2020-12-31T00:00:00.000Z",
+          cycleNumber: 1,
+          zoomLink:
+            "https://sncentral.zoom.us/j/99857324080?pwd=ZDhsRWt0UGxXM0hhUjBYa0Y3QmJZZz09",
+          additionalDetails: "A cyber full stack course for combat veterans. ",
+          mentorProject: false,
+          createdAt: "2020-12-14T07:14:06.000Z",
+          updatedAt: "2020-12-14T07:14:06.000Z",
+          deletedAt: null,
+        },
+        Events: [],
+      },
+      {
+        id: 13,
+        firstName: "Shahar",
+        lastName: "Eli",
+        idNumber: "276484635",
+        email: "amird81222@gmail.com",
+        phone: "0545610405",
+        age: 23,
+        address: "Modiin, Modi'in-Maccabim-Re'ut, Israel",
+        maritalStatus: "Married",
+        children: 2,
+        academicBackground: "None.",
+        militaryService: "Artillery medic.",
+        workExperience: "",
+        languages: "English",
+        citizenship: "Israel, Germany",
+        additionalDetails: "",
+        classId: 6,
+        mentorId: null,
+        fccAccount: null,
+        resumeLink: null,
+        createdAt: "2020-12-14T07:36:12.000Z",
+        updatedAt: "2020-12-14T07:36:12.000Z",
+        deletedAt: null,
+        Class: {
+          id: 6,
+          course: "Cyber4s",
+          name: "Cyber4s",
+          startingDate: "2020-07-01T00:00:00.000Z",
+          endingDate: "2020-12-31T00:00:00.000Z",
+          cycleNumber: 1,
+          zoomLink:
+            "https://sncentral.zoom.us/j/99857324080?pwd=ZDhsRWt0UGxXM0hhUjBYa0Y3QmJZZz09",
+          additionalDetails: "A cyber full stack course for combat veterans. ",
+          mentorProject: false,
+          createdAt: "2020-12-14T07:14:06.000Z",
+          updatedAt: "2020-12-14T07:14:06.000Z",
+          deletedAt: null,
+        },
+        Events: [],
+      },
+      {
+        id: 20,
+        firstName: "Amir",
+        lastName: "Shushi",
+        idNumber: "1111111111",
+        email: "amird812@walla.com",
+        phone: "0545610405",
+        age: 22,
+        address: "Avenida General Trinidad Moran 698, Lince, Peru",
+        maritalStatus: "single",
+        children: 1,
+        academicBackground: "sdf",
+        militaryService: "dfdsds",
+        workExperience: "fsdf",
+        languages: "Hebrew, English",
+        citizenship: "asdsad",
+        additionalDetails: "sdfsfd",
+        classId: 7,
+        mentorId: null,
+        fccAccount: null,
+        resumeLink: "",
+        createdAt: "2020-12-22T11:48:03.000Z",
+        updatedAt: "2020-12-22T11:48:03.000Z",
+        deletedAt: null,
+        Class: {
+          id: 7,
+          course: "Adva",
+          name: "Bareket",
+          startingDate: "2020-10-01T00:00:00.000Z",
+          endingDate: "2021-02-28T00:00:00.000Z",
+          cycleNumber: 3,
+          zoomLink:
+            "https://sncentral.zoom.us/j/99857324080?pwd=ZDhsRWt0UGxXM0hhUjBYa0Y3QmJaaz09",
+          additionalDetails:
+            "A course meant for Haredi girls to help connecting them to the high tech industry. ",
+          mentorProject: false,
+          createdAt: "2020-12-14T07:16:02.000Z",
+          updatedAt: "2020-12-14T07:16:02.000Z",
+          deletedAt: null,
+        },
+        Events: [],
+      },
+    ];
+    cy.route("GET", "**/api/v1/student/all", students).as("students");
+    cy.route("GET", "**/api/v1/job/byId/3", job).as("job");
+    cy.route("POST", "**/api/v1/event").as("apply");
     cy.route("POST", "**/api/v1/auth/token", {
       userType: "admin",
     });
-    cy.visit("http://localhost:3000/job/5faab4f31c0521fc2fe8a09b");
+    cy.visit("http://localhost:3000/job/3");
     cy.wait("@job");
     cy.wait("@students");
-    cy.get(".MuiButton-label").click();
-    cy.get("#5faabfc39846b32f8093f1df").click();
-    cy.get(".makeStyles-root-4 > .MuiButton-root").click();
+    cy.get("#assignStudent").click();
+    cy.get("#20").click();
+    cy.get("#apply").click();
     cy.wait("@apply");
     cy.wait("@job");
-
-    cy.get(
-      ":nth-child(3) > #additional-actions2-header > .MuiAccordionSummary-content > .makeStyles-iconButton-3 > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root > path"
-    ).click();
-    cy.get(".swal2-confirm").click();
-    cy.wait("@apply");
   });
 });
