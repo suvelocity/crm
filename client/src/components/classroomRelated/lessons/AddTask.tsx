@@ -134,37 +134,22 @@ export default function AddTask({
         variant="outlined"
         className={classes.formControl}
       >
-        {
-          task.type === "manual" ? (
-            <Input
-              label="Link to task"
-              variant="outlined"
-              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                changer(e.target.value, "externalLink");
-              }}
-              value={task.externalLink}
-            />
-          ) : (
-            <ChallengeSelector
-              type={task.type}
-              selectedValue={task.externalId}
-              changeValue={changer}
-            />
-          )
-
-          /*<Select //TODO change to challenge type
-          style={selectStyle}
-          value={task.title}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e.target.value, "title");
-          }}
-          variant='outlined'
-          defaultValue='Pick a Task'>
-          <MenuItem value={"challenge1"}>challenge1</MenuItem>
-          <MenuItem value={"challenge2"}>challenge2</MenuItem>
-          <MenuItem value={"challenge3"}>challenge3</MenuItem>
-          </Select>*/
-        }
+        {task.type === "manual" ? (
+          <Input
+            label="Link to task"
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              changer(e.target.value, "externalLink");
+            }}
+            value={task.externalLink}
+          />
+        ) : (
+          <ChallengeSelector
+            type={task.type}
+            selectedValue={task.externalId}
+            changeValue={changer}
+          />
+        )}
       </FormControl>
 
       <FormControl

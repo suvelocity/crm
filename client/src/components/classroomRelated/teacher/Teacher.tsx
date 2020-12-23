@@ -78,6 +78,9 @@ export default function Teacher() {
       case "externalLink":
         setTask((prev) => ({ ...prev, externalLink: change }));
         break;
+      case "externalId":
+        setTask((prev) => ({ ...prev, externalId: change }));
+        break;
       case "type":
         setTask((prev) => ({ ...prev, type: change }));
         break;
@@ -91,20 +94,6 @@ export default function Teacher() {
         setTask((prev) => ({ ...prev, status: change }));
         break;
       case "students":
-        // const prevStudents = studentsToTask.slice();
-        // const studentALreadyExistsIndex = prevStudents.findIndex(
-        //   (id) => change[1] === id
-        // );
-        // if (studentALreadyExistsIndex > -1) {
-        //   prevStudents.splice(studentALreadyExistsIndex, 1);
-        //   setStudentsToTask(prevStudents);
-        // } else {
-        //   setStudentsToTask((prev) => [
-        //     ...prev,
-        //     change.filter((e: any) => !isNaN(e))[0],
-        //   ]);
-        // }
-        // break;
         setStudentsToTask(
           flatMap(change, (clsArr: number[]) =>
             clsArr.slice(1).filter((cell) => !!cell)
