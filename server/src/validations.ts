@@ -61,7 +61,7 @@ export const studentSchema = Joi.object({
   classId: Joi.number().required(),
   age: Joi.number().required(),
   address: Joi.string().allow(null, ""),
-  maritalStatus: Joi.string().required(),
+  maritalStatus: Joi.string().allow(null, ""),
   children: Joi.number().required(),
   academicBackground: Joi.string().allow(null, ""),
   militaryService: Joi.string().max(500).allow(null, ""),
