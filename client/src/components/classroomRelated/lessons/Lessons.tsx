@@ -230,7 +230,7 @@ export default function Lessons() {
           filteredLessons.map((lesson: ILesson, index: number) => (
             <Lesson
               lesson={lesson}
-              index={index}
+              index={filteredLessons.length - index}
               key={lesson.id}
               classId={selectedClass}
             />

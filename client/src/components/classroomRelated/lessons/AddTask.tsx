@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import CloseIcon from "@material-ui/icons/Close";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -73,10 +74,10 @@ export default function AddTask({
       key={index}
       className='create-task'
       style={{
-        maxWidth: "85vw",
+        maxWidth: "80vw",
       }}>
       <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
-        <DeleteForeverIcon onClick={removeTask} />
+        <CloseIcon onClick={removeTask} />
       </Tooltip>
 
       {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
@@ -217,24 +218,26 @@ export default function AddTask({
       </FormControl>
 
       {students && studentsToTask !== undefined && (
-        <Select
-          multiple
-          // style={}
-          variant='outlined'
-          defaultValue={students.map((student) => {
-            return student.id;
-          })}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            changer(e.target.value, "students");
-          }}>
-          {students.map((student: any) => {
-            return (
-              <MenuItem key={student.id} value={student.id}>
-                {`${student.className} ${student.firstName} ${student.lastName}`}
-              </MenuItem>
-            );
-          })}
-        </Select>
+        <FormControl>
+          <Select
+            multiple
+            // style={}
+            variant='outlined'
+            defaultValue={students.map((student) => {
+              return student.id;
+            })}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              changer(e.target.value, "students");
+            }}>
+            {students.map((student: any) => {
+              return (
+                <MenuItem key={student.id} value={student.id}>
+                  {`${student.className} ${student.firstName} ${student.lastName}`}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
       )}
     </Form>
   );

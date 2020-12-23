@@ -9,6 +9,7 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
+import CloseIcon from "@material-ui/icons/Close";
 
 // export interface Task {
 //   id?: number;
@@ -269,12 +270,12 @@ export default function AddLesson({
               handleChange(e, "resource")
             }
           />
-          <AddBtn
+          <ResourceBtn
             variant='outlined'
             onClick={handleAddResource}
             style={{ marginLeft: "15px" }}>
             Add Resource
-          </AddBtn>
+          </ResourceBtn>
         </AddRsourcesContainer>
         <Info>
           {resources.map((resource: string, index: number) => (
@@ -326,9 +327,17 @@ export default function AddLesson({
   );
 }
 const AddBtn = styled(Button)`
+  transition: 1.5sec;
+  align-self: center;
+  margin: 5px;
+  margin-top: 50px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
+  min-width: fit-content;
+`;
+const ResourceBtn = styled(Button)`
   transition: 1sec;
   align-self: center;
-  margin: 3px;
+  margin: 5px;
   box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
   min-width: fit-content;
 `;
@@ -387,7 +396,7 @@ const Info = styled.div`
 
 const OneInfo = styled.div`
   //TODO rename
-  margin-top: 15px;
+  margin-top: 10px;
   padding: 10px;
   margin-right: 15px;
 `;
