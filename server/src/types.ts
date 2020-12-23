@@ -141,13 +141,21 @@ export interface IMentor {
 export interface IForm {
   id?: number;
   name: string;
-  createdBy: number;
+  creatorId: number;
+  isQuiz?: boolean
 }
 export interface IFormSubmission {
   id?: number;
   quizId: number;
   studentId: number;
   rank: number;
+}
+
+export interface IField {
+  id?: number;
+  title: string;
+  formId: number;
+  typeId?: number;
 }
 
 type meeting = { date: string };

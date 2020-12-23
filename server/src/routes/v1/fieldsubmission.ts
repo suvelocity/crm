@@ -5,8 +5,8 @@ import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from ".
 import db from "../../models/index";
 
 import {
-  quizSubmissionSchema,
-  quizSubmissionSchemaToPut,
+  formSubmissionSchema,
+  formSubmissionSchemaToPut,
 } from "../../validations";
 import { IFormSubmission } from "../../types";
 import { required } from "joi";
@@ -167,7 +167,7 @@ router.post('/quiz', async (req: Request, res: Response) => {
         studentId,
         fieldId: answer.fieldId
       });
-    });
+    }); 
     const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs);
     const createdFieldSubmissionsWithId = await FieldSubmission.findAll({
       where: {
@@ -175,7 +175,7 @@ router.post('/quiz', async (req: Request, res: Response) => {
         createdAt: createdFieldSubmissions[0].createdAt
       },
       attributes: ['id', 'fieldId']
-    });
+    }); 
     const optionSubs: any = [];
     createdFieldSubmissionsWithId.forEach((fieldSub: any) => {
       const fieldSubmissionId = fieldSub.id;
