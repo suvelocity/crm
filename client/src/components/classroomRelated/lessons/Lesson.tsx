@@ -85,7 +85,7 @@ export default function Lesson({
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'>
-            {"#" + (index + 1) + " " + lessonState.title}
+            {"#" + index + " " + lessonState.title}
           </StyledSummery>
           <hr />
           <StyledDetails>{lessonState.body}</StyledDetails>
