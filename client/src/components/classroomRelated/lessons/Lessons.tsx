@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
-import Button from "@material-ui/core/Button";
+import {
+  Fade,
+  Button,
+  Modal,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { Fade } from "@material-ui/core";
-import Modal from "@material-ui/core/Modal";
 import { Loading } from "react-loading-wrapper";
 import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-import { ILesson } from "../../../typescript/interfaces";
+import { IClassOfTeacher, ILesson } from "../../../typescript/interfaces";
 import Lesson from "./Lesson";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import { classesOfTeacher } from "../../../atoms";
 import { useRecoilValue } from "recoil";
 import { fetchSuperChallenges } from "./FccSelector";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
+
   const classesToTeacher = useRecoilValue(classesOfTeacher);
 
   const classes = useStyles();
@@ -33,7 +38,8 @@ export default function Lessons() {
   );
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const { value } = e.target;
+    console.log("filter:", value);
     setFilter(value);
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
@@ -104,67 +110,124 @@ export default function Lessons() {
     })();
   }, [selectedClass]);
 
+  const TeacherControls = () => (
+    <>
+      <Select
+        id='class-select'
+        labelId='class-select-label'
+        style={{
+          height: "fit-content",
+          boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          marginLeft: "15px",
+          backgroundColor: "white",
+        }}
+        defaultValue={selectedClass}
+        onChange={(e: any) => {
+          const newId = e.target.value;
+          console.log(newId);
+          setSelectedClass(newId);
+        }}
+        variant='outlined'>
+        {classesToTeacher?.map((classOfTeacher) => (
+          <MenuItem value={classOfTeacher.classId}>
+            {classOfTeacher.Class.name}
+          </MenuItem>
+        ))}
+      </Select>
+      <Button
+        variant='outlined'
+        onClick={handleOpen}
+        style={{
+          boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          marginLeft: "auto",
+          marginRight: "5%",
+          height: "auto",
+          backgroundColor: "white",
+        }}>
+        Add Lesson
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'>
+        <Fade in={open} timeout={600}>
+          {body}
+        </Fade>
+      </Modal>
+    </>
+  );
+
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>
         <TextField
-          variant='outlined'
+          label='Search'
+          value={filter}
           style={{
+            borderRadius: "4px",
+            height: "fit-content",
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
             textAlign: "center",
             backgroundColor: "white",
             marginLeft: "5%",
           }}
-          label='Search'
-          value={filter}
           onChange={handleFilter}
+          variant='outlined'
         />
         {(user.userType === "teacher" || user.userType === "admin") && (
-          <>
-            <Select
-              style={{
-                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-                marginLeft: "15px",
-                backgroundColor: "white",
-              }}
-              value={selectedClass}
-              variant='outlined'
-              onChange={(e: any) => {
-                setSelectedClass(e.target.value);
-              }}>
-              {classesToTeacher?.map((teacherClass: any) => (
-                <MenuItem value={teacherClass.classId}>
-                  {teacherClass.Class.name}
-                </MenuItem>
-              ))}
-            </Select>
+          <TeacherControls />
+          //    <>
+          //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
+          //    <InputLabel id="class-select-label" shrink={true}>Class</InputLabel>
 
-            <Button
-              variant='outlined'
-              onClick={handleOpen}
-              style={{
-                boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-                marginLeft: "auto",
-                marginRight: "5%",
-                backgroundColor: "white",
-              }}>
-              Add Lesson
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby='simple-modal-title'
-              aria-describedby='simple-modal-description'>
-              <Fade in={open} timeout={600}>
-                {body}
-              </Fade>
-            </Modal>
-          </>
+          //    <Select label='Class'
+          //      labelId="class-select-label"
+          //      id="class-select"
+          //      style={{
+          //        boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          //        // marginLeft: "15px",
+          //        backgroundColor: "white",
+          //      }}
+          //      value={selectedClass}
+          //      onChange={(e: any) => {
+          //        setSelectedClass(e.target.value);
+          //      }}
+          //      variant='outlined'
+          //      >
+          //      {classesToTeacher?.map((teacherClass: any) => (
+          //        <MenuItem value={teacherClass.classId}>
+          //          {teacherClass.Class.name}
+          //        </MenuItem>
+          //      ))}
+          //    </Select>
+          //  </FormControl>
+          //  <Button
+          //    variant='outlined'
+          //    onClick={handleOpen}
+          //    style={{
+          //      boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          //      // marginLeft: "auto",
+          //      // marginRight: "5%",
+          //      height: "auto",
+          //      backgroundColor: "white",
+          //    }}>
+          //    Add Lesson
+          //  </Button>
+          //  <Modal
+          //    open={open}
+          //    onClose={handleClose}
+          //    aria-labelledby='simple-modal-title'
+          //    aria-describedby='simple-modal-description'>
+          //    <Fade in={open} timeout={600}  >
+          //      {body}
+          //    </Fade>
+          //  </Modal>
+          // </>
         )}
       </FilterContainer>
-
       <LessonsContainer>
-        {classesToTeacher &&
+        {classesToTeacher && filteredLessons.length ? (
           filteredLessons.map((lesson: ILesson, index: number) => (
             <Lesson
               lesson={lesson}
@@ -172,7 +235,22 @@ export default function Lessons() {
               key={lesson.id}
               classId={selectedClass}
             />
-          ))}
+          ))
+        ) : (
+          <ul>
+            {" "}
+            No Lessons Found with filters:
+            <li>search: "{filter}"</li>
+            <li>
+              class:{" "}
+              {
+                classesToTeacher.find(
+                  (single) => single.classId === selectedClass
+                )?.Class.name
+              }
+            </li>
+          </ul>
+        )}
       </LessonsContainer>
     </Loading>
   );
@@ -181,7 +259,7 @@ export default function Lessons() {
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
-
+  height: fit-content;
   /* justify-content: center; */
   padding-bottom: 40px;
   padding-top: 40px;
@@ -210,6 +288,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
     },
   })
 );

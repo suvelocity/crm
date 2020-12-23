@@ -33,7 +33,7 @@ interface addTaskProps {
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 120
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -66,24 +66,14 @@ export default function AddTask({
     handleRemove(index, "task");
   };
   return (
-    <Form key={index} className='create-task'>
+    <Form key={index} className='create-task' style={{
+    maxWidth:'85vw'
+
+    }}>
       <Tooltip title='Remove task' style={{alignSelf:'flex-end'}}>
         <DeleteForeverIcon onClick={removeTask} />
       </Tooltip>
       
-      <FormControl id='task-title' variant="outlined" className={classes.formControl} >
-        <Input label='Task title'
-        // disabled={task.type === "manual" ? false : true}
-        variant='outlined'
-        value={task.title}
-        onChange={(
-          e: React.ChangeEvent<{ value: unknown }>
-          ) => {
-            changer(e.target.value, "title");
-        }}
-        required={true}
-        />   
-      </FormControl>    
       {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
 
       <FormControl id='task-type' variant="outlined" className={classes.formControl} >
@@ -137,6 +127,20 @@ export default function AddTask({
         }
       </FormControl>
 
+      <FormControl id='task-title' variant="outlined" className={classes.formControl} >
+        <Input label='Task title'
+        // disabled={task.type === "manual" ? false : true}
+        variant='outlined'
+        value={task.title}
+        onChange={(
+          e: React.ChangeEvent<{ value: unknown }>
+          ) => {
+            changer(e.target.value, "title");
+        }}
+        required={true}
+        />   
+      </FormControl>    
+
       <FormControl id='task-description' variant="outlined" className={classes.formControl} >
       <TextField label='Task Description'
         variant='outlined'
@@ -187,6 +191,7 @@ export default function AddTask({
       {students && studentsToTask !== undefined && (
         <Select 
           multiple
+          // style={}
           variant='outlined'
           defaultValue={students.map((student) => {
             return student.id;
@@ -226,4 +231,6 @@ const Form = styled.form`
 
 `;
 
-const selectStyle = { marginTop: "5px", marginBottom: "5px" };
+const selectStyle = {
+   marginTop: "5px", marginBottom: "5px" 
+  };
