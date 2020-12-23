@@ -11,7 +11,7 @@ import {
   StyledDiv,
   TableHeader,
 } from "../../../styles/styledComponents";
-import { Button } from "@material-ui/core";
+import { Button, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import {
   IMentorProgramDashboard,
@@ -23,6 +23,7 @@ import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../../helpers/general";
 import SimpleModal from "../Modal";
+import SendMailModal from "../Meetings/SendMailsModal";
 
 const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -203,6 +204,7 @@ const ProgramDashboard: React.FC = () => {
         >
           Edit Program
         </Button>
+        <SendMailModal id={id}/>
         <SimpleModal
           open={modalOpen}
           setOpen={setModalOpen}
