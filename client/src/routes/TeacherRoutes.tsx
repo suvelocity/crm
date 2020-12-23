@@ -6,17 +6,17 @@ import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
-import Teacher from "../components/classroomRelated/teacher/Teacher";
+import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
-import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
-import QuizPage from '../components/classroomRelated/QuizMeRelated/components/QuizPage'
+import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
+import QuizPage from "../components/classroomRelated/QuizMeRelated/components/pages/QuizPage";
 
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
 import { AuthContext } from "../helpers";
-import Cookies from "js-cookie";
 import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
+import { IStudent } from "../typescript/interfaces";
 
 export default function TeacherRoutes() {
   const [CMChallenges, setCMChallenges] = useRecoilState(challengeMeChallenges);
@@ -33,9 +33,13 @@ export default function TeacherRoutes() {
         `/api/v1/student/byTeacher/${user.id}`
       );
       setClassesToTeacher(teacherStudents);
-      const allStudents = teacherStudents.map(
-        (classRoom: any) => classRoom.Class.Students
+      const allStudents = teacherStudents.map((classRoom: any) =>
+        classRoom.Class.Students.map((student: IStudent) => ({
+          ...student,
+          className: classRoom.Class.name,
+        }))
       );
+
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
@@ -47,38 +51,37 @@ export default function TeacherRoutes() {
   }, []);
 
   return (
-    <ErrorBoundary>
+    <>
       <ClassRoomNavBar />
+    {/* <ErrorBoundary> */}
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id='interface-container' style={{ flexGrow: 1 }}>
+      <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Dashboard />
           </Route>
-          <Route path='/lessons'>
+          <Route path="/lessons">
             <Lessons />
           </Route>
-          <Route path='/schedhule'>
+          <Route path="/schedhule">
             <Schedhule />
           </Route>
-          <Route path='/tasks'>
-            <TaskBoard />
-          </Route>
-          <Route path='/teacher'>
-            <Teacher />
+          <Route path="/tasks">
+            <TeacherContainer />
           </Route>
           <Route exact path="/quizme">
             <QuizMe />
           </Route>
           <Route exact path="/quizme/quiz/:id">
+            {/* @ts-ignore */}
             <QuizPage />
           </Route>
-          <Route path='*'>
+          <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>
       </div>
-      {/* </div> */}
-    </ErrorBoundary>
+    {/* </ErrorBoundary> */}
+    </>
   );
 }

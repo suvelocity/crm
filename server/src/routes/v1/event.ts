@@ -19,8 +19,14 @@ const mailOptions = (
 ) => ({
   from: process.env.EMAIL_USER,
   to: to,
-  subject: "You Were Applied!",
-  text: `Hello ${student},\nYour CV was sent to ${company} for the position of ${job}! \nMake sure you're ready!`,
+  subject: `You Were Applied For ${company}`,
+  text: `Hello ${student},
+
+Your resume was sent to the company "${company}", for the position of "${job}".
+Please keep me posted.
+  
+Good luck!
+Hadar.`,
 });
 
 router.get("/all", async (req: Request, res: Response) => {

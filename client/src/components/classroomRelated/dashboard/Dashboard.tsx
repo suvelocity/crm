@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
-// import { IUser } from "../../typescript/interfaces";
+import { IUser } from "../../../typescript/interfaces";
 import Notices from "./Notices";
 //@ts-ignore
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
@@ -12,17 +12,17 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
-      <TilesRow repeatFormula='1fr 1fr 1fr' height='30vh'>
-        <InformationTile>
-          <TasksFidget />
-        </InformationTile>
-        <InformationTile>
-          <LessonsFidget />
-        </InformationTile>
-        <InformationTile>
-          <ScheduleFidget />
-        </InformationTile>
-      </TilesRow>
+      {/* {//todo fix responsive and long texts} */}
+      {user.userType === "student" && (
+        <TilesRow repeatFormula='1fr 1fr' height='25vh'>
+          <InformationTile>
+            <TasksFidget />
+          </InformationTile>
+          <InformationTile>
+            <LessonsFidget />
+          </InformationTile>
+        </TilesRow>
+      )}
       <Notices />
     </DashboardContainer>
   );
@@ -30,11 +30,14 @@ export default function Dashboard() {
 
 const DashboardContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   width: 100%;
   height: 100vh;
 `;
 
 const InformationTile = styled.div`
+  /* max-height: 40vh; */
+  /* overflow-y: auto; */
   height: auto;
   width: auto;
 `;
@@ -42,13 +45,19 @@ const InformationTile = styled.div`
 
 // background-color: blue;
 const TilesRow = styled.div`
+  /* position: relative; */
   height: ${(props: any) => (props.height ? props.height : "20vh")};
   width: ${(props: any) => (props.width ? props.width : "90vw")};
+  /* max-height: 20vh; */
   display: grid;
   grid-template-columns: ${(props: any) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
   grid-gap: 2vw;
-  margin: 5vh auto;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 30px;
+  margin-bottom: 30vh;
 `;
 
 const Content = styled.div`
