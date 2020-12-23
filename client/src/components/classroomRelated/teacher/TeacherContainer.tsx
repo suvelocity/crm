@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Teacher from "./Teacher";
+
 import Notices from "../dashboard/Notices";
 import styled from "styled-components";
 import network from "../../../helpers/network";
@@ -10,12 +11,12 @@ export default function TeacherContainer() {
   //   const {data} = await network.get("/api/v1/event/updates");
   // }, []);
   return (
-    <TeacherDashContainer>
+    <TeacherTasksContainer>
       <Teacher />
-    </TeacherDashContainer>
+    </TeacherTasksContainer>
   );
 }
-const TeacherDashContainer = styled.div`
+const TeacherTasksContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   height: 100vh;

@@ -22,8 +22,9 @@ import Swal from "sweetalert2";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: 700,
-      width: 700,
+      maxWidth: 500,
+      width: 500,
+      //   padding: ?15,
       //   marginTop: "5vh",
     },
     media: {
