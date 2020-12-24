@@ -11,26 +11,13 @@ import Swal from "sweetalert2";
 import AddTask from "./AddTask";
 import CloseIcon from "@material-ui/icons/Close";
 
-// export interface Task {
-//   id?: number;
-//   createdAt?: number;
-//   updatedAt?: number;
-//   deletedAt?: number;
-//   externalLink?: string;
-//   createdBy: number;
-//   endDate: Date;
-//   type: string;
-//   title: string;
-//   body?: string;
-//   status: "active" | "disabled";
-// }
-
 interface Props {
   setOpen: Function;
   handleClose?: Function;
   update?: boolean;
   lesson?: ILesson;
   header?: string;
+  lessonAdded?: Function;
   lessonTasks?: ITask[];
   classId: number;
 }
@@ -40,6 +27,7 @@ export default function AddLesson({
   lesson,
   header,
   handleClose,
+  lessonAdded,
   lessonTasks,
   classId,
 }: Props) {
@@ -74,7 +62,6 @@ export default function AddLesson({
         createdBy: user.id,
       };
       if (update && lesson) {
-        console.log("tasks", tasks);
         await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
         const tasksToUpdate = tasks
           .slice()
@@ -119,6 +106,11 @@ export default function AddLesson({
             );
           })
         );
+        // handleClose && handleClose();
+        Swal.fire("Success", "lesson added :)", "success").then(
+          (_) => lessonAdded && lessonAdded()
+        );
+
         setOpen(false);
       }
     } catch (err) {
@@ -392,6 +384,7 @@ const Info = styled.div`
   transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
+  /* overflow-x: auto; */
 `;
 
 const OneInfo = styled.div`

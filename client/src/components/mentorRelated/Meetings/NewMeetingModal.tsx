@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NewMeetingModal({id, getMeetings}:{id:number, getMeetings:any}) {
+function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any, meetings: any}) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
@@ -77,6 +77,10 @@ function NewMeetingModal({id, getMeetings}:{id:number, getMeetings:any}) {
     try {
       data.pairId = id;
       data.occurred = false;
+      data.mentorEmail = meetings.Mentor.email;
+      data.studentEmail = meetings.Student.email;
+      data.mentorName = meetings.Mentor.name;
+      data.studentName = meetings.Student.firstName +' '+ meetings.Student.lastName
       console.log(data);
       await network.post(`/api/V1/M/meeting`,data);
       getMeetings();

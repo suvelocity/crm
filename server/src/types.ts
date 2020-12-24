@@ -47,7 +47,7 @@ export interface IClass {
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: number;
+  relatedId: string | number;
   eventName: string;
   entry?: any;
   type: string;
@@ -97,8 +97,8 @@ export interface ITask {
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: 'manual'|'challengeMe'|'fcc'|'quiz';
-  status: 'active'|'disabled';
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
+  status: "active" | "disabled";
   title: string;
   body?: string;
 }
@@ -116,6 +116,7 @@ export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
+  required?: boolean;
   where?: {};
 }
 
@@ -177,21 +178,26 @@ export interface IOption {
 
 
 type meeting = { date: string };
-// type class = {name: string, cycleNumber: number}
 
 export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  // Class: class;
   Mentor: IMentor;
   Meetings: meeting[];
 }
+
 export interface IMeeting {
   id?: number;
   mentorId: number;
   studentId: number;
   place: string;
+}
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  title: string;
 }
 
 export interface IFccEvent {}

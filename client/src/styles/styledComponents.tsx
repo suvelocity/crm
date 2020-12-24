@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
-  /* position: relative; */
+  position: relative;
 `;
 
 export const Center = styled.div`
@@ -147,6 +147,7 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
+  z-index:1000000;
   top: ${(props: { top: string }) => props.top || "25px"};
 `;
 

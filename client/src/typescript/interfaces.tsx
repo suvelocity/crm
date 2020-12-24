@@ -212,6 +212,41 @@ export interface filterMentorObject {
   Available: string;
   Search: string;
 }
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  answerUrl: string;
+  title: string;
+  createdAt: string;
+}
+
+export interface IMentorProgramForms {
+  id?: number;
+  MentorForms?: IMentorForm[];
+}
+
+export interface IUser {
+  id?: number;
+  userType: userType;
+  firstName?: string;
+  lastName?: string;
+  idNumber?: string;
+  email?: string;
+  phone?: string;
+  Class?: IClass;
+  address?: string;
+  age?: number;
+  maritalStatus?: string;
+  children?: number;
+  academicBackground?: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
+  additionalDetails?: string;
+  Events?: IEvent[];
+}
 
 //Classroom
 export interface IClassOfTeacher {
