@@ -224,7 +224,7 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-    console.log(usernames);
+
     const fccEvents: IFccEvent[] = (
       await axios.post(
         "https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper",
@@ -236,7 +236,7 @@ export const fetchFCC: () => void = async () => {
     ).data;
 
     //TODO fix types
-    const parsedEvents: IEvent[] = flatMap(fccEvents, (userEvents: any) => {
+    const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
       const username = userEvents.username;
       const { id: userId } = studentsData.find(
         (sd: any) => sd.fcc_account === username
@@ -249,16 +249,12 @@ export const fetchFCC: () => void = async () => {
         where: { student_id: userId, status: !"done", type: "fcc" },
         include: [{ model: Task, attributes: ["id", "externalId"] }],
       }).then((unfinishedTOS: any) => {
-        console.log(unfinishedTOS);
-        console.log(typeof unfinishedTOS);
         Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
           unfinishedTask = unfinishedTask.toJSON();
-          console.log(unfinishedTask);
-          console.log(newSolvedChallengesIds);
+
           let match = newSolvedChallengesIds.includes(
             unfinishedTask.Task.externalId
           );
-          console.log(match);
           if (match)
             TaskofStudent.update(
               { status: "done" },
