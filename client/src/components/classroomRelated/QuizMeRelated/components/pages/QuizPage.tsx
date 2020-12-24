@@ -102,8 +102,8 @@ export default function QuizPage(props: IProps) {
     };
   }, [seconds, minutes]);
 
-  const findSelectedAnswerIdByTitle = (title: any): number => {
-    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex].Options;
+  const findSelectedAnswerIdByTitle = (title: string): number => {
+    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex].Options || [];
     const selectedAnswer: any = currentOptionsArray.find(
       (option) => option.title === title
     );
@@ -175,8 +175,7 @@ export default function QuizPage(props: IProps) {
                 </Typography>
               </div>
               <List>
-                {quiz.Fields[currentQuestionIndex].Options.map(
-                  (option: IOption, index: number) => (
+                {quiz.Fields[currentQuestionIndex].Options!.map((option: IOption, index: number) => (
                     <ListItem
                       button
                       disableGutters
