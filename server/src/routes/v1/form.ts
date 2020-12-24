@@ -31,7 +31,7 @@ router.get('/all', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
   const form = await Form.findByPk(req.params.id, {
     attributes: ["id", "name", "isQuiz"],
-    include: [{model: Field, attributes: ["id", "title"], include: [{model: Option, attributes: ['id', 'title']}]}]
+    include: [{model: Field, attributes: ["id", "title",'typeId'], include: [{model: Option, attributes: ['id', 'title']}]}]
   });
   return res.json(form);
 });

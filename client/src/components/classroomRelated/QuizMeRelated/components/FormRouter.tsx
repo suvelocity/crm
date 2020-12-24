@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormRouter() {
   const id: number = useParams().id;
-  
   const [form, setForm] = useState<IFormExtended>();
+  
   useEffect(() => {
     const fetchForm = async () => {
       const form: IFormExtended = (await network.get(`/api/v1/form/${id}`)).data;
@@ -29,7 +29,7 @@ export default function FormRouter() {
     : <FormPage form={form}/>
   } else {
     return (
-      <div></div>
+      <div>no form with id {id}</div>
     )
   }
 }

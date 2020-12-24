@@ -157,6 +157,16 @@ export interface IField {
   formId: number;
   typeId?: number;
 }
+export type IFormOption = {
+  id?: number,
+  title: string,
+  // isCorrect?: boolean
+}
+export interface IFormFieldSubmission {
+  studentId: number;
+  fieldId: number;
+  answer: string|IFormOption
+}
 
 type meeting = { date: string };
 // type class = {name: string, cycleNumber: number}

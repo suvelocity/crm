@@ -3,6 +3,8 @@ import { Router, Request, Response } from "express";
 import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
+import {IFormFieldSubmission,IFormOption} from '../../types'
+import {Model, Sequelize} from 'sequelize'
 
 import {
   formSubmissionSchema,
@@ -138,19 +140,49 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
 
 
 router.post('/form', async (req: Request, res: Response) => {
+  async function insertOptionsField(studentId:number,fieldId:number,answer:IFormOption[]){
+    console.log('hii',answer[0].title)
+    // await FieldSubmission.findCreateFind({studentId,fieldId},{attributes:['id']})
+    const inserted = await FieldSubmission.findCreateFind({where:{studentId,fieldId},attributes:['id']})
+    console.log(inserted));
+    
+    return SelectedOption.bulkCreate(answer.map((option)=>({
+        optionId:option.id,
+        fieldSubmissionId:inserted.id,
+      })
+    ))
+  }
+
   try {
-    const body = req.body;
+    const {body} = req;
+    console.log(body)
     // const { studentId, fieldId, textualAnswer } = body;
-    const fieldSubsArr = body.map((fieldSub: any) => ({
-      studentId: fieldSub.studentId,
-      fieldId: fieldSub.fieldId,
-      textualAnswer: fieldSub.textualAnswer
-    }));
-    // const { error } = FormSubmission.validate(formSubmission);
-    // if(error) {return res.status(400).json(error.message)}; 
-    // const formattedFormSubmission = formSubmission.map(())
-    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubsArr)
-    return res.json("field subs created successfully")
+    const optionFields:{
+      fieldId:number,
+      studentId: number,
+      answer:IFormOption[],
+    }[] = []
+
+    const submissions = body.map(({studentId,fieldId,answer}: IFormFieldSubmission) =>{ 
+      if (answer instanceof Array){
+        optionFields.push({fieldId,answer,studentId})
+        
+      }else{
+        return {
+          studentId,
+          fieldId,
+          textualAnswer: answer
+        } 
+      }
+    });
+
+    const textFields = submissions.filter((e:{}|undefined)=>e)
+    
+    const createdFieldSubmissions = await FieldSubmission.bulkCreate(textFields)
+    await Promise.all(optionFields.map(({fieldId,answer,studentId})=>insertOptionsField(
+      studentId,fieldId,answer
+    )))
+    return res.send("field subs created successfully")
   }
   catch(error) {
     return res.status(400).json(error.message);
