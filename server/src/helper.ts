@@ -224,7 +224,6 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-
     const fccEvents: IFccEvent[] = (
       await axios.post(
         "https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper",
@@ -234,6 +233,7 @@ export const fetchFCC: () => void = async () => {
         }
       )
     ).data;
+    console.log(fccEvents[1]);
 
     //TODO fix types
     const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
@@ -278,10 +278,55 @@ export const fetchFCC: () => void = async () => {
       });
     });
 
-    await Event.bulkCreate(parsedEvents);
+    const parsedBulkEvents: IEvent[] = flatMap(
+      fccEvents[1],
+      (allEvents: any) => {
+        return allEvents.map((userEventsArr: any) => {
+          const username = userEventsArr[0].user;
+          const { id: userId } = studentsData.find(
+            (studentData: any) => studentData.fcc_account === username
+          );
+          const newSolvedChallengesIds: string[] = userEventsArr.map(
+            (challenge: any) => "id" + challenge.challenge
+          );
+          TaskofStudent.findAll({
+            where: { student_id: userId, status: !"done", type: "fcc" },
+            include: [{ model: Task, attributes: ["id", "externalId"] }],
+          }).then((unfinishedTOS: any) => {
+            Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
+              unfinishedTask = unfinishedTask.toJSON();
+              let match = newSolvedChallengesIds.includes(
+                unfinishedTask.Task.externalId
+              );
+              if (match)
+                TaskofStudent.update(
+                  { status: "done" },
+                  { where: { id: unfinishedTask.id } }
+                );
+            });
+          });
+
+          return userEventsArr.map((challenge: any) => {
+            const parsedEvent: IEvent = {
+              relatedId: "id" + challenge.challenge,
+              userId: userId,
+              eventName: "FCC_BULK_SUCCESS",
+              type: "fcc",
+              date: challenge.completedDate,
+            };
+            if (challenge.hasOwnProperty("repetition")) {
+              parsedEvent.entry!.repetition = challenge.repetition;
+            }
+            return parsedEvent;
+          });
+        });
+      }
+    );
+
+    await Event.bulkCreate([...parsedEvents, ...parsedBulkEvents]);
     // await updateStudentTaskState(parsedEvents);
 
-    console.log(fccEvents[1]);
+    // console.log(fccEvents[1]);
     return { success: true, newEvents: parsedEvents.length };
   } catch (err) {
     console.log(err);

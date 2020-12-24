@@ -28,10 +28,11 @@ export default function Lessons() {
 
   const classes = useStyles();
   // const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [lessons, setLessons] = React.useState<ILesson[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [lessons, setLessons] = useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
-  const [filter, setFilter] = React.useState<string>("");
+  const [filter, setFilter] = useState<string>("");
+  const [render, setRender] = useState<boolean>(false);
   const [fccChallenges, setFccChallenges] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = React.useState<number>(
     classesToTeacher[0]?.classId
@@ -39,7 +40,6 @@ export default function Lessons() {
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    console.log("filter:", value);
     setFilter(value);
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
@@ -64,13 +64,14 @@ export default function Lessons() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const body = (
-    //@ts-ignore
-    <div style={modalStyle} className={classes.paper}>
-      <AddLesson setOpen={setOpen} classId={selectedClass} />
-    </div>
-  );
+  const lessonAdded = () => {
+    (async () => {
+      const allLessons = await fetchClassLessons();
+      setLessons(allLessons);
+      setFilteredLessons(allLessons);
+      setLoading(false);
+    })();
+  };
 
   const fetchClassLessons = async () => {
     try {
@@ -91,7 +92,6 @@ export default function Lessons() {
       } catch (error) {}
     })();
   }, []);
-  console.log(fccChallenges);
 
   useEffect(() => {
     (async () => {
@@ -109,6 +109,17 @@ export default function Lessons() {
       setLoading(false);
     })();
   }, [selectedClass]);
+
+  const body = (
+    //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <AddLesson
+        setOpen={setOpen}
+        classId={selectedClass}
+        lessonAdded={lessonAdded}
+      />
+    </div>
+  );
 
   const TeacherControls = () => (
     <>

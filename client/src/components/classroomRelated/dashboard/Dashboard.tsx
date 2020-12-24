@@ -5,6 +5,7 @@ import { IUser } from "../../../typescript/interfaces";
 import Notices from "./Notices";
 //@ts-ignore
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
+import dashImg from "../../../media/dashboard.jpg";
 
 export default function Dashboard() {
   //@ts-ignore
@@ -23,6 +24,16 @@ export default function Dashboard() {
           </InformationTile>
         </TilesRow>
       )}
+      <img
+        src={dashImg}
+        style={{
+          width: "30%",
+          opacity: "80%",
+          marginTop: "5%",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}></img>
       <Notices />
     </DashboardContainer>
   );
