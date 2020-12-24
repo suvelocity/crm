@@ -3,11 +3,6 @@ import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  Chip,
 } from "@material-ui/core";
 import network from "../../../../../helpers/network";
 import { IFormExtended, IField } from "../../../../../typescript/interfaces";
@@ -64,7 +59,7 @@ export default function FormPage(props: IProps) {
 
   return (!finishTitle) ? (
     <Container className={classes.formWrapper}>
-      <Container className={classes.form}>
+      <form className={classes.form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {form.Fields.map((field, index) => (
             <div key={index}>
@@ -90,7 +85,7 @@ export default function FormPage(props: IProps) {
             <input type="submit" />
           </div>
         </form>
-      </Container>
+      </form>
     </Container>
   ) : (
     <div>{finishTitle}</div>

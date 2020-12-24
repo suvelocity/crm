@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import network from "../../../../helpers/network";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, List, ListItem, ListItemText, Typography, Chip } from "@material-ui/core";
 import { IFormExtended, IAnswer, IOption } from "../../../../typescript/interfaces";
 import QuizPage from "./pages/QuizPage"
 import FormPage from "./pages/FormPage"
@@ -25,7 +24,9 @@ export default function FormRouter() {
     fetchForm();
   },[]);
   if(form) {
-    return (form.isQuiz === true) ? <QuizPage form={form}/> : <FormPage form={form}/>
+    return (form.isQuiz === true) 
+    ? <QuizPage form={form}/> 
+    : <FormPage form={form}/>
   } else {
     return (
       <div></div>
