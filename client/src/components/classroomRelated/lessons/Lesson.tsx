@@ -149,11 +149,11 @@ const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   overflow: hidden;
   margin-bottom: 15px;
-  width: 90%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
 `;
 
 const StyledAccordion = styled(Accordion)`

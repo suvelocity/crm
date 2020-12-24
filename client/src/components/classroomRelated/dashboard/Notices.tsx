@@ -17,6 +17,8 @@ import FormControl from "@material-ui/core/FormControl";
 import "../../../helpers/cancelScroll.css";
 import { useRecoilValue } from "recoil";
 import { classesOfTeacher } from "../../../atoms";
+import { StyledButton } from "../teacher/Teacher";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Wrapper, Center } from "../../../styles/styledComponents";
 
 function Notices() {
@@ -123,20 +125,14 @@ function Notices() {
               ))}
             </Select>
           </FormControl>
-          <Button
-            variant='outlined'
+          <StyledButton
             onClick={handleOpen}
-            style={{
-              boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-              marginLeft: "auto",
-              marginRight: "5%",
-              backgroundColor: "white",
-              // marginTop: "auto",
-              // marginBottom: "auto",
-              // height: "100%",
-            }}>
-            Add Notice
-          </Button>
+            style={{ marginLeft: "auto", height: "auto" }}>
+            New Notice
+            <AddCircleIcon
+              style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
+            />{" "}
+          </StyledButton>
           <Modal
             open={open}
             onClose={handleClose}
@@ -206,17 +202,20 @@ const FilterContainer = styled.div`
 `;
 
 const NoticeContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.container}; */
+  /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
-  width: 50%;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
-  max-height: 48vh;
+  margin-top: 2%;
+  max-height: 45vh;
+  height: fit-content;
   overflow-y: scroll;
-  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  /* box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset; */
   /* overflow: hidden; */
 `;
 // const NoticeBoard = styled.div`

@@ -26,17 +26,6 @@ export default function Dashboard() {
           marginRight: "auto",
         }}></img>
       <Notices />
-      {/* {//todo fix responsive and long texts} */}
-      {user.userType === "student" && (
-        <TilesRow repeatFormula='1fr 1fr' height='25vh'>
-          <InformationTile>
-            <TasksFidget />
-          </InformationTile>
-          <InformationTile>
-            <LessonsFidget />
-          </InformationTile>
-        </TilesRow>
-      )}
     </DashboardContainer>
   );
 }

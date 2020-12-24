@@ -384,6 +384,7 @@ const Info = styled.div`
   transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
+  /* overflow-x: auto; */
 `;
 
 const OneInfo = styled.div`

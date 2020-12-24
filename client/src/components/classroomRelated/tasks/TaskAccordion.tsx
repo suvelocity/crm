@@ -22,14 +22,13 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import styled from "styled-components";
+import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       maxWidth: 500,
       width: 500,
-      //   padding: ?15,
-      //   marginTop: "5vh",
     },
     media: {
       height: 0,
@@ -118,14 +117,28 @@ export default function SingleTask(props: any) {
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
           id='panel1a-header'>
-          {task.Task.title}
+          {task.Task.title + " - " + task.Task.type}
         </StyledSummery>
-        <hr style={{ width: "80%", opacity: "80%" }} />
+        <hr style={{ width: "95%", opacity: "50%" }} />
         <StyledDetails>{task.Task.body}</StyledDetails>
         <StyledDetails>
-          {/* <Loading size={30} loading={loading}> */}
+          <IconButton
+            aria-label='submit button'
+            onClick={() => {
+              handleOpen(task.id);
+            }}
+            disabled={task.Task.type !== "manual" ? true : false}>
+            <PublishIcon />
+          </IconButton>
+          <StyledAtavLink href={task.Task.externalLink} target='_blank'>
+            <IconButton
+              aria-label='external link?'
+              disabled={task.Task.externalLink ? false : true}>
+              <LinkIcon />
+            </IconButton>
+          </StyledAtavLink>
         </StyledDetails>
-        <StyledDetails></StyledDetails>
+        {/* <StyledDetails></StyledDetails> */}
       </StyledAccordion>
     </TaskAccordrionContainer>
   );
@@ -134,7 +147,7 @@ const TaskAccordrionContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   overflow: hidden;
   margin-bottom: 15px;
-  width: 90%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
