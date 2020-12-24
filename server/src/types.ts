@@ -97,8 +97,8 @@ export interface ITask {
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: string;
-  status: string;
+  type: 'manual'|'challengeMe'|'fcc'|'quiz';
+  status: 'active'|'disabled';
   title: string;
   body?: string;
 }
@@ -157,6 +157,16 @@ export interface IField {
   // formId: number;
   typeId?: number;
 }
+export type IFormOption = {
+  id?: number,
+  title: string,
+  // isCorrect?: boolean
+}
+export interface IFormFieldSubmission {
+  studentId: number;
+  fieldId: number;
+  answer: string|IFormOption
+}
 
 export interface IOption {
   id?: number,
@@ -192,4 +202,9 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
+}
+
+export interface ITaskFilter {
+  class: string;
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
 }

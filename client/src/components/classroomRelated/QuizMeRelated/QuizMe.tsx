@@ -24,7 +24,7 @@ function QuizMe() {
       //@ts-ignore
       className={classes.container}>
         <Router>
-        <NavBar />
+        {/* <NavBar /> */}
           <Switch>
             <Route exact path="/quizme/form/:id" component={FormRouter}/>
             <Route path="/quizme/fieldsubmission/byform/:id" component={QuizSubmissionsRouter} />

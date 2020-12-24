@@ -18,6 +18,12 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        {
+          teacher_id: 999999,
+          class_id: 6,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
       ],
       {}
     );

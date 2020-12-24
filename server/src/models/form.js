@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       underscored: true,
       modelName: "Form",
+      tableName: 'forms',
       paranoid: true,
     }
   );

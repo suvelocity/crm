@@ -43,6 +43,14 @@ interface PlaceType {
   };
 }
 
+interface Props {
+  id: string;
+  name: string;
+  defaultValue: string;
+  inputRef: any;
+  label: string;
+}
+
 export default function GoogleMaps(props: any) {
   const classes = useStyles();
   const [value, setValue] = React.useState<PlaceType | null>(
@@ -119,7 +127,7 @@ export default function GoogleMaps(props: any) {
 
   return (
     <Autocomplete
-      id={"google-map-demo"}
+      id={props.id}
       style={{
         width: props.width ? props.width : 200,
         margin: "0 auto",
