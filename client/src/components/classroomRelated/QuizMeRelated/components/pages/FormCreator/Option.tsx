@@ -21,17 +21,12 @@ import {
   IOption,
 } from "../../../../../../typescript/interfaces";
 const useStyles = makeStyles((theme) => ({
-  field: {
-    margin: "0.5em 0",
-    padding: "0.5em",
-    backgroundColor: theme.palette.background.paper,
-  },
   option: {
     display: "flex",
     alignItems: "center",
-    padding: "0.5em 0",
-    margin: "0.5em",
-    minHeight: "2em",
+    // padding: "0.5em 0",
+    margin: "0.5em 0",
+    minHeight: "2.5em",
   },
   pointer: {
     cursor: "pointer",
@@ -77,7 +72,7 @@ export default function Option({
   const onlyOneCorrect =
     options.filter((option) => option.isCorrect).length === 1;
   const ableToDelete = () =>
-    (isQuiz && onlyOneCorrect && isCorrect) || isOnlyOne ? true : false;
+    (isQuiz && onlyOneCorrect && isCorrect) || isOnlyOne ? false : true;
   return (
     <>
       <div className={classes.option}>
@@ -86,12 +81,26 @@ export default function Option({
           ref={register({ required: true })}
           placeholder={`option ${index + 1}`}
           onChange={(e) => {
-            changeOption(index, fieldIndex, e.target.value || "", undefined);
+            const title = e.target.value ? e.target.value : "";
+            changeOption(index, fieldIndex, title, undefined);
           }}
           value={value}
         />
-        {isQuiz && (
+        {/* <button onClick={() => console.log(isCorrect)}>LOG</button> */}
+        {(isQuiz && (options[index].isCorrect !== undefined)) && (
           <>
+            {/* <Switch
+              color={"default"}
+              size={"small"}
+              checked={options[index].isCorrect}
+              inputRef={register}
+              disabled={isOnlyOne || (onlyOneCorrect && isCorrect)}
+              onChange={() => selectCorrectOption(index)}
+              inputProps={{
+                name: `fields[${fieldIndex}].options[${index}].isCorrect`,
+              }}
+            /> */}
+
             {/* <Button
               onClick={() => {
                 selectCorrectOption(index);
@@ -103,9 +112,24 @@ export default function Option({
             >
               {options[index].isCorrect ? "Correct" : "Wrong"}
             </Button> */}
-            <Switch color={"primary"} inputRef={register} inputProps={{
-              name: `fields[${fieldIndex}].options[${index}].isCorrect`
-            }}/>
+
+            <Controller
+              control={control}
+              name={`fields[${fieldIndex}].options[${index}].isCorrect`}
+              render={({ onChange, onBlur, value, name, ref }, { invalid, isTouched, isDirty }) => (
+                <Switch
+                  color={"secondary"}
+                  size={"small"}
+                  checked={options[index].isCorrect}
+                  // inputRef={register}
+                  disabled={isOnlyOne || (onlyOneCorrect && isCorrect)}
+                  onChange={() => selectCorrectOption(index)}
+                  // inputProps={{
+                  //   name: `fields[${fieldIndex}].options[${index}].isCorrect`,
+                  // }}
+                />
+              )}
+            />
           </>
         )}
         {ableToDelete() && (

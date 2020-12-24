@@ -15,7 +15,7 @@ import Option from "./Option"
 const useStyles = makeStyles((theme) => ({
   field: {
     margin: "1em 0",
-    padding: "0.5em",
+    padding: "1.5em",
     backgroundColor: theme.palette.background.paper,
   },
 }));
@@ -103,16 +103,16 @@ export default function Field({ ////////// RFC
       }
     ]) : setOptions([
       {
-        title: "",
+        title: ""
       },
       {
-        title: "",
+        title: ""
       },
       {
-        title: "",
+        title: ""
       },
       {
-        title: "",
+        title: ""
       }
     ])
   }, [isQuiz]);
@@ -132,15 +132,14 @@ export default function Field({ ////////// RFC
       setOptions(optionArr);
     }
   };
-  const changeOption = (index: number, fieldIndex: number, title?: string, isCorrect?: boolean) => {
+  const changeOption = (index: number, fieldIndex: number, title?: string, isCorrect?: boolean | null) => {
     const optionsArr = options.slice();
-    if(title || title=== "") {
-      optionsArr[index].title = title;
-    };
+    optionsArr[index].title = (title || title === "") ? title : options[index].title;
     setOptions(optionsArr);
     changeField(fieldIndex, undefined, undefined, optionsArr);
   };
   const selectCorrectOption = (correctOptionIndex: number) => {
+    console.log("this option: ", options[correctOptionIndex].isCorrect);
     if(!options[correctOptionIndex].isCorrect) {
       let optionsArr = options.slice();
       optionsArr = optionsArr.map((option: IOption, index: number) => (
@@ -165,7 +164,7 @@ export default function Field({ ////////// RFC
       >
         <option value={2}>Open Question</option> {/* FIELD TYPE OPTIONS*/}
         <option value={1}>Select-One</option>
-        <option value={3}>Checkbox</option>
+        {/* <option value={3}>Checkbox</option> */}
       </select>
       <div>
         {typeId === 2 ? ( // 2 is the typeId of openQuestion

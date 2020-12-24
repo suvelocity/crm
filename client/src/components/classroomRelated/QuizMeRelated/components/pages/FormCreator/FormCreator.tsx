@@ -33,12 +33,15 @@ export default function FormCreator() {
   const [isQuiz, setIsQuiz] = useState<boolean>(false) 
   const { register, handleSubmit, watch, errors } = useForm();
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     const formattedData = {
       ...data,
-      isQuiz: Number(data.isQuiz)
+      fields: data.fields.map((field: IField) => ({...field, typeId: Number(field.typeId)})),
+      isQuiz: Number(data.isQuiz) ? true : false,
+      creatorId: 1 // user context!!
     }
     console.log(formattedData);
+    const createdForm = await network.post('/api/v1/form/full', formattedData);
   };
 
   const addField = () => {
@@ -59,7 +62,7 @@ export default function FormCreator() {
     if (typeId) {
       fieldsArr[index].typeId = typeId;
     }
-    if (title || title === "") {
+    if (title !== undefined) {
       fieldsArr[index].title = title;
     }
     if (options) {
@@ -77,16 +80,16 @@ export default function FormCreator() {
     <form onSubmit={handleSubmit(onSubmit)} >
       {/* NAME OF THE FORM */}
       <div>
-        <label htmlFor={"formName"}>What is the name of your form?</label>
+        <label htmlFor={"name"}>What is the name of your form?</label>
       </div>
       {/* INPUT */}
       <div>
         <input
           ref={register({ required: true })}
-          name={"formName"}
+          name={"name"}
           placeholder="Your answer"
         />
-        {errors["formName"] && <span>This field is required</span>}
+        {errors["name"] && <span>This field is required</span>}
       </div>
       {/* IS QUIZ? */}
       <div> 

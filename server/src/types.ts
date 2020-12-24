@@ -154,9 +154,17 @@ export interface IFormSubmission {
 export interface IField {
   id?: number;
   title: string;
-  formId: number;
+  // formId: number;
   typeId?: number;
 }
+
+export interface IOption {
+  id?: number,
+  title: string,
+  fieldId: number,
+  isCorrect?: boolean | null
+}
+
 
 type meeting = { date: string };
 // type class = {name: string, cycleNumber: number}
