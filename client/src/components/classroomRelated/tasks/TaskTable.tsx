@@ -107,8 +107,9 @@ export default function DataGridDemo(props: any) {
 }
 
 const TaskTableConatiner = styled.div`
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.background}; */
   height: 70vh;
   width: 90%;
   overflow: hidden;

@@ -7,6 +7,7 @@ import Notices from "./Notices";
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
 import dashImg from "../../../media/dashboard.jpg";
 import scaleup from "../../../media/scale-up.jpg";
+import classroom from "../../../media/classroom-new.jpg";
 
 export default function Dashboard() {
   //@ts-ignore
@@ -28,7 +29,7 @@ export default function Dashboard() {
       <img
         src={scaleup}
         style={{
-          width: "30%",
+          width: "50%",
           opacity: "80%",
           marginTop: "5%",
           display: "block",
@@ -41,8 +42,9 @@ export default function Dashboard() {
 }
 
 const DashboardContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font}; */
   width: 100%;
   height: 100vh;
 `;

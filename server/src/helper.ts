@@ -236,6 +236,8 @@ export const fetchFCC: () => void = async () => {
     // console.log(fccEvents[1]);
 
     //TODO fix types
+    console.log(fccEvents);
+
     const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
       const username = userEvents.username;
       const { id: userId } = studentsData.find(
@@ -284,6 +286,10 @@ export const fetchFCC: () => void = async () => {
         const newSolvedChallengesIds: string[] = userBulkEventsArr.map(
           (challenge: any) => "id" + challenge.challenge
         );
+        if (!userBulkEventsArr[0]) {
+          return [];
+        }
+
         const username = userBulkEventsArr[0].user;
         const { id: userId } = studentsData.find(
           (studentData: any) => studentData.fcc_account === username

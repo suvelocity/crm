@@ -24,6 +24,7 @@ export function StudentRoutes() {
   return (
     <>
       <ErrorBoundary>
+        <GlobalStyle />
         <ClassRoomNavBar />
         <div style={{ flexGrow: 1 }}>
           <Switch>

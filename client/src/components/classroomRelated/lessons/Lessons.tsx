@@ -185,57 +185,17 @@ export default function Lessons() {
           onChange={handleFilter}
           variant='outlined'
         />
-        {user.userType === "teacher" && (
-          <TeacherControls />
-          //    <>
-          //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
-          //    <InputLabel id="class-select-label" shrink={true}>Class</InputLabel>
-
-          //    <Select label='Class'
-          //      labelId="class-select-label"
-          //      id="class-select"
-          //      style={{
-          //        boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          //        // marginLeft: "15px",
-          //        backgroundColor: "white",
-          //      }}
-          //      value={selectedClass}
-          //      onChange={(e: any) => {
-          //        setSelectedClass(e.target.value);
-          //      }}
-          //      variant='outlined'
-          //      >
-          //      {classesToTeacher?.map((teacherClass: any) => (
-          //        <MenuItem value={teacherClass.classId}>
-          //          {teacherClass.Class.name}
-          //        </MenuItem>
-          //      ))}
-          //    </Select>
-          //  </FormControl>
-          //  <Button
-          //    variant='outlined'
-          //    onClick={handleOpen}
-          //    style={{
-          //      boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          //      // marginLeft: "auto",
-          //      // marginRight: "5%",
-          //      height: "auto",
-          //      backgroundColor: "white",
-          //    }}>
-          //    Add Lesson
-          //  </Button>
-          //  <Modal
-          //    open={open}
-          //    onClose={handleClose}
-          //    aria-labelledby='simple-modal-title'
-          //    aria-describedby='simple-modal-description'>
-          //    <Fade in={open} timeout={600}  >
-          //      {body}
-          //    </Fade>
-          //  </Modal>
-          // </>
-        )}
+        {user.userType === "teacher" && <TeacherControls />}
       </FilterContainer>
+      <hr
+        style={{
+          width: "90%",
+          opacity: "50%",
+          margin: 0,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      />
       <LessonsContainer>
         {classesToTeacher && filteredLessons.length ? (
           filteredLessons.map((lesson: ILesson, index: number) => (
@@ -310,4 +270,5 @@ const LessonsContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   width: 100%;
   height: 100vh;
+  margin-top: 2%;
 `;
