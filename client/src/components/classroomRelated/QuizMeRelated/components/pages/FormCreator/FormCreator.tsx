@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 
 import network from "../../../../../../helpers/network";
+import { AuthContext } from "../../../../../../helpers";
+
 import {
   IFormExtended,
   IField,
@@ -28,20 +30,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormCreator() {
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  // console.log('user: ', user);
+  
   const classes = useStyles();
-  const [fields, setFields] = useState<Omit<IFieldExtended, "id" | "formId">[]>([]);
-  const [isQuiz, setIsQuiz] = useState<boolean>(false) 
+  const [fields, setFields] = useState<Omit<IFieldExtended, "id" | "formId">[]>(
+    []
+  );
+  const [isQuiz, setIsQuiz] = useState<boolean>(false);
   const { register, handleSubmit, watch, errors } = useForm();
 
   const onSubmit = async (data: any) => {
     const formattedData = {
       ...data,
-      fields: data.fields.map((field: IField) => ({...field, typeId: Number(field.typeId)})),
+      fields: data.fields.map((field: IField) => ({
+        ...field,
+        typeId: Number(field.typeId),
+      })),
       isQuiz: Number(data.isQuiz) ? true : false,
-      creatorId: 1 // user context!!
-    }
+      creatorId: user.id, // user context!!
+    };
     console.log(formattedData);
-    const createdForm = await network.post('/api/v1/form/full', formattedData);
+    const createdForm = await network.post("/api/v1/form/full", formattedData);
   };
 
   const addField = () => {
@@ -77,7 +88,7 @@ export default function FormCreator() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} >
+    <form onSubmit={handleSubmit(onSubmit)}>
       {/* NAME OF THE FORM */}
       <div>
         <label htmlFor={"name"}>What is the name of your form?</label>
@@ -92,32 +103,37 @@ export default function FormCreator() {
         {errors["name"] && <span>This field is required</span>}
       </div>
       {/* IS QUIZ? */}
-      <div> 
+      <div>
         <label htmlFor={"isQuiz"}>is it a form or a quiz?</label>
       </div>
       {/* RADIO INPUT*/}
       <div>
         <div>
-          <input  type="radio" 
-                  ref={register({ required: true })}
-                  name="isQuiz" 
-                  value={0} 
-                  checked={!isQuiz} 
-                  onChange={() => setIsQuiz(!isQuiz)}
+          <input
+            type="radio"
+            ref={register({ required: true })}
+            name="isQuiz"
+            value={0}
+            checked={!isQuiz}
+            onChange={() => setIsQuiz(!isQuiz)}
           />
           <label htmlFor="isQuiz">Form</label>
         </div>
         <div>
-          <input  type="radio" 
-                  ref={register({ required: true })}
-                  name="isQuiz" 
-                  value={1} 
-                  checked={isQuiz} 
-                  onChange={() => setIsQuiz(!isQuiz)}/>
+          <input
+            type="radio"
+            ref={register({ required: true })}
+            name="isQuiz"
+            value={1}
+            checked={isQuiz}
+            onChange={() => setIsQuiz(!isQuiz)}
+          />
           <label htmlFor="isQuiz">Quiz</label>
         </div>
       </div>
-      <Button onClick={addField} variant={'contained'} color={'primary'}>Add Field</Button>
+      <Button onClick={addField} variant={"contained"} color={"primary"}>
+        Add Field
+      </Button>
 
       {fields.map((field, index) => (
         <Field
