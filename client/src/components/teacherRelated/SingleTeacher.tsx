@@ -22,7 +22,7 @@ import BusinessIcon from "@material-ui/icons/Business";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import ClassIcon from "@material-ui/icons/Class";
-import ApplyStudentModal from "./ApplyStudentModal";
+import ApplyTeacherModal from "./ApplyTeacherModal";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
@@ -39,14 +39,14 @@ import WorkIcon from "@material-ui/icons/Work";
 import TrackChangesIcon from "@material-ui/icons/TrackChanges";
 import Modal from "@material-ui/core/Modal";
 import EditIcon from "@material-ui/icons/Edit";
-import AddStudent from "./AddStudent";
+import AddTeacher from "./AddTeacher";
 import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 import { SingleListItem } from "../tableRelated";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 
-function SingleStudent() {
+function SingleTeacher() {
   const [student, setStudent] = useState<IStudent | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
@@ -122,7 +122,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv id="editStudentButton" onClick={() => setModalState(true)}>
+          <EditDiv onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr">
@@ -254,7 +254,7 @@ function SingleStudent() {
             {!student ? (
               <div>oops</div>
             ) : (
-              <AddStudent
+              <AddTeacher
                 handleClose={handleClose}
                 update={true}
                 student={student}
@@ -302,7 +302,7 @@ function SingleStudent() {
           </StyledUl>
           <br />
           <Center>
-            <ApplyStudentModal
+            <ApplyTeacherModal
               currentJobs={eventsToMap.map((event: IEvent) => event.Job!.id!)}
               studentId={student?.id}
               getStudent={getStudent}
@@ -314,4 +314,4 @@ function SingleStudent() {
   );
 }
 
-export default SingleStudent;
+export default SingleTeacher;
