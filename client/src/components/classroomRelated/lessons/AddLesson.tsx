@@ -106,8 +106,6 @@ export default function AddLesson({
             );
           })
         );
-        console.log(lessonAdded);
-
         // handleClose && handleClose();
         Swal.fire("Success", "lesson added :)", "success").then(
           (_) => lessonAdded && lessonAdded()

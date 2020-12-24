@@ -6,6 +6,7 @@ import Notices from "./Notices";
 //@ts-ignore
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
 import dashImg from "../../../media/dashboard.jpg";
+import scaleup from "../../../media/scale-up.jpg";
 
 export default function Dashboard() {
   //@ts-ignore
@@ -25,7 +26,7 @@ export default function Dashboard() {
         </TilesRow>
       )}
       <img
-        src={dashImg}
+        src={scaleup}
         style={{
           width: "30%",
           opacity: "80%",
