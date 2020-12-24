@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { meetingSchema, meetingSchemaToPut } from "../../../validations";
 //@ts-ignore
-import {Student,Mentor,MentorStudent,Meeting, Student} from "../../../models";
+import {Student,Mentor,MentorStudent,Meeting} from "../../../models";
 import { IDashboard, IMeeting } from "../../../types";
 import transporter from "../../../mail";
 const ical = require("ical-generator");
