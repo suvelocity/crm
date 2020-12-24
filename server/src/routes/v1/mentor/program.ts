@@ -221,7 +221,7 @@ router.post("/mails/:id", async (req, res) => {
         transporter.sendMail(
           mailProps(
             pair.Student.email,
-            req.body.title,
+            req.body.subject,
             req.body.content
           )
         );
@@ -230,7 +230,7 @@ router.post("/mails/:id", async (req, res) => {
         transporter.sendMail(
           mailProps(
             pair.Mentor.email,
-            req.body.title,
+            req.body.subject,
             req.body.content
           )
         );
