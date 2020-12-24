@@ -39,14 +39,19 @@ export default function Teacher() {
       return Swal.fire("Error", "no student selected", "error");
     try {
       task.createdBy = user.id;
-      console.log(task);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
       });
-      Swal.fire("Success", "task added successfully", "success");
-      handleClose();
-    } catch {}
+      Swal.fire("Success", "task added successfully", "success").then((_) =>
+        window.location.assign("/tasks")
+      );
+      handleClose(true);
+      //@ts-ignore
+    } catch (e) {
+      console.log(e);
+      Swal.fire("Error", e.message, "error");
+    }
   };
   const students = useRecoilValue(teacherStudents);
   const classesToTeacher = useRecoilValue(classesOfTeacher);
@@ -62,7 +67,6 @@ export default function Teacher() {
 
   useEffect(() => {
     network.get("/api/v1/event/updates").then((data: any) => {
-      console.log(data);
       setLoaded(data.data.success);
     });
   }, []);
@@ -117,7 +121,7 @@ export default function Teacher() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (taskAdded?: any) => {
     setOpen(false);
     setTask(getBaseTask());
   };
@@ -139,7 +143,6 @@ export default function Teacher() {
     </div>
   );
 
-  console.log(studentsToTask);
   return (
     <Loading loading={!loaded}>
       <div
