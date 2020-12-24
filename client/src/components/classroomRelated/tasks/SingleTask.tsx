@@ -18,6 +18,9 @@ import PublishIcon from "@material-ui/icons/Publish";
 import LinkIcon from "@material-ui/icons/Link";
 import network from "../../../helpers/network";
 import Swal from "sweetalert2";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
