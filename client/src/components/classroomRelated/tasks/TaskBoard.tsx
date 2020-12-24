@@ -14,6 +14,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from "react-responsive-carousel";
 import Modal from "@material-ui/core/Modal";
 import Submit from "./Submit";
+import TaskAccordion from "./TaskAccordion";
 
 export default function TaskBoard() {
   const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();
@@ -27,13 +28,15 @@ export default function TaskBoard() {
   const [currentTask, setCurrentTask] = useState<number>();
 
   const DashboardContainer = styled.div`
-    background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+    /* background-color: ${({ theme }: { theme: any }) =>
+      theme.colors.background}; */
     width: 100%;
     height: 100vh;
   `;
 
   const Carus = styled(Carousel)`
-    background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+    /* background-color: ${({ theme }: { theme: any }) =>
+      theme.colors.background}; */
     width: 36%;
     border-radius: 10px;
     margin-left: auto;
@@ -42,7 +45,8 @@ export default function TaskBoard() {
     margin-bottom: 5vh;
   `;
   const Content = styled.div`
-    color: ${({ theme }: { theme: any }) => theme.colors.font};
+    /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
+    margin-top: 5%;
   `;
 
   const getMyTasks = async () => {
@@ -115,19 +119,19 @@ export default function TaskBoard() {
     <DashboardContainer>
       <Content>
         <Loading size={30} loading={loading}>
-          <Carus showArrows={true}>
-            {unfinishedTasks ? (
-              unfinishedTasks?.map((unfinishedTask: any) => (
-                <SingleTask
-                  task={unfinishedTask}
-                  handleOpen={handleOpen}
-                  handleClose={handleClose}
-                />
-              ))
-            ) : (
-              <h1>no tasks</h1>
-            )}
-          </Carus>
+          {/* <Carus showArrows={true}> */}
+          {unfinishedTasks ? (
+            unfinishedTasks?.map((unfinishedTask: any) => (
+              <TaskAccordion
+                task={unfinishedTask}
+                handleOpen={handleOpen}
+                handleClose={handleClose}
+              />
+            ))
+          ) : (
+            <h1>no tasks</h1>
+          )}
+          {/* </Carus> */}
           <Modal
             open={open}
             onClose={handleClose}
@@ -168,7 +172,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
-      color: `${({ theme }: { theme: any }) => theme.colors.font}`,
+      // color: `${({ theme }: { theme: any }) => theme.colors.font}`,
     },
   })
 );

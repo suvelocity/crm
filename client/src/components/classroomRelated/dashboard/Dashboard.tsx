@@ -5,6 +5,9 @@ import { IUser } from "../../../typescript/interfaces";
 import Notices from "./Notices";
 //@ts-ignore
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
+import dashImg from "../../../media/dashboard.jpg";
+import scaleup from "../../../media/scale-up.jpg";
+import classroom from "../../../media/classroom-new.jpg";
 
 export default function Dashboard() {
   //@ts-ignore
@@ -23,14 +26,25 @@ export default function Dashboard() {
           </InformationTile>
         </TilesRow>
       )}
+      <img
+        src={scaleup}
+        style={{
+          width: "50%",
+          opacity: "80%",
+          marginTop: "5%",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}></img>
       <Notices />
     </DashboardContainer>
   );
 }
 
 const DashboardContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font}; */
   width: 100%;
   height: 100vh;
 `;

@@ -87,7 +87,7 @@ export default function Lesson({
             id='panel1a-header'>
             {"#" + index + " " + lessonState.title}
           </StyledSummery>
-          <hr />
+          <hr style={{ width: "80%", opacity: "80%" }} />
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
