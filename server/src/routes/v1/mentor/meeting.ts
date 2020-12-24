@@ -14,17 +14,18 @@ const sendMeetingEmail = async (
     meeting: any
 ) => {
     const cal = ical()
-    const event = cal.createEvent({
+    cal.createEvent({
         start: meeting.date,
         end: new Date((new Date(meeting.date)).getTime() + 1000 * 60 * 60),
         summary: meeting.title,
         organizer: `${meeting.studentName} <${meeting.studentEmail}>`,
         location: meeting.place,
+        alarms: [
+          { type: 'display', trigger: 60 * 60 * 24 },
+          { type: 'audio', trigger: 60 * 30 },  
+        ]
     });
-    event.alarms([
-        { type: 'display', trigger: 60 * 60 * 24 },
-        { type: 'audio', trigger: 60 * 30 },
-    ])
+
     const message = {
         from: process.env.EMAIL_USER,
         to: to === 'mentor' ? meeting.mentorEmail : meeting.studentEmail,
