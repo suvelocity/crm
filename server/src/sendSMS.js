@@ -64,7 +64,7 @@ const from = 'YOUR-MENTOR';
         if(Aftermeeting[0]){
             Aftermeeting.forEach((meet)=>{
                 const to = `972${meet.MentorStudent.Student.phone.slice(1)}`;
-                const text = `How was the meeting? Do not forget to update on "url"`;
+                const text = `How was the meeting? Do not forget to update on http://35.226.223.57:8080/mentor/${meet.MentorStudent.id}`;
                 nexmo.message.sendSms(from, to, text,(err,res)=>{
                     if(err){
                         console.log("err",err);
