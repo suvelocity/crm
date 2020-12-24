@@ -119,8 +119,6 @@ const ProgramDashboard: React.FC = () => {
         status: "active"
     };
     const studentsToTask = tabelsData.map(student => student.id)
-      console.log(task);
-      console.log(studentsToTask);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
