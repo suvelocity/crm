@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true,
     modelName: 'FieldSubmission',
     paranoid: true,
-    tableName: 'fieldsubmissions'
+    tableName: 'FieldSubmissions'
   });
   return FieldSubmission;
 };

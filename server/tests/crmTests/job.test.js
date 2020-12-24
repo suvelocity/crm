@@ -31,8 +31,8 @@ const mockAddedJob = {
   location: "Tel Mond, Israel",
   requirements: "be awesome",
   additionalDetails: "Shahar Eliyahu is a MASSIVE snake",
-  createdAt: "2020-12-20",
-  updatedAt: "2020-12-20",
+  createdAt: (new Date).toISOString().slice(0,10),
+  updatedAt: (new Date).toISOString().slice(0,10),
   deletedAt: null,
 };
 

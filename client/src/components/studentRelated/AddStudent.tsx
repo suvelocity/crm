@@ -383,6 +383,21 @@ function AddStudent(props: Props) {
                   <ActionBtn />
                 )
               ) : null}
+              <br />
+              <TextField
+                id="fcc_account"
+                name="fccAccount"
+                defaultValue={props.student ? props.student.fccAccount : ""}
+                inputRef={register()}
+                label="FreeCodeCamp Account"
+              />
+              {!empty ? (
+                errors.fccAccount ? (
+                  <ErrorBtn tooltipTitle={errors.fccAccount.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
             </div>
           </GridDiv>
           {generateBrs(2)}
