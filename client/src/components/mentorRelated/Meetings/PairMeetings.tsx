@@ -118,7 +118,7 @@ function PairMeetings() {
         </GridDiv>
       </Loading>
       <Center>
-      <NewMeetingModal id={id} getMeetings={getMeetings}  />
+      <NewMeetingModal id={id} getMeetings={getMeetings} meetings={meetings}  />
       </Center>
     </Wrapper>
   );

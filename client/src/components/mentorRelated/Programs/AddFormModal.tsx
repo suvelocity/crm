@@ -1,20 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import network from "../../../helpers/network";
-import {
-  Modal,
-  Button,
-  TextField,
-  Tooltip,
-  IconButton,
-} from "@material-ui/core";
+import { Modal, Button, TextField } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import { Center } from "../../../styles/styledComponents";
 import Swal from "sweetalert2";
-import DoneIcon from "@material-ui/icons/Done";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-
+import { ActionBtn, ErrorBtn } from "../../formRelated";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,21 +40,16 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       margin: 10,
     },
-    dateTimePicker: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
-    },
   })
 );
 
-function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any, meetings: any}) {
+function AddFormModal({getForms, id}:{getForms:any, id:number}) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
   const { register, handleSubmit, errors, control } = useForm();
 
-  const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
+  const empty = Object.keys(errors).length === 0;
 
   const handleOpen = () => {
     setOpen(true);
@@ -74,78 +61,71 @@ function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any
 
   const submitStatus = async (data: any) => {
     handleClose();
+    data.programId = id;
     try {
-      data.pairId = id;
-      data.occurred = false;
-      data.mentorEmail = meetings.Mentor.email;
-      data.studentEmail = meetings.Student.email;
-      data.mentorName = meetings.Mentor.name;
-      data.studentName = meetings.Student.firstName +' '+ meetings.Student.lastName
       console.log(data);
-      await network.post(`/api/V1/M/meeting`,data);
-      getMeetings();
+      await network.post(`/api/V1/M/form/`, data);
+      getForms()
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
+
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <div className={classes.root}>
         <Center>
-          <h1>New Meeting</h1>
+          <h1>Add Form To The Program</h1>
         </Center>
         <form onSubmit={handleSubmit(submitStatus)}>
           <Center>
-            <br />
-            <br />
-            <TextField
-              id="datetime-local"
-              name="date"
-              label="Meeting Date And Time"
-              type="datetime-local"
-              className={classes.dateTimePicker}
-              inputRef={register({
-                required: "Date and Time is required"
-              })}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            {!empty ? (
-              errors.date ? (
-                <Tooltip title={errors.date.message}>
-                  <IconButton style={{ cursor: "default" }}>
-                    <ErrorOutlineIcon
-                      style={{ width: "30px", height: "30px" }}
-                      color="error"
-                    />
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <IconButton style={{ cursor: "default" }}>
-                  <DoneIcon color="action" />
-                </IconButton>
-              )
-            ) : null}
-            <br />
-            <br />
             <TextField
               id="title"
-              inputRef={register({
-                required: false,
-              })}
               name="title"
-              label="Title - isn't required"
+              inputRef={register({
+                required: "Form Title is required",
+                minLength: {
+                  value: 2,
+                  message: "Title needs to be a minimum of 2 letters",
+                },
+              })}
+              label="Form Title"
+            />
+              {!empty ? (
+                errors.title ? (
+                  <ErrorBtn tooltipTitle={errors.title.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
+            <br/>
+            <br/>
+            <TextField
+              id="URL"
+              name="url"
+              multiline
+              fullWidth
+              rows={1}
+              variant="outlined"
+              inputRef={register({
+                required: "URL is required",
+              })}
+              label="Form URL"
             />
             <br />
+            <br />
             <TextField
-              id="location"
+              id="answerUrl"
+              name="answerUrl"
+              multiline
+              fullWidth
+              rows={1}
+              variant="outlined"
               inputRef={register({
-                required: false,
+                required: "Answer URL is required",
               })}
-              name="place"
-              label="Location"
+              label="Answer Form URL"
             />
             <br />
           </Center>
@@ -166,13 +146,11 @@ function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any
 
   return (
     <>
-      <Button
-        variant="contained"
-        // color="primary"
-        onClick={handleOpen}
-      >
-        Add Meeting
-      </Button>
+      <a style={{color:"black", textDecoration: "none"}} href="https://docs.google.com/forms" target="_blank">
+        <Button style={{ backgroundColor: "#fa8c84", margin: 5 }} onClick={handleOpen}>
+          Add Form
+        </Button>
+      </a>
       <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>
@@ -180,7 +158,7 @@ function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any
   );
 }
 
-export default NewMeetingModal;
+export default AddFormModal;
 
 function getModalStyle() {
   return {
@@ -189,4 +167,3 @@ function getModalStyle() {
     transform: "translate(-50%, -50%)",
   };
 }
-
