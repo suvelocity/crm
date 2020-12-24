@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import network from "../../../helpers/network";
 import {
   H1,
@@ -17,9 +17,11 @@ import {
   IMentorProgramDashboard,
   IMentorProgram,
   IMentorProgramForms,
+  ITask
 } from "../../../typescript/interfaces";
 import EditIcon from "@material-ui/icons/Edit";
 import { Loading } from "react-loading-wrapper";
+import { AuthContext } from "../../../helpers";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../../helpers/general";
@@ -28,6 +30,7 @@ import AddFormModal from "./AddFormModal";
 import { formatToIsraeliDate } from "../../../helpers/general";
 import Swal from "sweetalert2";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SendMailModal from "./SendMailsModal";
 
 const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,6 +42,9 @@ const ProgramDashboard: React.FC = () => {
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
   const { id } = useParams();
   const history = useHistory();
+  const {user} = useContext<any>(AuthContext);
+  console.log(user);
+  
 
   const getTableData = useCallback(async () => {
     const program = await network.get(`/api/v1/M/program/${id}`);
@@ -102,6 +108,29 @@ const ProgramDashboard: React.FC = () => {
     }
   };
 
+  const postTask = async (title:string, url:string, ) => {
+    try {
+      const task:ITask = {
+        title: `mentor program form -${title}`,
+        externalLink: url,
+        createdBy: 1, /*user.id*/
+        endDate: new Date(Date.now()+(3*24*60*60*1000)),
+        type:"manual",
+        status: "active"
+    };
+    const studentsToTask = tabelsData.map(student => student.id)
+      console.log(task);
+      console.log(studentsToTask);
+      await network.post("/api/v1/task/tostudents", {
+        ...task,
+        idArr: studentsToTask,
+      });
+      Swal.fire("Success", "task added successfully", "success");
+    } catch(err){
+      Swal.fire("Error Occurred", err.message, "error");
+    }
+  };
+
   return (
     <>
       <Wrapper width="80%">
@@ -130,6 +159,7 @@ const ProgramDashboard: React.FC = () => {
           Edit Program
         </Button>
         <AddFormModal getForms={getForms} id={id} />
+        <SendMailModal id={id}/>
         <SimpleModal
           open={modalOpen}
           setOpen={setModalOpen}
@@ -300,7 +330,7 @@ const ProgramDashboard: React.FC = () => {
                     </StyledSpan>
                   </a>
                   <StyledSpan>
-                    <Button>send to the students</Button>
+                    <Button onClick={()=>postTask(form.title, form.answerUrl)}>send to the students</Button>
                   </StyledSpan>
                   <StyledSpan>
                     <DeleteIcon style={{cursor:"pointer"}} onClick={() => deleteForm(form.id!)} />

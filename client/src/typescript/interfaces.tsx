@@ -188,6 +188,7 @@ export interface IMentorForm {
   id?: number;
   programId: number;
   url: string;
+  answerUrl: string;
   title: string;
   createdAt: string;
 }
