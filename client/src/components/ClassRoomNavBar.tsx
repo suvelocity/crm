@@ -1,4 +1,4 @@
-import React, { useState, useContext,useCallback,useEffect } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -29,7 +29,7 @@ import StreetviewIcon from "@material-ui/icons/Streetview";
 import { AuthContext } from "../helpers";
 import { ThemeContext } from "../helpers";
 import network from "../helpers/network";
-import {IStudent} from "../typescript/interfaces";
+import { IStudent } from "../typescript/interfaces";
 //@ts-ignore
 import DarkModeToggle from "react-dark-mode-toggle";
 import "./classroomNavBar.css";
@@ -43,8 +43,7 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  
-  
+
   //@ts-ignore
   const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,18 +55,20 @@ function ClassRoomNavBar() {
     setAnchorEl(null);
   };
 
-  const getMentors = useCallback(async()=>{
-    try{
-      const{data}:{data:IStudent} = await network.get(`/api/V1/M/student/${user.id}`)
-      setMentorProgram(data)
-    }catch(err){
+  const getMentors = useCallback(async () => {
+    try {
+      const { data }: { data: IStudent } = await network.get(
+        `/api/V1/M/student/${user.id}`
+      );
+      setMentorProgram(data);
+    } catch (err) {
       alert(err.message);
     }
-  },[user])
+  }, [user]);
 
-   useEffect(()=>{
-    getMentors()
-   },[])
+  useEffect(() => {
+    getMentors();
+  }, []);
 
   const handleChangeTheme = () => {
     const isDark = currentTheme === "dark";
@@ -82,13 +83,7 @@ function ClassRoomNavBar() {
 
   return (
     <div>
-      {/* top bar    background: "#202124",
-    sideBar: "#18191b", */}
-      {/* //todo add my color somehow */}
-      <AppBar
-        position='static'
-        // style={{ backgroundColor: currentTheme === "dark" && "#18191b" }}
-      >
+      <AppBar position='static'>
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
@@ -119,7 +114,7 @@ function ClassRoomNavBar() {
               right: 10,
               marginRight: 10,
             }}>
-            <>
+            {/* <>
               <IconButton
                 onClick={handleClick}
                 color='inherit'
@@ -128,7 +123,7 @@ function ClassRoomNavBar() {
                   <Notifications style={{ marginRight: 10, color: "white" }} />
                 </Badge>
               </IconButton>
-            </>
+            </> */}
 
             <AccountCircleIcon
               style={{
@@ -159,6 +154,21 @@ function ClassRoomNavBar() {
               Lessons
               <SchoolIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
+
+            {/* <StyledLink to="/schedhule">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Schedhule
+              <TodayIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink> */}
+            <StyledLink to='/tasks'>
+              <DrawerItem onClick={() => setOpen(false)}>
+                Tasks
+                <AssignmentLateIcon
+                  style={{ position: "absolute", right: 10 }}
+                />
+              </DrawerItem>
+            </StyledLink>
           </StyledLink>
           <StyledLink to='/quizme'>
             <DrawerItem onClick={() => setOpen(false)}>
@@ -166,28 +176,8 @@ function ClassRoomNavBar() {
               <QuizIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          {/* <StyledLink to="/schedhule">
-            <DrawerItem onClick={() => setOpen(false)}>
-              Schedhule
-              <TodayIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
-          </StyledLink> */}
-          <StyledLink to='/tasks'>
-            <DrawerItem onClick={() => setOpen(false)}>
-              Tasks
-              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
-          </StyledLink>
 
-          {/* {user.userType == "teacher" && (
-            <StyledLink to='/teacher'>
-              <DrawerItem onClick={() => setOpen(false)}>
-                Teacher
-                <StreetviewIcon style={{ position: "absolute", right: 10 }} />
-              </DrawerItem>
-            </StyledLink>
-          )} */}
-          {(mentorProgram && mentorProgram.MentorStudents![0]) && (
+          {mentorProgram && mentorProgram.MentorStudents![0] && (
             <StyledLink to={`/mentor/${mentorProgram.MentorStudents![0].id}`}>
               <DrawerItem onClick={() => setOpen(false)}>
                 mentors

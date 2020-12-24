@@ -6,12 +6,12 @@ import { IClass } from "../../../types";
 
 const router = Router();
 
-// get all classes
+// get the student
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const classes: IClass[] = await Student.findOne({
+    const student: IClass[] = await Student.findOne({
         where: { id: req.params.id },
-        required:false,
+        // required:false,
         include:[
             {
                 model:MentorStudent,
@@ -24,7 +24,7 @@ router.get("/:id", async (req: Request, res: Response) => {
             },
         ]
     });
-    res.json(classes);
+    res.json(student);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

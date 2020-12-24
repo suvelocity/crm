@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson,ITask } from "../../../typescript/interfaces";
+import { ILesson, ITask } from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -15,6 +15,7 @@ import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
 import Select from "@material-ui/core/Select";
 import { AuthContext } from "../../../helpers";
+import SingleLessonTask from "./SingleLessonTask";
 
 export default function Lesson({
   lesson,
@@ -69,7 +70,7 @@ export default function Lesson({
         setOpen={setModalState}
         update={true}
         lesson={lessonState}
-        header="Edit Lesson"
+        header='Edit Lesson'
         lessonTasks={tasks}
         classId={classId}
       />
@@ -82,16 +83,15 @@ export default function Lesson({
         <StyledAccordion>
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            {"#" + (index + 1) + " " + lessonState.title}
+            aria-controls='panel1a-content'
+            id='panel1a-header'>
+            {"#" + index + " " + lessonState.title}
           </StyledSummery>
-          <hr />
+          <hr style={{ width: "80%", opacity: "80%" }} />
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-              <EditDiv top="90px" onClick={() => setModalState(true)}>
+              <EditDiv top='90px' onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
               <ResourcesLinks>
@@ -100,7 +100,7 @@ export default function Lesson({
                       .split("%#splitingResource#%")
                       .map((resource: string, index: number) => (
                         <ResourcesLink key={index}>
-                          <Link target="_blank" href={resource}>
+                          <Link target='_blank' href={resource}>
                             {resource}
                           </Link>
                         </ResourcesLink>
@@ -108,24 +108,29 @@ export default function Lesson({
                   : //@ts-ignore
                     lessonState.resource?.length > 0 && (
                       //@ts-ignore
-                      <Link target="_blank" href={lessonState.resource}>
+                      <Link target='_blank' href={lessonState.resource}>
                         {lessonState.resource}
                       </Link>
                     )}
               </ResourcesLinks>
-              <StyledTask>
-                <h1>hello</h1>
-              </StyledTask>
             </Loading>
+          </StyledDetails>
+          <StyledDetails>
+            <StyledTask>
+              {tasks ? (
+                tasks.map((task: ITask) => <SingleLessonTask task={task} />)
+              ) : (
+                <p>no tasks given!</p>
+              )}
+            </StyledTask>
           </StyledDetails>
         </StyledAccordion>
       </div>
       <Modal
         open={modalState}
         onClose={() => setModalState(false)}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'>
         {body}
       </Modal>
     </LessonContainer>
@@ -135,8 +140,9 @@ export default function Lesson({
 const StyledTask = styled.div`
   margin-top: 15px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
+  /* flex-direction: column; */
+  /* align-items: flex-start; */
 `;
 
 const LessonContainer = styled.div`
@@ -169,6 +175,7 @@ const ResourcesLinks = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 5px;
 `;
 
 const ResourcesLink = styled.div`

@@ -15,24 +15,13 @@ import { IClass, IStudent, ITask } from "../../../typescript/interfaces";
 import { Center, H1, TitleWrapper } from "../../../styles/styledComponents";
 import { relative } from "path";
 import { Loading } from "react-loading-wrapper";
+import { flatMap } from "lodash";
 
 const GlobalStyle = createGlobalStyle`
   .swal2-container {
     z-index:100000000000000
   }
 `;
-
-// interface ITask {
-//   lessonId?: number;
-//   externalId?: number;
-//   externalLink?: string;
-//   createdBy: number;
-//   endDate: Date;
-//   type: string;
-//   title: string;
-//   body?: string;
-//   status: "active" | "disabled";
-// }
 
 export default function Teacher() {
   const getBaseTask = (): ITask => ({
@@ -50,14 +39,19 @@ export default function Teacher() {
       return Swal.fire("Error", "no student selected", "error");
     try {
       task.createdBy = user.id;
-      console.log(task);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
       });
-      Swal.fire("Success", "task added successfully", "success");
-      handleClose();
-    } catch {}
+      Swal.fire("Success", "task added successfully", "success").then((_) =>
+        window.location.assign("/tasks")
+      );
+      handleClose(true);
+      //@ts-ignore
+    } catch (e) {
+      console.log(e);
+      Swal.fire("Error", e.message, "error");
+    }
   };
   const students = useRecoilValue(teacherStudents);
   const classesToTeacher = useRecoilValue(classesOfTeacher);
@@ -68,14 +62,11 @@ export default function Teacher() {
   const classes = useStyles();
 
   const [task, setTask] = useState<ITask>(getBaseTask());
-  const [studentsToTask, setStudentsToTask] = useState<number[]>(
-    students.map((student: IStudent) => student!.id!)
-  );
+  const [studentsToTask, setStudentsToTask] = useState<number[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     network.get("/api/v1/event/updates").then((data: any) => {
-      console.log(data);
       setLoaded(data.data.success);
     });
   }, []);
@@ -91,6 +82,9 @@ export default function Teacher() {
       case "externalLink":
         setTask((prev) => ({ ...prev, externalLink: change }));
         break;
+      case "externalId":
+        setTask((prev) => ({ ...prev, externalId: change }));
+        break;
       case "type":
         setTask((prev) => ({ ...prev, type: change }));
         break;
@@ -104,20 +98,11 @@ export default function Teacher() {
         setTask((prev) => ({ ...prev, status: change }));
         break;
       case "students":
-        const prevStudents = studentsToTask.slice();
-        const studentALreadyExistsIndex = prevStudents.findIndex(
-          (id) => change[1] === id
+        setStudentsToTask(
+          flatMap(change, (clsArr: number[]) =>
+            clsArr.slice(1).filter((cell) => !!cell)
+          )
         );
-        if (studentALreadyExistsIndex > -1) {
-          prevStudents.splice(studentALreadyExistsIndex, 1);
-          setStudentsToTask(prevStudents);
-        } else {
-          setStudentsToTask((prev) => [
-            ...prev,
-            change.filter((e: any) => !isNaN(e))[0],
-          ]);
-        }
-        break;
     }
   };
 
@@ -136,7 +121,7 @@ export default function Teacher() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (taskAdded?: any) => {
     setOpen(false);
     setTask(getBaseTask());
   };
@@ -149,7 +134,8 @@ export default function Teacher() {
         handleRemove={handleRemove}
         handleChange={handleTaskChange}
         task={task}
-        studentsToTask={studentsToTask}
+        // studentsToTask={studentsToTask}
+        teacherClasses={classesToTeacher}
       />
       <Button variant="contained" onClick={postTask}>
         add task

@@ -9,20 +9,7 @@ import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-
-// export interface Task {
-//   id?: number;
-//   createdAt?: number;
-//   updatedAt?: number;
-//   deletedAt?: number;
-//   externalLink?: string;
-//   createdBy: number;
-//   endDate: Date;
-//   type: string;
-//   title: string;
-//   body?: string;
-//   status: "active" | "disabled";
-// }
+import CloseIcon from "@material-ui/icons/Close";
 
 interface Props {
   setOpen: Function;
@@ -30,6 +17,7 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
+  lessonAdded?: Function;
   lessonTasks?: ITask[];
   classId: number;
 }
@@ -39,6 +27,7 @@ export default function AddLesson({
   lesson,
   header,
   handleClose,
+  lessonAdded,
   lessonTasks,
   classId,
 }: Props) {
@@ -73,7 +62,6 @@ export default function AddLesson({
         createdBy: user.id,
       };
       if (update && lesson) {
-        console.log("tasks", tasks);
         await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
         const tasksToUpdate = tasks
           .slice()
@@ -118,6 +106,11 @@ export default function AddLesson({
             );
           })
         );
+        // handleClose && handleClose();
+        Swal.fire("Success", "lesson added :)", "success").then(
+          (_) => lessonAdded && lessonAdded()
+        );
+
         setOpen(false);
       }
     } catch (err) {
@@ -183,6 +176,7 @@ export default function AddLesson({
         endDate: new Date(),
         title: "",
         externalLink: "",
+        externalId: "",
         status: "active",
       },
       ...prev,
@@ -201,7 +195,7 @@ export default function AddLesson({
         setTasks(prevTasks);
         break;
       case "externalId":
-        prevTasks[index].externalLink = change;
+        prevTasks[index].externalId = change;
         setTasks(prevTasks);
         break;
       case "externalLink":
@@ -230,18 +224,20 @@ export default function AddLesson({
   return (
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
-        <Input label="Lesson name"
+        <Input
+          label='Lesson name'
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby="my-helper-text"
+          aria-describedby='my-helper-text'
           required={true}
-          variant="outlined"
+          variant='outlined'
         />
 
-        <Input label="Lesson content"
-          variant="outlined"
+        <Input
+          label='Lesson content'
+          variant='outlined'
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -249,37 +245,36 @@ export default function AddLesson({
           required={true}
           multiline
         />
-        <Input label="Zoom link"
+        <Input
+          label='Zoom link'
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
-          variant="outlined"
+          variant='outlined'
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
-            variant="outlined"
-            label="Resource"
+            variant='outlined'
+            label='Resource'
             value={resource}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleChange(e, "resource")
             }
           />
-          <AddBtn
-            variant="outlined"
+          <ResourceBtn
+            variant='outlined'
             onClick={handleAddResource}
-            style={{ marginLeft: "15px" }}
-          >
+            style={{ marginLeft: "15px" }}>
             Add Resource
-          </AddBtn>
+          </ResourceBtn>
         </AddRsourcesContainer>
         <Info>
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}
-            >
-              <Tooltip title="delete resource">
+              onClick={() => handleRemove(index, "resource")}>
+              <Tooltip title='delete resource'>
                 <Link>{resource}</Link>
               </Tooltip>
             </OneInfo>
@@ -288,9 +283,8 @@ export default function AddLesson({
 
         <Info
           className={tasks.length && "open"}
-          style={{ marginBottom: "10%" }}
-        >
-          <AddBtn variant="outlined" onClick={addTask}>
+          style={{ marginBottom: "10%" }}>
+          <AddBtn variant='outlined' onClick={addTask}>
             Add Task
           </AddBtn>
           {tasks.map((task: ITask, index: number) => (
@@ -306,7 +300,7 @@ export default function AddLesson({
         </Info>
       </AddLessonForm>
       <CreateLessonButton
-        variant="outlined"
+        variant='outlined'
         onClick={handleSubmit}
         // style={{
 
@@ -325,18 +319,26 @@ export default function AddLesson({
   );
 }
 const AddBtn = styled(Button)`
+  transition: 1.5sec;
+  align-self: center;
+  margin: 5px;
+  margin-top: 50px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
+  min-width: fit-content;
+`;
+const ResourceBtn = styled(Button)`
   transition: 1sec;
   align-self: center;
-  margin: 3px;
+  margin: 5px;
   box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
   min-width: fit-content;
 `;
 const CreateLessonButton = styled(Button)`
-  position:absolute;
-  width:fit-content;
-  bottom:0%;
-  left:50%;
-  transform:translate(-50%);
+  position: absolute;
+  width: fit-content;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%);
   margin-top: auto;
   background-color: #fefefe;
   box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
@@ -386,7 +388,7 @@ const Info = styled.div`
 
 const OneInfo = styled.div`
   //TODO rename
-  margin-top: 15px;
+  margin-top: 10px;
   padding: 10px;
   margin-right: 15px;
 `;
