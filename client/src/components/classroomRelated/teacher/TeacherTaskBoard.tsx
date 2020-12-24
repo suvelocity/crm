@@ -128,11 +128,21 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Full Name</TableCell>
-                    <TableCell>Class</TableCell>
-                    <TableCell align="left">Submission State</TableCell>
-                    <TableCell align="left">Submission Date</TableCell>
-                    <TableCell align="left">Submission Link</TableCell>
+                    <TableCell>
+                      <b>Full Name</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>Class</b>
+                    </TableCell>
+                    <TableCell align="left">
+                      <b>Submission State</b>
+                    </TableCell>
+                    <TableCell align="left">
+                      <b>Submission Date</b>
+                    </TableCell>
+                    <TableCell align="left">
+                      <b>Submission Link</b>
+                    </TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
@@ -223,6 +233,7 @@ export default function TeacherTaskBoard(props: any) {
     );
   });
 
+  console.log(teacherTasks);
   return (
     <>
       <TableContainer component={Paper}>

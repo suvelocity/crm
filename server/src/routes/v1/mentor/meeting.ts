@@ -14,16 +14,18 @@ const sendMeetingEmail = async (
     meeting: any
 ) => {
     const cal = ical()
-    const event = cal.createEvent({
+    cal.createEvent({
         start: meeting.date,
         end: new Date((new Date(meeting.date)).getTime() + 1000 * 60 * 60),
-        organizer: {name: meeting.studentName ,email: meeting.studentEmail},
+        summary: meeting.title,
+        organizer: `${meeting.studentName} <${meeting.studentEmail}>`,
         location: meeting.place,
+        alarms: [
+          { type: 'display', trigger: 60 * 60 * 24 },
+          { type: 'audio', trigger: 60 * 30 },  
+        ]
     });
-    event.alarms([
-        { type: 'display', trigger: 60 * 60 * 24 },
-        { type: 'audio', trigger: 60 * 30 },
-    ])
+
     const message = {
         from: process.env.EMAIL_USER,
         to: to === 'mentor' ? meeting.mentorEmail : meeting.studentEmail,
@@ -37,53 +39,6 @@ const sendMeetingEmail = async (
     const info = await transporter.sendMail(message)
     return info
 };
-
-// Refer to the Node.js quickstart on how to setup the environment:
-// https://developers.google.com/calendar/quickstart/node
-// Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
-// stored credentials.
-// function sendEvent(meeting: any) {
-//     var event = {
-//         'summary': meeting.title,
-//         'location': meeting.place,
-//         'description': 'Scale Up Velocity - Mentors Project Meeting',
-//         'start': {
-//           'dateTime': meeting.date,
-//           'timeZone': 'Asia/Jerusalem',
-//         },
-//         'end': {
-//           'dateTime': new Date((new Date(meeting.date)).getTime() + 1000 * 60 * 60),
-//           'timeZone': 'Asia/Jerusalem',
-//         },
-//         'recurrence': [
-//           'RRULE:FREQ=DAILY;COUNT=2'
-//         ],
-//         'attendees': [
-//           {'email': meeting.studentEmail},
-//           {'email': meeting.mentorEmail},
-//         ],
-//         'reminders': {
-//           'useDefault': false,
-//           'overrides': [
-//             {'method': 'email', 'minutes': 24 * 60},
-//             {'method': 'popup', 'minutes': 0},
-//           ],
-//         },
-//       };
-      
-//       calendar.events.insert({
-//         auth: auth,
-//         calendarId: 'primary',
-//         resource: event,
-//       }, function(err, event) {
-//         if (err) {
-//           console.log('There was an error contacting the Calendar service: ' + err);
-//           return;
-//         }
-//         console.log('Event created: %s', event.htmlLink);
-//       });
-    
-// }
   
 
 // get pair meets:
