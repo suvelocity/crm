@@ -183,7 +183,7 @@ const ResourcesLink = styled.div`
 `;
 
 const Link = styled.a`
-  background-color: #0a1425;
+  background-color: #0e2557;
   text-decoration: none;
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   border-radius: 8px;

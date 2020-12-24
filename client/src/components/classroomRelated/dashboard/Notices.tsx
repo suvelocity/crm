@@ -142,6 +142,16 @@ function Notices() {
           </Modal>
         </FilterContainer>
       )}
+      <hr
+        style={{
+          width: "60%",
+          opacity: "50%",
+          margin: 0,
+          marginLeft: "auto",
+          marginRight: "auto",
+          boxShadow: "1px",
+        }}
+      />
       <NoticeContainer>
         {notices.length ? (
           notices.map((notice) => (
@@ -195,7 +205,7 @@ const FilterContainer = styled.div`
   padding-top: 40px;
   /* background-color: ${({ theme }: { theme: any }) =>
     theme.colors.container}; */
-  width: 50%;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
   /* margin-top: 5vh; */

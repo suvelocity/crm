@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import CloseIcon from "@material-ui/icons/Close";
 import { stubString } from "lodash";
 import { formatToIsraeliDate } from "../../../helpers/general";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 export default function SingleNotice(props: any) {
   const { notice, deleteNotice, userType } = props;
@@ -32,18 +33,29 @@ export default function SingleNotice(props: any) {
           style={{ display: "flex" }}
           severity={notice.type == "regular" ? "info" : "error"}
           action={
-            <IconButton
-              aria-label='hide'
-              color='inherit'
-              size='small'
-              onClick={() => {
-                setOpen(false);
-              }}>
-              {/* <CloseIcon fontSize='inherit' /> */}
-              <p style={{ fontSize: "14px" }}>
-                <u>Hide</u>
-              </p>
-            </IconButton>
+            <div>
+              <IconButton
+                aria-label='hide'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setOpen(false);
+                }}>
+                {/* <CloseIcon fontSize='inherit' /> */}
+                <p style={{ fontSize: "14px" }}>
+                  <u>Hide</u>
+                </p>
+              </IconButton>
+              <IconButton>
+                {userType === "teacher" && (
+                  <DeleteForeverIcon
+                    style={{ color: "red" }}
+                    onClick={() => {
+                      deleteNotice(notice.id);
+                    }}></DeleteForeverIcon>
+                )}
+              </IconButton>
+            </div>
           }>
           <AlertTitle>
             <b>
@@ -58,19 +70,6 @@ export default function SingleNotice(props: any) {
             </p>
           </AlertTitle>
           <strong> {notice.body}</strong>
-
-          {userType === "teacher" && (
-            <div className='single-notice-buttons' style={{}}>
-              <Button
-                variant='outlined'
-                style={{ marginTop: "10px", alignSelf: "flex-end" }}
-                onClick={() => {
-                  deleteNotice(notice.id);
-                }}>
-                delete for students
-              </Button>
-            </div>
-          )}
         </Alert>
       </Collapse>
       {!open && (
