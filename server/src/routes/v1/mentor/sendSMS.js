@@ -1,4 +1,4 @@
-import {Student,MentorStudent,Meeting} from "./models";
+import {Student,MentorStudent,Meeting} from "../../../models";
 const Nexmo = require("nexmo");
 const { Op } = require("sequelize");
 
@@ -9,6 +9,7 @@ const nexmo = new Nexmo({
 const from = 'YOUR-MENTOR';
 
     setInterval(async() => {
+        console.log("start")
         const meeting = await Meeting.findAll({
             where: { 
                 date:{
@@ -75,4 +76,4 @@ const from = 'YOUR-MENTOR';
             })
             process.send(Aftermeeting[0].MentorStudent.Student.phone)
         }
-    }, [600000])
+    }, [10000])
