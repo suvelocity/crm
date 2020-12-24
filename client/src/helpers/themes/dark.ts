@@ -11,5 +11,6 @@ export const darkTheme = {
     darkBlue: "#08101f",
     darkGray: "#212124",
     lightGrey: "rgb(41, 42, 45)",
+    card: "white",
   },
 };

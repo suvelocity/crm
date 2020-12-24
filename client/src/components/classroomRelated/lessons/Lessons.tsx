@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { 
-  Fade, 
+import {
+  Fade,
   Button,
   Modal,
   TextField,
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
 } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Loading } from "react-loading-wrapper";
@@ -19,26 +19,27 @@ import { IClassOfTeacher, ILesson } from "../../../typescript/interfaces";
 import Lesson from "./Lesson";
 import { classesOfTeacher } from "../../../atoms";
 import { useRecoilValue } from "recoil";
-
+import { fetchSuperChallenges } from "./FccSelector";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
-  
-  const classesToTeacher= useRecoilValue(classesOfTeacher);
-  
+
+  const classesToTeacher = useRecoilValue(classesOfTeacher);
+
   const classes = useStyles();
   // const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState<boolean>(false);
   const [lessons, setLessons] = React.useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
   const [filter, setFilter] = React.useState<string>("");
+  const [fccChallenges, setFccChallenges] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = React.useState<number>(
-    classesToTeacher[0] && classesToTeacher[0].classId
+    classesToTeacher[0]?.classId
   );
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    console.log('filter:',value)
+    const { value } = e.target;
+    console.log("filter:", value);
     setFilter(value);
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
@@ -64,7 +65,7 @@ export default function Lessons() {
     setOpen(false);
   };
 
-  const body = (    
+  const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
       <AddLesson setOpen={setOpen} classId={selectedClass} />
@@ -85,6 +86,16 @@ export default function Lessons() {
   useEffect(() => {
     (async () => {
       try {
+        const fchallenges = await fetchSuperChallenges();
+        await setFccChallenges(fchallenges);
+      } catch (error) {}
+    })();
+  }, []);
+  console.log(fccChallenges);
+
+  useEffect(() => {
+    (async () => {
+      try {
         await setSelectedClass(classesToTeacher[0].classId);
       } catch (error) {}
     })();
@@ -99,30 +110,29 @@ export default function Lessons() {
     })();
   }, [selectedClass]);
 
-  const TeacherControls =()=>(
+  const TeacherControls = () => (
     <>
-        <Select id="class-select"
-          labelId="class-select-label"
-          style={{
-            height:'fit-content',
-            boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-            marginLeft: "15px",
-            backgroundColor: "white",
-          }}
-          defaultValue={selectedClass}
-          onChange={(e: any) => {
-            const newId = e.target.value
-            console.log(newId)
-            setSelectedClass(newId)
-          }}
-          variant='outlined'
-          >
-          {classesToTeacher?.map((classOfTeacher) => (
-            <MenuItem value={classOfTeacher.classId}>
-              {classOfTeacher.Class.name}
-            </MenuItem>
-          ))}
-        </Select>
+      <Select
+        id='class-select'
+        labelId='class-select-label'
+        style={{
+          height: "fit-content",
+          boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          marginLeft: "15px",
+          backgroundColor: "white",
+        }}
+        defaultValue={selectedClass}
+        onChange={(e: any) => {
+          const newId = e.target.value;
+          setSelectedClass(newId);
+        }}
+        variant='outlined'>
+        {classesToTeacher?.map((classOfTeacher) => (
+          <MenuItem value={classOfTeacher.classId}>
+            {classOfTeacher.Class.name}
+          </MenuItem>
+        ))}
+      </Select>
       <Button
         variant='outlined'
         onClick={handleOpen}
@@ -140,21 +150,22 @@ export default function Lessons() {
         onClose={handleClose}
         aria-labelledby='simple-modal-title'
         aria-describedby='simple-modal-description'>
-        <Fade in={open} timeout={600}  >
+        <Fade in={open} timeout={600}>
           {body}
         </Fade>
       </Modal>
     </>
-  )
+  );
 
   return (
     <Loading size={30} loading={loading}>
       <FilterContainer>
-        <TextField label='Search'
+        <TextField
+          label='Search'
           value={filter}
           style={{
-            borderRadius:'4px',
-            height:'fit-content',
+            borderRadius: "4px",
+            height: "fit-content",
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
             textAlign: "center",
             backgroundColor: "white",
@@ -162,78 +173,83 @@ export default function Lessons() {
           }}
           onChange={handleFilter}
           variant='outlined'
-          />
-        {(user.userType === "teacher" || user.userType === "admin") && (
+        />
+        {user.userType === "teacher" && (
           <TeacherControls />
-    //    <>
-    //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
-    //    <InputLabel id="class-select-label" shrink={true}>Class</InputLabel>
+          //    <>
+          //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
+          //    <InputLabel id="class-select-label" shrink={true}>Class</InputLabel>
 
-    //    <Select label='Class'
-    //      labelId="class-select-label"
-    //      id="class-select"
-    //      style={{
-    //        boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-    //        // marginLeft: "15px",
-    //        backgroundColor: "white",
-    //      }}
-    //      value={selectedClass}
-    //      onChange={(e: any) => {
-    //        setSelectedClass(e.target.value);
-    //      }}
-    //      variant='outlined'
-    //      >
-    //      {classesToTeacher?.map((teacherClass: any) => (
-    //        <MenuItem value={teacherClass.classId}>
-    //          {teacherClass.Class.name}
-    //        </MenuItem>
-    //      ))}
-    //    </Select>
-    //  </FormControl>
-    //  <Button
-    //    variant='outlined'
-    //    onClick={handleOpen}
-    //    style={{
-    //      boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-    //      // marginLeft: "auto",
-    //      // marginRight: "5%",
-    //      height: "auto",
-    //      backgroundColor: "white",
-    //    }}>
-    //    Add Lesson
-    //  </Button>
-    //  <Modal
-    //    open={open}
-    //    onClose={handleClose}
-    //    aria-labelledby='simple-modal-title'
-    //    aria-describedby='simple-modal-description'>
-    //    <Fade in={open} timeout={600}  >
-    //      {body}
-    //    </Fade>
-    //  </Modal>
-    // </>
-      )}
+          //    <Select label='Class'
+          //      labelId="class-select-label"
+          //      id="class-select"
+          //      style={{
+          //        boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          //        // marginLeft: "15px",
+          //        backgroundColor: "white",
+          //      }}
+          //      value={selectedClass}
+          //      onChange={(e: any) => {
+          //        setSelectedClass(e.target.value);
+          //      }}
+          //      variant='outlined'
+          //      >
+          //      {classesToTeacher?.map((teacherClass: any) => (
+          //        <MenuItem value={teacherClass.classId}>
+          //          {teacherClass.Class.name}
+          //        </MenuItem>
+          //      ))}
+          //    </Select>
+          //  </FormControl>
+          //  <Button
+          //    variant='outlined'
+          //    onClick={handleOpen}
+          //    style={{
+          //      boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
+          //      // marginLeft: "auto",
+          //      // marginRight: "5%",
+          //      height: "auto",
+          //      backgroundColor: "white",
+          //    }}>
+          //    Add Lesson
+          //  </Button>
+          //  <Modal
+          //    open={open}
+          //    onClose={handleClose}
+          //    aria-labelledby='simple-modal-title'
+          //    aria-describedby='simple-modal-description'>
+          //    <Fade in={open} timeout={600}  >
+          //      {body}
+          //    </Fade>
+          //  </Modal>
+          // </>
+        )}
       </FilterContainer>
       <LessonsContainer>
-        {classesToTeacher && filteredLessons.length
-          ? filteredLessons.map((lesson: ILesson, index: number) => (
+        {classesToTeacher && filteredLessons.length ? (
+          filteredLessons.map((lesson: ILesson, index: number) => (
             <Lesson
-            lesson={lesson}
-            index={index}
-            key={lesson.id}
-            classId={selectedClass}
+              lesson={lesson}
+              index={filteredLessons.length - index}
+              key={lesson.id}
+              classId={selectedClass}
             />
           ))
-          : <ul> No Lessons Found with filters:
-              <li>search: "{filter}"</li>
-              <li>
-                class: {
-                  classesToTeacher
-                  .find(single=>single.classId===selectedClass)?.Class.name
-                }
-              </li>
-             </ul>
-            }
+        ) : (
+          <ul>
+            {" "}
+            No Lessons Found with filters:
+            <li>search: "{filter}"</li>
+            <li>
+              class:{" "}
+              {
+                classesToTeacher.find(
+                  (single) => single.classId === selectedClass
+                )?.Class.name
+              }
+            </li>
+          </ul>
+        )}
       </LessonsContainer>
     </Loading>
   );
@@ -252,14 +268,14 @@ const FilterContainer = styled.div`
 //   // const left = 50 + rand();
 
 export const modalStyle = {
-  transition:'.5sec',
+  transition: ".5sec",
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
   overflowY: "scroll",
-  height:'85vh',
-  width:'80vw',
-  minWidth:'400px',
+  height: "85vh",
+  width: "80vw",
+  minWidth: "400px",
   zIndex: 20,
 };
 
@@ -275,7 +291,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
-    }
+    },
   })
 );
 

@@ -78,8 +78,6 @@ function SingleProcess() {
   const classesTypeRequirements = {
     primary: classes.primaryReq,
   };
-
-  console.log(events);
   return (
     <Wrapper width="90%">
       <Center>

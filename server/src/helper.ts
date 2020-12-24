@@ -20,7 +20,6 @@ import { Class, TaskofStudent, Task } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
-
 //TODO fix types
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -122,8 +121,6 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   exclude: number[]
 ) => {
   //@ts-ignore
-  console.log(array);
-  console.log(exclude);
   return array.filter(
     (elem: number, i: number) =>
       !exclude.includes(Number(elem)) && array.indexOf(elem) === i
@@ -155,11 +152,13 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
 export const getQuery: (
   specificFields?: PublicFields[],
   omitRelations?: boolean,
-  onlyActive?: boolean
+  onlyActive?: boolean,
+  only?: string | undefined
 ) => any = (
   specificFields: string[] | undefined = undefined,
   omitRelations: boolean = false,
-  onlyActive: boolean = false
+  onlyActive: boolean = false,
+  only: string | undefined
 ) => {
   const include: SeqInclude[] = [
     {
@@ -174,6 +173,7 @@ export const getQuery: (
   if (!omitRelations) {
     const includeEvents: SeqInclude = {
       model: Event,
+      required: false,
       include: [
         {
           model: Job,
@@ -186,6 +186,9 @@ export const getQuery: (
         },
       ],
     };
+    if (only) {
+      includeEvents.where = { type: only };
+    }
 
     include.push(includeEvents);
   }
@@ -224,7 +227,6 @@ export const fetchFCC: () => void = async () => {
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
-    console.log(usernames);
     const fccEvents: IFccEvent[] = (
       await axios.post(
         "https://us-central1-song-app-project.cloudfunctions.net/fcc-scraper",
@@ -249,16 +251,11 @@ export const fetchFCC: () => void = async () => {
         where: { student_id: userId, status: !"done", type: "fcc" },
         include: [{ model: Task, attributes: ["id", "externalId"] }],
       }).then((unfinishedTOS: any) => {
-        console.log(unfinishedTOS);
-        console.log(typeof unfinishedTOS);
         Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
           unfinishedTask = unfinishedTask.toJSON();
-          console.log(unfinishedTask);
-          console.log(newSolvedChallengesIds);
           let match = newSolvedChallengesIds.includes(
             unfinishedTask.Task.externalId
           );
-          console.log(match);
           if (match)
             TaskofStudent.update(
               { status: "done" },
@@ -284,8 +281,6 @@ export const fetchFCC: () => void = async () => {
 
     await Event.bulkCreate(parsedEvents);
     // await updateStudentTaskState(parsedEvents);
-
-    console.log(fccEvents[1]);
     return { success: true, newEvents: parsedEvents.length };
   } catch (err) {
     console.log(err);
