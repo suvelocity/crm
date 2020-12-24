@@ -137,58 +137,53 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
   return res.json(submissions);
 });
 
-
-
 router.post('/form', async (req: Request, res: Response) => {
+  
   async function insertOptionsField(studentId:number,fieldId:number,answer:IFormOption[]){
-    console.log('hii',answer[0].title)
-    // await FieldSubmission.findCreateFind({studentId,fieldId},{attributes:['id']})
-    const inserted = await FieldSubmission.findCreateFind({where:{studentId,fieldId},attributes:['id']})
-    console.log(inserted);
-    
-    return SelectedOption.bulkCreate(answer.map((option)=>({
-        optionId:option.id,
-        fieldSubmissionId:inserted.id,
+    try{
+      const inserted = await FieldSubmission.findOrCreate({
+        where:{studentId,fieldId},
+        attributes:['id']
       })
-    ))
+      console.log(inserted);
+    }catch(err){
+      return err
+    }
   }
-
+  async function insertTextField(studentId:number,fieldId:number,answer:string){
+    try{
+      const inserted = await FieldSubmission.findOrCreate({
+        where:{studentId,fieldId},
+        defaults:{textualAnswer:answer},
+        attributes:['id']
+      })
+      console.log(inserted);
+    }catch(err){
+      return err
+    }
+  }
   try {
     const {body} = req;
-    console.log(body)
-    // const { studentId, fieldId, textualAnswer } = body;
-    
-    const optionFields:{
-      fieldId:number,
-      studentId: number,
-      answer:IFormOption[],
-    }[] = []
 
-    const submissions = body.map(({studentId,fieldId,answer}: IFormFieldSubmission) =>{ 
+    const submissions = body.map(({studentId,fieldId,answer}: IFormFieldSubmission) => {
       if (answer instanceof Array){
-        optionFields.push({fieldId,answer,studentId})
+        return insertOptionsField(studentId,fieldId,answer)
         
-      }else{
-        return {
-          studentId,
-          fieldId,
-          textualAnswer: answer
-        } 
+      }else {
+        //@ts-ignore
+        return insertTextField(studentId,fieldId,answer)
       }
     });
-
-    const textFields = submissions.filter((e:{}|undefined)=>e)
+    await Promise.all(submissions)
     
-    const createdFieldSubmissions = await FieldSubmission.bulkCreate(textFields)
-    await Promise.all(optionFields.map(({fieldId,answer,studentId})=>insertOptionsField(
-      studentId,fieldId,answer
-    )))
-    return res.send("field subs created successfully")
+    
+    // return res.send("field subs created successfully")
   }
   catch(error) {
     return res.status(400).json(error.message);
   }
 });
+
 router.post('/quiz', async (req: Request, res: Response) => {
   try {
     const body = req.body;

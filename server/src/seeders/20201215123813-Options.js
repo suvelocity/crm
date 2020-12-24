@@ -201,9 +201,18 @@ module.exports = {
         },
         {
           id: 32,
-          title: "asoinasoif",
-          is_correct: true,
-          field_id: 8,
+          title: "red",
+          field_id: 12,
+        },
+        {
+          id: 33,
+          title: "green",
+          field_id: 12,
+        },
+        {
+          id: 34,
+          title: "blue",
+          field_id: 12,
         },
       ],
       {}
