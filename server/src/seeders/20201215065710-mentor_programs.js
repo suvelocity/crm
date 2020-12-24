@@ -16,8 +16,8 @@ module.exports = {
     [
       {
         id:1,
-        class_id: 6,
-        name: "cyber4s-1 M-program" ,
+        class_id: 1,
+        name: "seed M-program" ,
         start_date: new Date(),
         end_date: new Date("2021-05-16"),
         open:true,
