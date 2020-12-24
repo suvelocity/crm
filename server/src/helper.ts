@@ -233,7 +233,7 @@ export const fetchFCC: () => void = async () => {
         }
       )
     ).data;
-    console.log(fccEvents[1]);
+    // console.log(fccEvents[1]);
 
     //TODO fix types
     const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
@@ -280,46 +280,70 @@ export const fetchFCC: () => void = async () => {
 
     const parsedBulkEvents: IEvent[] = flatMap(
       fccEvents[1],
-      (allEvents: any) => {
-        return allEvents.map((userEventsArr: any) => {
-          const username = userEventsArr[0].user;
-          const { id: userId } = studentsData.find(
-            (studentData: any) => studentData.fcc_account === username
-          );
-          const newSolvedChallengesIds: string[] = userEventsArr.map(
-            (challenge: any) => "id" + challenge.challenge
-          );
-          TaskofStudent.findAll({
-            where: { student_id: userId, status: !"done", type: "fcc" },
-            include: [{ model: Task, attributes: ["id", "externalId"] }],
-          }).then((unfinishedTOS: any) => {
-            Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
-              unfinishedTask = unfinishedTask.toJSON();
-              let match = newSolvedChallengesIds.includes(
-                unfinishedTask.Task.externalId
-              );
-              if (match)
-                TaskofStudent.update(
-                  { status: "done" },
-                  { where: { id: unfinishedTask.id } }
-                );
-            });
-          });
+      (userBulkEventsArr: any) => {
+        const newSolvedChallengesIds: string[] = userBulkEventsArr.map(
+          (challenge: any) => "id" + challenge.challenge
+        );
+        const username = userBulkEventsArr[0].user;
+        const { id: userId } = studentsData.find(
+          (studentData: any) => studentData.fcc_account === username
+        );
 
-          return userEventsArr.map((challenge: any) => {
-            const parsedEvent: IEvent = {
-              relatedId: "id" + challenge.challenge,
-              userId: userId,
-              eventName: "FCC_BULK_SUCCESS",
-              type: "fcc",
-              date: challenge.completedDate,
-            };
-            if (challenge.hasOwnProperty("repetition")) {
-              parsedEvent.entry!.repetition = challenge.repetition;
-            }
-            return parsedEvent;
+        TaskofStudent.findAll({
+          where: { student_id: userId, status: !"done", type: "fcc" },
+          include: [{ model: Task, attributes: ["id", "externalId"] }],
+        }).then((unfinishedTOS: any) => {
+          Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
+            unfinishedTask = unfinishedTask.toJSON();
+            let match = newSolvedChallengesIds.includes(
+              unfinishedTask.Task.externalId
+            );
+            if (match)
+              TaskofStudent.update(
+                { status: "done" },
+                { where: { id: unfinishedTask.id } }
+              );
           });
         });
+
+        return userBulkEventsArr.map((userBulkEvent: any) => {
+          console.log(userBulkEvent);
+          console.log("!");
+          // if (!username) return [];
+          // const newSolvedChallengesIds: string[] = userBulkEvent.map(
+          //   (challenge: any) => "id" + challenge.challenge
+          // );
+          // TaskofStudent.findAll({
+          //   where: { student_id: userId, status: !"done", type: "fcc" },
+          //   include: [{ model: Task, attributes: ["id", "externalId"] }],
+          // }).then((unfinishedTOS: any) => {
+          //   Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
+          //     unfinishedTask = unfinishedTask.toJSON();
+          //     let match = newSolvedChallengesIds.includes(
+          //       unfinishedTask.Task.externalId
+          //     );
+          //     if (match)
+          //       TaskofStudent.update(
+          //         { status: "done" },
+          //         { where: { id: unfinishedTask.id } }
+          //       );
+          //   });
+          // });
+
+          // return userBulkEvent.map((challenge: any) => {
+          const parsedEvent: IEvent = {
+            relatedId: "id" + userBulkEvent.challenge,
+            userId: userId,
+            eventName: "FCC_BULK_SUCCESS",
+            type: "fcc",
+            date: userBulkEvent.date,
+          };
+          if (userBulkEvent.hasOwnProperty("repetition")) {
+            parsedEvent.entry!.repetition = userBulkEvent.repetition;
+          }
+          return parsedEvent;
+        });
+        // });
       }
     );
 
@@ -327,7 +351,11 @@ export const fetchFCC: () => void = async () => {
     // await updateStudentTaskState(parsedEvents);
 
     // console.log(fccEvents[1]);
-    return { success: true, newEvents: parsedEvents.length };
+    return {
+      success: true,
+      newEvents: parsedEvents.length,
+      newBulks: parsedBulkEvents.length,
+    };
   } catch (err) {
     console.log(err);
     return { success: false, error: err.message };
