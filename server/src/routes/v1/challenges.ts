@@ -58,7 +58,7 @@ router.get("/quiz", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/fcc", async (req: Request, res: Response) => {
+router.get("/fccsingle", async (req: Request, res: Response) => {
   try {
     const fccArray = await fetchBulkFcc();
     res.json(fccArray);
@@ -68,7 +68,7 @@ router.get("/fcc", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/fccblock", async (req: Request, res: Response) => {
+router.get("/fcc", async (req: Request, res: Response) => {
   try {
     const fccArray = await fetchBlockChallenges();
     res.json(fccArray);
@@ -163,7 +163,7 @@ export async function fetchSuperChallenges() {
   return challengeMap;
 }
 
-export async function fetchBlockChallenges() {
+export async function fetchBlockChallengesGuy() {
   let challengeMap: any[] = [];
   const { data: pageData } = await axios.get(
     "https://www.freecodecamp.org/page-data/learn/page-data.json"
@@ -177,12 +177,12 @@ export async function fetchBlockChallenges() {
       )
     ) {
       challengeMap.push({
-        name: challenge.superBlock,
+        label: challenge.superBlock,
         challenges: [
           {
-            name: challenge.fields.blockName,
+            label: challenge.fields.blockName,
             dashedName: challenge.block,
-            id: "ide" + challenge.block,
+            value: "id" + challenge.block,
           },
         ],
       });
@@ -207,5 +207,31 @@ export async function fetchBlockChallenges() {
   });
 
   return challengeMap;
+}
+
+export async function fetchBlockChallenges() {
+  let challengeMap: any[] = [];
+  const { data: pageData } = await axios.get(
+    "https://www.freecodecamp.org/page-data/learn/page-data.json"
+  );
+
+  let cache = pageData.result.data.allMarkdownRemark.edges;
+  // console.log(cache);
+
+  const fccBulkArr = cache.map(({ node: challenge }: { node: any }) => {
+    const idarr = challenge.fields.slug.split("/");
+    const id = idarr[3];
+    console.log(id);
+
+    const newChallenge = {
+      label: challenge.frontmatter.title.substring(16),
+      value: "id" + id,
+      link: challenge.fields.slug,
+    };
+
+    return newChallenge;
+  });
+
+  return fccBulkArr;
 }
 export default router;

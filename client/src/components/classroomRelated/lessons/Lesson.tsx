@@ -91,9 +91,12 @@ export default function Lesson({
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-              <EditDiv top='90px' onClick={() => setModalState(true)}>
-                <EditIcon />
-              </EditDiv>
+              {user.userType === "teacher" && (
+                <EditDiv top='90px' onClick={() => setModalState(true)}>
+                  <EditIcon />
+                </EditDiv>
+              )}
+
               <ResourcesLinks>
                 {lessonState.resource?.includes("%#splitingResource#%")
                   ? lessonState.resource

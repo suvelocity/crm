@@ -36,6 +36,19 @@ function ChallengeSelector({
       const { data } = await network.get(
         `/api/v1/task/challenges/${type}?name=${query}`
       );
+      console.log(data);
+      if (data.status === "error") {
+        throw data.message;
+      }
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loadFcc = async () => {
+    try {
+      const { data } = await network.get(`/api/v1/task/fccblock`);
       if (data.status === "error") {
         throw data.message;
       }
