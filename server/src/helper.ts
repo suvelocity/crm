@@ -307,30 +307,6 @@ export const fetchFCC: () => void = async () => {
         });
 
         return userBulkEventsArr.map((userBulkEvent: any) => {
-          console.log(userBulkEvent);
-          console.log("!");
-          // if (!username) return [];
-          // const newSolvedChallengesIds: string[] = userBulkEvent.map(
-          //   (challenge: any) => "id" + challenge.challenge
-          // );
-          // TaskofStudent.findAll({
-          //   where: { student_id: userId, status: !"done", type: "fcc" },
-          //   include: [{ model: Task, attributes: ["id", "externalId"] }],
-          // }).then((unfinishedTOS: any) => {
-          //   Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
-          //     unfinishedTask = unfinishedTask.toJSON();
-          //     let match = newSolvedChallengesIds.includes(
-          //       unfinishedTask.Task.externalId
-          //     );
-          //     if (match)
-          //       TaskofStudent.update(
-          //         { status: "done" },
-          //         { where: { id: unfinishedTask.id } }
-          //       );
-          //   });
-          // });
-
-          // return userBulkEvent.map((challenge: any) => {
           const parsedEvent: IEvent = {
             relatedId: "id" + userBulkEvent.challenge,
             userId: userId,
@@ -343,14 +319,11 @@ export const fetchFCC: () => void = async () => {
           }
           return parsedEvent;
         });
-        // });
       }
     );
 
     await Event.bulkCreate([...parsedEvents, ...parsedBulkEvents]);
-    // await updateStudentTaskState(parsedEvents);
 
-    // console.log(fccEvents[1]);
     return {
       success: true,
       newEvents: parsedEvents.length,
