@@ -4,8 +4,7 @@ import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from ".
 //@ts-ignore
 import db from "../../models/index";
 import {IFormFieldSubmission,IFormOption} from '../../types'
-import {Model, Sequelize} from 'sequelize'
-
+import {Model, QueryInterface, Sequelize} from 'sequelize'
 import {
   formSubmissionSchema,
   formSubmissionSchemaToPut,
@@ -141,25 +140,39 @@ router.post('/form', async (req: Request, res: Response) => {
   
   async function insertOptionsField(studentId:number,fieldId:number,answer:IFormOption[]){
     try{
-      const inserted = await FieldSubmission.findOrCreate({
+      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
         where:{studentId,fieldId},
         attributes:['id']
       })
-      console.log(inserted);
+      if(!createdNew){
+        const qi :QueryInterface= db.sequelize.getQueryInterface()
+        qi.bulkDelete('selectedoptions',{where:{fieldSubmissionId:subId}})
+      }
+      const added = await SelectedOption.bulkCreate(
+        answer.map(({id:optionId})=>({
+          fieldSubmissionId:subId,
+          optionId
+        }))
+      )
+      return added
     }catch(err){
-      return err
+      return {status:'error',message:err.message}
     }
   }
   async function insertTextField(studentId:number,fieldId:number,answer:string){
     try{
-      const inserted = await FieldSubmission.findOrCreate({
+      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
         where:{studentId,fieldId},
         defaults:{textualAnswer:answer},
         attributes:['id']
       })
-      console.log(inserted);
+      if(!createdNew){
+        const update = await FieldSubmission.update({textualAnswer:answer},{where:{id:subId}})
+        return update
+      };
+
     }catch(err){
-      return err
+      return {status:'error',message:err.message}
     }
   }
   try {
@@ -174,8 +187,8 @@ router.post('/form', async (req: Request, res: Response) => {
         return insertTextField(studentId,fieldId,answer)
       }
     });
-    await Promise.all(submissions)
-    
+    let returns = await Promise.all(submissions)
+    res.json(returns)
     
     // return res.send("field subs created successfully")
   }
