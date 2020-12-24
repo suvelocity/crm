@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response,RequestHandler } from 'express';
 //@ts-ignore
 import { Form, Field, Option } from "../../models";
 //@ts-ignore
@@ -7,8 +7,14 @@ import { formSchema, formSchemaToPut } from "../../validations";
 import { IForm } from "../../types";
 import { networkInterfaces } from 'os';
 import { QueryInterface } from 'sequelize/types';
-
+import jwt from 'jsonwebtoken'
 const router = Router();
+
+ const validateAccess :RequestHandler = async (req,res,next)=>{
+  const auth = await jwt.verify( req.headers.authorization!.slice(7),process.env.ACCESS_TOKEN_SECRET!)
+  console.log(auth)
+  next()
+}
 
 // GET ALL FORMS
 router.get('/all', async (req: Request, res: Response) => {
@@ -28,7 +34,7 @@ router.get('/all', async (req: Request, res: Response) => {
 // });
 
 // GET QUIZ BY ID
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id',validateAccess, async (req: Request, res: Response) => {
   const form = await Form.findByPk(req.params.id, {
     attributes: ["id", "name", "isQuiz"],
     include: [{model: Field, attributes: ["id", "title",'typeId'], include: [{model: Option, attributes: ['id', 'title']}]}]

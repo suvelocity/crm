@@ -144,7 +144,7 @@ router.post('/form', async (req: Request, res: Response) => {
     console.log('hii',answer[0].title)
     // await FieldSubmission.findCreateFind({studentId,fieldId},{attributes:['id']})
     const inserted = await FieldSubmission.findCreateFind({where:{studentId,fieldId},attributes:['id']})
-    console.log(inserted));
+    console.log(inserted);
     
     return SelectedOption.bulkCreate(answer.map((option)=>({
         optionId:option.id,
@@ -157,6 +157,7 @@ router.post('/form', async (req: Request, res: Response) => {
     const {body} = req;
     console.log(body)
     // const { studentId, fieldId, textualAnswer } = body;
+    
     const optionFields:{
       fieldId:number,
       studentId: number,
