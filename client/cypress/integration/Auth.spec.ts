@@ -15,4 +15,17 @@ describe("Auth Tests", () => {
       cy.wait("@login");
       cy.contains("Welcome to CRM");
     });
+
+    it.only("Tests Logout", () => {
+      cy.route("POST", "**/api/v1/auth/token", {
+        userType: "admin",
+      });
+      cy.route("POST", "**/api/v1/auth/signout", {}).as("logout");
+      cy.visit("http://localhost:3000");
+      cy.get("#menuButton").click();
+      cy.get("#signOut").click();
+      cy.wait("@logout");
+      cy.getCookie('refreshToken').should('not.exist')
+      cy.contains("Scale-Up Velocity CRM");
+    });
 });
