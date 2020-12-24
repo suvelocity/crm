@@ -6,9 +6,8 @@ const nexmo = new Nexmo({
     apiKey: process.env.NEXMO_API_KEY,
     apiSecret: process.env.NEXMO_API_SECRET,
   });
-const from = 'YOUR-MENTOR-PROGRAM';
+const from = 'YOUR-MENTOR';
 
-// const sendReminderSMS =() => {
     setInterval(async() => {
         const meeting = await Meeting.findAll({
             where: { 
@@ -19,7 +18,26 @@ const from = 'YOUR-MENTOR-PROGRAM';
             include:[
                 {
                     model:MentorStudent,
-                    attributes: ["studentId"],
+                    attributes: ["studentId","id"],
+                    include: [
+                        {
+                            model:Student,
+                            attributes: ["phone"]
+                        }
+                    ]
+                }
+            ]
+        })
+        const Aftermeeting = await Meeting.findAll({
+            where: { 
+                date:{
+                    [Op.between]: [new Date(Date.now() - 90*60*1000) , new Date(Date.now() - 60*60*1000)],
+                }
+            },
+            include:[
+                {
+                    model:MentorStudent,
+                    attributes: ["studentId","id"],
                     include: [
                         {
                             model:Student,
@@ -31,12 +49,30 @@ const from = 'YOUR-MENTOR-PROGRAM';
         })
         if(meeting[0]){
             meeting.forEach((meet)=>{
-                const to = `+972${meet.MentorStudent.Student.phone}`;
+                const to = `972${meet.MentorStudent.Student.phone.slice(1)}`;
                 const text = `DONT FORGET! You have an appointment with your mentor in ${meet.date.toLocaleTimeString().slice(0,5)}`;
-                nexmo.message.sendSms(from, to, text);
+                nexmo.message.sendSms(from, to, text,(err,res)=>{
+                    if(err){
+                        console.log("err",err);
+                    }else{
+                        console.log("good",res);
+                    }
+                });
             })
+            process.send(meeting[0].MentorStudent.Student.phone)
         }
-        process.send(meeting[0].MentorStudent.Student.phone)
-    }, [20000])
-
-// }
+        if(Aftermeeting[0]){
+            Aftermeeting.forEach((meet)=>{
+                const to = `972${meet.MentorStudent.Student.phone.slice(1)}`;
+                const text = `How was the meeting? Do not forget to update on "url"`;
+                nexmo.message.sendSms(from, to, text,(err,res)=>{
+                    if(err){
+                        console.log("err",err);
+                    }else{
+                        console.log("good",res);
+                    }
+                });
+            })
+            process.send(Aftermeeting[0].MentorStudent.Student.phone)
+        }
+    }, [600000])
