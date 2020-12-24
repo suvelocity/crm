@@ -1,15 +1,12 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import network from "../../../helpers/network";
 import { Modal, Button, TextField } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Center } from "../../../styles/styledComponents";
-import { IMentorProgram } from "../../../typescript/interfaces";
 import Swal from "sweetalert2";
 import { ActionBtn, ErrorBtn } from "../../formRelated";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
