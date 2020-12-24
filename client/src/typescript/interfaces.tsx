@@ -184,6 +184,20 @@ export interface IMentorProgram {
   startDate: string;
 }
 
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  answerUrl: string;
+  title: string;
+  createdAt: string;
+}
+
+export interface IMentorProgramForms {
+  id?: number;
+  MentorForms?: IMentorForm[];
+}
+
 export interface IUser {
   id?: number;
   userType: string;

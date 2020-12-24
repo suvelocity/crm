@@ -1,36 +1,32 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('mentor_programs', {
+    await queryInterface.createTable('Mentor_Forms', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      class_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+      program_id: {
+        type: Sequelize.INTEGER
       },
-      name: {
+      title: {
         type: Sequelize.STRING
       },
-      open: {
-        type: Sequelize.BOOLEAN
+      url: {
+        type: Sequelize.STRING
       },
-      start_date: {
-        type: Sequelize.DATE
-      },
-      end_date: {
-        type: Sequelize.DATE
+      answer_url: {
+        type: Sequelize.STRING
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deleted_at: {
         type: Sequelize.DATE,
@@ -40,6 +36,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('create-mentor-programs');
+    await queryInterface.dropTable('Mentor_Forms');
   }
 };
