@@ -144,6 +144,8 @@ const ProgramDashboard: React.FC = () => {
           </TitleWrapper>
         </Center>
         <br />
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div>
         <Button
           style={{ backgroundColor: "#fa8c84" }}
           onClick={() => endProgram()}
@@ -156,10 +158,14 @@ const ProgramDashboard: React.FC = () => {
           }
           style={{ backgroundColor: "#fa8c84", margin: 10 }}
         >
-          Edit Program
+              Edit Program
         </Button>
+          </div>
+          <div>
         <AddFormModal getForms={getForms} id={id} />
-        <SendMailModal id={id}/>
+            <SendMailModal id={id} />
+          </div>
+        </div>
         <SimpleModal
           open={modalOpen}
           setOpen={setModalOpen}
