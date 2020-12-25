@@ -1,102 +1,106 @@
 import React, { useState, useEffect } from "react";
 import network from "../../helpers/network";
-import { Modal, Button } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import { IJob, IEvent } from "../../typescript/interfaces";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { ITeacher, IClass } from "../../typescript/interfaces";
+import {
+  CircularProgress,
+  ListItemText,
+  ListItem,
+  FormControlLabel,
+  Checkbox,
+  List,
+  Typography,
+  Modal,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@material-ui/core";
 import { Loading } from "react-loading-wrapper";
-import "react-loading-wrapper/dist/index.css";
 import { SingleListItem } from "../tableRelated";
+import "react-loading-wrapper/dist/index.css";
 import Swal from "sweetalert2";
 
-function ApplyTeacherModal({
-  currentJobs,
-  studentId,
-  getStudent,
+function AssignTeacherModal({
+  assignedClasses,
+  teacher,
+  getTeacher,
+  handleClose
 }: {
-  currentJobs: (number | undefined)[] | undefined;
-  studentId: number | undefined;
-  getStudent: () => void;
+  assignedClasses: IClass[];
+  teacher: ITeacher;
+  getTeacher: () => void;
+  handleClose: () => void;
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState(false);
-  const [jobs, setJobs] = useState<IJob[] | null>();
-  const [jobsToApply, setJobsToApply] = useState<string[]>([]);
+  const [allClasses, setAllClasses] = useState<IClass[] | null>();
+  const [classesTooAdd, setClassesTooAdd] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     try {
       (async () => {
-        const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
-        setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
+        const { data }: { data: IClass[] } = await network.get(
+          "/api/v1/class/all"
+        );
+        setAllClasses(
+          data.filter(
+            (c1: IClass) => !assignedClasses.some((c2:IClass) => c2.id === c1.id )
+          )
+        );
       })();
     } catch (error) {
+      
       Swal.fire("Error Occurred", error.message, "error");
     }
-  }, [currentJobs]);
+  }, [assignedClasses]);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleSubmit = () => {
-    if (jobsToApply.length > 0) {
+  const handleSubmit = async () => {
+    if (classesTooAdd.length > 0) {
       try {
         setLoading(true);
-        Array.from(new Set(jobsToApply)).forEach(async (jobId: string) => {
-          await network.post(`/api/v1/event`, {
-            userId: studentId,
-            relatedId: jobId,
-            eventName: "Started application process",
-            date: new Date().setHours(0, 0, 0, 0),
-            type: "jobs",
-          });
+        await network.post(`/api/v1/teacher/addClassToTeacher`, {
+          teacherWithClass: classesTooAdd.map(c => ({classId: `${c}`, teacherId: `${teacher.id}`}))
         });
-        setTimeout(() => {
-          getStudent();
+        setTimeout(() =>{
+          getTeacher();
           setLoading(false);
           handleClose();
-        }, 1000);
+        },1000)
       } catch (error) {
         Swal.fire("Error Occurred", error.message, "error");
       }
     } else {
-      handleClose();
+      setOpen(false);
     }
   };
 
   const handleCheckBoxOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setJobsToApply((prev) => [...prev, e.target.value]);
+      setClassesTooAdd((prev) => [...prev, e.target.value]);
     } else {
-      setJobsToApply((prev) => prev.filter((item) => item !== e.target.value));
+      setClassesTooAdd((prev) =>
+        prev.filter((item) => item !== e.target.value)
+      );
     }
   };
   let body = <CircularProgress />;
-  if (jobs) {
+  if (allClasses) {
     body = (
       <div style={modalStyle} className={classes.paper}>
         <div className={classes.root}>
-          <h1>Choose Jobs To Apply To</h1>
-          {jobs.length > 0 ? (
+          <h1>Choose Classes To Assign to {teacher.firstName}</h1>
+          {allClasses.length > 0 ? (
             <>
-              {jobs?.map((job: IJob) => (
-                <Accordion key={job.id}>
+              {allClasses?.map((c: IClass) => (
+                <Accordion key={c.id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-label="Expand"
@@ -109,46 +113,49 @@ function ApplyTeacherModal({
                       onFocus={(event) => event.stopPropagation()}
                       control={
                         <Checkbox
-                          id={`${job.id}`}
-                          value={job.id}
+                          id={`${c.id}`}
+                          value={c.id}
                           onChange={handleCheckBoxOnChange}
                         />
                       }
                       label=""
                     />
                     <Typography className={classes.heading}>
-                      {job.position}
-                    </Typography>
-                    <Typography className={classes.secondaryHeading}>
-                      {job.Company.name}
+                      {c.name} 
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List>
+                    <List dense>
                       <SingleListItem
-                        primary="Requirements"
-                        secondary={job.requirements}
+                        primary="startingDate"
+                        secondary={c.startingDate}
                       />
                       <SingleListItem
-                        primary="Location"
-                        secondary={job.location}
+                        primary="endingDate"
+                        secondary={c.endingDate}
                       />
+                      <ListItem>
+                        <ListItemText
+                          primary="Course"
+                          secondary={c.course}
+                        />
+                      </ListItem>
                     </List>
                   </AccordionDetails>
                 </Accordion>
               ))}
               <Button
+                style={{ backgroundColor: "#e2e600", color: "white" }}
                 className={classes.button}
-                variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                id="apply"
+                id="assign"
               >
-                Apply
+                Assign
               </Button>
             </>
           ) : (
-            <h2>No available jobs</h2>
+            <h2>No students available</h2>
           )}
         </div>
       </div>
@@ -158,21 +165,21 @@ function ApplyTeacherModal({
   return (
     <>
       <Button
-        id="applyForJob"
+        id="assignTeacher"
+        style={{ backgroundColor: "#e2e600", color: "white" }}
         variant="contained"
-        color="primary"
         onClick={handleOpen}
       >
-        Apply for a job
+        Assign a Class
       </Button>
-      <Modal open={open} onClose={handleClose}>
+      <Modal style={{ overflow: "scroll" }} open={open} onClose={() => setOpen(false)}>
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
   );
 }
 
-export default ApplyTeacherModal;
+export default AssignTeacherModal;
 
 function getModalStyle() {
   return {
@@ -203,11 +210,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: "33.33%",
       flexShrink: 0,
       fontWeight: theme.typography.fontWeightBold,
-      marginTop: 11,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
       marginTop: 11,
     },
     button: {
