@@ -24,6 +24,23 @@ export interface IStudent {
   fccAccount?: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Classes?: {classId:string, Class:IClass}[];
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+export interface tempTeacherClass {
+  classId:string;
+  Class:IClass;
+}
+
 export interface IPair {
   id: number;
   mentorProgramId: number;
