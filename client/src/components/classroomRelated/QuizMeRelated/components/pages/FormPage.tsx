@@ -19,6 +19,7 @@ interface IAnswers {
 
 
 export default function FormPage({form:{Fields,id,name}}: IProps):JSX.Element {
+  //UPDATED
   const emptyAnswers:IAnswers = {}
   const [finishTitle, setFinishTitle] = useState<string>();
   const [answers,setAnswers] = useState<IAnswers>(
