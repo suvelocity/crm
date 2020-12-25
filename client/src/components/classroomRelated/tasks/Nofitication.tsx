@@ -14,34 +14,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function Nofitication(props: any) {
-  const { myTasks } = props;
   const classes = useStyles();
-  console.log(myTasks);
-  const unfinishedTasks =
-    myTasks?.filter((task: any) => {
-      if (task.status !== "done") {
-        return true;
-      }
-      return false;
-    }) || [];
-
-  console.log(unfinishedTasks);
 
   return (
     <div className={classes.root}>
-      {unfinishedTasks.length === 0 ? (
-        <Alert severity='success'>
-          <AlertTitle>Nice!</AlertTitle>
-          You have completed all of your tasks!
-        </Alert>
-      ) : (
-        <Alert severity='warning'>
-          <AlertTitle>Please Notice</AlertTitle>
-          {`you have ${unfinishedTasks.length} tasks to complete! `}
-          <br />
-          <strong>get to work!</strong>
-        </Alert>
-      )}
+      <Alert severity='success'>
+        <AlertTitle>Nice!</AlertTitle>
+        You have completed all of your tasks!
+      </Alert>
     </div>
   );
 }

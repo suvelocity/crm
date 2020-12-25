@@ -54,7 +54,7 @@ function SingleStudent() {
   const { id } = useParams();
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(
-      `/api/v1/student/byId/${id}`
+      `/api/v1/student/byId/${id}?only=jobs`
     );
     const uniqueJobs: IEvent[] = [];
     const sortedEvents = data.Events.sort(
@@ -122,7 +122,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editStudentButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr">

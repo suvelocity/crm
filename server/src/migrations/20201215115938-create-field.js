@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      form_id: {
+      quiz_id: {
         type: Sequelize.INTEGER,
         allowNull: false
       },

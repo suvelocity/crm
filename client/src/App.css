@@ -3,3 +3,6 @@ body {
   /* background-repeat: no-repeat; */
   background-color: #efefef;
 }
+.swal2-container {
+  z-index: 1000000000;
+}
