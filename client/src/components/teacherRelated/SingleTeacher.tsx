@@ -159,6 +159,7 @@ function SingleTeacher() {
           <AllClasses
             teacherClasses={classes}
             header="Assigned Classes"
+            headerColor="#e2e600"
             // removeClass={removeClass}
             applyModal={
               <AssignTeacherModal
