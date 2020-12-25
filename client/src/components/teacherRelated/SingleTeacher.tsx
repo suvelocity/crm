@@ -114,15 +114,21 @@ function SingleTeacher() {
               >
                 <PersonIcon />
               </SingleListItem>
+            </List>
+            <List>
               <SingleListItem primary="Email" secondary={teacher?.email}>
                 <EmailIcon />
               </SingleListItem>
+            </List>
+            <List>
               <SingleListItem
                 primary="Phone Number"
                 secondary={formatPhone(teacher?.phone)}
               >
                 <PhoneIcon />
               </SingleListItem>
+            </List>
+            <List>
               <SingleListItem primary="ID Number" secondary={teacher?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
