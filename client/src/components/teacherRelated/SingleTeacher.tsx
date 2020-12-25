@@ -39,7 +39,7 @@ import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { ITeacher, tempTeacherClass, IClass } from "../../typescript/interfaces";
-import ApplyTeacherModal from "./ApplyTeacherModal";
+import AssignTeacherModal from "./AssignTeacherModal";
 import Swal from "sweetalert2";
 import { capitalize, formatPhone, formatToIsraeliDate } from "../../helpers";
 import TrackChangesIcon from "@material-ui/icons/TrackChanges";
@@ -111,7 +111,7 @@ function SingleTeacher() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv id="editJobButton" onClick={() => setModalState(true)}>
+          <EditDiv id="editTeacherButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
@@ -167,7 +167,7 @@ function SingleTeacher() {
         header='Assigned Classes' 
         // removeClass={removeClass}
         applyModal={
-            <ApplyTeacherModal 
+            <AssignTeacherModal 
             assignedClasses={classes} 
             getTeacher={getTeacher} teacher={teacher}
             handleClose={handleClose}

@@ -22,7 +22,7 @@ import { SingleListItem } from "../tableRelated";
 import "react-loading-wrapper/dist/index.css";
 import Swal from "sweetalert2";
 
-function ApplyTeacherModal({
+function AssignTeacherModal({
   assignedClasses,
   teacher,
   getTeacher,
@@ -149,9 +149,9 @@ function ApplyTeacherModal({
                 className={classes.button}
                 color="primary"
                 onClick={handleSubmit}
-                id="apply"
+                id="assign"
               >
-                Apply
+                Assign
               </Button>
             </>
           ) : (
@@ -165,7 +165,7 @@ function ApplyTeacherModal({
   return (
     <>
       <Button
-        id="assignStudent"
+        id="assignTeacher"
         style={{ backgroundColor: "#e2e600", color: "white" }}
         variant="contained"
         onClick={handleOpen}
@@ -179,7 +179,7 @@ function ApplyTeacherModal({
   );
 }
 
-export default ApplyTeacherModal;
+export default AssignTeacherModal;
 
 function getModalStyle() {
   return {
