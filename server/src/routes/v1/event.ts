@@ -11,6 +11,7 @@ import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
+import option from "../../models/option";
 
 const mailOptions = (
   to: string,
@@ -87,6 +88,40 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
     res.json(processesData);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/process-options", async (req: Request, res: Response) => {
+  const options = {
+    classes: [{ name: "All", id: "" }],
+    statuses: ["All"],
+  };
+  const allStatuses: string[] = [
+    "Sent CV",
+    "Phone Interview",
+    "First interview",
+    "Second interview",
+    "Third Interview",
+    "Forth interview",
+    "Home Test",
+    "Hired",
+    "Rejected",
+    "Irrelevant",
+    "Removed Application",
+    "Position Frozen",
+    "Canceled",
+  ];
+  try {
+    const allClassesIds: { name: string; id: string }[] = await Class.findAll({
+      attributes: ["id", "name"],
+    });
+
+    options.classes.push(...allClassesIds);
+    options.statuses.push(...allStatuses);
+
+    res.json(options);
+  } catch (e) {
+    res.status(500).json(e);
   }
 });
 

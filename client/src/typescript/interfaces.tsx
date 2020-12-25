@@ -122,7 +122,7 @@ export interface IEvent {
 
 type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
 
-type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
+export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
   Class?: string[];

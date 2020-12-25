@@ -16,6 +16,7 @@ import {
   filterStudentObject,
   IEvent,
   SelectInputs,
+  IFilterOptions,
 } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -31,10 +32,9 @@ function AllProcesses() {
   const [filterInput, setFilterInput] = useState<string>("");
   const [click, setClick] = useState<boolean>(false);
   //filters
-  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>([
-    { filterBy: "Class", possibleValues: ["a", "b", "c"] },
-    { filterBy: "JobStatus", possibleValues: ["a", "b", "c"] },
-  ]);
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
+    []
+  );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
       Class: [""],
@@ -79,8 +79,21 @@ function AllProcesses() {
   useEffect(() => {
     (async () => {
       const { data } = await network.get("/api/v1/event/allProcesses");
+      const { data: filterOptions } = await network.get(
+        "/api/v1/event/process-options"
+      );
       setProcesses(data);
       setFilteredProcesses(data);
+      //@ts-ignore
+      setFilterOptionsArray([
+        {
+          filterBy: "Class",
+          possibleValues: filterOptions.classes.map(
+            (cls: { name: string; id: string }) => cls.name
+          ),
+        },
+        { filterBy: "JobStatus", possibleValues: filterOptions.statuses },
+      ]);
       setLoading(false);
     })();
   }, []);
