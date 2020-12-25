@@ -116,7 +116,9 @@ export default function Option({
             <Controller
               control={control}
               name={`fields[${fieldIndex}].options[${index}].isCorrect`}
-              render={({ onChange, onBlur, value, name, ref }, { invalid, isTouched, isDirty }) => (
+              render={(
+                // { onChange, onBlur, value, name, ref }, { invalid, isTouched, isDirty }
+                ) => (
                 <Switch
                   color={"secondary"}
                   size={"small"}
