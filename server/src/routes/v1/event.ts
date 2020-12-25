@@ -3,6 +3,7 @@ import {
   cancelAllJobsOfStudent,
   cancelAllApplicantsForJob,
   fetchFCC,
+  parseFilters,
 } from "../../helper";
 const router = Router();
 //@ts-ignore
@@ -50,6 +51,9 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 router.get("/allProcesses", async (req: Request, res: Response) => {
+  const { filters } = req.query;
+  const parsedFilters = parseFilters(filters as string);
+
   try {
     const events: IEvent[] = await Event.findAll({
       where: { type: "jobs" },

@@ -12,12 +12,17 @@ import {
   StyledDiv,
 } from "../../styles/styledComponents";
 import TimelineIcon from "@material-ui/icons/Timeline";
-import { IEvent } from "../../typescript/interfaces";
+import {
+  filterStudentObject,
+  IEvent,
+  SelectInputs,
+} from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { capitalize, formatToIsraeliDate } from "../../helpers/general";
 import { Button, TextField } from "@material-ui/core";
 import PDFLink from "./PDFLink";
+import { FiltersComponents } from "../FiltersComponents";
 
 function AllProcesses() {
   const [processes, setProcesses] = useState<IEvent[]>([]);
@@ -25,6 +30,18 @@ function AllProcesses() {
   const [filteredProcesses, setFilteredProcesses] = useState<IEvent[]>([]);
   const [filterInput, setFilterInput] = useState<string>("");
   const [click, setClick] = useState<boolean>(false);
+  //filters
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>([
+    { filterBy: "Class", possibleValues: ["a", "b", "c"] },
+    { filterBy: "JobStatus", possibleValues: ["a", "b", "c"] },
+  ]);
+  const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
+    {
+      Class: [""],
+      JobStatus: [""],
+      // Course: [""],
+    }
+  );
 
   const handleFilter = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -67,7 +84,6 @@ function AllProcesses() {
       setLoading(false);
     })();
   }, []);
-
   return (
     <Wrapper width="80%">
       <Center>
@@ -77,12 +93,20 @@ function AllProcesses() {
       </Center>
       <br />
       <Center>
-        <TextField
-          variant="outlined"
-          value={filterInput}
-          label="Search process"
-          onChange={(e) => handleFilter(e)}
-        />
+        <div style={{ display: "flex" }}>
+          <FiltersComponents
+            array={filterOptionsArray}
+            filterObject={filterAttributes}
+            callbackFunction={setFilterAttributes}
+            widthPercent={50}
+          />
+          <TextField
+            variant="outlined"
+            value={filterInput}
+            label="Search process"
+            onChange={(e) => handleFilter(e)}
+          />
+        </div>
       </Center>
       {/* <Button variant='outlined' onClick={() => setClick((prev) => !prev)}>
         Prepare PDF
