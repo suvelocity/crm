@@ -50,7 +50,6 @@ function NavAppBar() {
             color="inherit"
             edge="start"
             aria-label="menu"
-            id="menuButton"
           >
             <Menu />
           </IconButton>
@@ -103,7 +102,7 @@ function NavAppBar() {
               <TimelineIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <DrawerItem id="signOut" onClick={signOut}>
+          <DrawerItem onClick={signOut}>
             Sign Out
             <ExitToAppIcon style={{ position: "absolute", right: 10 }} />
           </DrawerItem>

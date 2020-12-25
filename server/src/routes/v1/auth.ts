@@ -49,7 +49,6 @@ router.post("/token", async (req: Request, res: Response) => {
       }
     );
   } catch (err) {
-    console.trace(err)
     res.status(500).json({ error: err.message });
   }
 });
@@ -61,7 +60,7 @@ router.post("/signin", async (req: Request, res: Response) => {
       where: { email },
     });
     if (!user)
-      return res.status(400).json({ error: "Email or password are incorrect" });
+      return res.json(400).json({ error: "Email or password are incorrect" });
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({ error: "Email or password are incorrect" });
     }
@@ -94,7 +93,6 @@ router.post("/signin", async (req: Request, res: Response) => {
         return res.status(400).json({ error: "Unknown user type" });
     }
   } catch (err) {
-    console.trace(err)
     res.status(500).json({ error: err.message });
   }
 });

@@ -29,13 +29,8 @@ import { useHistory } from "react-router-dom";
 import GoogleMaps from "../../GeoSearch";
 import Swal from "sweetalert2";
 
-interface Props {
-  mentor?: IMentor;
-  header?: string;
-  update?: boolean;
-  handleClose?: Function;
-}
-const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
+
+const AddMentor: React.FC = () => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -43,16 +38,10 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
 
   const onSubmit = async (data: IMentor) => {
     try {
-      if (update && mentor) {
-        console.log('yay')
-        await network.put(`/api/v1/M/mentor/${mentor.id}`, data);
-        handleClose && handleClose();
-      } else {
-        data.available = true;
+        data.available = true;       
         await network.post("/api/v1/M/mentor/", data);
         Swal.fire("Success!", "", "success");
         history.push("/mentor/all");
-      }
     } catch (error) {
         Swal.fire("Error Occurred", error.message, "error");
     }
@@ -62,7 +51,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
     <Wrapper>
       <Center>
         <TitleWrapper>
-          <H1 color={"#c47dfa"}>{update ? "Edit Mentor" : "Add Mentor"}</H1>
+          <H1 color={"#c47dfa"}>Add Mentor</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv>
@@ -70,7 +59,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="name"
                 name="name"
-                defaultValue={mentor? mentor.name : ""}
                 inputRef={register({
                   required: "Full Name is required",
                   pattern: {
@@ -104,7 +92,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="company"
                 name="company"
-                defaultValue={mentor? mentor.company : ""}
                 inputRef={register({
                   required: "Company is required",
                   minLength: {
@@ -139,7 +126,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
                 id="email"
                 label="Email"
                 name="email"
-                defaultValue={mentor? mentor.email : ""}
                 inputRef={register({
                   required: "Email is required",
                   pattern: {
@@ -168,7 +154,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="phone"
                 name="phone"
-                defaultValue={mentor? mentor.phone : ""}
                 inputRef={register({
                   required: "Phone is required",
                   pattern: {
@@ -200,7 +185,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="role"
                 name="role"
-                defaultValue={mentor? mentor.role : ""}
                 inputRef={register({
                   required: "role is required",
                 })}
@@ -226,7 +210,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
             <TextField
                 id="experience"
                 name="experience"
-                defaultValue={mentor? mentor.experience : 0}
                 type="number"
                 inputRef={register({
                     required: "experience is required",
@@ -254,7 +237,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <GoogleMaps
                 id='address'
                 name='address'
-                defaultValue={mentor? mentor.address : ""}
                 inputRef={register({ required: "Address is required" })}
                 label='Address'
               />
@@ -293,9 +275,9 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
                     </Select>
                   }
                   name="gender"
-                  defaultValue={mentor? mentor.gender : "Female"}
-                  
+                  rules={{ required: "Gender is required" }}
                   control={control}
+                  defaultValue="female"
                 />
               </FormControl>
               {!empty ? (

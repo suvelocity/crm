@@ -133,6 +133,21 @@ function ApplyStudentModal({
                         primary="Location"
                         secondary={job.location}
                       />
+                      <ListItem>
+                        <ListItemText
+                          primary="Applied Students"
+                          secondary={
+                            <>
+                              {job.Events.map((event: IEvent) => (
+                                <p key={event?.Student?.id}>
+                                  {event?.Student?.firstName}{" "}
+                                  {event?.Student?.lastName}
+                                </p>
+                              ))}
+                            </>
+                          }
+                        />
+                      </ListItem>
                     </List>
                   </AccordionDetails>
                 </Accordion>
@@ -142,7 +157,6 @@ function ApplyStudentModal({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                id="apply"
               >
                 Apply
               </Button>
@@ -157,12 +171,7 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button
-        id="applyForJob"
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-      >
+      <Button variant="contained" color="primary" onClick={handleOpen}>
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>

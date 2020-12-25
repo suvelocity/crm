@@ -1,15 +1,24 @@
 import React, { useState, useContext, ChangeEvent } from "react";
-import { ILesson, ITask } from "../../../typescript/interfaces";
 import styled from "styled-components";
+import { ILesson } from "../../../typescript/interfaces";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
-import "../../../App.css";
 import network from "../../../helpers/network";
 import { AuthContext } from "../../../helpers";
 import Swal from "sweetalert2";
 import AddTask from "./AddTask";
-import CloseIcon from "@material-ui/icons/Close";
+interface Task {
+  lessonId?: number;
+  externalId?: number;
+  externalLink?: string;
+  createdBy: number;
+  endDate: Date;
+  type: string;
+  title: string;
+  body?: string;
+  status: "active" | "disabled";
+}
 
 interface Props {
   setOpen: Function;
@@ -17,9 +26,6 @@ interface Props {
   update?: boolean;
   lesson?: ILesson;
   header?: string;
-  lessonAdded?: Function;
-  lessonTasks?: ITask[];
-  classId: number;
 }
 export default function AddLesson({
   setOpen,
@@ -27,13 +33,9 @@ export default function AddLesson({
   lesson,
   header,
   handleClose,
-  lessonAdded,
-  lessonTasks,
-  classId,
 }: Props) {
   const [title, setTitle] = useState<string>(lesson ? lesson.title : "");
   const [body, setBody] = useState<string>(lesson ? lesson.body : "");
-  const [tasksToDelete, setTasksToDelete] = useState<ITask[]>([]);
   const [zoomLink, setZoomLink] = useState<string>(
     lesson ? (lesson.zoomLink ? lesson.zoomLink : "") : ""
   );
@@ -45,7 +47,7 @@ export default function AddLesson({
         : []
       : []
   );
-  const [tasks, setTasks] = useState<ITask[]>(lessonTasks ? lessonTasks : []);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   //@ts-ignore
   const { user } = useContext(AuthContext);
@@ -54,7 +56,7 @@ export default function AddLesson({
     e.preventDefault();
     try {
       const lessonToAdd: ILesson = {
-        classId,
+        classId: Number(user.classId),
         title,
         body,
         resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
@@ -63,33 +65,6 @@ export default function AddLesson({
       };
       if (update && lesson) {
         await network.put(`/api/v1/lesson/${lesson.id}`, lessonToAdd);
-        const tasksToUpdate = tasks
-          .slice()
-          .filter((task) => task.hasOwnProperty("id"));
-        await Promise.all(
-          tasksToUpdate.map((task) => {
-            const taskId = task.id;
-            const taskToSend = { ...task };
-            delete taskToSend.id;
-            delete taskToSend.createdAt;
-            delete taskToSend.updatedAt;
-            delete taskToSend.deletedAt;
-            return network.patch(`/api/v1/task/${taskId}`, taskToSend);
-          })
-        );
-        const tasksToAdd = tasks.filter((task) => !task.hasOwnProperty("id"));
-        await Promise.all(
-          tasksToAdd.map((task) => {
-            const taskWithLessonId = { ...task, lessonId: lesson.id };
-            return network.post(
-              `/api/v1/task/toclass/${classId}`,
-              taskWithLessonId
-            );
-          })
-        );
-        await Promise.all(
-          tasksToDelete.map((task) => network.delete(`/api/v1/task/${task.id}`))
-        );
         handleClose && handleClose();
       } else {
         const { data: addedLesson }: { data: ILesson } = await network.post(
@@ -97,26 +72,22 @@ export default function AddLesson({
           lessonToAdd
         );
 
-        await Promise.all(
-          tasks.map((task) => {
-            const taskWithLessonId = { ...task, lessonId: addedLesson.id };
-            return network.post(
-              `/api/v1/task/toclass/${classId}`,
-              taskWithLessonId
-            );
-          })
-        );
-        // handleClose && handleClose();
-        Swal.fire("Success", "lesson added :)", "success").then(
-          (_) => lessonAdded && lessonAdded()
-        );
+        tasks.forEach(async (task) => {
+          const taskWithLessonId = { ...task, lessonId: addedLesson.id };
+          console.log(taskWithLessonId);
 
+          await network.post(
+            `/api/v1/task/toclass/${user.classId}`,
+            taskWithLessonId
+          );
+        });
         setOpen(false);
       }
     } catch (err) {
       Swal.fire("failed", err.message, "error");
     }
   };
+  console.log(tasks);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -155,13 +126,7 @@ export default function AddLesson({
         break;
       case "task":
         const prevTasks = tasks.slice();
-        const toDelete = prevTasks.splice(index, 1)[0];
-        if (toDelete.hasOwnProperty("id")) {
-          const updateDeleted = tasksToDelete.slice();
-          updateDeleted.push(toDelete);
-          console.log(updateDeleted);
-          setTasksToDelete(updateDeleted);
-        }
+        prevTasks.splice(index, 1);
         setTasks(prevTasks);
         break;
     }
@@ -175,8 +140,6 @@ export default function AddLesson({
         type: "manual",
         endDate: new Date(),
         title: "",
-        externalLink: "",
-        externalId: "",
         status: "active",
       },
       ...prev,
@@ -192,10 +155,6 @@ export default function AddLesson({
         break;
       case "date":
         prevTasks[index].endDate = change;
-        setTasks(prevTasks);
-        break;
-      case "externalId":
-        prevTasks[index].externalId = change;
         setTasks(prevTasks);
         break;
       case "externalLink":
@@ -225,6 +184,7 @@ export default function AddLesson({
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
+          variant='outlined'
           label='Lesson name'
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -232,12 +192,11 @@ export default function AddLesson({
           }
           aria-describedby='my-helper-text'
           required={true}
-          variant='outlined'
         />
 
         <Input
-          label='Lesson content'
           variant='outlined'
+          label='Lesson content'
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -246,12 +205,12 @@ export default function AddLesson({
           multiline
         />
         <Input
+          variant='outlined'
           label='Zoom link'
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
-          variant='outlined'
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
@@ -262,12 +221,7 @@ export default function AddLesson({
               handleChange(e, "resource")
             }
           />
-          <ResourceBtn
-            variant='outlined'
-            onClick={handleAddResource}
-            style={{ marginLeft: "15px" }}>
-            Add Resource
-          </ResourceBtn>
+          <AddBtn onClick={handleAddResource}>Add Resource</AddBtn>
         </AddRsourcesContainer>
         <Info>
           {resources.map((resource: string, index: number) => (
@@ -280,14 +234,9 @@ export default function AddLesson({
             </OneInfo>
           ))}
         </Info>
-
-        <Info
-          className={tasks.length && "open"}
-          style={{ marginBottom: "10%" }}>
-          <AddBtn variant='outlined' onClick={addTask}>
-            Add Task
-          </AddBtn>
-          {tasks.map((task: ITask, index: number) => (
+        <AddBtn onClick={addTask}>Add Task</AddBtn>
+        <Info>
+          {tasks.map((task: Task, index: number) => (
             <OneInfo key={index}>
               <AddTask
                 handleChange={handleTaskChange}
@@ -299,49 +248,15 @@ export default function AddLesson({
           ))}
         </Info>
       </AddLessonForm>
-      <CreateLessonButton
-        variant='outlined'
-        onClick={handleSubmit}
-        // style={{
-
-        //   position:"absolute",
-        //   bottom:'5%',
-        //   left:'50%',
-        //   transform:'translate(-50%)',
-        //   marginTop: "auto",
-        //   backgroundColor: "white",
-        //   boxShadow:' 0 0 8px 2px rgba(0,0,0,.1)'
-        // }}
-      >
+      <Submit onClick={handleSubmit}>
         {header ? header : "Create Lesson"}
-      </CreateLessonButton>
+      </Submit>
     </AddLessonContainer>
   );
 }
+
 const AddBtn = styled(Button)`
-  transition: 1.5sec;
-  align-self: center;
-  margin: 5px;
-  margin-top: 50px;
-  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
-  min-width: fit-content;
-`;
-const ResourceBtn = styled(Button)`
-  transition: 1sec;
-  align-self: center;
-  margin: 5px;
-  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
-  min-width: fit-content;
-`;
-const CreateLessonButton = styled(Button)`
-  position: absolute;
-  width: fit-content;
-  bottom: 0%;
-  left: 50%;
-  transform: translate(-50%);
-  margin-top: auto;
-  background-color: #fefefe;
-  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
+  margin-left: 20px;
 `;
 
 const Input = styled(TextField)`
@@ -353,49 +268,38 @@ const AddRsourcesContainer = styled.div`
   align-items: center;
 `;
 
+const Submit = styled.button`
+  padding: 10px;
+`;
+
 const AddLessonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* background-color: ${({ theme }: { theme: any }) => theme.colors.container};
-  color: white; */
-  padding: 20px;
 `;
 
 const AddLessonForm = styled.form`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  /* width: 80vw; */
-  min-width: 300px;
-  overflow-y: scroll;
-  padding: 5px;
+  width: 80vw;
 `;
 
 const Info = styled.div`
-  &.open {
-    height: 110%;
-    transition: 1sec;
-    margin-bottom: 10%;
-  }
-  height: 5%;
-  min-height: fit-content;
   //TODO rename
   display: flex;
-  transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
-  /* overflow-x: auto; */
 `;
 
 const OneInfo = styled.div`
   //TODO rename
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 10px;
   margin-right: 15px;
 `;
 
 const Link = styled.span`
-  background-color: #0a1425;
+  background-color: #3f51b5;
   border-radius: 8px;
   padding: 5px;
   color: white;

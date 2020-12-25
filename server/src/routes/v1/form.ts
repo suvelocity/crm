@@ -1,4 +1,4 @@
-import { Router, Request, Response,RequestHandler } from 'express';
+import { Router, Request, Response } from "express";
 //@ts-ignore
 import { Form, Field, Option } from "../../models";
 //@ts-ignore
@@ -8,15 +8,8 @@ import { IForm, IField, IOption } from "../../types";
 import { networkInterfaces } from "os";
 import { QueryInterface } from "sequelize/types";
 import { IpOptions } from "joi";
-import jwt from 'jsonwebtoken'
 
 const router = Router();
-
- const validateAccess :RequestHandler = async (req,res,next)=>{
-  const auth = await jwt.verify( req.headers.authorization!.slice(7),process.env.ACCESS_TOKEN_SECRET!)
-  console.log(auth)
-  next()
-}
 
 // GET ALL FORMS
 router.get("/all", async (req: Request, res: Response) => {

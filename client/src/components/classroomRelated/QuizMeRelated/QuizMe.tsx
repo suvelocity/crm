@@ -29,7 +29,7 @@ function QuizMe() {
         // className={classes.container}
       >
         <Router>
-        {/* <NavBar /> */}
+          {/* <NavBar /> */}
           <Switch>
             <Route exact path="/quizme/form/:id" component={FormRouter} />
             <Route

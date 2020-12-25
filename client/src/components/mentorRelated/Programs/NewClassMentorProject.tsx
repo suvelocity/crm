@@ -12,7 +12,7 @@ import {
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Button, TextField } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
@@ -22,27 +22,26 @@ import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
 import SimpleModal from "../Modal";
-import Modal from '@material-ui/core/Modal';
-import Swal from "sweetalert2";
 import { StudentRoutes } from "../../../routes";
-import { fixedPairing } from '../PairingByDistance';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 function NewClassMentorProject() {
   const [cls, setCls] = useState<IClass | undefined>();
   const [mentors, setMentors] = useState<IMentor[]>([]);
-  const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalBody, setModalBody] = useState<any>();
   const { id } = useParams();
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
+
+  // console.log(pairing(cls?.Students!, []))
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(
       `/api/v1/M/classes/byId/${query}/${id}`
     );
+    // data.Students = data.Students.filter((student) => !student.mentorId);
     data.Students = data.Students.map((student) => {
       student.mentor = student.MentorStudents![0]
         ? student.MentorStudents![0].Mentor
@@ -57,6 +56,7 @@ function NewClassMentorProject() {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/available`
     );
+    console.log(data);
     const mentorList = data.map((mentor) => {
       let count = 0;
       cls?.Students.forEach((student) => {
@@ -67,6 +67,7 @@ function NewClassMentorProject() {
       mentor.student = count;
       return mentor;
     });
+    console.log(mentorList);
     setMentors(mentorList);
     setLoading(false);
   }, []);
@@ -88,30 +89,6 @@ function NewClassMentorProject() {
     }
     //eslint-disable-next-line
   }, [cls, getMentors]);
-
-  useEffect(() => {
-    if (searchValue !== '') {
-      setFilteredMentors(
-        mentors.filter(
-          (mentor) =>
-            mentor.name
-              .toLocaleLowerCase()
-              .includes(searchValue.toLocaleLowerCase()) ||
-            mentor.address
-              .toLocaleLowerCase()
-              .includes(searchValue.toLocaleLowerCase()) ||
-            mentor.company
-              .toLocaleLowerCase()
-              .includes(searchValue.toLocaleLowerCase()) ||
-            mentor.role
-              .toLocaleLowerCase()
-              .includes(searchValue.toLocaleLowerCase())
-        )
-      );
-    } else {
-      setFilteredMentors(mentors);
-    }
-  }, [searchValue, mentors]);
 
   const onDropLeftEnd = (result: any) => {
     const { source, destination } = result;
@@ -149,9 +126,11 @@ function NewClassMentorProject() {
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
       const newCls: IClass | undefined = cls;
       newCls!.Students = itemsStudents;
+      newCls!.Students.sort((a, b) => {
+        return a.mentor ? 1 : -1;
+      });
       setCls(newCls);
       setMentors(itemsMentor);
-      setSearchValue('');
     }
   };
 
@@ -166,23 +145,15 @@ function NewClassMentorProject() {
     setMentors(newMentors);
     const newCls: IClass | undefined = cls;
     newCls!.Students[i].mentor = null;
-    setCls(newCls);
-  };
-
-  const availableSort = () => {
-    console.log("here");
-    // @ts-ignore
-    const newCls: IClass = {...cls};
     newCls!.Students.sort((a, b) => {
       return a.mentor ? 1 : -1;
     });
-    console.log(cls)
-    console.log(newCls)
-    setCls(newCls)
-  }
-  
+    setCls(newCls);
+  };
+
   const saveMentor = async (student: Omit<IStudent, "Class">) => {
-    try {    
+    try {
+      console.log(student);
       if (student.MentorStudents![0]) {
         if (student.mentor) {
           await network.put(
@@ -194,7 +165,7 @@ function NewClassMentorProject() {
             }
           );
         } else {
-          await network.patch(
+          await network.delete(
             `/api/v1/M/classes/${student.MentorStudents![0].id}`
           );
         }
@@ -205,43 +176,61 @@ function NewClassMentorProject() {
           mentorId: student.mentor!.id,
           studentId: student.id,
         });
+
+        console.log("post");
       }
     } catch {
       return student.firstName + student.lastName;
     }
   };
 
-  const promptAreYouSure: () => Promise<boolean> = async () => {
-    const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
-    const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
-    return Swal.fire({
-      title: "Are you sure?",
-      text:
-      `${dontHaveMentor.length} students in this class not linked to a mentor
-      Would you like to link ${newMentorsToDb.length} students anyway?`,
-      icon: "warning",
-      showCancelButton: true,
-      cancelButtonColor: "#3085d6",
-      confirmButtonColor: "#2fa324",
-      confirmButtonText: "continue",
-    }).then((result) => {
-      if (result.isConfirmed) return true;
-      return false;
-    });
-  };
-
   const createProgram = async () => {
     try {
-      const newMentorsToDb = cls!.Students.filter((student) => student.mentor || student.MentorStudents![0]);
+      const newMentorsToDb = cls!.Students.filter((student) => student.mentor);
       const dontHaveMentor = cls!.Students.filter((student) => !student.mentor);
       if (dontHaveMentor.length > 0) {
-        const proceed: boolean = await promptAreYouSure();
-        if (!proceed) return;
+        setModalBody(
+          <div>
+            <div
+              style={{ color: "red", fontWeight: "bold" }}
+            >{`${dontHaveMentor.length} students in this class not linked to a mentor`}</div>
+            <StyledSpan>{`Would you like to link ${newMentorsToDb.length} students anyway?`}</StyledSpan>
+            <div>
+              <Button
+                style={{ backgroundColor: "green" }}
+                onClick={() =>
+                  cls!.Students.forEach((student: Omit<IStudent, "Class">) => {
+                    saveMentor(student).then(async () => {
+                      setModalBody(
+                        <div
+                          style={{ color: "green" }}
+                        >{`${newMentorsToDb.length} students have new mentors!`}</div>
+                      );
+                      history.push("/mentor");
+                    });
+                  })
+                }
+              >
+                Continue
+              </Button>
+              <Button
+                style={{ backgroundColor: "red" }}
+                onClick={() => setModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        );
+        setModalOpen(true);
+      } else {
+        newMentorsToDb.forEach(async (student) => {
+          if (student.mentorId !== student.mentor?.id) {
+            await saveMentor(student);
+          }
+        });
+        history.push("/mentor");
       }
-      newMentorsToDb.forEach(async (student) => {
-          await saveMentor(student);
-      });
-      history.push("/mentor");
     } catch (err) {
       console.log(err);
     }
@@ -251,55 +240,24 @@ function NewClassMentorProject() {
     getClass();
   };
 
-  const changeSearchValue = (value: string) => {
-    setSearchValue(value);
-  };
-
-  // const assignMentors = (mentorizeClass: IClass | undefined) => {
-  //   const mentorNeededCount: number = mentorizeClass!.Students.filter(
-  //     (student) => !(student.mentor || student.mentorId)
-  //   ).length;
-  //   if (mentorNeededCount <= mentors.length) {
-  //     let mentorsCount: number = 0;
-  //     for (let i = 0; i < mentorizeClass!.Students.length; i++) {
-  //       const student = mentorizeClass!.Students[i];
-  //       if (student.mentorId || student.mentor) continue;
-  //       else {
-  //         student.mentor = mentors[mentorsCount];
-  //         mentorsCount++;
-  //       }
-  //     }
-  //     setMentors(mentors.slice(-(mentors.length - mentorsCount)));
-  //     setCls(mentorizeClass);
-  //   } else console.log("not enough mentors");
-  // };
-
-  const addressGenerator = async () => {
-    if (cls) {
-      try {
-        const newCls: IClass | undefined = cls;
-        const emptyMentors: IMentor[] = mentors.filter(mentor => !mentor.student || mentor.student === 0)
-        const newMentors: IMentor[] = Array.from(mentors)
-        const studentsWithMentor = newCls.Students.filter(student => student.mentor)
-        const students = newCls.Students.filter(student => !student.mentor)
-        const pairs = await fixedPairing(students, emptyMentors)
-        pairs && pairs.forEach(student => {
-          const currMentor = student.mentor
-          const mentorIndex = newMentors.findIndex((mentor: IMentor) => mentor.id === currMentor?.id)
-          if (mentorIndex > -1) {
-            newMentors[mentorIndex].student ? newMentors[mentorIndex].student!++ : newMentors[mentorIndex].student = 1
-          }
-        })
-        setMentors(newMentors)
-        pairs.sort((a,b) => a.id -b.id)
-        newCls!.Students = [...pairs, ...studentsWithMentor]
-        setCls(newCls)
-      } catch (error) {
-        Swal.fire("Error Occurred", error.message, "error");
+  const assignMentors = (mentorizeClass: IClass | undefined) => {
+    const mentorNeededCount: number = mentorizeClass!.Students.filter(
+      (student) => !(student.mentor || student.mentorId)
+    ).length;
+    if (mentorNeededCount <= mentors.length) {
+      let mentorsCount: number = 0;
+      for (let i = 0; i < mentorizeClass!.Students.length; i++) {
+        const student = mentorizeClass!.Students[i];
+        if (student.mentorId || student.mentor) continue;
+        else {
+          student.mentor = mentors[mentorsCount];
+          mentorsCount++;
+        }
       }
-      
-    }
-  }
+      setMentors(mentors.slice(-(mentors.length - mentorsCount)));
+      setCls(mentorizeClass);
+    } else console.log("not enough mentors");
+  };
 
   return (
     <div
@@ -327,23 +285,22 @@ function NewClassMentorProject() {
               <TitleWrapper>
                 <H1 color={"#c47dfa"}>
                   Students In Class
+                  <Button style={{marginLeft:5}} onClick={() => assignMentors(cls)}>Generate</Button>
+                  <Button onClick={() => resetMentors(cls)}>Reset</Button>
                 </H1>
               </TitleWrapper>
               <div style={{ color: "red" }}>{error}</div>
-        <Button color="secondary" variant="contained" onClick={() => resetMentors(cls)}>Reset</Button>
-        <Button color="primary" variant="contained" onClick={async () => await addressGenerator()}>Generate</Button>
             </Center>
             <br />
             <Loading loading={loading} size={30}>
               <StyledUl>
                 {cls?.Students && (
                   <li>
-                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr 0.05fr">
+                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">Name</StyledSpan>
                       <StyledSpan weight="bold">Address</StyledSpan>
                       <StyledSpan weight="bold">Select Mentor</StyledSpan>
-                      <ExpandMoreIcon style={{cursor:"pointer"}} onClick={availableSort}/>
                     </TableHeader>
                   </li>
                 )}
@@ -362,12 +319,11 @@ function NewClassMentorProject() {
                             </StyledSpan>
                             <StyledSpan>{student.address}</StyledSpan>
                             <StyledSpan>
-                              <Droppable droppableId={`${i}`} ignoreContainerClipping>
-                                {(provided, snapshot) => (
+                              <Droppable droppableId={`${i}`}>
+                                {(provided) => (
                                   <div
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    style={{ width: snapshot.isDraggingOver ? 0 : '' }}
                                   >
                                     {student.mentor && (
                                       <StyledDiv repeatFormula="1.5fr 1fr">
@@ -405,15 +361,6 @@ function NewClassMentorProject() {
             </Center>
             <br />
             <Loading loading={loading} size={30}>
-            <div>
-            <TextField
-              label='Search'
-              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                changeSearchValue(e.target.value as string);
-              }}
-              value={searchValue}
-            />
-          </div>
               <StyledUl>
                 <li>
                   <TableHeader repeatFormula="0.5fr 2fr 1fr 1fr 1fr 1fr">
@@ -428,11 +375,11 @@ function NewClassMentorProject() {
                 <Droppable droppableId="mentors">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                      {filteredMentors &&
-                        filteredMentors.sort(
+                      {mentors &&
+                        mentors.sort(
                           (a, b) => (a.student || 0) - (b.student || 0)
                         ) &&
-                        filteredMentors.map((mentor, i) => (
+                        mentors.map((mentor, i) => (
                           <Draggable key={i} draggableId={`${i}`} index={i}>
                             {(provided) => (
                               <li
@@ -469,6 +416,11 @@ function NewClassMentorProject() {
             </Loading>
           </Wrapper>
         </DragDropContext>
+        <SimpleModal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          modalBody={modalBody}
+        />
       </div>
     </div>
   );

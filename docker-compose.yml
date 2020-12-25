@@ -24,15 +24,14 @@ services:
       build:
         context: .
         dockerfile: Dockerfile
-      image: ts-build-test
+      image: crmtesting
       ports: 
           - "8080:8080"
       networks: 
         - crm-network
-      env_file:
-        - ./server/src/.env
-      command: "npm run spinup:staging"
       environment:
+        REACT_APP_ONE: REACT_APP_ONE
+        REACT_APP_TWO: REACT_APP_TWO
         MYSQL_USER: root
         MYSQL_PASSWORD: password
         MYSQL_DATABASE: database_development

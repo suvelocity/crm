@@ -5,20 +5,30 @@ import {
   Modal,
   Button,
   TextField,
+  FormControl,
+  InputLabel,
+  Tooltip,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
-import { Center } from "../../../styles/styledComponents";
-import { IMentorProgram } from "../../../typescript/interfaces";
+import { Center, GridDiv } from "../../../styles/styledComponents";
+import { IEvent, IClass, IMentorProgram } from "../../../typescript/interfaces";
+import { ActionBtn, ErrorBtn } from "../../formRelated";
+//TODO change this later
+import { statuses } from "../../../helpers";
 import Swal from "sweetalert2";
 import {
   MuiPickersUtilsProvider,
+  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import EditIcon from "@material-ui/icons/Edit";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,7 +138,6 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
                 },
               })}
               label="Program Name"
-              defaultValue={program.name}
             />
             <br />
             <br />
@@ -137,7 +146,6 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
                         <FormControlLabel
                         control={
                           <Switch
-                          checked={programOpen}
                             onChange={()=>setProgramOpen(!programOpen)}
                             name="checkedB"
                             color="primary"
@@ -203,7 +211,16 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
 
   return (
     <>
-        <EditIcon style={{cursor: "pointer"}} onClick={handleOpen}/>
+      <Button
+        // style={{ height: 32, position: "absolute", right: 10, bottom: 10 }}
+        // style={{ position: "relative" }}
+        // style={{ display: "block", margin: "4vh auto" }}
+        variant="contained"
+        // color="primary"
+        onClick={handleOpen}
+      >
+        Edit Program
+      </Button>
       <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>

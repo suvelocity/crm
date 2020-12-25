@@ -13,7 +13,7 @@ import {
   TeacherofClass,
   //@ts-ignore
 } from "../../models";
-import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
+import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
@@ -37,16 +37,14 @@ router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
   try {
     const teacherId: string = req.params.teacherId;
     const teacherClasses: any | null = await TeacherofClass.findAll({
-      include: [
-        { model: Class, attributes: ["id", "name"], include: [Student] },
-      ],
+      include: [{ model: Class, attributes: ["id"], include: [Student] }],
       where: { teacherId },
     });
 
     if (teacherClasses) {
       return res.json(teacherClasses);
     } else {
-      return res.status(404).json({ error: "Teacher don`t have classes" });
+      return res.status(404).send("Teacher don`t have classes");
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -76,18 +74,12 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const only = req.query.only;
-
-    const student: any | null = await Student.findByPk(
-      id,
-      getQuery(undefined, false, false, only as string | undefined)
-    );
+    const student: IStudent | null = await Student.findByPk(id, getQuery());
 
     if (student) {
-      // student.Events = student.Events.filter((event: any, i:number) =>event.dataValues.type ==='job');
       return res.json(student);
     } else {
-      return res.status(404).json({ error: "student does not exist" });
+      return res.status(404).send("student does not exist");
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -100,8 +92,7 @@ router.post("/", async (req: Request, res: Response) => {
     const studentExists = await Student.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
-    if (studentExists)
-      return res.status(409).json({ error: "Student already exists" });
+    if (studentExists) return res.status(409).send("Student already exists");
     const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,
@@ -136,8 +127,7 @@ router.post("/", async (req: Request, res: Response) => {
       type: "student",
     };
     const user = await User.create(userToCreate);
-    if (user && process.env.NODE_ENV !== "test") {
-      console.log("SENDING MAIL");
+    if (user) {
       transporter.sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
@@ -176,7 +166,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     });
     if (deleted === 0)
       return res.status(404).json({ message: "Student not found" });
-    await Event.destroy({ where: { userId: id, type: "student" } });
+    await Event.destroy({ where: { studentId: id } });
     res.json({ message: "Student deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });

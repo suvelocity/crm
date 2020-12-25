@@ -17,7 +17,6 @@ env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
   SERVER_PORT: 8080 # the port your server is running on
-  CMDTORUN: npm run spinup:staging
 
 jobs:
   setup-build-publish-deploy:
@@ -55,24 +54,14 @@ jobs:
         mv .env ./client/.env
 
     # Install Dependencies (So the Docker Image Has The Latest Client Version)
-    - name: Client Install dependencies
+    - name: Install dependencies
       run: npm ci --only=production
       working-directory: ./client
-
-    # Install Server Dependencies
-    - name: Server Install dependencies
-      run: npm ci --only=production
-      working-directory: ./server
 
     # Build production build (So the Docker Image Has The Latest Build Version)
     - name: Create production build
       run: CI=false npm run build:prod
       working-directory: ./client
-
-    # Compile Typescript for production build 
-    - name: Compile Typescript for production build
-      run: CI=false npm run build
-      working-directory: ./server
 
     # Enable When using ENV_FILE Secret
     - name: Create .env file from Secret

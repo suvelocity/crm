@@ -1,38 +1,31 @@
 import React from "react";
 import styled from "styled-components";
-import { ILesson, ITask } from "../../../typescript/interfaces";
+import { ILesson } from "../../../typescript/interfaces";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { EditDiv } from "../../../styles/styledComponents";
-import { useState, useCallback, useEffect, useContext } from "react";
+import { useState, useCallback } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
 import AddLesson from "./AddLesson";
 import network from "../../../helpers/network";
 import Modal from "@material-ui/core/Modal";
 import { modalStyle, useStyles } from "./Lessons";
-import Select from "@material-ui/core/Select";
-import { AuthContext } from "../../../helpers";
-import SingleLessonTask from "./SingleLessonTask";
 
 export default function Lesson({
   lesson,
   index,
-  classId,
 }: {
   lesson: ILesson;
   index: number;
-  classId: number;
 }) {
   const [modalState, setModalState] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lessonState, setLessonState] = useState<ILesson>(lesson);
-  const [tasks, setTasks] = useState<ITask[]>([]);
-  const { user }: any = useContext(AuthContext);
   const classes = useStyles();
-  const getLessons = useCallback(async () => {
+  const getLesson = useCallback(async () => {
     try {
       const { data } = await network.get(`/api/v1/lesson/byId/${lesson.id}`);
       setLessonState(data);
@@ -41,27 +34,11 @@ export default function Lesson({
       setLoading(false);
     }
   }, [loading]);
-  const getTasks = useCallback(async () => {
-    try {
-      const { data: tasks }: { data: ITask[] } = await network.get(
-        `/api/v1/lesson/tasks/${lesson.id}`
-      );
-      setTasks(tasks);
-    } catch {
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
   const handleClose = () => {
     setModalState(false);
     setLoading(true);
-    getLessons();
-    setLoading(true);
-    getTasks();
+    getLesson();
   };
-  useEffect(() => {
-    getTasks();
-  }, []);
   const body = (
     //@ts-ignore
     <div style={modalStyle} className={classes.paper}>
@@ -71,8 +48,6 @@ export default function Lesson({
         update={true}
         lesson={lessonState}
         header='Edit Lesson'
-        lessonTasks={tasks}
-        classId={classId}
       />
     </div>
   );
@@ -85,13 +60,13 @@ export default function Lesson({
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'>
-            {"#" + index + " " + lessonState.title}
+            {"#" + (index + 1) + " " + lessonState.title}
           </StyledSummery>
-          <hr style={{ width: "80%", opacity: "80%" }} />
+          <hr />
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-              <EditDiv top='90px' onClick={() => setModalState(true)}>
+              <EditDiv onClick={() => setModalState(true)}>
                 <EditIcon />
               </EditDiv>
               <ResourcesLinks>
@@ -115,45 +90,23 @@ export default function Lesson({
               </ResourcesLinks>
             </Loading>
           </StyledDetails>
-          <StyledDetails>
-            <StyledTask>
-              {tasks ? (
-                tasks.map((task: ITask) => <SingleLessonTask task={task} />)
-              ) : (
-                <p>no tasks given!</p>
-              )}
-            </StyledTask>
-          </StyledDetails>
         </StyledAccordion>
+        <Modal
+          open={modalState}
+          onClose={() => setModalState(false)}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'>
+          {body}
+        </Modal>
       </div>
-      <Modal
-        open={modalState}
-        onClose={() => setModalState(false)}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
-        {body}
-      </Modal>
     </LessonContainer>
   );
 }
 
-const StyledTask = styled.div`
-  margin-top: 15px;
-  display: flex;
-  justify-content: space-between;
-  /* flex-direction: column; */
-  /* align-items: flex-start; */
-`;
-
 const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   overflow: hidden;
-  margin-bottom: 15px;
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
+  margin-bottom: 10px;
 `;
 
 const StyledAccordion = styled(Accordion)`
@@ -175,7 +128,6 @@ const ResourcesLinks = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 5px;
 `;
 
 const ResourcesLink = styled.div`
@@ -183,7 +135,7 @@ const ResourcesLink = styled.div`
 `;
 
 const Link = styled.a`
-  background-color: #0e2557;
+  background-color: #3f51b5;
   text-decoration: none;
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   border-radius: 8px;

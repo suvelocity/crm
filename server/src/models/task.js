@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   Task.init(
     {
       lessonId: DataTypes.INTEGER,
-      externalId: DataTypes.STRING,
+      externalId: DataTypes.INTEGER,
       externalLink: DataTypes.STRING,
       createdBy: DataTypes.INTEGER,
       endDate: DataTypes.DATE,
