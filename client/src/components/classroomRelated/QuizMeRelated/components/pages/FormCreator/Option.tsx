@@ -126,9 +126,9 @@ export default function Option({
 
             {/* <Controller
               control={control}
-              name={"nameee"}
-              // name={`fields[${fieldIndex}].options[${index}].isCorrect`}
-              render={({ onChange, onBlur, value, name, ref }) => (
+              name={`fields[${fieldIndex}].options[${index}].isCorrect`}
+              render={() => (
+
                 <Switch
                   color={"secondary"}
                   size={"small"}
