@@ -10,6 +10,7 @@ module.exports = {
           first_name: "lonir",
           last_name: "lotomer",
           email: "teacher@teacher.com",
+          class_id: 1,
           created_at: new Date(),
           updated_at: new Date(),
         },

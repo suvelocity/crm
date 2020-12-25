@@ -151,7 +151,7 @@ export function SignIn() {
             </div>
           )}
           {!loginError && generateBrs(2)}
-          <Button id="login" color="primary" variant="contained" type="submit">
+          <Button color="primary" variant="contained" type="submit">
             Login
           </Button>
         </form>

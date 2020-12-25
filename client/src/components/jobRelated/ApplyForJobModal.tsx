@@ -162,7 +162,6 @@ function ApplyForJobModal({
                 className={classes.button}
                 color="primary"
                 onClick={handleSubmit}
-                id="apply"
               >
                 Apply
               </Button>
@@ -178,14 +177,13 @@ function ApplyForJobModal({
   return (
     <>
       <Button
-        id="assignStudent"
         style={{ backgroundColor: "#bb4040", color: "white" }}
         variant="contained"
         onClick={handleOpen}
       >
         Assign a Student
       </Button>
-      <Modal style={{ overflow: "scroll" }} open={open} onClose={handleClose}>
+      <Modal style={{ overflow: "scroll" }}  open={open} onClose={handleClose}>
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>

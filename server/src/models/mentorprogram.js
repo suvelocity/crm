@@ -16,11 +16,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
-      this.hasMany(models.MentorForm, {
-        foreignKey: "programId",
-        onDelete: "cascade",
-        hooks: true,
-      });
     }
   }
   MentorProgram.init(

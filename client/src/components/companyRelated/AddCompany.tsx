@@ -37,6 +37,7 @@ const AddCompany = (props: Props) => {
       if (props.update && props.company) {
         await network.patch(`/api/v1/company/${props.company.id}`, data);
         props.handleClose && props.handleClose();
+        // history.push(`/company/${props.company.id}`);
       } else {
         await network.post("/api/v1/company", data);
         history.push("/company/all");

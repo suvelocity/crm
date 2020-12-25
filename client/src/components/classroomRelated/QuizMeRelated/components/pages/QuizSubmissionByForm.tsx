@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import network from "../../../../../helpers/network";
-import { QuizSubmission, AnsweredField } from "../../../../../typescript/interfaces";
+import { QuizSubmission, AnsweredFiled } from "../../../../../typescript/interfaces";
 import {
     Container,
     List,

@@ -72,14 +72,13 @@ const AddClass = (props: Props) => {
                   as={
                     <Select>
                       {courses.map((course: string, i: number) => (
-                        <MenuItem key={`opt${i}`} value={course} id={course}>
+                        <MenuItem key={`opt${i}`} value={course}>
                           {course}
                         </MenuItem>
                       ))}
                     </Select>
                   }
                   name="course"
-                  id="course"
                   rules={{ required: "Course is required" }}
                   control={control}
                   defaultValue={props.cls ? props.cls.course : ""}
@@ -161,14 +160,13 @@ const AddClass = (props: Props) => {
 
               <TextField
                 name="zoomLink"
-                id="zoomLink"
                 inputRef={register({ required: "Zoom Link is required" })}
                 label="Zoom Link"
                 defaultValue={props.cls ? props.cls.zoomLink : ""}
               />
               {!empty ? (
                 errors.zoomLink ? (
-                  <ErrorBtn tooltipTitle={errors.zoomLink.message} />
+                  <ErrorBtn tooltipTitle={errors.company.message} />
                 ) : (
                   <ActionBtn />
                 )

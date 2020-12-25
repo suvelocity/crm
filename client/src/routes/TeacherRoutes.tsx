@@ -2,31 +2,22 @@ import React, { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
-import TeacherDashboard from "../components/classroomRelated/dashboard/TeacherDashBoard";
+import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
-import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
+import Teacher from "../components/classroomRelated/teacher/Teacher";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
-import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
-import QuizPage from "../components/classroomRelated/QuizMeRelated/components/pages/QuizPage";
-import styled, { createGlobalStyle } from "styled-components";
+import QuizMe from '../components/classroomRelated/QuizMeRelated/QuizMe'
+import QuizPage from '../components/classroomRelated/QuizMeRelated/components/pages/QuizPage'
+
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
 import { AuthContext } from "../helpers";
+import Cookies from "js-cookie";
 import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
-import { IStudent } from "../typescript/interfaces";
 
-const GlobalStyle = createGlobalStyle`
-body{
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
-  .swal2-container {
-    z-index:100000000000000
-  }
-}
-`;
 export default function TeacherRoutes() {
   const [CMChallenges, setCMChallenges] = useRecoilState(challengeMeChallenges);
   //@ts-ignore
@@ -42,13 +33,9 @@ export default function TeacherRoutes() {
         `/api/v1/student/byTeacher/${user.id}`
       );
       setClassesToTeacher(teacherStudents);
-      const allStudents = teacherStudents.map((classRoom: any) =>
-        classRoom.Class.Students.map((student: IStudent) => ({
-          ...student,
-          className: classRoom.Class.name,
-        }))
+      const allStudents = teacherStudents.map(
+        (classRoom: any) => classRoom.Class.Students
       );
-
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
@@ -60,15 +47,13 @@ export default function TeacherRoutes() {
   }, []);
 
   return (
-    <>
-      <GlobalStyle />
+    <ErrorBoundary>
       <ClassRoomNavBar />
-      {/* <ErrorBoundary> */}
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
       <div id='interface-container' style={{ flexGrow: 1 }}>
         <Switch>
           <Route exact path='/'>
-            <TeacherDashboard />
+            <Dashboard />
           </Route>
           <Route path='/lessons'>
             <Lessons />
@@ -77,21 +62,20 @@ export default function TeacherRoutes() {
             <Schedhule />
           </Route>
           <Route path='/tasks'>
-            <TeacherContainer />
+            <TaskBoard />
           </Route>
-          <Route exact path='/quizme'>
+          <Route path='/teacher'>
+            <Teacher />
+          </Route>
+          <Route path="/quizme">
             <QuizMe />
-          </Route>
-          <Route exact path='/quizme/quiz/:id'>
-            {/* @ts-ignore */}
-            <QuizPage />
           </Route>
           <Route path='*'>
             <div>404 Not Found</div>
           </Route>
         </Switch>
       </div>
-      {/* </ErrorBoundary> */}
-    </>
+      {/* </div> */}
+    </ErrorBoundary>
   );
 }

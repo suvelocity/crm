@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import network from "../../../../../helpers/network";
+import { AuthContext } from "../../../../../helpers";
 import {
   IOption,
   IAnswer,
@@ -59,6 +60,10 @@ interface IProps {
 }
 
 export default function QuizPage(props: IProps) {
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  console.log('user: ', user);
+  
   const form = props.form;
   // const { id } = useParams();
   const classes = useStyles();
@@ -76,7 +81,7 @@ export default function QuizPage(props: IProps) {
     const fetchQuiz = async () => {
       const quiz = (await network.get(`/api/v1/form/${form.id}`)).data;
       // console.log(quiz);
-      
+
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -103,7 +108,8 @@ export default function QuizPage(props: IProps) {
   }, [seconds, minutes]);
 
   const findSelectedAnswerIdByTitle = (title: string): number => {
-    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex].Options || [];
+    const currentOptionsArray: IOption[] =
+      quiz!.Fields[currentQuestionIndex].Options || [];
     const selectedAnswer: any = currentOptionsArray.find(
       (option) => option.title === title
     );
@@ -113,16 +119,13 @@ export default function QuizPage(props: IProps) {
   const onAnswerSelect = (selectedAnswerId: number, interval?: any): void => {
     if (!quizIsOver) {
       console.log(selectedAnswerId);
-      const newAnswer =  {
+      const newAnswer = {
         //@ts-ignore
         fieldId: quiz.Fields[currentQuestionIndex].id,
         optionId: selectedAnswerId,
       };
       //@ts-ignore
-      setAnswers([
-        ...answers,
-        newAnswer
-      ]);
+      setAnswers([...answers, newAnswer]);
       //@ts-ignore
       if (quiz.Fields.length - 1 > currentQuestionIndex) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -140,10 +143,10 @@ export default function QuizPage(props: IProps) {
     try {
       setQuizIsOver(true);
       const answersArray = [...answers, newAnswer];
-      const studentId = 1;
+      const studentId = user.id;
       const sub = {
         studentId,
-        answersArray
+        answersArray,
       };
       console.log(sub);
       await network.post("/api/v1/fieldsubmission/quiz", sub);
@@ -175,14 +178,18 @@ export default function QuizPage(props: IProps) {
                 </Typography>
               </div>
               <List>
-                {quiz.Fields[currentQuestionIndex].Options!.map((option: IOption, index: number) => (
+                {quiz.Fields[currentQuestionIndex].Options!.map(
+                  (option: IOption, index: number) => (
                     <ListItem
                       button
                       disableGutters
                       key={index}
-                      onClick={(e) => {onAnswerSelect( //@ts-ignore
+                      onClick={(e) => {
+                        onAnswerSelect(
+                          //@ts-ignore
                           findSelectedAnswerIdByTitle(e.target.innerText)
-                      )}}
+                        );
+                      }}
                       className={classes.field}
                     >
                       <ListItemText

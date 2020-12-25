@@ -131,7 +131,7 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv id="editJobButton" onClick={() => setModalState(true)}>
+          <EditDiv onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>

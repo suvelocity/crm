@@ -3,8 +3,7 @@ import { Router, Request, Response } from "express";
 import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
-import {IFormFieldSubmission,IFormOption} from '../../types'
-import {Model, QueryInterface, Sequelize} from 'sequelize'
+
 import {
   formSubmissionSchema,
   formSubmissionSchemaToPut,
@@ -136,67 +135,27 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
   return res.json(submissions);
 });
 
+
+
 router.post('/form', async (req: Request, res: Response) => {
-  
-  async function insertOptionsField(studentId:number,fieldId:number,answer:IFormOption[]){
-    try{
-      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
-        where:{studentId,fieldId},
-        attributes:['id']
-      })
-      if(!createdNew){
-        const qi :QueryInterface= db.sequelize.getQueryInterface()
-        qi.bulkDelete('selectedoptions',{where:{fieldSubmissionId:subId}})
-      }
-      const added = await SelectedOption.bulkCreate(
-        answer.map(({id:optionId})=>({
-          fieldSubmissionId:subId,
-          optionId
-        }))
-      )
-      return added
-    }catch(err){
-      return {status:'error',message:err.message}
-    }
-  }
-  async function insertTextField(studentId:number,fieldId:number,answer:string){
-    try{
-      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
-        where:{studentId,fieldId},
-        defaults:{textualAnswer:answer},
-        attributes:['id']
-      })
-      if(!createdNew){
-        const update = await FieldSubmission.update({textualAnswer:answer},{where:{id:subId}})
-        return update
-      };
-
-    }catch(err){
-      return {status:'error',message:err.message}
-    }
-  }
   try {
-    const {body} = req;
-
-    const submissions = body.map(({studentId,fieldId,answer}: IFormFieldSubmission) => {
-      if (answer instanceof Array){
-        return insertOptionsField(studentId,fieldId,answer)
-        
-      }else {
-        //@ts-ignore
-        return insertTextField(studentId,fieldId,answer)
-      }
-    });
-    let returns = await Promise.all(submissions)
-    res.json(returns)
-    
-    // return res.send("field subs created successfully")
+    const body = req.body;
+    // const { studentId, fieldId, textualAnswer } = body;
+    const fieldSubsArr = body.map((fieldSub: any) => ({
+      studentId: fieldSub.studentId,
+      fieldId: fieldSub.fieldId,
+      textualAnswer: fieldSub.textualAnswer
+    }));
+    // const { error } = FormSubmission.validate(formSubmission);
+    // if(error) {return res.status(400).json(error.message)}; 
+    // const formattedFormSubmission = formSubmission.map(())
+    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubsArr)
+    return res.json("field subs created successfully")
   }
   catch(error) {
     return res.status(400).json(error.message);
   }
 });
-
 router.post('/quiz', async (req: Request, res: Response) => {
   try {
     const body = req.body;
@@ -282,15 +241,15 @@ router.post('/quiz', async (req: Request, res: Response) => {
 // });
 // router.post('/', async (req: Request, res: Response) => {
 //   try {
-//     let body: IFormSubmission = req.body;
-//     const newQuizSubmission: IFormSubmission = {
+//     let body: IQuizSubmission = req.body;
+//     const newQuizSubmission: IQuizSubmission = {
 //       quizId: body.quizId,
 //       studentId: body.studentId,
 //       rank: body.rank
 //     }
 //     const { error } = quizSubmissionSchema.validate(newQuizSubmission);
 //     if(error) return res.status(400).json({ error: error.message });
-//     const createdQuizSubmission: IFormSubmission = await Quiz.create(req.body);
+//     const createdQuizSubmission: IQuizSubmission = await Quiz.create(req.body);
 //     res.json(createdQuizSubmission);
 //   }
 //   catch (error) {
