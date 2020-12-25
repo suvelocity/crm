@@ -6,6 +6,8 @@ import Notices from "./Notices";
 //@ts-ignore
 import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
 import dashImg from "../../../media/dashboard.jpg";
+import scaleup from "../../../media/scale-up.jpg";
+import classroom from "../../../media/classroom-new.jpg";
 
 export default function Dashboard() {
   //@ts-ignore
@@ -13,6 +15,17 @@ export default function Dashboard() {
 
   return (
     <DashboardContainer>
+      <img
+        src={scaleup}
+        style={{
+          width: "50%",
+          opacity: "80%",
+          marginTop: "2%",
+          display: "block",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}></img>
+      <Notices />
       {/* {//todo fix responsive and long texts} */}
       {user.userType === "student" && (
         <TilesRow repeatFormula='1fr 1fr' height='25vh'>
@@ -24,26 +37,18 @@ export default function Dashboard() {
           </InformationTile>
         </TilesRow>
       )}
-      <img
-        src={dashImg}
-        style={{
-          width: "30%",
-          opacity: "80%",
-          marginTop: "5%",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}></img>
-      <Notices />
     </DashboardContainer>
   );
 }
 
 const DashboardContainer = styled.div`
-  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
-  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  /* background-color: ${({ theme }: { theme: any }) =>
+    theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font}; */
   width: 100%;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 `;
 
 const InformationTile = styled.div`

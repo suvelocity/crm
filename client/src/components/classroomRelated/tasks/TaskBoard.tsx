@@ -3,7 +3,7 @@ import { ITask, ITaskofStudent } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
-import Button from "@material-ui/core/Button";
+import { Typography } from "@material-ui/core/";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
@@ -14,6 +14,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from "react-responsive-carousel";
 import Modal from "@material-ui/core/Modal";
 import Submit from "./Submit";
+import TaskAccordion from "./TaskAccordion";
 
 export default function TaskBoard() {
   const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();
@@ -27,13 +28,15 @@ export default function TaskBoard() {
   const [currentTask, setCurrentTask] = useState<number>();
 
   const DashboardContainer = styled.div`
-    background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+    /* background-color: ${({ theme }: { theme: any }) =>
+      theme.colors.background}; */
     width: 100%;
     height: 100vh;
   `;
 
   const Carus = styled(Carousel)`
-    background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+    /* background-color: ${({ theme }: { theme: any }) =>
+      theme.colors.background}; */
     width: 36%;
     border-radius: 10px;
     margin-left: auto;
@@ -42,7 +45,8 @@ export default function TaskBoard() {
     margin-bottom: 5vh;
   `;
   const Content = styled.div`
-    color: ${({ theme }: { theme: any }) => theme.colors.font};
+    /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
+    margin-top: 2%;
   `;
 
   const getMyTasks = async () => {
@@ -113,21 +117,39 @@ export default function TaskBoard() {
 
   return (
     <DashboardContainer>
+      <Typography
+        variant='h2'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "15%",
+        }}>
+        Tasks
+      </Typography>
       <Content>
         <Loading size={30} loading={loading}>
-          <Carus showArrows={true}>
-            {unfinishedTasks ? (
-              unfinishedTasks?.map((unfinishedTask: any) => (
-                <SingleTask
-                  task={unfinishedTask}
-                  handleOpen={handleOpen}
-                  handleClose={handleClose}
-                />
-              ))
-            ) : (
-              <h1>no tasks</h1>
-            )}
-          </Carus>
+          {unfinishedTasks ? (
+            unfinishedTasks?.map((unfinishedTask: any) => (
+              <TaskAccordion
+                task={unfinishedTask}
+                handleOpen={handleOpen}
+                handleClose={handleClose}
+              />
+            ))
+          ) : (
+            <Typography
+              variant='h4'
+              style={{
+                marginRight: 15,
+                marginTop: "2%",
+                marginBottom: "auto",
+                marginLeft: "15%",
+              }}>
+              You have finished all of your tasks!
+            </Typography>
+          )}
+
           <Modal
             open={open}
             onClose={handleClose}
@@ -135,7 +157,16 @@ export default function TaskBoard() {
             aria-describedby='simple-modal-description'>
             {body}
           </Modal>
-          <h2>History </h2>
+          <Typography
+            variant='h2'
+            style={{
+              marginRight: 15,
+              marginTop: "5%",
+              marginBottom: "2%",
+              marginLeft: "15%",
+            }}>
+            History
+          </Typography>
           <TaskTable myTasks={finishedTasks} />
         </Loading>
       </Content>
@@ -168,7 +199,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
-      color: `${({ theme }: { theme: any }) => theme.colors.font}`,
+      // color: `${({ theme }: { theme: any }) => theme.colors.font}`,
     },
   })
 );

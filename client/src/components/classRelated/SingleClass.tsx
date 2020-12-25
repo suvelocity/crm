@@ -75,7 +75,7 @@ function SingleClass() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editClassButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatingFormula="1fr 1fr">

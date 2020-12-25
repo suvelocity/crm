@@ -11,6 +11,19 @@ export interface IJob {
   additionalDetails: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Class?: IClass;
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+
 export interface IStudent {
   id?: number;
   email: string;
@@ -116,6 +129,7 @@ export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
+  required?: boolean;
   where?: {};
 }
 
@@ -151,21 +165,26 @@ export interface IFormSubmission {
 }
 
 type meeting = { date: string };
-// type class = {name: string, cycleNumber: number}
 
 export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  // Class: class;
   Mentor: IMentor;
   Meetings: meeting[];
 }
+
 export interface IMeeting {
   id?: number;
   mentorId: number;
   studentId: number;
   place: string;
+}
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  title: string;
 }
 
 export interface IFccEvent {}

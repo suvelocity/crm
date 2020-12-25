@@ -106,8 +106,6 @@ export default function AddLesson({
             );
           })
         );
-        console.log(lessonAdded);
-
         // handleClose && handleClose();
         Swal.fire("Success", "lesson added :)", "success").then(
           (_) => lessonAdded && lessonAdded()
@@ -386,6 +384,7 @@ const Info = styled.div`
   transition: 0.5s;
   /* flex-direction: column; */
   align-items: flex-start;
+  /* overflow-x: auto; */
 `;
 
 const OneInfo = styled.div`

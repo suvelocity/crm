@@ -24,6 +24,23 @@ export interface IStudent {
   fccAccount?: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Classes?: {classId:string, Class:IClass}[];
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+export interface tempTeacherClass {
+  classId:string;
+  Class:IClass;
+}
+
 export interface IPair {
   id: number;
   mentorProgramId: number;
@@ -182,6 +199,20 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
+}
+
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  answerUrl: string;
+  title: string;
+  createdAt: string;
+}
+
+export interface IMentorProgramForms {
+  id?: number;
+  MentorForms?: IMentorForm[];
 }
 
 export interface IUser {

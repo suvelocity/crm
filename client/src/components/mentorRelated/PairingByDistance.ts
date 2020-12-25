@@ -1,5 +1,5 @@
 import axios from "axios";
-import network from "../../helpers/network";
+
 // get geolocation
 async function GeoCoding(obj: any) {
   try {
@@ -9,7 +9,7 @@ async function GeoCoding(obj: any) {
     obj.geo = data.results[0].geometry.location;
     return obj;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 }
 
@@ -33,54 +33,60 @@ function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   return d;
 }
 
-function getRandomItems(array: any[], num: number, destination: any[] = []) {
-  while (num > 0) {
-    const index = Math.floor(Math.random() * array.length);
-    if (!destination.includes(array[index])) {
-      destination.push(array[index]);
-      num--;
-    }
-  }
-  return destination;
-}
 // first pairing by latitude
 export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
-  if (studentsArr.length < mentorsArr.length) {
-    const matchAddressMentors = mentorsArr.filter((mentor: any) =>
-      studentsArr.some((student) => student.address === mentor.address)
-    );
-    console.log(matchAddressMentors);
-    if (matchAddressMentors.length < studentsArr.length) {
-      const num = studentsArr.length - matchAddressMentors.length;
-      mentorsArr = getRandomItems(mentorsArr, num, matchAddressMentors);
-    } else if (matchAddressMentors.length > studentsArr.length) {
-      const num = matchAddressMentors.length - studentsArr.length;
-      const itemsToDelete = getRandomItems(matchAddressMentors, num);
-      console.log(itemsToDelete);
-      mentorsArr = matchAddressMentors.filter((mentor) =>
-        itemsToDelete.includes(mentor)
-      );
-    }
-  }
+  // get the geolocation of all the paticipants
   studentsArr = await Promise.all(
     studentsArr.map(async (student: any) => {
       if (!student.geo) return await GeoCoding(student);
       else return student;
     })
-  ).then((arr) => {
-    return arr;
-  });
+  )
+    .then((arr) => {
+      return arr;
+    })
+    .catch((error) => {
+      return error;
+    });
   mentorsArr = await Promise.all(
     mentorsArr.map(async (mentor: any) => {
       if (!mentor.geo) return await GeoCoding(mentor);
       else return mentor;
     })
-  ).then((arr) => {
-    return arr;
-  });
+  )
+    .then((arr) => {
+      return arr;
+    })
+    .catch((error) => {
+      return error;
+    });
+  // sort by latitude
   studentsArr.sort((a, b) => a.geo.lat - b.geo.lat);
   mentorsArr.sort((a, b) => a.geo.lat - b.geo.lat);
   const pairedArr: any[] = [];
+  // in case of less students then mentors
+  if (studentsArr.length < mentorsArr.length) {
+    studentsArr.forEach((student) => {
+      const distances: number[] = mentorsArr.map((mentor) =>
+        getDistance(
+          student.geo.lat,
+          student.geo.lng,
+          mentor.geo.lat,
+          mentor.geo.lng
+        )
+      );
+      const index = distances.findIndex((x) => x === Math.min(...distances));
+      pairedArr.push({
+        student,
+        mentor: mentorsArr[index],
+        distance: distances[index],
+      });
+      mentorsArr.splice(index, 1);
+    });
+    console.log(pairedArr);
+    return [pairedArr, []];
+  };
+  // in case of less mentors then students
   if (mentorsArr.length < studentsArr.length) {
     mentorsArr.forEach((mentor) => {
       const distances: number[] = studentsArr.map((student) =>
@@ -91,7 +97,6 @@ export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
           mentor.geo.lng
         )
       );
-      console.log(distances);
       const index = distances.findIndex((x) => x === Math.min(...distances));
       pairedArr.push({
         student: studentsArr[index],
@@ -100,25 +105,28 @@ export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
       });
       studentsArr.splice(index, 1);
     });
+    console.log(pairedArr);
     return [pairedArr, studentsArr];
-  }
+  };
+  // simple case - equal mentors and students
   for (let i = 0; i < studentsArr.length; i++) {
     pairedArr.push({
       student: studentsArr[i],
       mentor: mentorsArr[i],
       distance: 0,
     });
-  }
+  };
+  console.log(pairedArr);
   return [pairedArr, []];
-}
+};
 
 // fixed pairing by distance
 export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
+  // get the initial pairing from the simpler function
   let firstPairingRes = await firstPairing(studentsArr, mentorsArr);
-  const initial = firstPairingRes[0]
+  const initial = firstPairingRes[0];
   const final: any[] = [];
   console.log(initial);
-  // let noMentors = initial.filter((obj: any) => !obj.mentor);
   initial.forEach((obj: any, index: number) => {
     obj.distance = getDistance(
       obj.student.geo.lat,
@@ -169,7 +177,7 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
       }
     }
   });
-  const sumI = initial.reduce((x: any, y: any )=> x + y.distance, 0);
+  const sumI = initial.reduce((x: any, y: any) => x + y.distance, 0);
   const sumF = final.reduce((x, y) => x + y.distance, 0);
   console.log(sumI - sumF, "KM less");
   console.log(final);
@@ -241,152 +249,3 @@ export const m = [
   // { id: 36, address: "metula" },
   //      {id: 42, address: "holon"}
 ];
-//   export async function pairing(s: any[], m: any[]) {
-//     const geoS = await Promise.all(
-//       s.map((student: any) => GeoCoding(student))
-//     ).then((arr) => {
-//       return arr;
-//     });
-//     const geoM = await Promise.all(
-//       m.map((mentor: any) => GeoCoding(mentor))
-//     ).then((arr) => {
-//       return arr;
-//     });
-//     geoS.sort((a, b) => a.geo.lat - b.geo.lat);
-//     let final: any[] = [];
-
-//     geoS.forEach((student, i) => {
-//       const mentorsList: any[] = geoM.map((mentor: any) => {
-//         return {
-//           id: mentor.id,
-//           address: mentor.address,
-//           distance: getDistance(
-//             student.geo.lat,
-//             student.geo.lng,
-//             mentor.geo.lat,
-//             mentor.geo.lng
-//           )
-//         }
-//       });
-//       mentorsList.sort((a: any, b: any) => {
-//         if (a.distance > b.distance) {
-//           return 1;
-//         }
-//         if (a.distance < b.distance) {
-//           return -1;
-//         }
-//         return 0;
-//       });
-//       student.mentor = mentorsList
-//       console.log(i, student.address, mentorsList)
-//       final = studentRec(final, student);
-//     });
-//     // final.map((obj) => obj.mentor = obj.mentor)
-//   //   console.log(
-//   //     final.map((obj) => {
-//   //       obj.mentor = obj.mentor[0].address;
-//   //       return obj;
-//   //     })
-//   //   );
-//       console.log(final)
-//   }
-
-//   function sum(array: any[]) {
-//     let count = 0;
-//     array.forEach((element: any) => {
-//       count =+ element.distance
-//     });
-//     return count
-//   }
-
-//   function studentRec(final: any[], student: any) : any[] {
-
-//     let currStudentI = final.findIndex((obj) => obj.id === student.id);
-//     let currStudent = final[currStudentI];
-//     if (!currStudent) {
-//         currStudent =
-//         {
-//           id: student.id,
-//           address: student.address,
-//           mentor: student.mentor,
-//         }
-//       };
-//     console.log(currStudent.address, "-", currStudent.mentor);
-//     const mentorTaken = final.findIndex(
-//       (obj) =>
-//         obj.mentor[0].id === currStudent.mentor[0].id && obj.id !== currStudent.id
-//     );
-
-//       if (mentorTaken !== -1) {
-//       const otherStudent = final[mentorTaken];
-//       // console.log(
-//       //   "other:",
-//       //   otherStudent,
-//       //   "----- this:",
-//       //   currStudent,
-//       //   "fighting on",
-//       //   otherStudent.mentor[0].address
-//         //   )
-//         ;
-//       if (
-//         sum(otherStudent.mentor) > sum(currStudent.mentor)
-
-//       ) {
-//         // console.log(
-//         //   currStudent.address,
-//         //   "changed from",
-//         //   currStudent.mentor[0].address,
-//         //   "to",
-//         //   currStudent.mentor[1].address
-//         // );
-//         currStudent.mentor = currStudent.mentor.slice(1);
-//         // console.log("this lose");
-//         studentRec(final, currStudent);
-//         return final
-//       } else {
-//       //   console.log(
-//       //     otherStudent.address,
-//       //     "changed from",
-//       //     otherStudent.mentor[0].address,
-//       //     "to",
-//       //     otherStudent.mentor[1].address
-//       //   );
-//           final[mentorTaken].mentor = otherStudent.mentor.slice(1);
-//           console.log("other lose");
-//           if (currStudentI === -1) final.push(currStudent);
-//         studentRec(final, otherStudent);
-//         return final
-//       }
-//     } else {
-//       console.log(
-//         currStudent.address,
-//         "pushed to",
-//         currStudent.mentor[0].address
-//       );
-//         if (currStudentI === -1) final.push(currStudent);
-//         console.log(final)
-//         return final
-//     }
-
-//   }
-
-// 0: {student: {…}, mentor: {…}, distance: 159.03802410368016}
-// 1: {student: {…}, mentor: {…}, distance: 56.232297130449716}
-// 2: {student: {…}, mentor: {…}, distance: 33.22249594413665}
-// 3: {student: {…}, mentor: {…}, distance: 28.014766042353266}
-// 4: {student: {…}, mentor: {…}, distance: 23.223699103656376}
-// 5: {student: {…}, mentor: {…}, distance: 36.95257175532775}
-// 6: {student: {…}, mentor: {…}, distance: 17.70882218962806}
-// 7: {student: {…}, mentor: {…}, distance: 0}
-// 8: {student: {…}, mentor: {…}, distance: 6.128891237649214}
-// 9: {student: {…}, mentor: {…}, distance: 0}
-// 10: {student: {…}, mentor: {…}, distance: 0}
-// 11: {student: {…}, mentor: {…}, distance: 17.169322820361195}
-// 12: {student: {…}, mentor: {…}, distance: 10.421993157572887}
-// 13: {student: {…}, mentor: {…}, distance: 13.909526339503028}
-// 14: {student: {…}, mentor: {…}, distance: 37.731131186659894}
-// 15: {student: {…}, mentor: {…}, distance: 22.972489366454816}
-// 16: {student: {…}, mentor: {…}, distance: 24.580278534945517}
-// 17: {student: {…}, mentor: {…}, distance: 0}
-// 18: {student: {…}, mentor: {…}, distance: 50.591776662830384}
-// 19: {student: {…}, mentor: {…}, distance: 53.77176804030558}
