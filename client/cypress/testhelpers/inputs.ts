@@ -194,6 +194,77 @@ export const studentInputs = [
   },
 ];
 
+export const teacherInputs = [
+  {
+    field: "firstName",
+    type: "textfield",
+    errors: [
+      {
+        falseValue: "666666",
+        message: "First name can have only letters and spaces",
+      },
+    ],
+    trueValue: "Amir",
+    updatedValue: "Nitzan",
+  },
+  {
+    field: "lastName",
+    type: "textfield",
+    errors: [
+      {
+        falseValue: "666666",
+        message: "Last name can have only letters and spaces",
+      },
+    ],
+    trueValue: "Debbie",
+    updatedValue: "Listman",
+  },
+  {
+    field: "idNumber",
+    type: "textfield",
+    errors: [
+      {
+        falseValue: "666666",
+        message: "ID need to be 9 or 10 letters long",
+      },
+      {
+        falseValue: "11111111111",
+        message: "ID need to be 9 or 10 letters long",
+      },
+      {
+        falseValue: "99999999a",
+        message: "ID can have only numbers",
+      },
+    ],
+    trueValue: "209511111",
+    updatedValue: "209511222",
+  },
+  {
+    field: "email",
+    type: "textfield",
+    errors: [
+      {
+        falseValue: "hhhhh@gmaicom",
+        message: "Please Enter a Valid Email",
+      },
+    ],
+    trueValue: "Amir@mail.com",
+    updatedValue: "Amir@mail2.com"
+  },
+  {
+    field: "phone",
+    type: "textfield",
+    errors: [
+      {
+        falseValue: "invalid",
+        message: "Invalid phone number",
+      },
+    ],
+    trueValue: "054-7834393",
+    updatedValue: "054-7834040"
+  }
+]
+
 export const companyInputs = [
   {
     type: "textfield",
