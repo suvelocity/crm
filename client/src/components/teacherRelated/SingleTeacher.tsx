@@ -1,48 +1,35 @@
 import React, { useCallback, useEffect, useState } from "react";
 import List from "@material-ui/core/List";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Modal from "@material-ui/core/Modal";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTeacher from "./AddTeacher";
 import EmailIcon from "@material-ui/icons/Email";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DialpadIcon from "@material-ui/icons/Dialpad";
-import AllClasses from '../classRelated/AllClasses';
-import ClassIcon from "@material-ui/icons/Class";
+import AllClasses from "../classRelated/AllClasses";
 import {
   H1,
   Wrapper,
   TitleWrapper,
   Center,
   GridDiv,
-  StyledSpan,
-  TableHeader,
-  StyledUl,
-  StyledDiv,
-  StyledLink,
-  MultilineListItem,
   EditDiv,
 } from "../../styles/styledComponents";
 import { SingleListItem } from "../tableRelated";
-import {
-  Person as PersonIcon,
-  Description as DescriptionIcon,
-  ContactSupport as ContactSupportIcon,
-  PlaylistAddCheck as PlaylistAddCheckIcon,
-  Business as BusinessIcon,
-  LocationCity as LocationCityIcon,
-  PostAdd as PostAddIcon,
-} from "@material-ui/icons";
+import { Person as PersonIcon } from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { ITeacher, tempTeacherClass, IClass } from "../../typescript/interfaces";
+import {
+  ITeacher,
+  tempTeacherClass,
+  IClass,
+} from "../../typescript/interfaces";
 import AssignTeacherModal from "./AssignTeacherModal";
 import Swal from "sweetalert2";
-import { capitalize, formatPhone, formatToIsraeliDate } from "../../helpers";
-import TrackChangesIcon from "@material-ui/icons/TrackChanges";
+import { capitalize, formatPhone } from "../../helpers";
+
 function SingleTeacher() {
   const [teacher, setTeacher] = useState<ITeacher>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,8 +41,8 @@ function SingleTeacher() {
     const { data }: { data: ITeacher } = await network.get(
       `/api/v1/teacher/byId/${id}`
     );
-    const classes : tempTeacherClass[] = data.Classes || []
-    const classArray = classes.map((c:tempTeacherClass) => c.Class)
+    const classes: tempTeacherClass[] = data.Classes || [];
+    const classArray = classes.map((c: tempTeacherClass) => c.Class);
     setClasses(classArray);
     setTeacher(data);
     setLoading(false);
@@ -83,7 +70,9 @@ function SingleTeacher() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
-          await network.delete(`/api/v1/event/RemoveTeacherFromClass/?classId=${classId}&&teacherId=${teacher?.id}`);
+          await network.delete(
+            `/api/v1/event/RemoveTeacherFromClass/?classId=${classId}&&teacherId=${teacher?.id}`
+          );
           setLoading(true);
           getTeacher();
         }
@@ -100,22 +89,21 @@ function SingleTeacher() {
     }
   }, [id]);
 
-
   const tableRepeatFormula = "0.7fr 1.2fr 1.8fr 1.6fr 2.2fr";
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#e2e600'>Teacher Info</H1>
+            <H1 color="#e2e600">Teacher Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
           <EditDiv id="editTeacherButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
-          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
-          <List>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
+            <List>
               <SingleListItem
                 primary="Name"
                 secondary={
@@ -138,9 +126,9 @@ function SingleTeacher() {
               <SingleListItem primary="ID Number" secondary={teacher?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
-        </List>
-        </GridDiv>
-        <Modal
+            </List>
+          </GridDiv>
+          <Modal
             open={modalState}
             onClose={() => setModalState(false)}
             style={{ overflow: "scroll" }}
@@ -161,19 +149,21 @@ function SingleTeacher() {
         </Loading>
       </Wrapper>
       <Loading size={30} loading={loading}>
-        {teacher &&
-        <AllClasses 
-        teacherClasses={classes} 
-        header='Assigned Classes' 
-        // removeClass={removeClass}
-        applyModal={
-            <AssignTeacherModal 
-            assignedClasses={classes} 
-            getTeacher={getTeacher} teacher={teacher}
-            handleClose={handleClose}
-            />
-        }/>
-        }
+        {teacher && (
+          <AllClasses
+            teacherClasses={classes}
+            header="Assigned Classes"
+            // removeClass={removeClass}
+            applyModal={
+              <AssignTeacherModal
+                assignedClasses={classes}
+                getTeacher={getTeacher}
+                teacher={teacher}
+                handleClose={handleClose}
+              />
+            }
+          />
+        )}
       </Loading>
     </>
   );

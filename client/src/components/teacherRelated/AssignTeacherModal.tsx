@@ -26,7 +26,7 @@ function AssignTeacherModal({
   assignedClasses,
   teacher,
   getTeacher,
-  handleClose
+  handleClose,
 }: {
   assignedClasses: IClass[];
   teacher: ITeacher;
@@ -48,12 +48,12 @@ function AssignTeacherModal({
         );
         setAllClasses(
           data.filter(
-            (c1: IClass) => !assignedClasses.some((c2:IClass) => c2.id === c1.id )
+            (c1: IClass) =>
+              !assignedClasses.some((c2: IClass) => c2.id === c1.id)
           )
         );
       })();
     } catch (error) {
-      
       Swal.fire("Error Occurred", error.message, "error");
     }
   }, [assignedClasses]);
@@ -67,13 +67,16 @@ function AssignTeacherModal({
       try {
         setLoading(true);
         await network.post(`/api/v1/teacher/addClassToTeacher`, {
-          teacherWithClass: classesTooAdd.map(c => ({classId: `${c}`, teacherId: `${teacher.id}`}))
+          teacherWithClass: classesTooAdd.map((c) => ({
+            classId: `${c}`,
+            teacherId: `${teacher.id}`,
+          })),
         });
-        setTimeout(() =>{
+        setTimeout(() => {
           getTeacher();
           setLoading(false);
           handleClose();
-        },1000)
+        }, 1000);
       } catch (error) {
         Swal.fire("Error Occurred", error.message, "error");
       }
@@ -121,7 +124,7 @@ function AssignTeacherModal({
                       label=""
                     />
                     <Typography className={classes.heading}>
-                      {c.name} 
+                      {c.name}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -135,10 +138,7 @@ function AssignTeacherModal({
                         secondary={c.endingDate}
                       />
                       <ListItem>
-                        <ListItemText
-                          primary="Course"
-                          secondary={c.course}
-                        />
+                        <ListItemText primary="Course" secondary={c.course} />
                       </ListItem>
                     </List>
                   </AccordionDetails>
@@ -155,7 +155,7 @@ function AssignTeacherModal({
               </Button>
             </>
           ) : (
-            <h2>No students available</h2>
+            <h2>No Classes Available</h2>
           )}
         </div>
       </div>
@@ -172,7 +172,11 @@ function AssignTeacherModal({
       >
         Assign a Class
       </Button>
-      <Modal style={{ overflow: "scroll" }} open={open} onClose={() => setOpen(false)}>
+      <Modal
+        style={{ overflow: "scroll" }}
+        open={open}
+        onClose={() => setOpen(false)}
+      >
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
