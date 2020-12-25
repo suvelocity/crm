@@ -11,6 +11,7 @@ import {
   Button,
   Switch,
   FormControl,
+  FormControlLabel
 } from "@material-ui/core";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -87,7 +88,7 @@ export default function Option({
           value={value}
         />
         {/* <button onClick={() => console.log(isCorrect)}>LOG</button> */}
-        {(isQuiz && (options[index].isCorrect !== undefined)) && (
+        {isQuiz && options[index].isCorrect !== undefined && (
           <>
             {/* <Switch
               color={"default"}
@@ -112,11 +113,22 @@ export default function Option({
             >
               {options[index].isCorrect ? "Correct" : "Wrong"}
             </Button> */}
+            <FormControlLabel
+              labelPlacement="start"
+              control={<Switch 
+                          checked={options[index].isCorrect}
+                          onChange={() => selectCorrectOption(index)}
+                          inputRef={register} 
+                          name={`fields[${fieldIndex}].options[${index}].isCorrect`} 
+                      />}
+              label="Correct?"
+            />
 
-            <Controller
+            {/* <Controller
               control={control}
-              name={`fields[${fieldIndex}].options[${index}].isCorrect`}
-              render={({ onChange, onBlur, value, name, ref }, { invalid, isTouched, isDirty }) => (
+              name={"nameee"}
+              // name={`fields[${fieldIndex}].options[${index}].isCorrect`}
+              render={({ onChange, onBlur, value, name, ref }) => (
                 <Switch
                   color={"secondary"}
                   size={"small"}
@@ -129,7 +141,7 @@ export default function Option({
                   // }}
                 />
               )}
-            />
+            /> */}
           </>
         )}
         {ableToDelete() && (
