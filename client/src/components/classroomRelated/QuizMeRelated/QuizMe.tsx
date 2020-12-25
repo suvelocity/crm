@@ -42,7 +42,7 @@ function QuizMe() {
             )}
             {/* <Route exact path="/quizme/form/:id" component={FormPage} /> */}
             {/* <Route exact path="/statistics" component={UserStats} /> */}
-            <Route path="/quizme/" component={Home} />
+            <Route path="/quizme" component={Home} />
           </Switch>
         </Router>
       </Container>
