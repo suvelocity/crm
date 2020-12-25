@@ -8,47 +8,58 @@ import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
 import dashImg from "../../../media/dashboard.jpg";
 import scaleup from "../../../media/scale-up.jpg";
 import classroom from "../../../media/classroom-new.jpg";
+import { Button, Typography } from "@material-ui/core";
 
 export default function Dashboard() {
   //@ts-ignore
-  const { user } = useContext(AuthContext);
 
   return (
-    <DashboardContainer>
-      <img
-        src={scaleup}
-        style={{
-          width: "50%",
-          opacity: "80%",
-          marginTop: "2%",
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}></img>
-      <Notices />
-      {/* {//todo fix responsive and long texts} */}
-      {user.userType === "student" && (
-        <TilesRow repeatFormula='1fr 1fr' height='25vh'>
-          <InformationTile>
-            <TasksFidget />
-          </InformationTile>
-          <InformationTile>
-            <LessonsFidget />
-          </InformationTile>
-        </TilesRow>
-      )}
-    </DashboardContainer>
+    <StudentDashboardContainer>
+      <LeftContainer>
+        {/* <Typography
+          variant='h2'
+          style={{
+            marginRight: 15,
+            marginTop: "2%",
+            marginBottom: "auto",
+            marginLeft: "15%",
+          }}>
+          My Classroom */}
+        <img
+          src={scaleup}
+          style={{
+            width: "80%",
+            opacity: "80%",
+            marginTop: "5%",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}></img>
+        {/* </Typography> */}
+        <Notices />
+      </LeftContainer>
+      <RightContainer>
+        <TasksFidget />
+        <LessonsFidget />
+      </RightContainer>
+    </StudentDashboardContainer>
   );
 }
 
-const DashboardContainer = styled.div`
+const StudentDashboardContainer = styled.div`
   /* background-color: ${({ theme }: { theme: any }) =>
     theme.colors.background};
   color: ${({ theme }: { theme: any }) => theme.colors.font}; */
   width: 100%;
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+  /* grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "headline tasks"
+    "notices lesson"; */
 `;
 
 const InformationTile = styled.div`
@@ -57,6 +68,18 @@ const InformationTile = styled.div`
   height: auto;
   width: auto;
 `;
+
+const LeftContainer = styled.div`
+  width: 50%;
+  min-height: 100%;
+`;
+const RightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-height: 100%;
+`;
+
 // background-color: red;
 
 // background-color: blue;

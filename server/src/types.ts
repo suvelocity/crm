@@ -60,7 +60,7 @@ export interface IClass {
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: number;
+  relatedId: string | number;
   eventName: string;
   entry?: any;
   type: string;
@@ -110,8 +110,8 @@ export interface ITask {
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: 'manual'|'challengeMe'|'fcc'|'quiz';
-  status: 'active'|'disabled';
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
+  status: "active" | "disabled";
   title: string;
   body?: string;
 }

@@ -87,7 +87,7 @@ export default function Lesson({
             id='panel1a-header'>
             {"#" + index + " " + lessonState.title}
           </StyledSummery>
-          <hr />
+          <hr style={{ width: "80%", opacity: "80%" }} />
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
@@ -149,11 +149,11 @@ const LessonContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   overflow: hidden;
   margin-bottom: 15px;
-  width: 90%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
 `;
 
 const StyledAccordion = styled(Accordion)`
@@ -183,7 +183,7 @@ const ResourcesLink = styled.div`
 `;
 
 const Link = styled.a`
-  background-color: #0a1425;
+  background-color: #0e2557;
   text-decoration: none;
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   border-radius: 8px;

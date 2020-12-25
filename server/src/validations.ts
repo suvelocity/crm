@@ -174,7 +174,7 @@ export const meetingSchema = Joi.object({
   mentorEmail: Joi.string().email().required(),
   mentorName: Joi.string().required(),
   studentEmail: Joi.string().email().required(),
-  studentName: Joi.string().required()
+  studentName: Joi.string().required(),
 });
 
 export const meetingSchemaToPut = Joi.object({
@@ -184,10 +184,10 @@ export const meetingSchemaToPut = Joi.object({
   studentFeedback: Joi.string().allow(null, ""),
   mentorFeedback: Joi.string().allow(null, ""),
   occurred: Joi.boolean().allow(null, ""),
-  mentorEmail: Joi.string().email().required(),
-  mentorName: Joi.string().required(),
-  studentEmail: Joi.string().email().required(),
-  studentName: Joi.string().required()
+  mentorEmail: Joi.string().email(),
+  mentorName: Joi.string(),
+  studentEmail: Joi.string().email(),
+  studentName: Joi.string()
 });
 
 export const mentorSchema = Joi.object({
