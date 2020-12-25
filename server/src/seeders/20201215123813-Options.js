@@ -190,20 +190,20 @@ module.exports = {
         {
           id: 30,
           title: "asoinasoif",
-          is_correct: false,
+          is_correct: true,
           field_id: 8,
         },
         {
           id: 31,
-          title: "asoinasoif",
-          is_correct: false,
-          field_id: 8,
+          title: "good",
+          is_correct: null,
+          field_id: 10,
         },
         {
           id: 32,
-          title: "asoinasoif",
-          is_correct: true,
-          field_id: 8,
+          title: "bad",
+          is_correct: null,
+          field_id: 10,
         },
       ],
       {}
