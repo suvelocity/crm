@@ -280,7 +280,16 @@ export interface AnsweredFiled {
   title: string,
   answer : IAnswered 
 }
-
+export interface IFieldSubmission{
+  id?:number;
+  field_id:number;
+  student_id:number;
+  textual_answer?:string;
+  Options?:IOption[]
+  created_at?:Date;
+  updated_at?:Date;
+  deleted_at?:Date;
+}
 export type QuizSubmission = { 
   id: number,
   studentid : number,
