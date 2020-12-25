@@ -11,7 +11,8 @@ import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
-import option from "../../models/option";
+//@ts-ignore
+import { Op } from "sequelize";
 
 const mailOptions = (
   to: string,
@@ -52,20 +53,41 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 router.get("/allProcesses", async (req: Request, res: Response) => {
-  const { filters } = req.query;
-  const parsedFilters = parseFilters(filters as string);
+  console.log(req.query);
+  const cls = JSON.parse(req.query.class ? String(req.query.class) : "{}");
+  const process = JSON.parse(
+    req.query.process ? String(req.query.process) : "{}"
+  );
+  console.log(cls);
+  console.log(process);
+  let clsWhere = {};
+  let processWhere = {};
+
+  if (cls.name) {
+    clsWhere = { name: { [Op.or]: cls.name } };
+  }
+  if (process.name)
+    [(processWhere = { event_name: { [Op.or]: process.name } })];
+
+  console.log("-----------");
+  console.log(clsWhere);
+  console.log(processWhere);
+  console.log({ type: "jobs", ...processWhere });
 
   try {
     const events: IEvent[] = await Event.findAll({
-      where: { type: "jobs" },
+      where: { type: "jobs", ...processWhere },
       include: [
         {
           model: Student,
           include: [
             {
               model: Class,
+              where: clsWhere,
+              required: true,
             },
           ],
+          required: true,
         },
         {
           model: Job,
@@ -94,7 +116,7 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
 router.get("/process-options", async (req: Request, res: Response) => {
   const options = {
     classes: [{ name: "All", id: "" }],
-    statuses: ["All"],
+    statuses: ["Started application process"],
   };
   const allStatuses: string[] = [
     "Sent CV",

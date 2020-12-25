@@ -29,7 +29,7 @@ function AllProcesses() {
   const [processes, setProcesses] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filteredProcesses, setFilteredProcesses] = useState<IEvent[]>([]);
-  const [filterInput, setFilterInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
   const [click, setClick] = useState<boolean>(false);
   //filters
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
@@ -37,8 +37,8 @@ function AllProcesses() {
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
-      Class: [""],
-      JobStatus: [""],
+      Class: [],
+      JobStatus: [],
       // Course: [""],
     }
   );
@@ -48,7 +48,7 @@ function AllProcesses() {
   ): void => {
     const input = e.target.value;
     setClick(false);
-    setFilterInput(input);
+    setSearchInput(input);
 
     const newProcessesArr = [];
     for (let process of processes) {
@@ -76,27 +76,38 @@ function AllProcesses() {
     setFilteredProcesses(newProcessesArr);
   };
 
+  const fetchProcesses: (filter: any) => Promise<void> = async (
+    filter: any
+  ) => {
+    console.log(filter);
+    const { data } = await network.get("/api/v1/event/allProcesses", {
+      params: filter,
+    });
+    const { data: filterOptions } = await network.get(
+      "/api/v1/event/process-options"
+    );
+    setProcesses(data);
+    setFilteredProcesses(data);
+    //@ts-ignore
+    setFilterOptionsArray([
+      {
+        filterBy: "Class",
+        possibleValues: filterOptions.classes
+          .map((cls: { name: string; id: string }) => cls.name)
+          .slice(1),
+      },
+      {
+        filterBy: "Job Status",
+        possibleValues: filterOptions.statuses,
+      },
+    ]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data } = await network.get("/api/v1/event/allProcesses");
-      const { data: filterOptions } = await network.get(
-        "/api/v1/event/process-options"
-      );
-      setProcesses(data);
-      setFilteredProcesses(data);
-      //@ts-ignore
-      setFilterOptionsArray([
-        {
-          filterBy: "Class",
-          possibleValues: filterOptions.classes.map(
-            (cls: { name: string; id: string }) => cls.name
-          ),
-        },
-        { filterBy: "JobStatus", possibleValues: filterOptions.statuses },
-      ]);
-      setLoading(false);
-    })();
-  }, []);
+    fetchProcesses(formatFiltersToServer(filterAttributes));
+  }, [filterAttributes]);
+
   return (
     <Wrapper width="80%">
       <Center>
@@ -115,7 +126,7 @@ function AllProcesses() {
           />
           <TextField
             variant="outlined"
-            value={filterInput}
+            value={searchInput}
             label="Search process"
             onChange={(e) => handleFilter(e)}
           />
@@ -169,6 +180,13 @@ function AllProcesses() {
       </Loading>
     </Wrapper>
   );
+}
+
+function formatFiltersToServer(attrObj: filterStudentObject) {
+  return {
+    class: attrObj.Class![0] ? { name: attrObj.Class } : {},
+    process: attrObj.JobStatus![0] ? { name: attrObj.JobStatus } : {},
+  };
 }
 
 export default AllProcesses;

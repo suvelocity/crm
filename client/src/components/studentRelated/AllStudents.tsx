@@ -120,19 +120,19 @@ function AllStudents() {
 
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
-      console.log(filterAttributes.Class!.length);
+      // console.log(filterAttributes.Class!.length);
       const classCondition =
         filterAttributes.Class!.length === 1 &&
         filterAttributes.Class![0] === ""
           ? true
           : filterAttributes.Class!.includes(student.Class.name);
-      console.log(student.Class.name, filterAttributes.Class!);
+      // console.log(student.Class.name, filterAttributes.Class!);
       const courseCondition =
         filterAttributes.Course!.length === 1 &&
         filterAttributes.Course![0] === ""
           ? true
           : filterAttributes.Course!.includes(student.Class.course);
-      console.log(student.Class.course, filterAttributes.Course!);
+      // console.log(student.Class.course, filterAttributes.Course!);
       // console.log(student)
       const recentJobStatus = getRecentJobsStatus(student.Events);
       const jobless =
@@ -163,12 +163,12 @@ function AllStudents() {
             : student.lastName.trim() === lastName;
         return firstNameCondition && lastNameCondition;
       });
-      console.log(
-        classCondition,
-        courseCondition,
-        firstAndLastNamesMatch,
-        jobStatusCondition
-      );
+      // console.log(
+      //   classCondition,
+      //   courseCondition,
+      //   firstAndLastNamesMatch,
+      //   jobStatusCondition
+      // );
       return (
         classCondition &&
         courseCondition &&
