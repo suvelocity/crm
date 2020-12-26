@@ -298,3 +298,7 @@ export type QuizSubmission = {
   answerid: number,
   answertitle: string 
 }
+// Field Types
+export type IFormTextField = Required<IField>  
+export type IFormChoiceField = Required<IFieldExtended>  
+export type IFormMultipleChoiceField = Required<Omit<IFieldExtended,'isCorrect'>>  
