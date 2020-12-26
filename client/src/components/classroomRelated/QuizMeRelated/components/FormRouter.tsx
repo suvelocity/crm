@@ -25,10 +25,11 @@ export default function FormRouter() {
     fetchForm();
   },[]);
   if(form) {
-    return (form.isQuiz === true) ? <QuizPage form={form}/> : <FormPage form={form}/>
+    return (form.isQuiz === true) ? <QuizPage form={form}/> :<FormPage form={form}/>
   } else {
+    console.log(form)
     return (
-      <div></div>
+      <h1>problem with form</h1>
     )
   }
 }

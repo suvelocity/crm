@@ -1,18 +1,20 @@
 import React from 'react' 
 import {Checkbox,FormGroup,FormControlLabel,FormControl,FormLabel, FormHelperText} from '@material-ui/core'
 import {useForm} from 'react-hook-form'
-import { IFormExtended, IFieldExtended ,IFormMultipleChoiceField, IOption } from "../../../../typescript/interfaces";
+import { IFormExtended, IFieldExtended ,IFormMultipleChoiceField, IOption } from "../../../../../typescript/interfaces";
 
 interface IProps{
-  field:IFormMultipleChoiceField,
-  value:IOption[]|undefined,
-  change:(value:any,fieldId:number)=>void
+  field:IFormMultipleChoiceField;
+  value:IOption[]|undefined;
+  change:(value:any,fieldId:number)=>void;
+  disabled:boolean;
 }
-function MultipleChoiceField( {field, value, change}:IProps ) {
+function MultipleChoiceField( {field, value, change,disabled}:IProps ) {
   const {id:fieldId,title,Options} = field
   return <FormControl required variant="outlined" 
     error={value?value.length===0:true} 
     component="fieldset"
+    disabled={disabled}
   >
     <FormGroup>
     <FormLabel>{title}</FormLabel>

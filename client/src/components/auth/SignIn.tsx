@@ -44,6 +44,7 @@ export function SignIn() {
       const decoded = jwt.decode(getRefreshToken());
       //@ts-ignore
       if (decoded && decoded.type! === data.userType) {
+        console.log(decoded)
         if (data.dataValues) {
           setUser({
             ...data.dataValues,

@@ -205,6 +205,24 @@ module.exports = {
           is_correct: null,
           field_id: 10,
         },
+        {
+          id: 33,
+          title: "green",
+          is_correct: null,
+          field_id: 12,
+        },
+        {
+          id: 34,
+          title: "red",
+          is_correct: null,
+          field_id: 12,
+        },
+        {
+          id: 35,
+          title: "blue",
+          is_correct: null,
+          field_id: 12,
+        },
       ],
       {}
     );

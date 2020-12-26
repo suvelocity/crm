@@ -23,6 +23,16 @@ export interface IStudent {
   resumeLink?: string;
   fccAccount?: string;
 }
+export interface ITeacher {
+  id:number;
+  firstName:string;
+  lastName:string;
+  classId:number;
+  createdAt?:Date;
+  updatedAt?:Date;
+  deletedAt?:Date;
+  email:string; 
+}
 
 export interface IPair {
   id: number
@@ -250,7 +260,7 @@ export type IField = {
   id: number,
   title: string
   formId?: number
-  typeId?: number
+  typeId: number
 };
 export type IFieldExtended = IField & {Options?: IOption[]};
 
@@ -263,7 +273,8 @@ export type IFormExtended = {
   id: number,
   name: string,
   isQuiz: boolean,
-  Fields: IFieldExtended[]  
+  Fields: IFieldExtended[]
+  Teacher: Pick<ITeacher,'firstName'|'lastName'>  
 }
 export type IAnswer = {
   fieldId: number, 
@@ -298,3 +309,7 @@ export type QuizSubmission = {
   answerid: number,
   answertitle: string 
 }
+// Field Types
+export type IFormTextField = Required<IField>  
+export type IFormSingleChoiceField = Required<IFieldExtended>  
+export type IFormMultipleChoiceField = Required<Omit<IFieldExtended,'isCorrect'>>  

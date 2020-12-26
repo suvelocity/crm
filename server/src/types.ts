@@ -157,7 +157,16 @@ export interface IField {
   // formId: number;
   typeId?: number;
 }
-
+export type IFormOption = {
+  id?: number,
+  title: string,
+  // isCorrect?: boolean
+}
+export interface IFormFieldSubmission {
+  studentId: number;
+  fieldId: number;
+  answer: string|IFormOption
+}
 export interface IOption {
   id?: number,
   title: string,

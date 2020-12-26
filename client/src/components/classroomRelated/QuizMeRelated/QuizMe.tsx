@@ -31,7 +31,10 @@ function QuizMe() {
         <Router>
           {/* <NavBar /> */}
           <Switch>
-            <Route exact path="/quizme/form/:id" component={FormRouter} />
+            <Route  path="/quizme/form/:id" component={FormRouter} />
+            {/* <Route exact path="/quizme/form/:id" >
+            <h1>adsa</h1>
+            </Route> */}
             <Route
               path="/quizme/fieldsubmission/byform/:id"
               component={QuizSubmissionsRouter}

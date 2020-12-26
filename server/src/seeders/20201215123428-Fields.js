@@ -60,7 +60,7 @@ module.exports = {
           title: "How did you feel in this first week of the course?",
           form_id: 5,
           type_id:1
-        }
+        },
         {
           id: 10,
           title: "What were your first impressions of the course?",

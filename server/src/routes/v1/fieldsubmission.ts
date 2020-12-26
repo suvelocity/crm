@@ -1,15 +1,18 @@
-import { Router, Request, Response } from "express";
+import e, { Router, Request, Response } from "express";
 //@ts-ignore
 import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
-
+import {Op, QueryInterface} from 'sequelize'
 import {
   formSubmissionSchema,
   formSubmissionSchemaToPut,
 } from "../../validations";
-import { IFormSubmission } from "../../types";
-import { required } from "joi";
+import {IFormFieldSubmission,IFormOption, IOption} from '../../types'
+import { array, required } from "joi";
+import selectedoption from "../../models/selectedoption";
+import { update } from "lodash";
+// import {IOption} from '../../../../client/src/typescript/interfaces
 
 const router = Router();
 
@@ -138,24 +141,99 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
 
 
 router.post('/form', async (req: Request, res: Response) => {
+  async function updateOrCreateField(studentId:number,fieldId:number, textualAnswer:string|undefined){
+    try{
+      let {0:submission,1:createdNew}:{0:{id:number},1:boolean} = await FieldSubmission.findOrCreate({
+        where:{studentId,fieldId},
+        defaults:{studentId,fieldId,textualAnswer},
+        attributes:{include:['id']},
+      })
+      if(createdNew){
+        submission = await FieldSubmission.findOne({
+          where:{[Op.and]:{studentId,fieldId}},
+          attributes:{include:['id']},
+        })
+        console.log('sub:',submission) 
+        throw 'mf'
+      }
+      const {id} = submission
+      return {id,textualAnswer,createdNew}
+    }catch(err){
+      console.log(err)
+      return {
+        status:'error',
+        message:err.message,
+      }
+    }
+      
+  }
+  async function insertOptionsField(createdNew:boolean,submissionId:number,answer:IOption[]){
+    try{
+      const qi :QueryInterface= db.sequelize.getQueryInterface()
+      if(!createdNew){
+        qi.bulkDelete('SelectedOptions',{field_submission_id:submissionId})
+        .catch(e=>console.error(e.message))
+      }
+      const added = await qi.bulkInsert('SelectedOptions',
+        answer.map(({id})=>({
+          option_id:id,field_submission_id:submissionId
+        })))
+      return { status:'success' }
+    }catch(err){
+      console.trace(err)
+      return {
+        status:'error',
+        message:err.message,
+      }
+    }
+  }
   try {
-    const body = req.body;
-    // const { studentId, fieldId, textualAnswer } = body;
-    const fieldSubsArr = body.map((fieldSub: any) => ({
-      studentId: fieldSub.studentId,
-      fieldId: fieldSub.fieldId,
-      textualAnswer: fieldSub.textualAnswer
-    }));
-    // const { error } = FormSubmission.validate(formSubmission);
-    // if(error) {return res.status(400).json(error.message)}; 
-    // const formattedFormSubmission = formSubmission.map(())
-    const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubsArr)
-    return res.json("field subs created successfully")
+    interface submission{
+      studentId:number;
+      fieldId: number;
+      answer: 'string'|IOption[]
+    }
+    const body:submission[] = req.body;
+    const submissions = await Promise.all(body.map( async ({studentId,fieldId,answer})=>{
+      const {id:submissionId,textualAnswer,createdNew,status,message} = await updateOrCreateField(
+        studentId,
+        fieldId,
+        typeof answer === 'string'
+        ? answer : undefined
+      )
+      if( status==='error'){
+        return {
+          status:'error',
+          message:message,  
+        }
+      }else if(textualAnswer){
+        return {status:'success'}
+      }else{
+        //@ts-ignore
+        const {status,message} =await insertOptionsField(createdNew,submissionId,answer)
+        if( status==='error'){
+          return {
+            status:'error',
+            message:message,  
+          }
+        } else {
+          return {status:'success'}
+        }
+      }
+
+    })
+    )
+    if(!Array.isArray(submissions)){
+      res.status(400).json(submissions)
+    }else{
+      res.status(201).send('success')
+    }
   }
   catch(error) {
     return res.status(400).json(error.message);
   }
 });
+
 router.post('/quiz', async (req: Request, res: Response) => {
   try {
     const body = req.body;

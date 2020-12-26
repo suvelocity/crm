@@ -1,18 +1,18 @@
 import { Router, Request, Response } from "express";
 //@ts-ignore
-import { Form, Field, Option } from "../../models";
+import { Form, Field, Option, Teacher,TaskOfStudent } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { formSchema, formSchemaToPut } from "../../validations";
 import { IForm, IField, IOption } from "../../types";
 import { networkInterfaces } from "os";
-import { QueryInterface } from "sequelize/types";
+import { Op, QueryInterface } from "sequelize/types";
 import { IpOptions } from "joi";
 
 const router = Router();
 
 // GET ALL FORMS
-router.get("/all", async (req: Request, res: Response) => {
+router.get("/all", async (req: any, res: Response) => {
   const forms = await Form.findAll({
     attributes: ["id", "name", "isQuiz"],
   });
@@ -30,17 +30,26 @@ router.get("/all", async (req: Request, res: Response) => {
 
 // GET QUIZ BY ID
 router.get("/:id", async (req: Request, res: Response) => {
-  const form = await Form.findByPk(req.params.id, {
-    attributes: ["id", "name", "isQuiz"],
-    include: [
-      {
-        model: Field,
-        attributes: ["id", "title"],
-        include: [{ model: Option, attributes: ["id", "title"] }],
-      },
-    ],
-  });
-  return res.json(form);
+  try{
+    const form = await Form.findByPk(req.params.id, {
+      
+      attributes: ["id", "name", "isQuiz"],
+      include: [
+        {
+          model: Field,
+          attributes: ["id", "title",'typeId'],
+          include: [{ model: Option, attributes: ["id", "title"] }],
+        },
+        {
+          model: Teacher,
+          attributes: ["firstName", "lastName"]
+        },
+      ],
+    });
+    return res.json(form);
+  }catch(err){
+    console.error(err.message)
+  }
 });
 
 // GET QUESTIONS OF FORM

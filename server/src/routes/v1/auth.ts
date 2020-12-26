@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 //@ts-ignore
-import { User, RefreshToken, Student, Teacher } from "../../models";
+import db,{ User, RefreshToken, Student, Teacher } from "../../models";
 import bcrypt from "bcryptjs";
 
 require("dotenv").config();
@@ -66,7 +66,12 @@ router.post("/signin", async (req: Request, res: Response) => {
     }
     const exp = oneDay() * (rememberMe ? 365 : 1);
     const accessTokenExp = fifteenMinutes();
-    const data = { email, type: user.type, exp };
+    const data = { 
+      email, 
+      type: user.type, 
+      exp,
+      id:user.relatedId 
+    };
     const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET!);
     const accessToken = jwt.sign(
       { ...data, exp: accessTokenExp },
