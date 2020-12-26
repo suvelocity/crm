@@ -13,6 +13,16 @@ const router = Router();
 
 // GET ALL FORMS
 router.get("/all", async (req: any, res: Response) => {
+  const {id} = req.user
+  const tasks = await TaskOfStudent.findAll({
+    where:{
+      [Op.and]:{
+        studentId:id,
+        type:'quizMe'
+      }},
+    include:['id','externalId']
+  })
+  console.log(tasks)
   const forms = await Form.findAll({
     attributes: ["id", "name", "isQuiz"],
   });

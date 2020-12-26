@@ -23,16 +23,6 @@ export interface IStudent {
   resumeLink?: string;
   fccAccount?: string;
 }
-export interface ITeacher {
-  id:number;
-  firstName:string;
-  lastName:string;
-  classId:number;
-  createdAt?:Date;
-  updatedAt?:Date;
-  deletedAt?:Date;
-  email:string; 
-}
 
 export interface ITeacher {
   id?: number;
