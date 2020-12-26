@@ -11,6 +11,19 @@ export interface IJob {
   additionalDetails: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Class?: IClass;
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+
 export interface IStudent {
   id?: number;
   email: string;

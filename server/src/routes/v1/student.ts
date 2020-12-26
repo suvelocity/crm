@@ -27,7 +27,7 @@ const publicFields: string[] = Object.keys(PublicFieldsEnum);
 const mailOptions = (to: string, password: string) => ({
   from: process.env.EMAIL_USER,
   to: to,
-  subject: "Welcome to CRM",
+  subject: "Welcome to Scale-Up Velocity CRM",
   text: `You can login with:\nUsername: ${to}\nPassword: ${password}`,
 });
 

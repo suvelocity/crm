@@ -51,6 +51,11 @@ export const jobSchemaToPut = Joi.object({
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
+export const teacherOfClassSchema = Joi.array().items({
+  teacherId: Joi.string(), 
+  classId: Joi.string()
+})
+
 export const studentSchema = Joi.object({
   email: Joi.string().required(),
   firstName: Joi.string().required(),
@@ -70,6 +75,14 @@ export const studentSchema = Joi.object({
   citizenship: Joi.string().required(),
   fccAccount: Joi.string().max(30).allow(null, ""),
   resumeLink: Joi.string().max(500).allow(null, ""),
+});
+
+export const teacherSchema = Joi.object({
+  email: Joi.string().required(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  idNumber: Joi.string().required(),
+  phone: Joi.string().allow(null, "")
 });
 
 export const studentSchemaToPut = Joi.object({
