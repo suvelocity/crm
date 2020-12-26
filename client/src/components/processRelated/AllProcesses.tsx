@@ -12,26 +12,43 @@ import {
   StyledDiv,
 } from "../../styles/styledComponents";
 import TimelineIcon from "@material-ui/icons/Timeline";
-import { IEvent } from "../../typescript/interfaces";
+import {
+  filterStudentObject,
+  IEvent,
+  SelectInputs,
+  IFilterOptions,
+} from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
 import { capitalize, formatToIsraeliDate } from "../../helpers/general";
 import { Button, TextField } from "@material-ui/core";
 import PDFLink from "./PDFLink";
+import { FiltersComponents } from "../FiltersComponents";
 
 function AllProcesses() {
   const [processes, setProcesses] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filteredProcesses, setFilteredProcesses] = useState<IEvent[]>([]);
-  const [filterInput, setFilterInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
   const [click, setClick] = useState<boolean>(false);
+  //filters
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
+    []
+  );
+  const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
+    {
+      Class: [],
+      JobStatus: [],
+      // Course: [""],
+    }
+  );
 
   const handleFilter = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ): void => {
     const input = e.target.value;
     setClick(false);
-    setFilterInput(input);
+    setSearchInput(input);
 
     const newProcessesArr = [];
     for (let process of processes) {
@@ -59,14 +76,37 @@ function AllProcesses() {
     setFilteredProcesses(newProcessesArr);
   };
 
+  const fetchProcesses: (filter: any) => Promise<void> = async (
+    filter: any
+  ) => {
+    console.log(filter);
+    const { data } = await network.get("/api/v1/event/allProcesses", {
+      params: filter,
+    });
+    const { data: filterOptions } = await network.get(
+      "/api/v1/event/process-options"
+    );
+    setProcesses(data);
+    setFilteredProcesses(data);
+    //@ts-ignore
+    setFilterOptionsArray([
+      {
+        filterBy: "Class",
+        possibleValues: filterOptions.classes
+          .map((cls: { name: string; id: string }) => cls.name)
+          .slice(1),
+      },
+      {
+        filterBy: "Job Status",
+        possibleValues: filterOptions.statuses,
+      },
+    ]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data } = await network.get("/api/v1/event/allProcesses");
-      setProcesses(data);
-      setFilteredProcesses(data);
-      setLoading(false);
-    })();
-  }, []);
+    fetchProcesses(formatFiltersToServer(filterAttributes));
+  }, [filterAttributes]);
 
   return (
     <Wrapper width="80%">
@@ -77,12 +117,20 @@ function AllProcesses() {
       </Center>
       <br />
       <Center>
-        <TextField
-          variant="outlined"
-          value={filterInput}
-          label="Search process"
-          onChange={(e) => handleFilter(e)}
-        />
+        <div style={{ display: "flex" }}>
+          <FiltersComponents
+            array={filterOptionsArray}
+            filterObject={filterAttributes}
+            callbackFunction={setFilterAttributes}
+            widthPercent={50}
+          />
+          <TextField
+            variant="outlined"
+            value={searchInput}
+            label="Search process"
+            onChange={(e) => handleFilter(e)}
+          />
+        </div>
       </Center>
       {/* <Button variant='outlined' onClick={() => setClick((prev) => !prev)}>
         Prepare PDF
@@ -132,6 +180,13 @@ function AllProcesses() {
       </Loading>
     </Wrapper>
   );
+}
+
+function formatFiltersToServer(attrObj: filterStudentObject) {
+  return {
+    class: attrObj.Class![0] ? { name: attrObj.Class } : {},
+    process: attrObj.JobStatus![0] ? { name: attrObj.JobStatus } : {},
+  };
 }
 
 export default AllProcesses;
