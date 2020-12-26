@@ -16,7 +16,7 @@ import {
 //@ts-ignore
 import { Student, Company, Job, Event } from "./models";
 //@ts-ignore
-import { Class, TaskofStudent, Task } from "./models";
+import { Class, TaskOfStudent, Task } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy } from "lodash";
 import { parse } from "dotenv/types";
@@ -250,7 +250,7 @@ export const fetchFCC: () => void = async () => {
         (challenge: any) => challenge.id
       );
 
-      TaskofStudent.findAll({
+      TaskOfStudent.findAll({
         where: { student_id: userId, status: !"done", type: "fcc" },
         include: [{ model: Task, attributes: ["id", "externalId"] }],
       }).then((unfinishedTOS: any) => {
@@ -260,7 +260,7 @@ export const fetchFCC: () => void = async () => {
             unfinishedTask.Task.externalId
           );
           if (match)
-            TaskofStudent.update(
+            TaskOfStudent.update(
               { status: "done" },
               { where: { id: unfinishedTask.id } }
             );
@@ -297,7 +297,7 @@ export const fetchFCC: () => void = async () => {
           (studentData: any) => studentData.fcc_account === username
         );
 
-        TaskofStudent.findAll({
+        TaskOfStudent.findAll({
           where: { student_id: userId, status: !"done", type: "fcc" },
           include: [{ model: Task, attributes: ["id", "externalId"] }],
         }).then((unfinishedTOS: any) => {
@@ -307,7 +307,7 @@ export const fetchFCC: () => void = async () => {
               unfinishedTask.Task.externalId
             );
             if (match)
-              TaskofStudent.update(
+              TaskOfStudent.update(
                 { status: "done" },
                 { where: { id: unfinishedTask.id } }
               );
@@ -349,12 +349,12 @@ export const updateStudentTaskState: (
   try {
     return Promise.all(
       // events.map((event: IEvent) =>
-      //   TaskofStudent.findOne({
+      //   TaskOfStudent.findOne({
       //     where: { student_id: event.userId, task_id: event.relatedId },
       //   }).then((tosRecord: any) => tosRecord.update({ status: "done" }))
       // )
       events.map((event: IEvent) =>
-        TaskofStudent.update(
+        TaskOfStudent.update(
           { status: "done" },
           {
             where: { student_id: event.userId },

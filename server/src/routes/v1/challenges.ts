@@ -36,7 +36,7 @@ router.get("/challengeMe", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/quiz", async (req: Request, res: Response) => {
+router.get("/quizMe", async (req: Request, res: Response) => {
   const { name: query } = req.query;
   try {
     const data: IForm[] = await Form.findAll({

@@ -22,7 +22,7 @@ const generateURL: { [key: string]: (id: string) => string } = {
   fcc(link: string) {
     return "https://www.freecodecamp.org/" + link;
   },
-  quiz(id: string) {
+  quizMe(id: string) {
     return "localhost:3000/quizme/" + id;
   },
 };
@@ -53,7 +53,7 @@ function ChallengeSelector({
     case "fcc":
       site = "Free Code Camp";
       break;
-    case "quiz":
+    case "quizMe":
       site = "QuizMe";
       break;
   }

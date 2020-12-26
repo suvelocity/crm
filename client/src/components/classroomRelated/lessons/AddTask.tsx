@@ -83,6 +83,9 @@ export default function AddTask({
       className='create-task'
       style={{
         maxWidth: "15vw",
+        maxHeight: "90vh",
+        overflowY:'scroll'
+
       }}>
       <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
         <CloseIcon onClick={removeTask} />
@@ -112,7 +115,7 @@ export default function AddTask({
           <MenuItem value='manual'>manual</MenuItem>
           <MenuItem value='challengeMe'>challengeMe</MenuItem>
           <MenuItem value='fcc'>fcc</MenuItem>
-          <MenuItem value='quiz'>quiz</MenuItem>
+          <MenuItem value='quizMe'>quizMe</MenuItem>
         </Select>
       </FormControl>
 

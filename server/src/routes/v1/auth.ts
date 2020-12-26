@@ -19,7 +19,8 @@ router.post("/token", async (req: Request, res: Response) => {
       where: { token: refreshToken },
     });
     if (!token)
-      return res.status(404).json({ error: "Refresh token not found" });
+    return res.status(404).json({ error: "Refresh token not found" });
+    const bich = jwt.decode(token)
     jwt.verify(
       token,
       process.env.REFRESH_TOKEN_SECRET!,

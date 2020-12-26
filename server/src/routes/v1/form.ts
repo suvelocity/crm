@@ -27,7 +27,7 @@ router.get("/all", async (req: any, res: Response) => {
         studentId:id,
         type:'quizMe'
       }},
-    include:['id','externalId']
+    attributes:['id','fieldId']
   })
   console.log(tasks)
   const forms = await Form.findAll({

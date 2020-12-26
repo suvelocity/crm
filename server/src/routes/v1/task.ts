@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Class, Task, TaskofStudent } from "../../models";
+import { Class, Task, TaskOfStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event, TeacherofClass } from "../../models";
 import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
@@ -64,7 +64,7 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
       where: tosWhereCLause,
       include: [
         {
-          model: TaskofStudent,
+          model: TaskOfStudent,
           attributes: ["studentId", "status", "submitLink", "updatedAt"],
           required: true,
           include: [
@@ -121,7 +121,7 @@ router.get("/options/:id", async (req: Request, res: Response) => {
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
-    const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
+    const myTasks: ITaskofStudent[] = await TaskOfStudent.findAll({
       where: { student_id: req.params.id },
       attributes: ["id", "status", "submitLink"],
       include: [
@@ -168,7 +168,7 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
         }
       );
 
-      const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
+      const tasksofstudents: ITaskofStudent[] = await TaskOfStudent.bulkCreate(
         taskArr
       );
     }
@@ -202,7 +202,7 @@ router.post("/tostudents", async (req: Request, res: Response) => {
         }
       );
 
-      const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
+      const tasksofstudents: ITaskofStudent[] = await TaskOfStudent.bulkCreate(
         taskArr
       );
     }
@@ -217,13 +217,13 @@ router.post("/tostudents", async (req: Request, res: Response) => {
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
   try {
-    const taskType: any = await TaskofStudent.findByPk(req.params.id, {
+    const taskType: any = await TaskOfStudent.findByPk(req.params.id, {
       attributes: ["type"],
     });
     console.log(taskType);
 
     if (taskType.type === "manual") {
-      await TaskofStudent.update(
+      await TaskOfStudent.update(
         {
           submitLink: req.body.url,
           status: "done",
@@ -257,7 +257,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const deleted = await Task.destroy({ where: { id: req.params.id } });
-    const deleteFromStudents = await TaskofStudent.destroy({
+    const deleteFromStudents = await TaskOfStudent.destroy({
       where: { taskId: req.params.id },
     });
     console.log(deleteFromStudents);
@@ -272,7 +272,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 //* checks submitted external task
 router.post("/checksubmit", async (req: Request, res: Response) => {
   try {
-    const unfinishedTasks: any = await TaskofStudent.findAll({
+    const unfinishedTasks: any = await TaskOfStudent.findAll({
       where: {
         studentId: req.body.studentId,
         type: !"manual",
@@ -293,7 +293,7 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
               }, //todo create this event
             });
             if (event) {
-              await TaskofStudent.update(
+              await TaskOfStudent.update(
                 {
                   status: "done",
                 },
@@ -314,7 +314,7 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
               }, //todo create this event
             });
             if (event) {
-              await TaskofStudent.update(
+              await TaskOfStudent.update(
                 {
                   status: "done",
                 },

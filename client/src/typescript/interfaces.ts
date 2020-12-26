@@ -273,7 +273,7 @@ export interface ILesson {
   createdBy: number;
 }
 
-export type taskType = 'manual'|'challengeMe'|'fcc'|'quiz';
+export type taskType = 'manual'|'challengeMe'|'fcc'|'quizMe';
 export interface ITask {
   id?: number;
   createdAt?: number;

@@ -10,7 +10,6 @@ module.exports = {
           first_name: "lonir",
           last_name: "lotomer",
           email: "teacher@teacher.com",
-          class_id: 1,
           phone: "054-334-6767",
           id_number: "311711087",
           created_at: new Date(),

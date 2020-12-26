@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Lesson, {
         foreignKey: "lessonId",
       });
-      this.hasMany(models.TaskofStudent, {
+      this.hasMany(models.TaskOfStudent, {
         foreignKey: "taskId",
       });
     }
