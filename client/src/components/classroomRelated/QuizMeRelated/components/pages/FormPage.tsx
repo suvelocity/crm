@@ -9,6 +9,8 @@ import network from "../../../../../helpers/network";
 import { IFormExtended, IFieldSubmission,IField ,IOption,IFieldExtended } from "../../../../../typescript/interfaces";
 import {TextualField, SingleChoiceField,  MultipleChoiceField} from '../fields' 
 import Swal from 'sweetalert2'
+import { capitalize, formatPhone } from "../../../../../helpers";
+
 import { initial } from "lodash";
 interface IProps {
   form: IFormExtended;
@@ -122,7 +124,7 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
       confirmButtonText:'try again',
     })
   }
-
+  
   function swallSuccess (){
     Swal.fire({  
       icon: 'success',
@@ -246,7 +248,7 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
       <form className={classes.form} onSubmit={handleSubmit}>
         <section className={classes.header}>
           <h1 className={classes.title}>{name}</h1>
-          <h2 className={classes.teacherName}>{`By: ${Teacher.firstName} ${Teacher.lastName}`}</h2>
+          <h2 className={classes.teacherName}>{`By: ${capitalize(Teacher.firstName)} ${capitalize(Teacher.lastName)}`}</h2>
         </section>
           {Fields.map<JSX.Element|undefined>((field, index) => {
             const {id,title,typeId} = field

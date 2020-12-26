@@ -7,8 +7,8 @@ module.exports = {
       [
         {
           id:1,
-          course: "full stack",
-          name: "cyber4s",
+          course: "cyber4s",
+          name: "summer-2020",
           starting_date: new Date("2020-07-05"),
           ending_date: new Date("2020-12-31"),
           cycle_number: 1,
@@ -19,8 +19,8 @@ module.exports = {
         },
         {
           id:2,
-          course: "full stack",
-          name: "cyber4s",
+          course: "cyber4s ",
+          name: "winter-2021",
           starting_date: new Date("2020-07-05"),
           ending_date: new Date("2020-12-31"),
           cycle_number: 2,
@@ -31,8 +31,8 @@ module.exports = {
         },
         {
           id:3,
-          course: "full stack",
-          name: "adva",
+          course: "Execellentteam",
+          name: "summer-2020",
           starting_date: new Date("2020-07-05"),
           ending_date: new Date("2020-12-31"),
           cycle_number: 1,
@@ -43,8 +43,8 @@ module.exports = {
         },
         {
           id:4,
-          course: "full stack",
-          name: "hackeru",
+          course: "Adva",
+          name: "winter-2020",
           starting_date: new Date("2020-07-05"),
           ending_date: new Date("2020-12-31"),
           cycle_number: 1,
