@@ -79,7 +79,6 @@ function AllProcesses() {
   const fetchProcesses: (filter: any) => Promise<void> = async (
     filter: any
   ) => {
-    console.log(filter);
     const { data } = await network.get("/api/v1/event/allProcesses", {
       params: filter,
     });

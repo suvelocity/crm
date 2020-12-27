@@ -18,7 +18,6 @@ export const FiltersComponents = ({
 }: Props) => {
   const [value, setValue] = useState<string[]>([""])
   const determineWhatToSet = (by: string, value: any) => {
-    console.log(by, value, 'determined');
     switch (by) {
       case "Class":
         return callbackFunction({ ...filterObject, Class: value });

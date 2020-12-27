@@ -8,7 +8,7 @@ import {
 const router = Router();
 //@ts-ignore
 import { Event, Student, Job, Company, Class } from "../../models";
-import { IEvent, IJob, IStudent } from "../../types";
+import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
 //@ts-ignore
@@ -53,13 +53,10 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 router.get("/allProcesses", async (req: Request, res: Response) => {
-  console.log(req.query);
   const cls = JSON.parse(req.query.class ? String(req.query.class) : "{}");
   const process = JSON.parse(
     req.query.process ? String(req.query.process) : "{}"
   );
-  console.log(cls);
-  console.log(process);
   let clsWhere = {};
   let processWhere = {};
 
@@ -69,14 +66,16 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   if (process.name)
     [(processWhere = { event_name: { [Op.or]: process.name } })];
 
-  console.log("-----------");
-  console.log(clsWhere);
-  console.log(processWhere);
-  console.log({ type: "jobs", ...processWhere });
-
   try {
-    const events: IEvent[] = await Event.findAll({
-      where: { type: "jobs", ...processWhere },
+    interface IStudentWRelationship extends IStudent {
+      Class: IClass;
+    }
+    interface IEventWRelationship extends IEvent {
+      Student: IStudentWRelationship;
+      Job: IJob;
+    }
+    const events: IEventWRelationship[] = await Event.findAll({
+      where: { type: "jobs" },
       include: [
         {
           model: Student,
@@ -95,16 +94,22 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
       ],
       order: [["date", "DESC"]],
     });
-    const processesData: any[] = [];
-    events.forEach((event: any) => {
+    const processesData: IEventWRelationship[] = [];
+    const JobOfStudentWevePast: IEventWRelationship[] = [];
+    events.forEach((event: IEventWRelationship) => {
       if (
-        processesData.findIndex(
-          (process: any) =>
-            process.Student!.id === event.Student!.id &&
-            process.Job!.id === event.Job!.id
+        JobOfStudentWevePast.findIndex(
+          (process: IEventWRelationship) =>
+            process.Student.id === event.Student.id &&
+            process.Job.id === event.Job!.id
         ) === -1
       ) {
-        processesData.push(event);
+        JobOfStudentWevePast.push(event);
+        if (process.name) {
+          if (process.name.includes(event.eventName)) {
+            processesData.push(event);
+          }
+        } else processesData.push(event);
       }
     });
     res.json(processesData);
@@ -114,32 +119,24 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
 });
 
 router.get("/process-options", async (req: Request, res: Response) => {
-  const options = {
+  interface options {
+    classes: { name: string; id: string }[];
+    statuses: string[];
+  }
+  const options: options = {
     classes: [{ name: "All", id: "" }],
-    statuses: ["Started application process"],
+    statuses: [],
   };
-  const allStatuses: string[] = [
-    "Sent CV",
-    "Phone Interview",
-    "First interview",
-    "Second interview",
-    "Third Interview",
-    "Forth interview",
-    "Home Test",
-    "Hired",
-    "Rejected",
-    "Irrelevant",
-    "Removed Application",
-    "Position Frozen",
-    "Canceled",
-  ];
   try {
     const allClassesIds: { name: string; id: string }[] = await Class.findAll({
       attributes: ["id", "name"],
     });
-
+    const values = await Event.aggregate("eventName", "DISTINCT", {
+      plain: false,
+    });
+    const statusesArray: string[] = values.map((item: any) => item.DISTINCT);
     options.classes.push(...allClassesIds);
-    options.statuses.push(...allStatuses);
+    options.statuses = [...statusesArray];
 
     res.json(options);
   } catch (e) {

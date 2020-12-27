@@ -181,7 +181,6 @@ function AllStudents() {
     setFilteredStudents(filterFunc());
   }, [filterAttributes]);
 
-  debugger;
   return (
     <Wrapper width="80%">
       <Center>
