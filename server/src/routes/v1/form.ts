@@ -1,10 +1,10 @@
 import { Router, Request, Response,RequestHandler } from 'express';
 //@ts-ignore
-import { Form, Field, Option, Teacher,TaskOfStudent } from "../../models";
+import { Form, Field, Option, Teacher,TaskOfStudent,Task } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { formSchema, formSchemaToPut } from "../../validations";
-import { IForm, IField, IOption } from "../../types";
+import { IForm, IField, IOption, ITask } from "../../types";
 import { networkInterfaces } from "os";
 import { Op, QueryInterface } from "sequelize";
 import { IpOptions } from "joi";
@@ -12,25 +12,41 @@ import jwt from 'jsonwebtoken'
 
 const router = Router();
 
- const validateAccess :RequestHandler = async (req,res,next)=>{
-  const auth = await jwt.verify( req.headers.authorization!.slice(7),process.env.ACCESS_TOKEN_SECRET!)
-  console.log(auth)
-  next()
-}
-
-// GET ALL FORMS
-router.get("/all", async (req: any, res: Response) => {
+ const validateFormAccess :RequestHandler = async (req:any,res,next)=>{
   const {id} = req.user
-  const tasks = await TaskOfStudent.findAll({
+  const studentTasks = await TaskOfStudent.findAll({
     where:{
       [Op.and]:{
         studentId:id,
         type:'quizMe'
       }},
-    attributes:['id','fieldId']
+    include:[{
+      model:Task,
+      attributes:['externalId','endDate'],
+      where:{
+        status:'active',
+        endDate:{
+          [Op.gte]:new Date()
+        }
+      }}]
   })
-  console.log(tasks)
+  const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
+  req.formIds=formIds
+  console.log('f',formIds)
+  next()
+}
+
+router.use(validateFormAccess)
+
+// GET ALL FORMS
+router.get("/all", async (req: any, res: Response) => {
+  const {formIds} = req
   const forms = await Form.findAll({
+    where:{
+      id:{
+        [Op.in]:formIds
+      }
+    },
     attributes: ["id", "name", "isQuiz"],
   });
   return res.json(forms);
@@ -46,9 +62,16 @@ router.get("/all", async (req: any, res: Response) => {
 // });
 
 // GET QUIZ BY ID
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", async (req: any, res: Response) => {
   try{
-    const form = await Form.findByPk(req.params.id, {
+    const {formIds} = req
+    const {id} = req.params
+    console.log('c',id,formIds)
+    console.log('c',formIds.includes(id))
+    if( !formIds.includes(Number(id)) ){
+     return res.status(401).send('access disallowed')
+    }
+    const form = await Form.findByPk(id, {
       
       attributes: ["id", "name", "isQuiz"],
       include: [

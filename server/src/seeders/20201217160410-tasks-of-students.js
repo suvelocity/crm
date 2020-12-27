@@ -66,6 +66,26 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        {
+          id: 57, 
+          student_id:7, 
+          task_id: 19, 
+          type: 'quizMe', 
+          status: 'pending', 
+          submit_link: "",          
+          created_at: new Date(),           
+          updated_at: new Date(),           
+        },          
+        {
+          id: 58, 
+          student_id:7, 
+          task_id: 20, 
+          type: 'quizMe', 
+          status: 'pending', 
+          submit_link: "",          
+          created_at: new Date(),           
+          updated_at: new Date(),           
+        },          
       ],
       {}
     );
