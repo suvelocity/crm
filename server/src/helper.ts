@@ -18,8 +18,9 @@ import { Student, Company, Job, Event } from "./models";
 //@ts-ignore
 import { Class, TaskofStudent, Task } from "./models";
 import { Op } from "sequelize";
-import { flatMap, flatten, orderBy } from "lodash";
+import { flatMap, flatten, orderBy, reduce } from "lodash";
 import { parse } from "dotenv/types";
+import { object } from "joi";
 //TODO fix types
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -381,8 +382,9 @@ export const parseFilters: (stringified: string) => any = (
   try {
     const parsed: ITaskFilter = JSON.parse(stringfied);
     const studentClassSynonyms: any = { class: "name" };
-    const studentFilters: string[] = ["class"];
+    const studentFilters: string[] = ["class", "name"];
     const taskFilters: string[] = ["type"];
+    const eventFilters: string[] = ["eventName", ""];
 
     return {
       student: Object.keys(parsed).reduce((obj: any, field: string) => {
@@ -402,3 +404,41 @@ export const parseFilters: (stringified: string) => any = (
     return undefined;
   }
 };
+
+// export const newparseFilters: (
+//   stringifiedFilter: string,
+//   outputTemplate: object,
+//   fields: object
+// ) => object = (
+//   stringifiedFilter: string,
+//   outputTemplate: object,
+//   fields: object
+// ) => {
+//   try {
+
+//     const parsedFilter: object = JSON.parse(stringifiedFilter);
+//     for(let filter in parsedFilter) {
+//       //@ts-ignore
+//       // const aba:object = Object.values(parsedFilter[filter]).reduce((ima:object,filterField:Array<string|object>)=>{
+//       //   const [key,value] = filterField;
+//       //   if(typeof value !== object && typeof value !== null) {
+//       //     ima.id = value;
+//       //     return ima;
+//       //   }
+// if(typeof parsedFilter[filter]!== object && typeof parsedFilter[filter]!==null) {
+//   outputTemplate[filter] = parsedFilter[filter]
+// }
+
+//       },{})
+
+//     }
+//   }catch(e){
+//     return e;
+//     // return {err:e, message:"Can't parse filters"}
+//   }
+
+//   }
+// //   return Object.values(fields).reduce((output:object,field:string)=>{
+// // if
+//   // },outputTemplate)
+// };
