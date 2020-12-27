@@ -39,7 +39,7 @@ function AllProcesses() {
     {
       Class: [],
       JobStatus: [],
-      // Course: [""],
+      Company: []
     }
   );
 
