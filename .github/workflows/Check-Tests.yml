@@ -35,6 +35,7 @@ jobs:
         working-directory: ./server
       - name: migrate and check seeders
         run: npm run testseeders
+        working-directory: ./server
       - name: run tests
         run: npm run test
         env:
