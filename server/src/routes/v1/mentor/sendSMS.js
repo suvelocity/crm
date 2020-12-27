@@ -1,4 +1,4 @@
-import { Student, MentorStudent, Meeting } from "../../../models";
+const { Student, MentorStudent, Meeting }  = require("../../../models");
 const Nexmo = require("nexmo");
 const { Op } = require("sequelize");
 

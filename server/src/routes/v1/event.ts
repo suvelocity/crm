@@ -136,10 +136,10 @@ router.get("/process-options", async (req: Request, res: Response) => {
   }
   try {
     const uniqueClassesQuery = `
-    SELECT DISTINCT(classes.id), classes.name  FROM events
-    join students on events.user_id = students.id
-    join classes on students.class_id = classes.id
-    WHERE events.type = 'jobs'`;
+    SELECT DISTINCT(Classes.id), Classes.name  FROM Events
+    join Students on Events.user_id = Students.id
+    join Classes on Students.class_id = Classes.id
+    WHERE Events.type = 'jobs'`;
     const classes: { name: string; id: string }[] = await sequelize.query(
       uniqueClassesQuery,
       {
@@ -147,10 +147,10 @@ router.get("/process-options", async (req: Request, res: Response) => {
       }
     );
     const uniqueCompanyQuery = `
-    SELECT DISTINCT(companies.name) FROM events
-    join jobs on events.related_id = jobs.id
-    join companies on jobs.company_id = companies.id
-    WHERE events.type = 'jobs'`;
+    SELECT DISTINCT(Companies.name) FROM Events
+    join Jobs on Events.related_id = Jobs.id
+    join Companies on Jobs.company_id = Companies.id
+    WHERE Events.type = 'jobs'`;
     const companies = await sequelize.query(uniqueCompanyQuery, {
       type: QueryTypes.SELECT,
     });
