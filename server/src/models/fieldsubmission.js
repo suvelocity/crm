@@ -18,17 +18,23 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'fieldId',
         as: 'field'
       });
+      // this.belongsToMany(models.Option, {
+      //   through: models.SelectedOption,
+      //   foreignKey: 'fieldSubmissionId',
+      //   otherKey: 'optionId',
+      // })
       this.hasMany(models.SelectedOption, {
-        foreignKey: 'fieldSubmissionId'
-      });
-      this.belongsToMany(models.Option, {
-        through: models.SelectedOption,
         foreignKey: 'fieldSubmissionId',
-        otherKey: 'optionId',
-      })
+        sourceKey:'id'
+      });
     }
   };
   FieldSubmission.init({
+    id: {
+      primaryKey:true,
+      type: DataTypes.INTEGER,
+      // allowNull: false
+    },
     fieldId: {
       type: DataTypes.INTEGER,
       allowNull: false

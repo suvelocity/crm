@@ -289,7 +289,7 @@ export interface ITask {
   status: "active" | "disabled";
   body?: string;
 }
-export interface ITaskofStudent {
+export interface ITaskOfStudent {
   id?: number;
   studentId: number;
   taskId: number;
@@ -316,22 +316,33 @@ export interface IField  {
 };
 export type IFieldExtended = IField & {Options?: IOption[]};
 
+interface ISubmission{
+  id: number;
+  studentId: number;
+  textualAnswer: string|null
+  SelectedOptions :{
+    id: number;
+    optionId:number;
+    fieldSubmissionId:number;
+  }[]
+  
+} 
+
+export type IFieldWithSubs = IFieldExtended & { submission:ISubmission[]}  
+
 export type IForm = {
   id: number;
   name: string;
   isQuiz: boolean;
 };
-export type IFormExtended = {
-  id: number,
-  name: string,
-  isQuiz: boolean,
+export type IFormExtended = IForm & {
   Fields: IFieldExtended[]
-  Teacher: Pick<ITeacher,'firstName'|'lastName'>  
-  submissions?:{
-    id:number,
-    textualAnswer?:string,
-    Options?:IOption[]  
-  }[]
+  Teacher: Pick<ITeacher,'firstName'|'lastName'> 
+}
+export type IFormWithSubs = IForm & {
+  Fields: IFieldWithSubs[]
+  Teacher: Pick<ITeacher,'firstName'|'lastName'> 
+
 }
 export type IAnswer = {
   fieldId: number;

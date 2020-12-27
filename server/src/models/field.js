@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Option, {
         foreignKey: 'fieldId'
       });
+      this.hasMany(models.FieldSubmission, {
+        foreignKey: 'fieldId',
+        as:'submission',
+      });
     }
   };
   Field.init({

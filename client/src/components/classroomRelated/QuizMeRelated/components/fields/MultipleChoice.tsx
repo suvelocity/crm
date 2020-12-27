@@ -5,7 +5,7 @@ import { IFormExtended, IFieldExtended ,IFormMultipleChoiceField, IOption } from
 
 interface IProps{
   field:IFormMultipleChoiceField;
-  value:IOption[]|undefined;
+  value:{id:number}[]|undefined;
   change:(value:any,fieldId:number)=>void;
   disabled:boolean;
 }
@@ -30,7 +30,7 @@ function MultipleChoiceField( {field, value, change,disabled}:IProps ) {
         control={
           <Checkbox 
             checked={value instanceof Array
-            ? value.includes(Options[index])
+            ? value.map(({id})=>id).includes(Options[index].id!)
             :false
           }
           inputProps={{name:`Options[${index}]`}}
@@ -40,7 +40,7 @@ function MultipleChoiceField( {field, value, change,disabled}:IProps ) {
             ? value.slice()
             : []
             if(checked){
-              newValue.push(Options[index])
+              newValue.push({id:Options[index].id!})
               change(newValue,fieldId)
             }else{
               change(

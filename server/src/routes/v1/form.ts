@@ -32,42 +32,6 @@ const router = Router();
   })
   const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
   req.formIds=formIds
-  console.log('f',formIds)
-  next()
-}
- const checkForSubmission :RequestHandler = async (req:any,res,next)=>{
-  const {id:formId} = req.params
-  const submissions = await FieldSubmission.findAll({
-    attributes:['id','textualAnswer'],
-    include:[
-      {
-        model:Field,
-        as:'field',
-        where:{
-          formId
-        },
-      },
-      {
-        model:SelectedOption,
-      }
-    ]
-  })
-  if(submissions.length>0){
-    req.submissions = submissions.map(
-      ({
-        id,
-        textualAnswer,
-        SelectedOptions
-      }:{id:number,textualAnswer:string,SelectedOptions:any[]|undefined}
-    )=>(
-      {
-        id,
-        textualAnswer,
-        Options:SelectedOptions && SelectedOptions.map(
-          ({id}:{id:number}) => id )  
-      }
-    ))
-  }
   next()
 }
 
@@ -97,34 +61,50 @@ router.get("/all", async (req: any, res: Response) => {
     // });
     
     // GET QUIZ BY ID
-    router.get("/:id",checkForSubmission, async (req: any, res: Response) => {
+    router.get("/:id", async (req: any, res: Response) => {
       try{
-        const {formIds,submissions} = req
+        const {formIds,user} = req
         const {id} = req.params
         if( !formIds.includes(Number(id)) ){
           return res.status(401).send('access disallowed')
         }
         const form = await Form.findByPk(id, {
-          
           attributes: ["id", "name", "isQuiz"],
           include: [
             {
               model: Field,
               attributes: ["id", "title",'typeId'],
-          include: [{ model: Option, attributes: ["id", "title"] }],
-        },
-        {
-          model: Teacher,
-          attributes: ["firstName", "lastName"]
-        },
-      ],
-    });
-    if(submissions){
+            include: [
+              { 
+                model: Option,
+                 attributes: ["id", "title"] 
+              },
+              { 
+                model: FieldSubmission,
+                as:'submission',
+                attributes: ["id", "textualAnswer", 'fieldId','studentId'],
+                include:[
+                  {model:SelectedOption,
+                    attributes:{
+                      include:['id']
+                    }
+                  }
+                ]
+              }
+            ],
+            },
+            {
+              model: Teacher,
+              attributes: ["firstName", "lastName"]
+            },
+          ],
+        });
+    // if(submissions){
       
-      return res.json({form,submissions});
-    } else {
-      return res.json(form);
-    }
+    //   return res.json({form,submissions});
+    // } else {
+      return res.json({form});
+    // }
   }catch(err){
     console.error(err.message)
   }

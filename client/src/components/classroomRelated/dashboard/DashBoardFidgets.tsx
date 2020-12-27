@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   ILesson,
-  ITaskofStudent,
+  ITaskOfStudent,
 } from "../../../typescript/interfaces";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
@@ -15,7 +15,7 @@ import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskOfStudent[]>([]);
 
   const { user } = useContext<any>(AuthContext);
 
@@ -25,12 +25,12 @@ export function TasksFidget() {
 
   const fetchTasks: () => Promise<void> = async () => {
     try {
-      const { data: allTasks }: { data: ITaskofStudent[] } = await network.get(
+      const { data: allTasks }: { data: ITaskOfStudent[] } = await network.get(
         `/api/v1/task/bystudentid/${user.id}`
       );
 
       setIncompletedTasks(
-        allTasks.filter((task: ITaskofStudent) => task.status !== "done")
+        allTasks.filter((task: ITaskOfStudent) => task.status !== "done")
       );
     } catch (e) {
       console.log(e);
@@ -50,7 +50,7 @@ export function TasksFidget() {
           style={{ lineHeight: "2em", fontSize: "1.1em", textAlign: "center" }}>
           <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2>
 
-          {incompletedTasks.map((task: ITaskofStudent, i: number) => (
+          {incompletedTasks.map((task: ITaskOfStudent, i: number) => (
             <li key={`incompTask${i}`}>
               {/* @ts-ignore */}
               {task.Task.title}, to finish by {/* @ts-ignore */}

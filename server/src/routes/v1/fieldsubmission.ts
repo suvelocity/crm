@@ -1,6 +1,6 @@
 import e, { Router, Request, Response, RequestHandler } from "express";
 //@ts-ignore
-import { FieldSubmission, Task, Field, SelectedOption, Option, Student } from "../../models";
+import { FieldSubmission, Task, Field, SelectedOption, Option, Student, sequelize } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import {Op, QueryInterface} from 'sequelize'
@@ -12,6 +12,7 @@ import {IFormFieldSubmission,IFormOption, IOption} from '../../types'
 import { array, required } from "joi";
 import selectedoption from "../../models/selectedoption";
 import { update } from "lodash";
+import field from "../../models/field";
 // import {IOption} from '../../../../client/src/typescript/interfaces
 
 const router = Router();
@@ -43,10 +44,10 @@ router.get("/bystudent/:id", async (req: Request, res: Response) => {
         model: Field,
         required: false,
         as:'field',
-        attributes: [],
+        attributes: ["formId"],
+        // attributes: [],
       },
     ],
-    attributes: [[db.Sequelize.col("fields.form_id"), "formId"]],
     where: {
       studentId: req.params.id
     }
@@ -144,7 +145,6 @@ const validateForm:RequestHandler = async function (req,res,next){
     const {id,submissions} =  req.body
     //@ts-ignore
     const {user} =  req
-    console.log(id,submissions)
     const formIsValid = await Task.findOne({where:{
       externalId:id,
       status:'active',
@@ -159,50 +159,64 @@ const validateForm:RequestHandler = async function (req,res,next){
     req.body = submissions
     next()
   }catch(err){
-    return res.send(err) 
+    console.trace(err)
+    return res.send('a') 
   }
 }
 
 router.use(validateForm)
   
 router.post('/form', async (req: Request, res: Response) => {
-  async function updateOrCreateField(studentId:number,fieldId:number, textualAnswer:string|undefined){
-    try{
-      let {0:submission,1:createdNew}:{0:{id:number},1:boolean} = await FieldSubmission.findOrCreate({
+  async function updateOrCreateField(studentId:number,fieldId:number, answer:string|IOption[]){
+    try {
+      let createdNew = false
+      const textualAnswer =  typeof answer === 'string'
+        ? answer
+        :null
+      let sub = await FieldSubmission.findOne({
         where:{studentId,fieldId},
-        defaults:{studentId,fieldId,textualAnswer},
-        attributes:{include:['id']},
+        attributes:['id'],
       })
-      if(createdNew){
-        submission = await FieldSubmission.findOne({
-          where:{[Op.and]:{studentId,fieldId}},
-          attributes:{include:['id']},
+      if(!sub){
+        const creation = await FieldSubmission.create({
+          studentId,
+          fieldId,
+          textualAnswer
         })
-        console.log('sub:',submission) 
-        throw 'mf'
+        sub = await FieldSubmission.findOne({
+          where:{
+            [Op.and]:{
+              studentId,
+              fieldId,
+              textualAnswer,
+              createdAt:creation.createdAt
+            }
+          },attributes:['id']
+        })
+        createdNew = true
+      }else{
+        await FieldSubmission.update({textualAnswer},{where:{
+          id:sub.id
+        }})
       }
-      const {id} = submission
-      return {id,textualAnswer,createdNew}
-    }catch(err){
-      console.log(err)
-      return {
-        status:'error',
-        message:err.message,
-      }
+      
+      const {id:fieldSubmissionId} = sub
+      return {fieldSubmissionId,createdNew}
+    } catch(err) {
+      throw err
     }
       
   }
   async function insertOptionsField(createdNew:boolean,submissionId:number,answer:IOption[]){
+    console.log(answer)
     try{
-      const qi :QueryInterface= db.sequelize.getQueryInterface()
-      if(!createdNew){
-        qi.bulkDelete('SelectedOptions',{field_submission_id:submissionId})
-        .catch(e=>console.error(e.message))
-      }
-      const added = await qi.bulkInsert('SelectedOptions',
-        answer.map(({id})=>({
-          option_id:id,field_submission_id:submissionId
-        })))
+      
+      const qi :QueryInterface = db.sequelize.getQueryInterface()
+      // const added = await qi.bulkInsert('SelectedOptions',
+      //   answer.map(({id})=>({
+      //     option_id:id,field_submission_id:submissionId
+      //   })))
+      //   console.log(added)
       return { status:'success' }
     }catch(err){
       console.trace(err)
@@ -219,42 +233,27 @@ router.post('/form', async (req: Request, res: Response) => {
       answer: 'string'|IOption[]
     }
     const body:submission[] = req.body;
+    
     const submissions = await Promise.all(body.map( async ({studentId,fieldId,answer})=>{
-      const {id:submissionId,textualAnswer,createdNew,status,message} = await updateOrCreateField(
-        studentId,
-        fieldId,
-        typeof answer === 'string'
-        ? answer : undefined
-      )
-      if( status==='error'){
-        return {
-          status:'error',
-          message:message,  
-        }
-      }else if(textualAnswer){
-        return {status:'success'}
-      }else{
-        //@ts-ignore
-        const {status,message} =await insertOptionsField(createdNew,submissionId,answer)
-        if( status==='error'){
-          return {
-            status:'error',
-            message:message,  
-          }
-        } else {
-          return {status:'success'}
-        }
+      const {createdNew,fieldSubmissionId} = await updateOrCreateField(studentId,fieldId, answer)
+      const qi :QueryInterface = db.sequelize.getQueryInterface()
+      await qi.bulkDelete(SelectedOption.tableName,{field_submission_id:fieldSubmissionId})
+      if(typeof answer !== 'string'){
+        console.log(answer)
+        console.log(fieldSubmissionId)
+        await qi.bulkInsert(SelectedOption.tableName,
+          answer.map(({id:optionId})=>({
+            option_id:optionId,
+            field_submission_id:fieldSubmissionId
+          }))
+        )
       }
-
-    })
-    )
-    if(!Array.isArray(submissions)){
-      res.status(400).json(submissions)
-    }else{
-      res.status(201).send('success')
-    }
+    }))
+    res.status(201).send('success')
+    
   }
   catch(error) {
+    console.trace(error)
     return res.status(400).json(error.message);
   }
 });

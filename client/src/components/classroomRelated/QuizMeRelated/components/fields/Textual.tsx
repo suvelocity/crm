@@ -30,7 +30,7 @@ function TextualField( {field, value, change,disabled}:IProps ):JSX.Element {
         fullWidth
         onChange={(e)=>{
           const {value} = e.target
-          change(value,id)
+          change(value.trim().length?value:'',id)
         }}
         variant="outlined"
         />

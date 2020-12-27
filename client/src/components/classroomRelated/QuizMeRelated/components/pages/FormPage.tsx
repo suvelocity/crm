@@ -7,52 +7,52 @@ import {
   Container, Button
 } from "@material-ui/core";
 import network from "../../../../../helpers/network";
-import { IFormExtended, IFieldSubmission,IField ,IOption,IFieldExtended } from "../../../../../typescript/interfaces";
+import { IFormExtended, IFieldSubmission,IField ,IOption,IFieldExtended, IFormWithSubs, IFieldWithSubs } from "../../../../../typescript/interfaces";
 import {TextualField, SingleChoiceField,  MultipleChoiceField} from '../fields' 
 import Swal from 'sweetalert2'
 import { capitalize, formatPhone } from "../../../../../helpers";
 interface IProps {
-  form: IFormExtended;
+  form: IFormWithSubs;
 }
 interface IAnswers {
-  [key:number]:string|IOption[]|undefined
+  [key:number]:string|IOption[]|undefined|null
 }
-const extractAnswers = (submissions:Required<IFormExtended>['submissions']) => {
-  const prevAnswers:IAnswers = {}
-  for(let sub of submissions){
-    if (sub.textualAnswer){
-      prevAnswers[sub.id] = sub.textualAnswer
-    } else {
-      prevAnswers[sub.id] = sub.Options
-    }
-  }
-  return prevAnswers
-}
-
-export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IProps):JSX.Element {
-  //UPDATED
+const extractAnswers = (Fields:IFieldWithSubs[]) => {
   const emptyAnswers:IAnswers = {}
-  const [status, setStatus] = useState<string>();
-  const [answers,setAnswers] = useState<IAnswers>(
-    submissions 
-    ? extractAnswers(submissions)
-    : Fields.reduce((prev,cur)=>{
-      prev[cur.id]=undefined
-      return prev 
-    },emptyAnswers)
-  ) 
-  console.log(answers)
-  console.log(submissions)
-  //@ts-ignore
-  const {user} = useContext(AuthContext)
-  const {id:formId} = useParams<{id?:string}>()
+  return Fields.reduce((prev,{submission:submissions,id,typeId})=>{
+    const submission = submissions[0]
+    if(submission){
+      console.log('ineA',typeId,submission)
+      const {textualAnswer,SelectedOptions} = submission
+      //@ts-ignore
+      prev[id] = typeId === 1
+      ? textualAnswer
+      : SelectedOptions.map(({optionId,})=>({id:optionId}))
+    }else{
+      prev[id]=undefined
+    }
+    console.log('ineB',prev)
+    return prev 
+  },emptyAnswers)
+}
 
+export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.Element {
+  //UPDATED
+  // console.log(extractAnswers(Fields))
+  const emptyAnswers:IAnswers = {}
+  const [answers,setAnswers] = useState<IAnswers>(extractAnswers(Fields)) 
   function allAnswered (){      
       return Object.values(answers)
       .every((value,i)=>{
         return value&&value.length
       })
   } 
+  const [status, setStatus] = useState<string|undefined>(allAnswered()?'success':undefined);
+  console.log(answers)
+  //@ts-ignore
+  const {user} = useContext(AuthContext)
+  const {id:formId} = useParams<{id?:string}>()
+
   const useStyles = makeStyles((theme) => ({
       formWrapper: {
         display: "flex",
@@ -169,16 +169,17 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
     try {
       //@ts-ignore
       const studentId = user.id;
-      let fieldSubmission = [];
+      let fieldSubmissions = [];
       for (const field in answers) {
-        fieldSubmission.push({
+        console.log(field,answers[field])
+        fieldSubmissions.push({
           studentId,
           fieldId: Number(field),
           answer: answers[field]
         });
       };
-      const {data:submission}:{data:string} = await network.post(`/api/v1/fieldsubmission/form`, {id:Number(formId),submissions:fieldSubmission});
-      console.log('s',submission)
+      console.log('subbbed',fieldSubmissions)
+      const {data:submission}:{data:string} = await network.post(`/api/v1/fieldsubmission/form`, {id:Number(formId),submissions:fieldSubmissions});
       if( submission === 'success'){
         swallSuccess()
         setStatus(submission);
@@ -209,11 +210,6 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
     }
   }
     
-  const fieldTypes:{[key:number]:string}= {
-    1:'select',
-    2:'open',
-    3:'checkbox'
-  }
   function getField(typeId:number,field:IFieldExtended,id:number){
     switch(typeId){
       case 1:
@@ -238,17 +234,17 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
           //@ts-ignore
           value={answers[id]}
         />
-        case 3:
-          return <MultipleChoiceField 
-            disabled={status?true:false} 
-            className={classes.field} 
-            key={`field ${id}`} 
-            //@ts-ignore
-            field={field} 
-            change={handleChange} 
-            //@ts-ignore
-          value={answers[id]}
-          />
+      case 3:
+        return <MultipleChoiceField 
+          disabled={status?true:false} 
+          className={classes.field} 
+          key={`field ${id}`} 
+          //@ts-ignore
+          field={field} 
+          change={handleChange} 
+          //@ts-ignore
+        value={answers[id]}
+        />
       default:
         return <h2>Problem with Field type</h2>
     }
@@ -258,7 +254,7 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
       <form className={classes.form} onSubmit={handleSubmit}>
         {status === 'success' && 
         <section className={classes.header}>
-        {`Well done, form  "${name}" submitted successfully!`}
+        {`Well done, form  "${name}" has been submitted. You may view and edit your results`}
         </section>
         }
         <section className={classes.header}>
@@ -267,7 +263,7 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
         </section>
           {Fields.map<JSX.Element|undefined>((field, index) => {
             const {id,title,typeId} = field
-            return <section className={classes.field}>
+            return <section key={title+id} className={classes.field}>
               {getField(typeId,field,id)}
             </section>
             
@@ -275,10 +271,24 @@ export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IP
           <div>
             <Button className={classes.submit} 
             variant="outlined"
-            type="submit" 
+            type="submit"
+            disabled={status==='success'} 
             
             >
               Submit Form
+            </Button>
+            <Button  
+            variant="outlined"
+            type="button"
+            onClick={()=>
+              {
+                console.log('answers',answers)
+                console.log('fields',Fields)
+              }
+            }
+            
+            >
+              check
             </Button>
             <Button 
             className={classes.reset} 

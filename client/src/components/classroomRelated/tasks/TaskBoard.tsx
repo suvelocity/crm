@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { ITask, ITaskofStudent } from "../../../typescript/interfaces";
+import { ITask, ITaskOfStudent } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";

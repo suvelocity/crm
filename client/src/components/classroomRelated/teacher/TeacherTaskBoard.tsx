@@ -46,7 +46,7 @@ const createTask = (
   lesson: string,
   endDate: Date,
   externalLink: string,
-  TaskofStudents: []
+  TaskOfStudents: []
 ) => {
   return {
     title,
@@ -54,7 +54,7 @@ const createTask = (
     lesson,
     endDate,
     externalLink,
-    TaskofStudents,
+    TaskOfStudents,
   };
 };
 
@@ -63,25 +63,25 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
-  row.TaskofStudents = useMemo(() => {
-    return row.TaskofStudents.sort((tos: any) =>
+  row.TaskOfStudents = useMemo(() => {
+    return row.TaskOfStudents.sort((tos: any) =>
       tos.status === "done" ? 1 : -1
     );
   }, []);
 
   const calculatedSubmissionRate = useMemo(() => {
     return (
-      (row.TaskofStudents.reduce((sum: number, tos: any) => {
+      (row.TaskOfStudents.reduce((sum: number, tos: any) => {
         return tos.status === "done" ? sum + 1 : sum + 0;
       }, 0) /
-        row.TaskofStudents.length) *
+        row.TaskOfStudents.length) *
       100
     );
   }, []);
 
   const classList: string = useMemo(() => {
     return Array.from(
-      new Set(row.TaskofStudents.map((tos: any) => tos?.Student?.Class.name))
+      new Set(row.TaskOfStudents.map((tos: any) => tos?.Student?.Class.name))
     ).join(", ");
   }, []);
 
@@ -147,7 +147,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.TaskofStudents.map((studentRow: any) => (
+                  {row.TaskOfStudents.map((studentRow: any) => (
                     <TableRow key={studentRow.studentId}>
                       <TableCell component="th" scope="row">
                         {studentRow?.Student?.firstName +
@@ -229,7 +229,7 @@ export default function TeacherTaskBoard(props: any) {
       task.Lesson?.title,
       task.endDate,
       task.externalLink,
-      task.TaskofStudents
+      task.TaskOfStudents
     );
   });
 
