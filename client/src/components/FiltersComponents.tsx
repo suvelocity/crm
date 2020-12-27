@@ -16,19 +16,12 @@ export const FiltersComponents = ({
   callbackFunction,
   widthPercent,
 }: Props) => {
-  const [value, setValue] = useState<string[]>([""])
   const determineWhatToSet = (by: string, value: any) => {
-    console.log(by, value, 'determined');
-    switch (by) {
-      case "Class":
-        return callbackFunction({ ...filterObject, Class: value });
-      case "Course":
-        return callbackFunction({ ...filterObject, Course: value });
-      case "Job Status":
-        return callbackFunction({ ...filterObject, JobStatus: value });
-      case "Name":
-        return callbackFunction({ ...filterObject, Name: value });
+    console.log(by, value)
+    if(by === 'Job Status'){
+      return callbackFunction({...filterObject, JobStatus: value})
     }
+    return callbackFunction( {...filterObject, [by]: value});
   };
   return (
     <div style={{ display: "flex", width: `${widthPercent}%` }}>

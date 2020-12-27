@@ -36,14 +36,14 @@ export interface ITeacher {
   email: string;
   phone: string;
   idNumber: string;
-  Classes?: {classId:string, Class:IClass}[];
+  Classes?: { classId: string; Class: IClass }[];
   Task?: ITask;
   Lesson?: ILesson;
   Notice?: INotice;
 }
 export interface tempTeacherClass {
-  classId:string;
-  Class:IClass;
+  classId: string;
+  Class: IClass;
 }
 
 export type status =
@@ -95,6 +95,15 @@ export interface IClass {
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
 }
+export interface IClassOfTeacher {
+  id: number;
+  Class: Pick<IClass, "id" | "name" | "Students">;
+  classId: number;
+  createdAt?: Date;
+  deletedAt?: Date | null;
+  teacherId: number;
+  updatedAt?: Date;
+}
 
 export interface IStudent {
   id?: number;
@@ -122,7 +131,6 @@ export interface IStudent {
   fccAccount?: string;
 }
 
-type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
 
 type filterOptions = "Class" | "Course" | "JobStatus" | "Name";
 export interface IEvent {
@@ -136,11 +144,17 @@ export interface IEvent {
   Student?: IStudent;
   Job?: IJob;
 }
+
+type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
+
+export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
+
 export interface filterStudentObject {
-  Class: string[];
-  Course: string[];
-  JobStatus: string[];
-  Name: string[];
+  Class?: string[];
+  Course?: string[];
+  Company?: string[];
+  JobStatus?: string[];
+  Name?: string[];
 }
 export interface Name {
   firstName: string;
@@ -279,7 +293,7 @@ export interface ITask {
   createdAt?: number;
   updatedAt?: number;
   deletedAt?: number;
-  title:string;
+  title: string;
   lessonId?: number;
   externalId?: string;
   externalLink?: string;
