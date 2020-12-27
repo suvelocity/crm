@@ -34,12 +34,12 @@ function AllTeachers() {
     <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color="#e2e600">All Teachers</H1>
+          <H1 color="#2fbd76">All Teachers</H1>
         </TitleWrapper>
         <br />
         <StyledLink to="/teacher/add">
           <Button
-            style={{ backgroundColor: "#e2e600", color: "white" }}
+            style={{ backgroundColor: "#2fbd76", color: "white" }}
             variant="contained"
           >
             Add Teacher

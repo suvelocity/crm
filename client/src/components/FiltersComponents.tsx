@@ -33,9 +33,9 @@ export const FiltersComponents = ({
             width: `${100 / array.length}%`,
           }}
         >
-          <InputLabel
+          {/* <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy}`}</InputLabel>
+          >{`${item.filterBy}`}</InputLabel> */}
           <Select multiple
             labelId={`demo-simple-select-label${item.filterBy}`}
             style={{ height: "100%", width: "60%" }} 
@@ -51,6 +51,7 @@ export const FiltersComponents = ({
               return determineWhatToSet(item.filterBy, [""])
             }}
           >
+            <MenuItem value="" disabled>{item.filterBy}</MenuItem>
             {item.filterBy === "Job Status" && (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}

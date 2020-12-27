@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import network from "../../helpers/network";
 import {
   H1,
@@ -57,6 +57,7 @@ function AllProcesses() {
         `${process.Student!.firstName} ${process.Student!.lastName}`,
         process.Job!.position,
         process.eventName,
+        process.Job!.Company.name,
         process.Student!.Class.name,
         process.Student!.Class.course,
         formatToIsraeliDate(process.date),
@@ -75,19 +76,10 @@ function AllProcesses() {
     }
     setFilteredProcesses(newProcessesArr);
   };
-
-  const fetchProcesses: (filter: any) => Promise<void> = async (
-    filter: any
-  ) => {
-    const { data } = await network.get("/api/v1/event/allProcesses", {
-      params: filter,
-    });
+  const getOptions = useCallback(async () => {
     const { data: filterOptions } = await network.get(
       "/api/v1/event/process-options"
     );
-    setProcesses(data);
-    setFilteredProcesses(data);
-    //@ts-ignore
     setFilterOptionsArray([
       {
         filterBy: "Class",
@@ -103,8 +95,23 @@ function AllProcesses() {
         possibleValues: filterOptions.companies,
       },
     ]);
+  },[])
+
+  const fetchProcesses: (filter: any) => Promise<void> = async (
+    filter: any
+  ) => {
+    const { data } = await network.get("/api/v1/event/allProcesses", {
+      params: filter,
+    });
+    setProcesses(data);
+    setFilteredProcesses(data);
+    //@ts-ignore
     setLoading(false);
   };
+
+  useEffect(() => {
+    getOptions();
+  },[])
 
   useEffect(() => {
     fetchProcesses(formatFiltersToServer(filterAttributes));
