@@ -92,12 +92,15 @@ function AllProcesses() {
       {
         filterBy: "Class",
         possibleValues: filterOptions.classes
-          .map((cls: { name: string; id: string }) => cls.name)
-          .slice(1),
+          .map((cls: { name: string; id: string }) => cls.name),
       },
       {
         filterBy: "Job Status",
         possibleValues: filterOptions.statuses,
+      },
+      {
+        filterBy: "Company",
+        possibleValues: filterOptions.companies,
       },
     ]);
     setLoading(false);
@@ -140,11 +143,12 @@ function AllProcesses() {
         <StyledUl>
           {filteredProcesses && (
             <li>
-              <TableHeader repeatFormula="0.5fr 1.5fr 1.8fr 1.5fr 1.8fr 1.25fr">
+              <TableHeader repeatFormula="0.5fr 1.5fr 1.8fr 1.2fr 1.5fr 1.8fr 1.25fr">
                 <TimelineIcon />
                 <StyledSpan weight="bold">Student</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
                 <StyledSpan weight="bold">Job</StyledSpan>
+                <StyledSpan weight="bold">Company</StyledSpan>
                 <StyledSpan weight="bold">Status</StyledSpan>
                 <StyledSpan weight="bold">Date</StyledSpan>
               </TableHeader>
@@ -157,7 +161,7 @@ function AllProcesses() {
                   to={`/process/${process.Student!.id}/${process.Job!.id}`}
                   color="black"
                 >
-                  <StyledDiv repeatFormula="0.5fr 1.5fr 1.8fr 1.5fr 1.8fr 1.25fr">
+                  <StyledDiv repeatFormula="0.5fr 1fr 1.3fr 1fr 1fr 1.3fr 1.1fr">
                     <TimelineIcon />
                     <StyledSpan weight="bold">
                       {capitalize(process.Student!.firstName)}{" "}
@@ -169,6 +173,7 @@ function AllProcesses() {
                       process.Student!.Class.cycleNumber
                     })`}</StyledSpan>
                     <StyledSpan>{capitalize(process.Job!.position)}</StyledSpan>
+                    <StyledSpan>{capitalize(process.Job!.Company.name)}</StyledSpan>
                     <StyledSpan>{process.eventName}</StyledSpan>
                     <StyledSpan>{formatToIsraeliDate(process.date)}</StyledSpan>
                   </StyledDiv>
@@ -185,7 +190,8 @@ function formatFiltersToServer(attrObj: filterStudentObject) {
   return {
     class: attrObj.Class![0] ? { name: attrObj.Class } : {},
     process: attrObj.JobStatus![0] ? { name: attrObj.JobStatus } : {},
-  };
+    company: attrObj.Company![0] ? { name: attrObj.Company } :{}
+  }
 }
 
 export default AllProcesses;

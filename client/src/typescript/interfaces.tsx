@@ -127,6 +127,7 @@ export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
 export interface filterStudentObject {
   Class?: string[];
   Course?: string[];
+  Company?: string[];
   JobStatus?: string[];
   Name?: string[];
 }

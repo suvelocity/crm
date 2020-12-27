@@ -7,12 +7,12 @@ import {
 } from "../../helper";
 const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company, Class } from "../../models";
+import { Event, Student, Job, Company, Class, sequelize } from "../../models";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
 //@ts-ignore
-import { Op } from "sequelize";
+import { Op, Sequelize, query, QueryTypes } from "sequelize";
 
 const mailOptions = (
   to: string,
@@ -57,14 +57,16 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   const process = JSON.parse(
     req.query.process ? String(req.query.process) : "{}"
   );
+  const company = JSON.parse(
+    req.query.company ? String(req.query.company) : "{}"
+  );
   let clsWhere = {};
-  let processWhere = {};
+  let companyWhere = {};
 
   if (cls.name) {
     clsWhere = { name: { [Op.or]: cls.name } };
   }
-  if (process.name)
-    [(processWhere = { event_name: { [Op.or]: process.name } })];
+  if (company.name) companyWhere = { name: { [Op.or]: company.name } };
 
   try {
     interface IStudentWRelationship extends IStudent {
@@ -90,6 +92,14 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
         },
         {
           model: Job,
+          include: [
+            {
+              model: Company,
+              attributes: ["name"],
+              where: companyWhere,
+            },
+          ],
+          required: true,
         },
       ],
       order: [["date", "DESC"]],
@@ -122,24 +132,42 @@ router.get("/process-options", async (req: Request, res: Response) => {
   interface options {
     classes: { name: string; id: string }[];
     statuses: string[];
+    companies: string[];
   }
-  const options: options = {
-    classes: [{ name: "All", id: "" }],
-    statuses: [],
-  };
   try {
-    const allClassesIds: { name: string; id: string }[] = await Class.findAll({
-      attributes: ["id", "name"],
+    const uniqueClassesQuery = `
+    SELECT DISTINCT(classes.id), classes.name  FROM events
+    join students on events.user_id = students.id
+    join classes on students.class_id = classes.id
+    WHERE events.type = 'jobs'`;
+    const classes: { name: string; id: string }[] = await sequelize.query(
+      uniqueClassesQuery,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    const uniqueCompanyQuery = `
+    SELECT DISTINCT(companies.name) FROM events
+    join jobs on events.related_id = jobs.id
+    join companies on jobs.company_id = companies.id
+    WHERE events.type = 'jobs'`;
+    const companies = await sequelize.query(uniqueCompanyQuery, {
+      type: QueryTypes.SELECT,
     });
+
     const values = await Event.aggregate("eventName", "DISTINCT", {
       plain: false,
     });
     const statusesArray: string[] = values.map((item: any) => item.DISTINCT);
-    options.classes.push(...allClassesIds);
-    options.statuses = [...statusesArray];
+    const options: options = {
+      classes: [...classes],
+      statuses: [...statusesArray],
+      companies: companies.map((object: { name: string }) => object.name),
+    };
 
     res.json(options);
   } catch (e) {
+    console.log(e.message);
     res.status(500).json(e);
   }
 });
