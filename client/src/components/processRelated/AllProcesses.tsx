@@ -57,6 +57,7 @@ function AllProcesses() {
         `${process.Student!.firstName} ${process.Student!.lastName}`,
         process.Job!.position,
         process.eventName,
+        process.Job!.Company.name,
         process.Student!.Class.name,
         process.Student!.Class.course,
         formatToIsraeliDate(process.date),
