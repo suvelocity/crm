@@ -7,7 +7,7 @@
     "fuckin:go": "npm i && npm run schema && npm run migrate && npm run seed && npm run dev ",
     "start": "node out/.",
     "test": "NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
-    "spintest": "NODE_ENV=test npm run migrate && npm run test",
+    "testseeders": "NODE_ENV=test npm run migrate && npm run seed && npm run undoseed",
     "build": "tsc --build tsconfig.json",
     "migrate": "cd src && sequelize db:migrate",
     "spinup": "npm run migrate && npm run seed && npm run dev",
@@ -16,6 +16,7 @@
     "spinup:prod": "npm run migrate:prod && npm run start",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "seed": "cd src && sequelize db:seed:undo:all && npx sequelize db:seed:all",
+    "undoseed": "cd src && sequelize db:seed:undo:all",
     "schema": "cd src && sequelize db:create ",
     "seed:prod": "cd out && sequelize db:seed:undo:all && npx sequelize db:seed:all",
     "fetch": "cd src && sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all"

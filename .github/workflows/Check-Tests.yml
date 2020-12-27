@@ -10,7 +10,7 @@ env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
 
-jobs:   
+jobs:
   server-tests:
     runs-on: ubuntu-latest
     services:
@@ -25,27 +25,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Add Server .env file #making 2 files until we figure out the file scope issue
-        run:  | 
-            echo "$ENV_FILE" > .env
-            mv .env ./src/.env
-            echo "$ENV_FILE" > .env
+        run: |
+          echo "$ENV_FILE" > .env
+          mv .env ./src/.env
+          echo "$ENV_FILE" > .env
         working-directory: ./server
       - name: Install Server dependencies
         run: npm i
         working-directory: ./server
-      - name: migrate database and test
-        run: npm run spintest
+      - name: migrate and check seeders
+        run: npm run testseeders
+      - name: run tests
+        run: npm run test
         env:
           MYSQL_DATABASE_TEST: crm_test
           MYSQL_PASSWORD: null
         working-directory: ./server
 
-  client-tests: 
+  client-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Add Client .env file
-        run:  echo "$REACT_ENV_FILE" > .env
+        run: echo "$REACT_ENV_FILE" > .env
         working-directory: ./client
       - name: Install Client dependencies
         run: npm i
