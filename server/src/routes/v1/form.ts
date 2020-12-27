@@ -1,6 +1,6 @@
 import { Router, Request, Response,RequestHandler } from 'express';
 //@ts-ignore
-import { Form, Field, Option, Teacher,TaskOfStudent,Task } from "../../models";
+import { Form, Field, Option, Teacher,TaskOfStudent,Task, FieldSubmission,SelectedOption } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { formSchema, formSchemaToPut } from "../../validations";
@@ -35,6 +35,41 @@ const router = Router();
   console.log('f',formIds)
   next()
 }
+ const checkForSubmission :RequestHandler = async (req:any,res,next)=>{
+  const {id:formId} = req.params
+  const submissions = await FieldSubmission.findAll({
+    attributes:['id','textualAnswer'],
+    include:[
+      {
+        model:Field,
+        as:'field',
+        where:{
+          formId
+        },
+      },
+      {
+        model:SelectedOption,
+      }
+    ]
+  })
+  if(submissions.length>0){
+    req.submissions = submissions.map(
+      ({
+        id,
+        textualAnswer,
+        SelectedOptions
+      }:{id:number,textualAnswer:string,SelectedOptions:any[]|undefined}
+    )=>(
+      {
+        id,
+        textualAnswer,
+        Options:SelectedOptions && SelectedOptions.map(
+          ({id}:{id:number}) => id )  
+      }
+    ))
+  }
+  next()
+}
 
 router.use(validateFormAccess)
 
@@ -54,30 +89,28 @@ router.get("/all", async (req: any, res: Response) => {
 
 // GET SUBMISSIONS OF QUIZ
 // router.get('/:id/submissions', async (req: Request, res: Response) => {
-//   const quiz = await Quiz.findByPk(req.params.id, {
-//     attributes: ["name"],
-//     include: [{model: QuizSubmission, attributes: ['rank'], include: [{model: Student, attributes: ['firstName', 'lastName']}]}]
-//   });
-//   return res.json(quiz);
-// });
-
-// GET QUIZ BY ID
-router.get("/:id", async (req: any, res: Response) => {
-  try{
-    const {formIds} = req
-    const {id} = req.params
-    console.log('c',id,formIds)
-    console.log('c',formIds.includes(id))
-    if( !formIds.includes(Number(id)) ){
-     return res.status(401).send('access disallowed')
-    }
-    const form = await Form.findByPk(id, {
-      
-      attributes: ["id", "name", "isQuiz"],
-      include: [
-        {
-          model: Field,
-          attributes: ["id", "title",'typeId'],
+  //   const quiz = await Quiz.findByPk(req.params.id, {
+    //     attributes: ["name"],
+    //     include: [{model: QuizSubmission, attributes: ['rank'], include: [{model: Student, attributes: ['firstName', 'lastName']}]}]
+    //   });
+    //   return res.json(quiz);
+    // });
+    
+    // GET QUIZ BY ID
+    router.get("/:id",checkForSubmission, async (req: any, res: Response) => {
+      try{
+        const {formIds,submissions} = req
+        const {id} = req.params
+        if( !formIds.includes(Number(id)) ){
+          return res.status(401).send('access disallowed')
+        }
+        const form = await Form.findByPk(id, {
+          
+          attributes: ["id", "name", "isQuiz"],
+          include: [
+            {
+              model: Field,
+              attributes: ["id", "title",'typeId'],
           include: [{ model: Option, attributes: ["id", "title"] }],
         },
         {
@@ -86,7 +119,12 @@ router.get("/:id", async (req: any, res: Response) => {
         },
       ],
     });
-    return res.json(form);
+    if(submissions){
+      
+      return res.json({form,submissions});
+    } else {
+      return res.json(form);
+    }
   }catch(err){
     console.error(err.message)
   }

@@ -26,7 +26,7 @@ function PairMeetings() {
   const [meetings, setMeetings] = useState<IPairMeetings>();
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
 
   const getMeetings = useCallback(async () => {
     try {

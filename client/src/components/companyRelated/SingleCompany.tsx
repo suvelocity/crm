@@ -40,7 +40,7 @@ function SingleCompany() {
   const [company, setCompany] = useState<ICompany | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
 
   const getCompany = useCallback(async () => {
     const { data }: { data: ICompany } = await network.get(

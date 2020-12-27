@@ -29,6 +29,7 @@ function SingleProcess() {
   const [job, setJob] = useState<IJob>();
   const [events, setEvents] = useState<IEvent[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  //@ts-ignore
   const { studentId, jobId } = useParams();
   const classes = useStyles();
 

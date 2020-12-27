@@ -51,7 +51,7 @@ function SingleStudent() {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(
       `/api/v1/student/byId/${id}?only=jobs`

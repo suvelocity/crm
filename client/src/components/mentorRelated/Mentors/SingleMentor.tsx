@@ -36,7 +36,7 @@ const SingleMentor: React.FC = () => {
   const [mentor, setMentor] = useState<IMentor[] | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [ModalState, setModalState] = useState<boolean>(false)
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
 
   const getMentor = useCallback(async () => {
     const { data }: { data: IMentor[] } = await network.get(

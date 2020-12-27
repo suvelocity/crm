@@ -35,7 +35,7 @@ function NewClassMentorProject() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>('');
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
 

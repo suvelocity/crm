@@ -13,12 +13,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormRouter() {
-  const id: number = useParams().id;
+  const id: number = Number(useParams<{id:string}>().id);
   const [form, setForm] = useState<IFormExtended>();
-  
+  console.log(form)
   useEffect(() => {
     const fetchForm = async () => {
-      const form: IFormExtended = (await network.get(`/api/v1/form/${id}`)).data;
+      const {form,submissions} = (await network.get(`/api/v1/form/${id}`)).data;
+      if(submissions){
+        form.submissions = submissions
+      }
       setForm(form);
     };
     fetchForm();

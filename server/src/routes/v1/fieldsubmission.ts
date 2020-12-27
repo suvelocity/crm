@@ -1,14 +1,14 @@
-import e, { Router, Request, Response } from "express";
+import e, { Router, Request, Response, RequestHandler } from "express";
 //@ts-ignore
-import { FieldSubmission, Form, Field, SelectedOption, Option, Student } from "../../models";
+import { FieldSubmission, Task, Field, SelectedOption, Option, Student } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
-import {IFormFieldSubmission,IFormOption} from '../../types'
-import {Model, QueryInterface, Sequelize} from 'sequelize'
+import {Op, QueryInterface} from 'sequelize'
 import {
   formSubmissionSchema,
   formSubmissionSchemaToPut,
 } from "../../validations";
+import {IFormFieldSubmission,IFormOption, IOption} from '../../types'
 import { array, required } from "joi";
 import selectedoption from "../../models/selectedoption";
 import { update } from "lodash";
@@ -24,7 +24,7 @@ router.get("/all", async (req: Request, res: Response) => {
       {
         model: Field,
         required: false,
-        as: "fields",
+        as:'field',
         attributes: [],
       },
     ],
@@ -42,7 +42,7 @@ router.get("/bystudent/:id", async (req: Request, res: Response) => {
       {
         model: Field,
         required: false,
-        as: "fields",
+        as:'field',
         attributes: [],
       },
     ],
@@ -61,7 +61,7 @@ router.get("/:id/full", async (req: Request, res: Response) => {
       {
         model: Field,
         required: false,
-        as: "fields",
+        as:'field',
         attributes: ["id", 'title']
       },
       {
@@ -92,7 +92,7 @@ router.get("/bystudent/:id/full", async (req: Request, res: Response) => {
       {
         model: Field,
         required: false,
-        as: "fields",
+        as:'field',
         attributes: ["id", 'title']
       },
       {
@@ -118,7 +118,7 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
       {
         model: Field,
         required: false,
-        as: "fields",
+        as:'field',
         attributes: ["id", 'title']
       },
       {
@@ -138,61 +138,121 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
   return res.json(submissions);
 });
 
-router.post('/form', async (req: Request, res: Response) => {
-  
-  async function insertOptionsField(studentId:number,fieldId:number,answer:IFormOption[]){
-    try{
-      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
-        where:{studentId,fieldId},
-        attributes:['id']
-      })
-      if(!createdNew){
-        const qi :QueryInterface= db.sequelize.getQueryInterface()
-        qi.bulkDelete('selectedoptions',{where:{fieldSubmissionId:subId}})
-      }
-      const added = await SelectedOption.bulkCreate(
-        answer.map(({id:optionId})=>({
-          fieldSubmissionId:subId,
-          optionId
-        }))
-      )
-      return added
-    }catch(err){
-      return {status:'error',message:err.message}
-    }
-  }
-  async function insertTextField(studentId:number,fieldId:number,answer:string){
-    try{
-      const {0:{id:subId},1:createdNew} = await FieldSubmission.findOrCreate({
-        where:{studentId,fieldId},
-        defaults:{textualAnswer:answer},
-        attributes:['id']
-      })
-      if(!createdNew){
-        const update = await FieldSubmission.update({textualAnswer:answer},{where:{id:subId}})
-        return update
-      };
+const validateForm:RequestHandler = async function (req,res,next){
+  try{
 
+    const {id,submissions} =  req.body
+    //@ts-ignore
+    const {user} =  req
+    console.log(id,submissions)
+    const formIsValid = await Task.findOne({where:{
+      externalId:id,
+      status:'active',
+      type:'quizMe',
+      endDate:{
+        [Op.gte]:new Date()
+      }
+    }})
+    if(!formIsValid){
+      throw 'form is past due date!'
+    }
+    req.body = submissions
+    next()
+  }catch(err){
+    return res.send(err) 
+  }
+}
+
+router.use(validateForm)
+  
+router.post('/form', async (req: Request, res: Response) => {
+  async function updateOrCreateField(studentId:number,fieldId:number, textualAnswer:string|undefined){
+    try{
+      let {0:submission,1:createdNew}:{0:{id:number},1:boolean} = await FieldSubmission.findOrCreate({
+        where:{studentId,fieldId},
+        defaults:{studentId,fieldId,textualAnswer},
+        attributes:{include:['id']},
+      })
+      if(createdNew){
+        submission = await FieldSubmission.findOne({
+          where:{[Op.and]:{studentId,fieldId}},
+          attributes:{include:['id']},
+        })
+        console.log('sub:',submission) 
+        throw 'mf'
+      }
+      const {id} = submission
+      return {id,textualAnswer,createdNew}
     }catch(err){
-      return {status:'error',message:err.message}
+      console.log(err)
+      return {
+        status:'error',
+        message:err.message,
+      }
+    }
+      
+  }
+  async function insertOptionsField(createdNew:boolean,submissionId:number,answer:IOption[]){
+    try{
+      const qi :QueryInterface= db.sequelize.getQueryInterface()
+      if(!createdNew){
+        qi.bulkDelete('SelectedOptions',{field_submission_id:submissionId})
+        .catch(e=>console.error(e.message))
+      }
+      const added = await qi.bulkInsert('SelectedOptions',
+        answer.map(({id})=>({
+          option_id:id,field_submission_id:submissionId
+        })))
+      return { status:'success' }
+    }catch(err){
+      console.trace(err)
+      return {
+        status:'error',
+        message:err.message,
+      }
     }
   }
   try {
-    const {body} = req;
-
-    const submissions = body.map(({studentId,fieldId,answer}: IFormFieldSubmission) => {
-      if (answer instanceof Array){
-        return insertOptionsField(studentId,fieldId,answer)
-        
-      }else {
+    interface submission{
+      studentId:number;
+      fieldId: number;
+      answer: 'string'|IOption[]
+    }
+    const body:submission[] = req.body;
+    const submissions = await Promise.all(body.map( async ({studentId,fieldId,answer})=>{
+      const {id:submissionId,textualAnswer,createdNew,status,message} = await updateOrCreateField(
+        studentId,
+        fieldId,
+        typeof answer === 'string'
+        ? answer : undefined
+      )
+      if( status==='error'){
+        return {
+          status:'error',
+          message:message,  
+        }
+      }else if(textualAnswer){
+        return {status:'success'}
+      }else{
         //@ts-ignore
-        return insertTextField(studentId,fieldId,answer)
+        const {status,message} =await insertOptionsField(createdNew,submissionId,answer)
+        if( status==='error'){
+          return {
+            status:'error',
+            message:message,  
+          }
+        } else {
+          return {status:'success'}
+        }
       }
-    });
-    let returns = await Promise.all(submissions)
-    res.json(returns)
-    
-    // return res.send("field subs created successfully")
+
+    })
+    )
+    if(!Array.isArray(submissions)){
+      res.status(400).json(submissions)
+    }else{
+      res.status(201).send('success')
+    }
   }
   catch(error) {
     return res.status(400).json(error.message);
@@ -284,15 +344,15 @@ router.post('/quiz', async (req: Request, res: Response) => {
 // });
 // router.post('/', async (req: Request, res: Response) => {
 //   try {
-//     let body: IFormSubmission = req.body;
-//     const newQuizSubmission: IFormSubmission = {
+//     let body: IQuizSubmission = req.body;
+//     const newQuizSubmission: IQuizSubmission = {
 //       quizId: body.quizId,
 //       studentId: body.studentId,
 //       rank: body.rank
 //     }
 //     const { error } = quizSubmissionSchema.validate(newQuizSubmission);
 //     if(error) return res.status(400).json({ error: error.message });
-//     const createdQuizSubmission: IFormSubmission = await Quiz.create(req.body);
+//     const createdQuizSubmission: IQuizSubmission = await Quiz.create(req.body);
 //     res.json(createdQuizSubmission);
 //   }
 //   catch (error) {

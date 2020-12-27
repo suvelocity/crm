@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import {useParams} from 'react-router-dom'
 import {AuthContext} from '../../../../../helpers'
 // import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,35 +11,45 @@ import { IFormExtended, IFieldSubmission,IField ,IOption,IFieldExtended } from "
 import {TextualField, SingleChoiceField,  MultipleChoiceField} from '../fields' 
 import Swal from 'sweetalert2'
 import { capitalize, formatPhone } from "../../../../../helpers";
-
-import { initial } from "lodash";
 interface IProps {
   form: IFormExtended;
 }
 interface IAnswers {
-  [key:number]:'string'|IOption[]|undefined
+  [key:number]:string|IOption[]|undefined
+}
+const extractAnswers = (submissions:Required<IFormExtended>['submissions']) => {
+  const prevAnswers:IAnswers = {}
+  for(let sub of submissions){
+    if (sub.textualAnswer){
+      prevAnswers[sub.id] = sub.textualAnswer
+    } else {
+      prevAnswers[sub.id] = sub.Options
+    }
+  }
+  return prevAnswers
 }
 
-
-export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.Element {
+export default function FormPage({form:{Fields,id,name,Teacher,submissions}}: IProps):JSX.Element {
   //UPDATED
   const emptyAnswers:IAnswers = {}
   const [status, setStatus] = useState<string>();
   const [answers,setAnswers] = useState<IAnswers>(
-    Fields.reduce((prev,cur)=>{
+    submissions 
+    ? extractAnswers(submissions)
+    : Fields.reduce((prev,cur)=>{
       prev[cur.id]=undefined
       return prev 
     },emptyAnswers)
   ) 
+  console.log(answers)
+  console.log(submissions)
   //@ts-ignore
   const {user} = useContext(AuthContext)
-  console.log(Fields)
-  function allAnswered (){
-      console.log(Object.values(answers));
-      
+  const {id:formId} = useParams<{id?:string}>()
+
+  function allAnswered (){      
       return Object.values(answers)
       .every((value,i)=>{
-        console.log(value,i)
         return value&&value.length
       })
   } 
@@ -116,11 +127,11 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
 
   const classes = useStyles();
 
-  function swallError (error:Error){
+  function swallError (message:string){
     Swal.fire({  
       icon: 'error',
       title: 'Something went wrong!',
-      text: error.message,
+      text: message,
       confirmButtonText:'try again',
     })
   }
@@ -166,17 +177,17 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
           answer: answers[field]
         });
       };
-      const {data:submission}:{data:string|{status:'error',message:string}} = await network.post(`/api/v1/fieldsubmission/form`, fieldSubmission);
-      if(typeof submission==='string'){
+      const {data:submission}:{data:string} = await network.post(`/api/v1/fieldsubmission/form`, {id:Number(formId),submissions:fieldSubmission});
+      console.log('s',submission)
+      if( submission === 'success'){
         swallSuccess()
         setStatus(submission);
       }else{
-        swallError(new Error(submission.message))
+        swallError(submission)
       }
-
     }
     catch(error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
   async function reset(){
@@ -236,16 +247,20 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
             field={field} 
             change={handleChange} 
             //@ts-ignore
-          value={answers[id]}/
-        >
+          value={answers[id]}
+          />
       default:
         return <h2>Problem with Field type</h2>
     }
   }
   return (
     <Container className={classes.formWrapper}>
-      {status === 'success' && `Well done, form  "${name}" submitted successfully!`}
       <form className={classes.form} onSubmit={handleSubmit}>
+        {status === 'success' && 
+        <section className={classes.header}>
+        {`Well done, form  "${name}" submitted successfully!`}
+        </section>
+        }
         <section className={classes.header}>
           <h1 className={classes.title}>{name}</h1>
           <h2 className={classes.teacherName}>{`By: ${capitalize(Teacher.firstName)} ${capitalize(Teacher.lastName)}`}</h2>

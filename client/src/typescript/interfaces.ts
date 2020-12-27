@@ -327,6 +327,11 @@ export type IFormExtended = {
   isQuiz: boolean,
   Fields: IFieldExtended[]
   Teacher: Pick<ITeacher,'firstName'|'lastName'>  
+  submissions?:{
+    id:number,
+    textualAnswer?:string,
+    Options?:IOption[]  
+  }[]
 }
 export type IAnswer = {
   fieldId: number;

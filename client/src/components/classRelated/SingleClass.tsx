@@ -41,7 +41,8 @@ function SingleClass() {
   const [cls, setCls] = useState<IClass | null>();
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
-  const { id } = useParams();
+  
+  const id = Number(useParams<{id:string}>().id);
 
   const getClass = useCallback(async () => {
     const { data }: { data: IClass } = await network.get(

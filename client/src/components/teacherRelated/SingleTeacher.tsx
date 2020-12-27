@@ -35,7 +35,7 @@ function SingleTeacher() {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
   const [classes, setClasses] = useState<IClass[]>([]);
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
 
   const getTeacher = useCallback(async () => {
     const { data }: { data: ITeacher } = await network.get(

@@ -65,7 +65,7 @@ export default function QuizPage(props: IProps) {
   console.log('user: ', user);
   
   const form = props.form;
-  // const { id } = useParams();
+  // const id = Number(useParams<{id:string}>().id);
   const classes = useStyles();
 
   const [quiz, setQuiz] = useState<IFormExtended>();

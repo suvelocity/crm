@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.belongsTo(models.Field, {
         foreignKey: 'fieldId',
-        as: 'fields'
+        as: 'field'
       });
       this.hasMany(models.SelectedOption, {
         foreignKey: 'fieldSubmissionId'

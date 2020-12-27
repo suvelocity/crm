@@ -40,7 +40,7 @@ const ProgramDashboard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalBody, setModalBody] = useState<any>();
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
   const history = useHistory();
   const {user} = useContext<any>(AuthContext);
   console.log(user);

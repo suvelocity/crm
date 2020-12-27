@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function QuizSubmissionsRouter(value : string) {
-  const id: number = useParams().id;
+  const id: number = Number(useParams<{id:string}>().id);
   return <QuizSubmissionByForm id={id}/>
   
   // return (value === "student") ? <QuizSubmissionByStudent id={id}/> : <QuizSubmissionByForm id={id}/>

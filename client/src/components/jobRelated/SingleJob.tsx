@@ -43,7 +43,7 @@ function SingleJob() {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
-  const { id } = useParams();
+  const id = Number(useParams<{id:string}>().id);
 
   const getJob = useCallback(async () => {
     const { data }: { data: IJob } = await network.get(
