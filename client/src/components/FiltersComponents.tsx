@@ -16,19 +16,12 @@ export const FiltersComponents = ({
   callbackFunction,
   widthPercent,
 }: Props) => {
-  const [value, setValue] = useState<string[]>([""])
   const determineWhatToSet = (by: string, value: any) => {
-    console.log(by, value, 'determined');
-    switch (by) {
-      case "Class":
-        return callbackFunction({ ...filterObject, Class: value });
-      case "Course":
-        return callbackFunction({ ...filterObject, Course: value });
-      case "Job Status":
-        return callbackFunction({ ...filterObject, JobStatus: value });
-      case "Name":
-        return callbackFunction({ ...filterObject, Name: value });
+    console.log(by, value)
+    if(by === 'Job Status'){
+      return callbackFunction({...filterObject, JobStatus: value})
     }
+    return callbackFunction( {...filterObject, [by]: value});
   };
   return (
     <div style={{ display: "flex", width: `${widthPercent}%` }}>
@@ -40,9 +33,9 @@ export const FiltersComponents = ({
             width: `${100 / array.length}%`,
           }}
         >
-          <InputLabel
+          {/* <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy}`}</InputLabel>
+          >{`${item.filterBy}`}</InputLabel> */}
           <Select multiple
             labelId={`demo-simple-select-label${item.filterBy}`}
             style={{ height: "100%", width: "60%" }} 
@@ -58,6 +51,7 @@ export const FiltersComponents = ({
               return determineWhatToSet(item.filterBy, [""])
             }}
           >
+            <MenuItem value="" disabled>{item.filterBy}</MenuItem>
             {item.filterBy === "Job Status" && (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}

@@ -122,7 +122,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editStudentButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr">
