@@ -52,7 +52,7 @@ const AddTeacher = (props: Props) => {
     <Wrapper width="50%">
       <Center>
         <TitleWrapper>
-          <H1 color="#e2e600">{props.header ? props.header : "Add Teacher"}</H1>
+          <H1 color="#2fbd76">{props.header ? props.header : "Add Teacher"}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <GridDiv repeatFormula="1fr 1fr">
@@ -184,7 +184,7 @@ const AddTeacher = (props: Props) => {
 
           <Button
             id="submitButton"
-            style={{ backgroundColor: "#e2e600", color: "white" }}
+            style={{ backgroundColor: "#2fbd76", color: "white" }}
             variant="contained"
             color="primary"
             type="submit"

@@ -145,7 +145,7 @@ function AssignTeacherModal({
                 </Accordion>
               ))}
               <Button
-                style={{ backgroundColor: "#e2e600", color: "white" }}
+                style={{ backgroundColor: "#2fbd76", color: "white" }}
                 className={classes.button}
                 color="primary"
                 onClick={handleSubmit}
@@ -166,7 +166,7 @@ function AssignTeacherModal({
     <>
       <Button
         id="assignTeacher"
-        style={{ backgroundColor: "#e2e600", color: "white" }}
+        style={{ backgroundColor: "#2fbd76", color: "white" }}
         variant="contained"
         onClick={handleOpen}
       >
