@@ -228,7 +228,7 @@ const NoticeContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 2%;
-  max-height: 45vh;
+  max-height: 74vh;
   height: fit-content;
   overflow-y: scroll;
   /* box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset; */

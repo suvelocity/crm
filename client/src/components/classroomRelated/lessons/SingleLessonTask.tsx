@@ -21,7 +21,7 @@ import Swal from "sweetalert2";
 import styled from "styled-components";
 import Submit from "../tasks/Submit";
 import Modal from "@material-ui/core/Modal";
-import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import { StyledAtavLink } from "../../../styles/styledComponents";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import { Link } from "react-router-dom";
 
@@ -76,39 +76,6 @@ export default function SingleLessonTask(props: any) {
     setExpanded(!expanded);
   };
 
-  //modal and submit
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
-  // const handleOpen = () => {
-  //   setOpen(true);
-  //   // setCurrentTask(currentId);
-  // };
-
-  // const handleSubmit = async (url: string) => {
-  //   try {
-  //     const { data } = await network.put(`/api/v1/task/submit/${task.id}`, {
-  //       url: url,
-  //     });
-  //     handleClose();
-  //     if (data.error) {
-  //       Swal.fire("Error Occurred", data.error, "error");
-  //     } else {
-  //       Swal.fire("Task Submitted", "", "success");
-  //     }
-  //   } catch (error) {
-  //     handleClose();
-  //     Swal.fire("Error Occurred", error.message, "error");
-  //   }
-  // };
-
-  // const body = (
-  //   //@ts-ignore
-  //   <div style={modalStyle} className={classes.paper}>
-  //     <Submit setOpen={setOpen} handleSubmit={handleSubmit} />
-  //   </div>
-  // );
-
   return (
     <StyledCard className={classes.root}>
       <CardHeader
@@ -131,7 +98,7 @@ export default function SingleLessonTask(props: any) {
           </Avatar>
         }
         title={task.title}
-        subheader={`deadline :${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
+        subheader={`deadline: ${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
@@ -157,36 +124,6 @@ export default function SingleLessonTask(props: any) {
           </StyledAtavLink>
         )}
       </CardActions>
-      {/* <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
-        {body}
-      </Modal> */}
     </StyledCard>
   );
 }
-
-// function rand() {
-//   return Math.round(Math.random() * 20) - 10;
-// }
-
-// function getModalStyle() {
-//   const top = 50 + rand();
-//   const left = 50 + rand();
-
-//   return {
-//     top: `${top}%`,
-//     left: `${left}%`,
-//     transform: `translate(-${top}%, -${left}%)`,
-//   };
-// }
-
-// export const modalStyle = {
-//   top: `50%`,
-//   left: `50%`,
-//   transform: `translate(-${50}%, -${50}%)`,
-//   overflowY: "scroll",
-//   zIndex: 20,
-// };

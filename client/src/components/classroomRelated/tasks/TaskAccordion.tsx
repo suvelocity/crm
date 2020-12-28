@@ -102,7 +102,7 @@ const TaskAccordrionContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
 `;
 
 const StyledAccordion = styled(Accordion)`

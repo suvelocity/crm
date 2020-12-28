@@ -15,6 +15,9 @@ import {
 } from "../../../styles/styledComponents";
 import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
+import ListItemComponent from "./ListItem";
+import List from "@material-ui/core/List";
+import { Typography } from "@material-ui/core";
 
 export function TasksFidget() {
   const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
@@ -42,41 +45,49 @@ export function TasksFidget() {
   };
 
   return (
-    <Wrapper style={{ height: "100%" }}>
-      <Center>
-        <TitleWrapper>
-          <Headline>Unfinished Tasks</Headline>
-        </TitleWrapper>
-      </Center>
+    <>
+      <Typography
+        variant='h3'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "12.5%",
+        }}>
+        Unfinished Tasks
+      </Typography>
+      <Wrapper style={{ height: "100%" }}>
+        {/* <TitleWrapper>
+        <Headline>Unfinished Tasks</Headline>
+      </TitleWrapper> */}
 
-      {incompletedTasks?.length !== 0 ? (
-        <div
-          style={{ lineHeight: "2em", fontSize: "1.1em", textAlign: "center" }}>
-          <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2>
-
-          {incompletedTasks.map((task: ITaskofStudent, i: number) => (
-            <li key={`incompTask${i}`}>
-              {/* @ts-ignore */}
-              {task.Task.title}, to finish by {/* @ts-ignore */}
-              {task.Task.endDate.substring(0, 10)} {/* @ts-ignore */}
-              <StyledAtavLink href={task.Task?.externalLink} target='_blank'>
-                <LinkIcon />
-              </StyledAtavLink>
-            </li>
-          ))}
-        </div>
-      ) : (
-        <Center>
-          <img
-            src={sunshine}
-            alt='sunshine'
-            style={{
-              maxHeight: "100px",
-            }}
-          />
-        </Center>
-      )}
-    </Wrapper>
+        {incompletedTasks?.length !== 0 ? (
+          <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
+            {/* <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2> */}
+            <List>
+              {incompletedTasks.map((
+                task: any,
+                i: number //todo change intefacce
+              ) => (
+                <ListItemComponent
+                  key={`incompTask${i}`}
+                  task={task.Task}></ListItemComponent>
+              ))}
+            </List>
+          </div>
+        ) : (
+          <Center>
+            <img
+              src={sunshine}
+              alt='sunshine'
+              style={{
+                maxHeight: "100px",
+              }}
+            />
+          </Center>
+        )}
+      </Wrapper>
+    </>
   );
 }
 
@@ -100,72 +111,86 @@ export function LessonsFidget() {
   };
 
   return (
-    <Wrapper style={{ height: "100%" }}>
-      <Center>
-        <TitleWrapper>
-          <Headline>Last Lesson</Headline>
-        </TitleWrapper>
-      </Center>
-      {todayLessons?.map((lesson: any, i: number) => (
-        <div
-          className='infoData'
-          style={{
-            lineHeight: "2em",
-            fontSize: "1.1em",
-            textAlign: "center",
-          }}>
-          {console.log(lesson)}
-          <h2>{lesson.title}</h2>
-
+    <>
+      <Typography
+        variant='h3'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "12.5%",
+        }}>
+        Last Lesson
+      </Typography>
+      <Wrapper style={{ height: "100%" }}>
+        {todayLessons?.map((lesson: any, i: number) => (
           <div
-            className='today-info'
-            style={{ display: "flex", justifyContent: "space-around" }}>
+            className='infoData'
+            style={{
+              lineHeight: "2em",
+              fontSize: "1.1em",
+              overflowY: "auto",
+              maxWidth: "100%",
+            }}>
+            <h2>{lesson.title}</h2>
+
             <div
               className='today-info'
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                maxWidth: "50%",
-                textAlign: "start",
-                // overflowY: "auto",
-                // maxHeight: "30px",
-              }}>
-              <h3>Resources</h3>
-              {lesson.resource?.includes("%#splitingResource#%")
-                ? lesson.resource
-                    .split("%#splitingResource#%")
-                    .map((resource: string, index: number) => (
-                      <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
-                          {resource}
-                        </Link>
-                      </ResourcesLink>
-                    ))
-                : //@ts-ignore
-                  lesson.resource?.length > 0 && (
-                    //@ts-ignore
-                    <Link target='_blank' href={lesson.resource}>
-                      {lesson.resource}
-                    </Link>
-                  )}
-            </div>
-            <div
-              className='today-info'
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                maxWidth: "50%",
-                textAlign: "start",
-              }}>
-              <h3>Tasks</h3>
-              {lesson.Tasks.map((task: any) => (
-                <li>{task.title}</li>
-              ))}
+              style={{ display: "flex", flexDirection: "column" }}>
+              <div
+                className='today-info'
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "fit-content",
+                  height: "100%",
+                }}>
+                <h3>Resources</h3>
+                {lesson.resource?.includes("%#splitingResource#%")
+                  ? lesson.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target='_blank' href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lesson.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target='_blank' href={lesson.resource}>
+                        {lesson.resource}
+                      </Link>
+                    )}
+              </div>
+              <div
+                className='today-info'
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  maxWidth: "100%",
+                  height: "100%",
+                  // textAlign: "start",
+                }}>
+                <h3>Tasks</h3>
+                <List>
+                  {lesson.Tasks.map((task: any) => (
+                    <ListItemComponent task={task}></ListItemComponent>
+                  ))}
+                </List>
+                <p>
+                  flexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflex
+                  DirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionf
+                  lexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionf
+                  lexDirectionflexDirectionflexDirectionflexDirectionflexDirection
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </Wrapper>
+        ))}
+      </Wrapper>
+    </>
   );
 }
 
@@ -182,14 +207,14 @@ export function ScheduleFidget() {
   );
 }
 export const Headline = styled.h1`
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
   color: white;
-  /* position: relative; */
-  /* left: -50%;
-  top: -80px; */
-  margin: 0;
+  /* margin: 0; */
   display: inline;
   background-color: ${({ theme }: { theme: any }) => theme.colors.item};
   border-radius: 5px;
@@ -225,5 +250,7 @@ const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
+  overflow-y: scroll;
+  /* height: 80%; */
   /* position: relative; */
 `;
