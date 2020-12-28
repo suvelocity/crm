@@ -17,7 +17,9 @@ import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
+    []
+  );
 
   const { user } = useContext<any>(AuthContext);
 
@@ -57,7 +59,7 @@ export function TasksFidget() {
               {/* @ts-ignore */}
               {task.Task.title}, to finish by {/* @ts-ignore */}
               {task.Task.endDate.substring(0, 10)} {/* @ts-ignore */}
-              <StyledAtavLink href={task.Task?.externalLink}>
+              <StyledAtavLink href={task.Task?.externalLink} target='_blank'>
                 <LinkIcon />
               </StyledAtavLink>
             </li>

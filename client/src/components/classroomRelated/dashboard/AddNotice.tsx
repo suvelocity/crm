@@ -6,7 +6,7 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { INotice } from "../../../typescript/interfaces"; //todo add interface
+import { INotice } from "../../../typescript/interfaces";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
 import TextField from "@material-ui/core/TextField";
@@ -17,16 +17,16 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import { AuthContext } from "../../../helpers";
 
-const createdByPlaceHolder = 1;
-
 export default function AddNotice({
-  updateLocal,
+  // updateLocal,
   closeModal,
   classId,
+  loadNotices,
 }: {
-  updateLocal: React.Dispatch<React.SetStateAction<INotice[]>>;
+  // updateLocal: React.Dispatch<React.SetStateAction<INotice[]>>;
   closeModal: () => void;
   classId: number | undefined;
+  loadNotices: Function;
 }) {
   const { user }: any = useContext(AuthContext);
   const [body, setBody] = useState("");
@@ -48,16 +48,16 @@ export default function AddNotice({
   const sendNotice = async () => {
     try {
       const { data }: { data: INotice } = await network.post(`/api/v1/notice`, {
-        classId, //todo add class selector
+        classId,
         type,
         body,
         createdBy: user.id,
       });
-      updateLocal((prev: INotice[]) => prev?.concat(data));
-      //fix this. not clsoing for some reason
+      Swal.fire("Success", "Notice Added :)", "success").then(
+        (_) => loadNotices && loadNotices()
+      );
+      // updateLocal((prev: INotice[]) => prev?.concat(data));
     } catch (error) {
-      //todo add catch handler
-
       Swal.fire("Error Occurred", error.message, "error");
     } finally {
       closeModal();

@@ -44,15 +44,6 @@ function Notices() {
   const handleClose = () => {
     setOpen(false);
   };
-  const body = (
-    <div style={modalStyle} className={classes.paper}>
-      <AddNotice
-        updateLocal={setNotices}
-        closeModal={handleClose}
-        classId={selectedClass}
-      />
-    </div>
-  );
 
   useEffect(() => {
     (async () => {
@@ -73,12 +64,16 @@ function Notices() {
     }
   };
 
-  useEffect(() => {
+  const loadNotices = () => {
     (async () => {
       const notices = await getNotices();
       setNotices(notices);
       setLoading(false);
     })();
+  };
+
+  useEffect(() => {
+    loadNotices();
   }, [selectedClass]);
 
   const deleteNotice = async (id: number) => {
@@ -94,6 +89,17 @@ function Notices() {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <AddNotice
+        loadNotices={loadNotices}
+        // updateLocal={setNotices}
+        closeModal={handleClose}
+        classId={selectedClass}
+      />
+    </div>
+  );
 
   return (
     <Loading size={30} loading={loading}>
