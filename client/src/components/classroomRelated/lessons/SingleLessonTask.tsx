@@ -19,7 +19,11 @@ import LinkIcon from "@material-ui/icons/Link";
 import network from "../../../helpers/network";
 import Swal from "sweetalert2";
 import styled from "styled-components";
+import Submit from "../tasks/Submit";
+import Modal from "@material-ui/core/Modal";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import { Link } from "react-router-dom";
 
 const StyledCard = styled(Card)`
   /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
@@ -32,11 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 300,
       width: 300,
       marginRight: 15,
-      // backgroundColor: "#f2f2f2",
-      // backgroundColor:"black",
       color: `${({ theme }: { theme: any }) => theme.colors.font}`,
-      // backgroundColor: `${({ theme }: { theme: any }) =>
-      //   theme.colors.background}`,
     },
     media: {
       height: 0,
@@ -65,14 +65,49 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function SingleTask(props: any) {
-  const { task, handleOpen, handleClose } = props;
+export default function SingleLessonTask(props: any) {
+  const { task } = props;
   const [expanded, setExpanded] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const classes = useStyles();
+  // const [c] = React.useState(getModalStyle);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  //modal and submit
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
+  // const handleOpen = () => {
+  //   setOpen(true);
+  //   // setCurrentTask(currentId);
+  // };
+
+  // const handleSubmit = async (url: string) => {
+  //   try {
+  //     const { data } = await network.put(`/api/v1/task/submit/${task.id}`, {
+  //       url: url,
+  //     });
+  //     handleClose();
+  //     if (data.error) {
+  //       Swal.fire("Error Occurred", data.error, "error");
+  //     } else {
+  //       Swal.fire("Task Submitted", "", "success");
+  //     }
+  //   } catch (error) {
+  //     handleClose();
+  //     Swal.fire("Error Occurred", error.message, "error");
+  //   }
+  // };
+
+  // const body = (
+  //   //@ts-ignore
+  //   <div style={modalStyle} className={classes.paper}>
+  //     <Submit setOpen={setOpen} handleSubmit={handleSubmit} />
+  //   </div>
+  // );
 
   return (
     <StyledCard className={classes.root}>
@@ -98,30 +133,60 @@ export default function SingleTask(props: any) {
         title={task.title}
         subheader={`deadline :${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
-      {/* <CardMedia
-        className={classes.media}
-        image={taskImg}
-        title='get to work!'
-      /> */}
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
           {task.body}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton
-          aria-label='submit button'
-          disabled={task.type !== "manual" ? true : false}>
-          <PublishIcon />
-        </IconButton>
-        <StyledAtavLink href={task.externalLink} target='_blank'>
-          <IconButton
-            aria-label='external link?'
-            disabled={task.externalLink ? false : true}>
-            <LinkIcon />
-          </IconButton>
-        </StyledAtavLink>
+        {task.type === "manual" && (
+          <Link to='/tasks'>
+            <IconButton
+              // onClick={handleOpen}
+              aria-label='submit button'
+              disabled={task.type !== "manual" ? true : false}>
+              <ArrowForwardIcon />
+            </IconButton>
+          </Link>
+        )}
+        {task.externalLink && (
+          <StyledAtavLink href={task.externalLink} target='_blank'>
+            <IconButton aria-label='external link?'>
+              <LinkIcon />
+            </IconButton>
+          </StyledAtavLink>
+        )}
       </CardActions>
+      {/* <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'>
+        {body}
+      </Modal> */}
     </StyledCard>
   );
 }
+
+// function rand() {
+//   return Math.round(Math.random() * 20) - 10;
+// }
+
+// function getModalStyle() {
+//   const top = 50 + rand();
+//   const left = 50 + rand();
+
+//   return {
+//     top: `${top}%`,
+//     left: `${left}%`,
+//     transform: `translate(-${top}%, -${left}%)`,
+//   };
+// }
+
+// export const modalStyle = {
+//   top: `50%`,
+//   left: `50%`,
+//   transform: `translate(-${50}%, -${50}%)`,
+//   overflowY: "scroll",
+//   zIndex: 20,
+// };

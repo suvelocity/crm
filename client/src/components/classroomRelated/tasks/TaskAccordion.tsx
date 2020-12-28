@@ -61,56 +61,6 @@ export default function SingleTask(props: any) {
   };
 
   return (
-    // <Card className={classes.root}>
-    //   <CardHeader
-    //     avatar={
-    //       <Avatar aria-label='recipe' className={classes.avatar}>
-    //         !
-    //       </Avatar>
-    //     }
-    //     // action={
-    //     //   <IconButton aria-label='settings'>
-    //     //     <MoreVertIcon />
-    //     //   </IconButton>
-    //     // }
-    //     title={`${task.Task.title} - ${task.Task.type}`}
-    //     subheader={`deadline :${task.Task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
-    //   />
-    //   <CardMedia
-    //     className={classes.media}
-    //     image={taskImg}
-    //     title='get to work!'
-    //   />
-    //   <CardContent>
-    //     <Typography variant='body2' color='textSecondary' component='p'>
-    //       {task.Task.body}
-    //     </Typography>
-    //   </CardContent>
-    //   <CardActions disableSpacing>
-    //     <IconButton
-    //       aria-label='submit button'
-    //       onClick={() => {
-    //         handleOpen(task.id);
-    //       }}
-    //       disabled={task.Task.type !== "manual" ? true : false}>
-    //       <PublishIcon />
-    //     </IconButton>
-    //     <IconButton
-    //       aria-label='external link?'
-    //       disabled={task.Task.externalLink ? true : false}>
-    //       <LinkIcon />
-    //     </IconButton>
-    //     {/* <IconButton
-    //       className={clsx(classes.expand, {
-    //         [classes.expandOpen]: expanded,
-    //       })}
-    //       onClick={handleExpandClick}
-    //       aria-expanded={expanded}
-    //       aria-label='show more'>
-    //       <ExpandMoreIcon />
-    //     </IconButton> */}
-    //   </CardActions>
-    // </Card>
     <TaskAccordrionContainer>
       <StyledAccordion>
         <StyledSummery
