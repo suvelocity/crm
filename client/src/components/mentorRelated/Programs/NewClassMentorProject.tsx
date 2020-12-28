@@ -230,6 +230,22 @@ function NewClassMentorProject() {
     });
   };
 
+  const promptRandomAssign: () => Promise<boolean> = async () => {
+    return Swal.fire({
+      title: "Something went wrong...",
+      text:
+      `Would you like to assign mentors randomly?`,
+      icon: "error",
+      showCancelButton: true,
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#2fa324",
+      confirmButtonText: "continue",
+    }).then((result) => {
+      if (result.isConfirmed) return true;
+      return false;
+    });
+  };
+
   const createProgram = async () => {
     try {
       const newMentorsToDb = cls!.Students.filter((student) => student.mentor || student.MentorStudents![0]);
@@ -255,33 +271,14 @@ function NewClassMentorProject() {
     setSearchValue(value);
   };
 
-  // const assignMentors = (mentorizeClass: IClass | undefined) => {
-  //   const mentorNeededCount: number = mentorizeClass!.Students.filter(
-  //     (student) => !(student.mentor || student.mentorId)
-  //   ).length;
-  //   if (mentorNeededCount <= mentors.length) {
-  //     let mentorsCount: number = 0;
-  //     for (let i = 0; i < mentorizeClass!.Students.length; i++) {
-  //       const student = mentorizeClass!.Students[i];
-  //       if (student.mentorId || student.mentor) continue;
-  //       else {
-  //         student.mentor = mentors[mentorsCount];
-  //         mentorsCount++;
-  //       }
-  //     }
-  //     setMentors(mentors.slice(-(mentors.length - mentorsCount)));
-  //     setCls(mentorizeClass);
-  //   } else console.log("not enough mentors");
-  // };
-
   const addressGenerator = async () => {
     if (cls) {
+      const newCls: IClass | undefined = cls;
+      const emptyMentors: IMentor[] = mentors.filter(mentor => !mentor.student || mentor.student === 0)
+      const newMentors: IMentor[] = Array.from(mentors)
+      const studentsWithMentor = newCls.Students.filter(student => student.mentor)
+      const students = newCls.Students.filter(student => !student.mentor)
       try {
-        const newCls: IClass | undefined = cls;
-        const emptyMentors: IMentor[] = mentors.filter(mentor => !mentor.student || mentor.student === 0)
-        const newMentors: IMentor[] = Array.from(mentors)
-        const studentsWithMentor = newCls.Students.filter(student => student.mentor)
-        const students = newCls.Students.filter(student => !student.mentor)
         const pairs = await fixedPairing(students, emptyMentors)
         pairs && pairs.forEach(student => {
           const currMentor = student.mentor
@@ -295,7 +292,19 @@ function NewClassMentorProject() {
         newCls!.Students = [...pairs, ...studentsWithMentor]
         setCls(newCls)
       } catch (error) {
-        Swal.fire("Error Occurred", error.message, "error");
+        const proceed = await promptRandomAssign()
+        if (!proceed) return
+        newMentors.sort((a, b) => {
+          if (!a.student || !b.student) return 1
+          return a.student - b.student
+        })
+        for (let i = 0; i < newMentors.length && i < students.length && newMentors[i].student  !== 1; i++) {
+          students[i].mentor = newMentors[i]
+          newMentors[i].student = 1
+        }
+        setMentors(newMentors)
+        newCls!.Students = [...students, ...studentsWithMentor]
+        setCls(newCls)
       }
       
     }
