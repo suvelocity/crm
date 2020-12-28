@@ -179,11 +179,18 @@ router.get("/process-options", async (req: Request, res: Response) => {
         statusesToSend.push(status);
       }
     });
+    const finalStatuses: string[] = [];
+    statusesToSend.forEach((status: any, i: number) => {
+      if (
+        !finalStatuses.find((status2: string) => status2 === status.event_name)
+      ) {
+        finalStatuses.push(status.event_name);
+      }
+    });
+
     const options: options = {
       classes: [...classes],
-      statuses: statusesToSend.map(
-        (object: { event_name: string }) => object.event_name
-      ),
+      statuses: finalStatuses,
       companies: companies.map((object: { name: string }) => object.name),
     };
 
