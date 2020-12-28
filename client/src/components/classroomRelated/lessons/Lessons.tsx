@@ -28,10 +28,11 @@ export default function Lessons() {
 
   const classes = useStyles();
   // const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [lessons, setLessons] = React.useState<ILesson[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [lessons, setLessons] = useState<ILesson[]>([]);
   const [filteredLessons, setFilteredLessons] = React.useState<ILesson[]>([]);
-  const [filter, setFilter] = React.useState<string>("");
+  const [filter, setFilter] = useState<string>("");
+  const [render, setRender] = useState<boolean>(false);
   const [fccChallenges, setFccChallenges] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = React.useState<number>(
     classesToTeacher[0]?.classId
@@ -39,7 +40,6 @@ export default function Lessons() {
 
   const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    console.log("filter:", value);
     setFilter(value);
     setFilteredLessons(() =>
       lessons.filter((lesson: ILesson) => {
@@ -64,13 +64,14 @@ export default function Lessons() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const body = (
-    //@ts-ignore
-    <div style={modalStyle} className={classes.paper}>
-      <AddLesson setOpen={setOpen} classId={selectedClass} />
-    </div>
-  );
+  const lessonAdded = () => {
+    (async () => {
+      const allLessons = await fetchClassLessons();
+      setLessons(allLessons);
+      setFilteredLessons(allLessons);
+      setLoading(false);
+    })();
+  };
 
   const fetchClassLessons = async () => {
     try {
@@ -91,7 +92,6 @@ export default function Lessons() {
       } catch (error) {}
     })();
   }, []);
-  console.log(fccChallenges);
 
   useEffect(() => {
     (async () => {
@@ -109,6 +109,17 @@ export default function Lessons() {
       setLoading(false);
     })();
   }, [selectedClass]);
+
+  const body = (
+    //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <AddLesson
+        setOpen={setOpen}
+        classId={selectedClass}
+        lessonAdded={lessonAdded}
+      />
+    </div>
+  );
 
   const TeacherControls = () => (
     <>
@@ -174,57 +185,17 @@ export default function Lessons() {
           onChange={handleFilter}
           variant='outlined'
         />
-        {user.userType === "teacher" && (
-          <TeacherControls />
-          //    <>
-          //  <FormControl id='class-select' variant="outlined" className={classes.formControl} >
-          //    <InputLabel id="class-select-label" shrink={true}>Class</InputLabel>
-
-          //    <Select label='Class'
-          //      labelId="class-select-label"
-          //      id="class-select"
-          //      style={{
-          //        boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          //        // marginLeft: "15px",
-          //        backgroundColor: "white",
-          //      }}
-          //      value={selectedClass}
-          //      onChange={(e: any) => {
-          //        setSelectedClass(e.target.value);
-          //      }}
-          //      variant='outlined'
-          //      >
-          //      {classesToTeacher?.map((teacherClass: any) => (
-          //        <MenuItem value={teacherClass.classId}>
-          //          {teacherClass.Class.name}
-          //        </MenuItem>
-          //      ))}
-          //    </Select>
-          //  </FormControl>
-          //  <Button
-          //    variant='outlined'
-          //    onClick={handleOpen}
-          //    style={{
-          //      boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          //      // marginLeft: "auto",
-          //      // marginRight: "5%",
-          //      height: "auto",
-          //      backgroundColor: "white",
-          //    }}>
-          //    Add Lesson
-          //  </Button>
-          //  <Modal
-          //    open={open}
-          //    onClose={handleClose}
-          //    aria-labelledby='simple-modal-title'
-          //    aria-describedby='simple-modal-description'>
-          //    <Fade in={open} timeout={600}  >
-          //      {body}
-          //    </Fade>
-          //  </Modal>
-          // </>
-        )}
+        {user.userType === "teacher" && <TeacherControls />}
       </FilterContainer>
+      <hr
+        style={{
+          width: "90%",
+          opacity: "50%",
+          margin: 0,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      />
       <LessonsContainer>
         {classesToTeacher && filteredLessons.length ? (
           filteredLessons.map((lesson: ILesson, index: number) => (
@@ -299,4 +270,5 @@ const LessonsContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   width: 100%;
   height: 100vh;
+  margin-top: 2%;
 `;

@@ -21,16 +21,6 @@ import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
 import { formatDiagnostic } from "typescript";
 import ClassAccordion from "./ClassAccordion";
-
-// interface Task {
-//   externalLink?: string;
-//   createdBy: number;
-//   endDate: Date;
-//   type: string;
-//   title: string;
-//   body?: string;
-//   status: "active" | "disabled";
-// }
 interface addTaskProps {
   task: ITask;
   index?: number;
@@ -229,11 +219,7 @@ export default function AddTask({
       </FormControl>
 
       {students && teacherClasses !== undefined && (
-        <ClassAccordion
-          classes={classList!}
-          updatePicks={changer}
-          // pickState={[[true]]}
-        />
+        <ClassAccordion classes={classList!} updatePicks={changer} />
       )}
     </Form>
   );

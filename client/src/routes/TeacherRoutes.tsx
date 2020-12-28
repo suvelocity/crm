@@ -10,7 +10,7 @@ import TeacherContainer from "../components/classroomRelated/teacher/TeacherCont
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
 import QuizPage from "../components/classroomRelated/QuizMeRelated/components/pages/QuizPage";
-
+import styled, { createGlobalStyle } from "styled-components";
 import network from "../helpers/network";
 import { challengeMeChallenges } from "../atoms";
 import { AuthContext } from "../helpers";
@@ -18,6 +18,15 @@ import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
 import { IStudent } from "../typescript/interfaces";
 
+const GlobalStyle = createGlobalStyle`
+body{
+  background-color: ${({ theme }: { theme: any }) => theme.colors.background};
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
+  .swal2-container {
+    z-index:100000000000000
+  }
+}
+`;
 export default function TeacherRoutes() {
   const [CMChallenges, setCMChallenges] = useRecoilState(challengeMeChallenges);
   //@ts-ignore
@@ -52,36 +61,37 @@ export default function TeacherRoutes() {
 
   return (
     <>
+      <GlobalStyle />
       <ClassRoomNavBar />
-    {/* <ErrorBoundary> */}
+      {/* <ErrorBoundary> */}
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id="interface-container" style={{ flexGrow: 1 }}>
+      <div id='interface-container' style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path="/">
+          <Route exact path='/'>
             <Dashboard />
           </Route>
-          <Route path="/lessons">
+          <Route path='/lessons'>
             <Lessons />
           </Route>
-          <Route path="/schedhule">
+          <Route path='/schedhule'>
             <Schedhule />
           </Route>
-          <Route path="/tasks">
+          <Route path='/tasks'>
             <TeacherContainer />
           </Route>
-          <Route exact path="/quizme">
+          <Route exact path='/quizme'>
             <QuizMe />
           </Route>
-          <Route exact path="/quizme/quiz/:id">
+          <Route exact path='/quizme/quiz/:id'>
             {/* @ts-ignore */}
             <QuizPage />
           </Route>
-          <Route path="*">
+          <Route path='*'>
             <div>404 Not Found</div>
           </Route>
         </Switch>
       </div>
-    {/* </ErrorBoundary> */}
+      {/* </ErrorBoundary> */}
     </>
   );
 }

@@ -75,7 +75,7 @@ export default function ClassAccordion({
   const [expanded, setExpanded] = React.useState<string | false>("panel1");
   const [pickStates, setPickStates] = React.useState<
     Array<Array<number | undefined>>
-  >(classes.map((cls: classList) => []));
+  >(classes.map((cls: classList) => cls.students.map((_) => undefined)));
 
   const handlePick: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -90,7 +90,9 @@ export default function ClassAccordion({
     //a class was clicked
     if (studentIndex === 0) {
       if (isBoxChecked) {
-        updatedPicks[classIndex] = [];
+        updatedPicks[classIndex] = classes[classIndex].students.map(
+          (_) => undefined
+        );
       } else {
         updatedPicks[classIndex] = [
           parseInt(event.target.name),
@@ -130,6 +132,7 @@ export default function ClassAccordion({
     setExpanded(newExpanded ? panel : false);
   };
 
+  console.log(pickStates);
   return (
     <>
       {classes.map((cls: classList, i: number) => (
