@@ -128,27 +128,6 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   );
 };
 
-export function checkToken(req: Request, res: Response, next: NextFunction) {
-  let token: string | undefined | string[] = req.headers.authorization;
-  if (!token || Array.isArray(token))
-    return res.status(400).json({ error: "No token sent" });
-  token = token.split(" ")[1];
-  jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET!,
-    (err: Error | null, decoded: any) => {
-      //TODO change
-      if (err) {
-        return res.status(403).json({ error: err });
-      }
-      //@ts-ignore
-      req.user = decoded;
-      //TODO change
-      next();
-    }
-  );
-}
-
 //TODO add inteface for query
 export const getQuery: (
   specificFields?: PublicFields[],

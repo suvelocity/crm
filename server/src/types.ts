@@ -1,4 +1,6 @@
 import { Model } from "sequelize/types";
+import { Request } from "express";
+
 export interface IJob {
   Company?: ICompany;
   id?: number;
@@ -66,7 +68,9 @@ export interface IEvent {
   type: string;
   date: Date;
 }
-
+export interface RequestWithUser extends Request {
+  user?: IUser;
+}
 export interface ICompany {
   id?: number;
   name: string;
