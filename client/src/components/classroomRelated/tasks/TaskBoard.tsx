@@ -100,7 +100,7 @@ export default function TaskBoard() {
       if (data.error) {
         Swal.fire("Error Occurred", data.error, "error");
       } else {
-        Swal.fire("Task Submitted", "", "success");
+        Swal.fire("Task Submitted", "", "success").then((_) => getMyTasks());
       }
     } catch (error) {
       handleClose();

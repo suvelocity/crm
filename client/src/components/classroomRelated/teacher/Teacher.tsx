@@ -166,7 +166,7 @@ export default function Teacher() {
       <div
         style={{
           minHeight: "50vh",
-          marginTop: "10vh",
+          marginTop: "5vh",
           marginLeft: "auto",
           marginRight: "auto",
           width: "70%",
