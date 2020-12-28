@@ -24,6 +24,8 @@ router.use("/notice", require("./notice"));
 // quizme routes
 router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
+// code review routes
+router.use("/projects", require("./projects"));
 
 router.use(unknownEndpoint);
 export default router;

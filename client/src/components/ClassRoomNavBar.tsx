@@ -178,6 +178,12 @@ function ClassRoomNavBar() {
               <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
+          <StyledLink to='/code-review'>
+            <DrawerItem onClick={() => setOpen(false)}>
+              Code Review
+              <AssignmentLateIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
 
           {/* {user.userType == "teacher" && (
             <StyledLink to='/teacher'>
