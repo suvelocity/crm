@@ -38,6 +38,7 @@ function AllProcesses() {
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
       Class: [],
+      Course: [],
       JobStatus: [],
       Company: []
     }
@@ -81,6 +82,10 @@ function AllProcesses() {
       "/api/v1/event/process-options"
     );
     setFilterOptionsArray([
+      {
+        filterBy: "Course",
+        possibleValues: filterOptions.courses,
+      },
       {
         filterBy: "Class",
         possibleValues: filterOptions.classes
@@ -131,7 +136,7 @@ function AllProcesses() {
             array={filterOptionsArray}
             filterObject={filterAttributes}
             callbackFunction={setFilterAttributes}
-            widthPercent={50}
+            widthPercent={70}
           />
           <TextField
             variant="outlined"
@@ -197,7 +202,8 @@ function formatFiltersToServer(attrObj: filterStudentObject) {
   return {
     class: attrObj.Class![0] ? { name: attrObj.Class } : {},
     process: attrObj.JobStatus![0] ? { name: attrObj.JobStatus } : {},
-    company: attrObj.Company![0] ? { name: attrObj.Company } :{}
+    company: attrObj.Company![0] ? { name: attrObj.Company } :{},
+    course: attrObj.Course![0] ? { name: attrObj.Course } :{}
   }
 }
 
