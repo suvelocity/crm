@@ -91,9 +91,12 @@ export default function Lesson({
           <StyledDetails>{lessonState.body}</StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
-              <EditDiv top='90px' onClick={() => setModalState(true)}>
-                <EditIcon />
-              </EditDiv>
+              {user.userType === "teacher" && (
+                <EditDiv top='90px' onClick={() => setModalState(true)}>
+                  <EditIcon />
+                </EditDiv>
+              )}
+
               <ResourcesLinks>
                 {lessonState.resource?.includes("%#splitingResource#%")
                   ? lessonState.resource
@@ -117,11 +120,16 @@ export default function Lesson({
           </StyledDetails>
           <StyledDetails>
             <StyledTask>
-              {tasks ? (
-                tasks.map((task: ITask) => <SingleLessonTask task={task} />)
-              ) : (
-                <p>no tasks given!</p>
-              )}
+              {user.userType === "student"
+                ? tasks &&
+                  tasks.map(
+                    (task: ITask) =>
+                      task.status === "active" && (
+                        <SingleLessonTask task={task} />
+                      )
+                  )
+                : tasks &&
+                  tasks.map((task: ITask) => <SingleLessonTask task={task} />)}
             </StyledTask>
           </StyledDetails>
         </StyledAccordion>

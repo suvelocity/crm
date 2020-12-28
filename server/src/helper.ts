@@ -236,7 +236,6 @@ export const fetchFCC: () => void = async () => {
     // console.log(fccEvents[1]);
 
     //TODO fix types
-    console.log(fccEvents);
 
     const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
       const username = userEvents.username;

@@ -147,18 +147,6 @@ export default function Lessons() {
           </MenuItem>
         ))}
       </Select>
-      {/* <Button
-        variant='outlined'
-        onClick={handleOpen}
-        style={{
-          boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          marginLeft: "auto",
-          marginRight: "5%",
-          height: "auto",
-          backgroundColor: "white",
-        }}>
-        Add Lesson
-      </Button> */}
       <StyledButton
         onClick={handleOpen}
         style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}>
@@ -229,19 +217,21 @@ export default function Lessons() {
             />
           ))
         ) : (
-          <ul>
-            {" "}
-            No Lessons Found with filters:
-            <li>search: "{filter}"</li>
-            <li>
-              class:{" "}
-              {
-                classesToTeacher.find(
-                  (single) => single.classId === selectedClass
-                )?.Class.name
-              }
-            </li>
-          </ul>
+          <div style={{ marginLeft: "15%" }}>
+            <ul>
+              {" "}
+              No Lessons Found with filters:
+              <li>search: "{filter}"</li>
+              <li>
+                class:{" "}
+                {
+                  classesToTeacher.find(
+                    (single) => single.classId === selectedClass
+                  )?.Class.name
+                }
+              </li>
+            </ul>
+          </div>
         )}
       </LessonsContainer>
     </Loading>

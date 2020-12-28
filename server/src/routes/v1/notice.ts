@@ -35,7 +35,7 @@ router.get("/byclass/:id", async (req: Request, res: Response) => {
     const notices: INotice[] = await Notice.findAll({
       where: { classId: paramsId },
       include: [{ model: Teacher, attributes: ["firstName", "lastName"] }],
-      // order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
     if (notices) return res.json(notices);
     res.status(404).json({ error: "notices not found" });

@@ -19,7 +19,13 @@ import LinkIcon from "@material-ui/icons/Link";
 import network from "../../../helpers/network";
 import Swal from "sweetalert2";
 import styled from "styled-components";
-import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import Submit from "../tasks/Submit";
+import Modal from "@material-ui/core/Modal";
+import { StyledAtavLink } from "../../../styles/styledComponents";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import { Link } from "react-router-dom";
+import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
+import BlockIcon from "@material-ui/icons/Block";
 
 const StyledCard = styled(Card)`
   /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
@@ -32,11 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 300,
       width: 300,
       marginRight: 15,
-      // backgroundColor: "#f2f2f2",
-      // backgroundColor:"black",
       color: `${({ theme }: { theme: any }) => theme.colors.font}`,
-      // backgroundColor: `${({ theme }: { theme: any }) =>
-      //   theme.colors.background}`,
     },
     media: {
       height: 0,
@@ -54,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: "rotate(90deg)",
     },
     manual: {
-      backgroundColor: "#c0b62e",
+      backgroundColor: "#76b622",
     },
     challengeMe: {
       backgroundColor: "#d66910",
@@ -65,10 +67,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function SingleTask(props: any) {
-  const { task, handleOpen, handleClose } = props;
+export default function SingleLessonTask(props: any) {
+  const { task } = props;
   const [expanded, setExpanded] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const classes = useStyles();
+  // const [c] = React.useState(getModalStyle);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -88,39 +92,44 @@ export default function SingleTask(props: any) {
                 ? classes.challengeMe
                 : classes.manual
             }>
-            {task.type === "fcc"
-              ? "fcc"
-              : task.type === "challengeMe"
-              ? "C"
-              : "!"}
+            {task.type === "fcc" ? (
+              "fcc"
+            ) : task.type === "challengeMe" ? (
+              "C"
+            ) : (
+              <AssignmentLateIcon />
+            )}
           </Avatar>
         }
         title={task.title}
-        subheader={`deadline :${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
+        subheader={`deadline: ${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
-      {/* <CardMedia
-        className={classes.media}
-        image={taskImg}
-        title='get to work!'
-      /> */}
       <CardContent>
-        <Typography variant='body2' color='textSecondary' component='p'>
+        <Typography variant='body1' color='textPrimary' component='p'>
           {task.body}
         </Typography>
+        {task.status === "disabled" && (
+          <h3 style={{ color: "red" }}>Disabled!, edit to activate</h3>
+        )}
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton
-          aria-label='submit button'
-          disabled={task.type !== "manual" ? true : false}>
-          <PublishIcon />
-        </IconButton>
-        <StyledAtavLink href={task.externalLink} target='_blank'>
-          <IconButton
-            aria-label='external link?'
-            disabled={task.externalLink ? false : true}>
-            <LinkIcon />
-          </IconButton>
-        </StyledAtavLink>
+        {task.type === "manual" && (
+          <Link to='/tasks'>
+            <IconButton
+              // onClick={handleOpen}
+              aria-label='submit button'
+              disabled={task.type !== "manual" ? true : false}>
+              <ArrowForwardIcon />
+            </IconButton>
+          </Link>
+        )}
+        {task.externalLink && (
+          <StyledAtavLink href={task.externalLink} target='_blank'>
+            <IconButton aria-label='external link?'>
+              <LinkIcon />
+            </IconButton>
+          </StyledAtavLink>
+        )}
       </CardActions>
     </StyledCard>
   );

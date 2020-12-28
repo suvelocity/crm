@@ -128,6 +128,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
         {
           model: Task,
           include: [{ model: Lesson, attributes: ["id", "title"] }],
+          where: { status: "active" },
         },
       ],
     });
@@ -183,9 +184,7 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
     const task = await createTask(req, res);
-    console.log(task);
     const { idArr } = req.body;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (studentId: number): ITaskofStudent => {
@@ -269,71 +268,71 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-//* checks submitted external task
-router.post("/checksubmit", async (req: Request, res: Response) => {
-  try {
-    const unfinishedTasks: any = await TaskofStudent.findAll({
-      where: {
-        studentId: req.body.studentId,
-        type: !"manual",
-        status: !"done",
-      },
-      include: [Task],
-    });
+// //* checks submitted external task
+// router.post("/checksubmit", async (req: Request, res: Response) => {
+//   try {
+//     const unfinishedTasks: any = await TaskofStudent.findAll({
+//       where: {
+//         studentId: req.body.studentId,
+//         type: !"manual",
+//         status: !"done",
+//       },
+//       include: [Task],
+//     });
 
-    unfinishedTasks.forEach(async (task: any) => {
-      switch (task.type) {
-        case "fcc":
-          try {
-            const event: any = await Event.findOne({
-              where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "FCC_SUBMIT_SUCCESS", //!check if this will be the name of the event
-                relatedId: task.Task.externalId,
-              }, //todo create this event
-            });
-            if (event) {
-              await TaskofStudent.update(
-                {
-                  status: "done",
-                },
-                { where: { id: task.id } }
-              );
-            }
-            return;
-          } catch (error) {
-            return;
-          }
-        case "challenge":
-          try {
-            const event: any = await Event.findAll({
-              where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "CHALLENGEME_SUBMIT_SUCCESS",
-                relatedId: task.Task.externalId,
-              }, //todo create this event
-            });
-            if (event) {
-              await TaskofStudent.update(
-                {
-                  status: "done",
-                },
-                { where: { id: task.id } }
-              );
-            }
-            return;
-          } catch (error) {
-            return;
-          }
+//     unfinishedTasks.forEach(async (task: any) => {
+//       switch (task.type) {
+//         case "fcc":
+//           try {
+//             const event: any = await Event.findOne({
+//               where: {
+//                 userId: req.body.studentId,
+//                 eventName: "FCC_SUBMIT_SUCCESS",
+//                 relatedId: task.Task.externalId,
+//               }, //todo create this event
+//             });
+//             if (event) {
+//               await TaskofStudent.update(
+//                 {
+//                   status: "done",
+//                 },
+//                 { where: { id: task.id } }
+//               );
+//             }
+//             return;
+//           } catch (error) {
+//             return;
+//           }
+//         case "challenge":
+//           try {
+//             const event: any = await Event.findAll({
+//               where: {
+//                 userId: req.body.studentId, //!check if this will be userid or studentid
+//                 eventName: "CHALLENGEME_SUBMIT_SUCCESS",
+//                 relatedId: task.Task.externalId,
+//               }, //todo create this event
+//             });
+//             if (event) {
+//               await TaskofStudent.update(
+//                 {
+//                   status: "done",
+//                 },
+//                 { where: { id: task.id } }
+//               );
+//             }
+//             return;
+//           } catch (error) {
+//             return;
+//           }
 
-        default:
-          break;
-      }
-    });
-    res.status(200).json("updated submittions");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//         default:
+//           break;
+//       }
+//     });
+//     res.status(200).json("updated submittions");
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 module.exports = router;

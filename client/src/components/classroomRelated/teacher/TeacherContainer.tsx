@@ -19,7 +19,7 @@ export default function TeacherContainer() {
 const TeacherTasksContainer = styled.div`
   color: ${({ theme }: { theme: any }) => theme.colors.font};
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   overflow: hidden;
   margin-bottom: 10px;

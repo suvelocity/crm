@@ -336,10 +336,11 @@ const ResourceBtn = styled(Button)`
 const CreateLessonButton = styled(Button)`
   position: absolute;
   width: fit-content;
-  bottom: 0%;
+  bottom: 2%;
   left: 50%;
   transform: translate(-50%);
   margin-top: auto;
+
   background-color: #fefefe;
   box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
 `;
