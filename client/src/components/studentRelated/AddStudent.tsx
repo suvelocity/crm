@@ -139,6 +139,7 @@ function AddStudent(props: Props) {
                 name="idNumber"
                 defaultValue={props.student ? props.student.idNumber : ""}
                 inputRef={register({
+                  required: "ID is required",
                   maxLength: {
                     value: 10,
                     message: "ID need to be 9 or 10 letters long",
@@ -231,7 +232,7 @@ function AddStudent(props: Props) {
                   name="languages"
                   control={control}
                   defaultValue={
-                    props.student ? props.student.languages.split(", ") : []
+                    props.student ? props.student.languages?.split(", ") : []
                   }
                 />
               </FormControl>
@@ -317,7 +318,7 @@ function AddStudent(props: Props) {
               <TextField
                 id="age"
                 name="age"
-                defaultValue={props.student ? props.student.age : ""}
+                defaultValue={props.student ? props.student.age : 0}
                 inputRef={register({
                   // required: "Age is required",
                   pattern: {
@@ -339,7 +340,12 @@ function AddStudent(props: Props) {
                 id="maritalStatus"
                 name="maritalStatus"
                 defaultValue={props.student ? props.student.maritalStatus : ""}
-                inputRef={register()}
+                inputRef={register({
+                  maxLength: {
+                    value: 20,
+                    message: "Marital status max length is 20 letters",
+                  },
+                })}
                 label="Marital Status"
               />
               {!empty ? (
