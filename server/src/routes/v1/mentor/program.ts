@@ -195,6 +195,10 @@ router.post("/startmails/:id", async (req, res) => {
         ), (error: any) => res.status(500).json({ error: error.message })
       );
     });
+      where: {
+        id: req.params.id
+      }
+    })
     res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });

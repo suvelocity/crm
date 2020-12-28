@@ -200,6 +200,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
+  email: boolean
 }
 
 export interface IMentorForm {
