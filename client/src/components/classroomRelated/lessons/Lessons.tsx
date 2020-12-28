@@ -217,19 +217,21 @@ export default function Lessons() {
             />
           ))
         ) : (
-          <ul>
-            {" "}
-            No Lessons Found with filters:
-            <li>search: "{filter}"</li>
-            <li>
-              class:{" "}
-              {
-                classesToTeacher.find(
-                  (single) => single.classId === selectedClass
-                )?.Class.name
-              }
-            </li>
-          </ul>
+          <div style={{ marginLeft: "15%" }}>
+            <ul>
+              {" "}
+              No Lessons Found with filters:
+              <li>search: "{filter}"</li>
+              <li>
+                class:{" "}
+                {
+                  classesToTeacher.find(
+                    (single) => single.classId === selectedClass
+                  )?.Class.name
+                }
+              </li>
+            </ul>
+          </div>
         )}
       </LessonsContainer>
     </Loading>

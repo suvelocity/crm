@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import network from "../../../helpers/network";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
@@ -21,7 +20,14 @@ import { set } from "lodash";
 import { MenuItem, Select } from "@material-ui/core";
 import { ITask } from "../../../typescript/interfaces";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import styled from "styled-components";
+import {
+  makeStyles,
+  createStyles,
+  withStyles,
+  Theme,
+} from "@material-ui/core/styles";
 
 const useRowStyles = makeStyles({
   root: {
@@ -89,6 +95,55 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     return convertDateToString(row.endDate);
   }, []);
 
+  const GreenBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#6ae21b",
+      },
+    })
+  )(LinearProgress);
+  const RedBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#e2321b",
+      },
+    })
+  )(LinearProgress);
+  const YellowBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#e4e719",
+      },
+    })
+  )(LinearProgress);
+
   return (
     <>
       <TableRow className={classes.root}>
@@ -109,7 +164,23 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell align='center'>{row.lesson}</TableCell>
         <TableCell align='center'>{convertedDate}</TableCell>
         <TableCell align='center'>
-          {Math.floor(calculatedSubmissionRate)}%
+          <p> {Math.floor(calculatedSubmissionRate)}%</p>
+          {calculatedSubmissionRate < 30 ? (
+            <RedBorderLinearProgress
+              variant='determinate'
+              value={calculatedSubmissionRate}
+            />
+          ) : calculatedSubmissionRate < 70 ? (
+            <YellowBorderLinearProgress
+              variant='determinate'
+              value={calculatedSubmissionRate}
+            />
+          ) : (
+            <GreenBorderLinearProgress
+              variant='determinate'
+              value={calculatedSubmissionRate}
+            />
+          )}
         </TableCell>
         <TableCell align='center'>
           <StyledAtavLink href={row.externalLink} target='_blank'>
