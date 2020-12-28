@@ -146,23 +146,25 @@ export function LessonsFidget() {
                   height: "100%",
                 }}>
                 <h3>Resources</h3>
-                {lesson.resource?.includes("%#splitingResource#%")
-                  ? lesson.resource
-                      .split("%#splitingResource#%")
-                      .map((resource: string, index: number) => (
-                        <ResourcesLink key={index}>
-                          <Link target='_blank' href={resource}>
-                            {resource}
-                          </Link>
-                        </ResourcesLink>
-                      ))
-                  : //@ts-ignore
-                    lesson.resource?.length > 0 && (
-                      //@ts-ignore
-                      <Link target='_blank' href={lesson.resource}>
-                        {lesson.resource}
-                      </Link>
-                    )}
+                <ResourcesLinks>
+                  {lesson.resource?.includes("%#splitingResource#%")
+                    ? lesson.resource
+                        .split("%#splitingResource#%")
+                        .map((resource: string, index: number) => (
+                          <ResourcesLink key={index}>
+                            <Link target='_blank' href={resource}>
+                              {resource}
+                            </Link>
+                          </ResourcesLink>
+                        ))
+                    : //@ts-ignore
+                      lesson.resource?.length > 0 && (
+                        //@ts-ignore
+                        <Link target='_blank' href={lesson.resource}>
+                          {lesson.resource}
+                        </Link>
+                      )}
+                </ResourcesLinks>
               </div>
               <div
                 className='today-info'
@@ -225,6 +227,13 @@ export const Headline = styled.h1`
 
 const ResourcesLink = styled.div`
   margin-top: 15px;
+`;
+
+const ResourcesLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 5px;
 `;
 
 const Link = styled.a`
