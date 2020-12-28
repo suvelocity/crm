@@ -7,3 +7,4 @@ export * from "./companyMock";
 export * from "./users";
 export * from "./events";
 export * from "./jobs";
+export * from "./mentors";

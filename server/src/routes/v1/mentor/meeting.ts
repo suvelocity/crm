@@ -6,12 +6,12 @@ import { IDashboard, IMeeting } from "../../../types";
 import transporter from "../../../mail";
 const ical = require("ical-generator");
 const path = require('path');
-const { fork } = require('child_process');
+// const { fork } = require('child_process');
 
-const child : any = fork(path.join(__dirname, 'sendSMS.js'))
-child.on('message', (msg: any) => {
-  console.log(msg)
-})
+// const child : any = fork(path.join(__dirname, 'sendSMS.js'))
+// child.on('message', (msg: any) => {
+//   console.log(msg)
+// })
 
 const router = Router();
 
