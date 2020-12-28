@@ -195,6 +195,7 @@ router.post("/startmails/:id", async (req, res) => {
         ), (error: any) => res.status(500).json({ error: error.message })
       );
     });
+    await MentorProgram.update({ email: true },{
       where: {
         id: req.params.id
       }
