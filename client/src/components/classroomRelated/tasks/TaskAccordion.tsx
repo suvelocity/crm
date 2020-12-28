@@ -73,6 +73,7 @@ export default function SingleTask(props: any) {
         <StyledDetails>{task.Task.body}</StyledDetails>
         <StyledDetails>
           <IconButton
+            // label='test'
             aria-label='submit button'
             onClick={() => {
               handleOpen(task.id);
@@ -80,13 +81,13 @@ export default function SingleTask(props: any) {
             disabled={task.Task.type !== "manual" ? true : false}>
             <PublishIcon />
           </IconButton>
-          <StyledAtavLink href={task.Task.externalLink} target='_blank'>
-            <IconButton
-              aria-label='external link?'
-              disabled={task.Task.externalLink ? false : true}>
-              <LinkIcon />
-            </IconButton>
-          </StyledAtavLink>
+          {task.Task.externalLink && (
+            <StyledAtavLink href={task.Task.externalLink} target='_blank'>
+              <IconButton aria-label='external link?'>
+                <LinkIcon />
+              </IconButton>
+            </StyledAtavLink>
+          )}
         </StyledDetails>
         {/* <StyledDetails></StyledDetails> */}
       </StyledAccordion>
