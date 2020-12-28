@@ -101,11 +101,11 @@ function ClassRoomNavBar() {
             }}>
             Classroom
           </Typography>
-          <DarkModeToggle
+          {/* <DarkModeToggle
             onChange={handleChangeTheme}
             checked={currentTheme === "dark"}
             size={50}
-          />
+          /> */}
           <Typography
             variant='h6'
             style={{
