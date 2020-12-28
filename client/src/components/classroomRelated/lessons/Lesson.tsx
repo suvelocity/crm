@@ -120,11 +120,16 @@ export default function Lesson({
           </StyledDetails>
           <StyledDetails>
             <StyledTask>
-              {tasks ? (
-                tasks.map((task: ITask) => <SingleLessonTask task={task} />)
-              ) : (
-                <p>no tasks given!</p>
-              )}
+              {user.userType === "student"
+                ? tasks &&
+                  tasks.map(
+                    (task: ITask) =>
+                      task.status === "active" && (
+                        <SingleLessonTask task={task} />
+                      )
+                  )
+                : tasks &&
+                  tasks.map((task: ITask) => <SingleLessonTask task={task} />)}
             </StyledTask>
           </StyledDetails>
         </StyledAccordion>

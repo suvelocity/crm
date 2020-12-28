@@ -82,7 +82,7 @@ export default function AddTask({
       key={index}
       className='create-task'
       style={{
-        maxWidth: "20 vw",
+        maxWidth: "20vw",
       }}>
       <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
         <CloseIcon onClick={removeTask} />

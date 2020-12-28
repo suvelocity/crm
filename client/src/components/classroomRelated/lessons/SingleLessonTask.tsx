@@ -24,6 +24,8 @@ import Modal from "@material-ui/core/Modal";
 import { StyledAtavLink } from "../../../styles/styledComponents";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import { Link } from "react-router-dom";
+import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
+import BlockIcon from "@material-ui/icons/Block";
 
 const StyledCard = styled(Card)`
   /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
@@ -54,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: "rotate(90deg)",
     },
     manual: {
-      backgroundColor: "#c0b62e",
+      backgroundColor: "#76b622",
     },
     challengeMe: {
       backgroundColor: "#d66910",
@@ -90,20 +92,25 @@ export default function SingleLessonTask(props: any) {
                 ? classes.challengeMe
                 : classes.manual
             }>
-            {task.type === "fcc"
-              ? "fcc"
-              : task.type === "challengeMe"
-              ? "C"
-              : "!"}
+            {task.type === "fcc" ? (
+              "fcc"
+            ) : task.type === "challengeMe" ? (
+              "C"
+            ) : (
+              <AssignmentLateIcon />
+            )}
           </Avatar>
         }
         title={task.title}
         subheader={`deadline: ${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
       <CardContent>
-        <Typography variant='body2' color='textSecondary' component='p'>
+        <Typography variant='body1' color='textPrimary' component='p'>
           {task.body}
         </Typography>
+        {task.status === "disabled" && (
+          <h3 style={{ color: "red" }}>Disabled!, edit to activate</h3>
+        )}
       </CardContent>
       <CardActions disableSpacing>
         {task.type === "manual" && (
