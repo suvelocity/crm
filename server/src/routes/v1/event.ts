@@ -155,13 +155,35 @@ router.get("/process-options", async (req: Request, res: Response) => {
       type: QueryTypes.SELECT,
     });
 
-    const values = await Event.aggregate("eventName", "DISTINCT", {
-      plain: false,
+    const uniqueStatuses = `
+    SELECT DISTINCT Events.event_name, Events.related_id, Events.user_id, Events.date FROM Events
+    WHERE Events.type = 'jobs'
+    order by Events.date , "ASC"`;
+    const statuses: { event_name: string }[] = await sequelize.query(
+      uniqueStatuses,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    const statusesToSend: any = [];
+    statuses.forEach((status: any) => {
+      const index = statusesToSend.findIndex(
+        (status2: any) =>
+          status2.related_id === status.related_id &&
+          status2.user_id === status.user_id
+      );
+      if (index !== -1 && status.date >= statusesToSend[index].date) {
+        statusesToSend.splice(index, 1, status);
+      } else {
+        statusesToSend.push(status);
+      }
     });
-    const statusesArray: string[] = values.map((item: any) => item.DISTINCT);
     const options: options = {
       classes: [...classes],
-      statuses: [...statusesArray],
+      statuses: statusesToSend.map(
+        (object: { event_name: string }) => object.event_name
+      ),
       companies: companies.map((object: { name: string }) => object.name),
     };
 
