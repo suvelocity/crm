@@ -4,13 +4,14 @@ import {
   cancelAllApplicantsForJob,
   fetchFCC,
 } from "../../helper";
-const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company, Class } from "../../models";
+import { Event, Student, Job, Company, Class, Task, TaskofStudent } from "../../models";
+import {Model} from 'sequelize'
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
 
+const router = Router();
 const mailOptions = (
   to: string,
   job: string,
@@ -90,10 +91,52 @@ router.get("/updates", async (req: Request, res: Response) => {
   const result = await fetchFCC();
   res.json(result);
 });
+router.post('/challengeMe',async (req,res)=>{
+  interface CM {
+    eventName: 'Submitted Challenge'|'Started Challenge';
+    userName: string;
+    userMail:string;
+    challengeId: number;
+    challengeName: string;
+    submissionState?: 'FAIL'|'SUCCESS';
+    team: string;
+  }
+  const body : CM = req.body
+  console.log(body)
+  const student = await Student.findOne({
+    where:{
+      email:body.userMail
+    },
+    attributes:['id']
+  })
+  if(!student){
+    return res.send('no such student')
+  }
+  const eventName = 'CM_' + body.eventName
+  .toUpperCase().replace(' ','_').concat(
+    body.submissionState
+    ? body.submissionState
+    :''
+  ) 
+  const event :IEvent= {
+    date:new Date(),
+    eventName,
+    relatedId:String(body.challengeId),
+    type:'challengeMe',
+    userId:student.id
+  }
+  req.body = event
+  res.redirect('../aaa')
+})
+
+router.post('/aaa',(req,res)=>{
+  console.log(req.body)
+  res.send('blop')
+})
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date, type } = req.body;
+    const { relatedId, eventName, userId, entry, date, type } :IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
@@ -114,7 +157,7 @@ router.post("/", async (req: Request, res: Response) => {
       // const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
       cancelAllJobsOfStudent(
-        parseInt(userId),
+        Number(userId),
         parseInt(relatedId),
         studentMsg,
         date

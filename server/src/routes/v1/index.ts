@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { checkToken, fetchFCC } from "../../helper";
-
+import webhook from './webhook'
 require("dotenv").config();
 
 const router = Router();
@@ -24,6 +24,7 @@ router.use("/notice", require("./notice"));
 // quizme routes
 router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
+router.use("/webhook", webhook);
 
 router.use(unknownEndpoint);
 export default router;
