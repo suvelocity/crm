@@ -109,7 +109,7 @@ const ProgramDashboard: React.FC = () => {
     }
   };
 
-  const postTask = async (title:string, url:string, ) => {
+  const postTask = async (title:string, url:string, id:number) => {
     try {
       const task:ITask = {
         title: `mentor program form -${title}`,
@@ -124,6 +124,7 @@ const ProgramDashboard: React.FC = () => {
         ...task,
         idArr: studentsToTask,
       });
+      await network.put(`/api/v1/M/program/editForm/${id}`);
       Swal.fire("Success", "task added successfully", "success");
     } catch(err){
       Swal.fire("Error Occurred", err.message, "error");
@@ -335,7 +336,7 @@ const ProgramDashboard: React.FC = () => {
                     </StyledSpan>
                   </a>
                   <StyledSpan>
-                    <Button onClick={()=>postTask(form.title, form.answerUrl)}>send to the students</Button>
+                    <Button onClick={()=>postTask(form.title, form.answerUrl, form.id!)}>send to the students</Button>
                   </StyledSpan>
                   <StyledSpan>
                     <DeleteIcon style={{cursor:"pointer"}} onClick={() => deleteForm(form.id!)} />
