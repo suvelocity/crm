@@ -13,7 +13,7 @@ import jwt from 'jsonwebtoken'
 const router = Router();
 
  const validateFormAccess :RequestHandler = async (req:any,res,next)=>{
-  const {id} = req.user
+  const {id} = req.user;
   const studentTasks = await TaskOfStudent.findAll({
     where:{
       [Op.and]:{
