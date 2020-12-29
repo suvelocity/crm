@@ -47,7 +47,7 @@ export interface IClass {
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: string | number;
+  relatedId: string ;
   eventName: string;
   entry?: any;
   type: string;
