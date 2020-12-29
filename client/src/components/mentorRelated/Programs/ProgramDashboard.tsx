@@ -336,7 +336,12 @@ const ProgramDashboard: React.FC = () => {
                     </StyledSpan>
                   </a>
                   <StyledSpan>
-                    <Button onClick={()=>postTask(form.title, form.answerUrl, form.id!)}>send to the students</Button>
+                    <Button 
+                      onClick={()=>postTask(form.title, form.answerUrl, form.id!)} 
+                      disabled={form.sent ? true : false}
+                    >
+                      {form.sent ? 'send to the students' : 'Sent!'}
+                    </Button>
                   </StyledSpan>
                   <StyledSpan>
                     <DeleteIcon style={{cursor:"pointer"}} onClick={() => deleteForm(form.id!)} />

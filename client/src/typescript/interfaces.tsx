@@ -210,6 +210,7 @@ export interface IMentorForm {
   answerUrl: string;
   title: string;
   createdAt: string;
+  sent: boolean;
 }
 
 export interface IMentorProgramForms {
