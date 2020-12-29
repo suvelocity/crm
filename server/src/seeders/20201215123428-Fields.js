@@ -60,19 +60,19 @@ module.exports = {
           id: 9,
           title: "How did you feel in this first week of the course?",
           form_id: 5,
-          type_id:1
+          type_id:2
         },
         {
           id: 10,
           title: "What were your first impressions of the course?",
           form_id: 5,
-          type_id:2
+          type_id:1
         },
         {
           id: 11,
           title: "What are your expectations from this course?",
           form_id: 5,
-          type_id:1
+          type_id:2
         },
         {
           id: 12,

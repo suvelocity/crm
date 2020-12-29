@@ -1,22 +1,25 @@
 import React, { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import { useRecoilState } from "recoil";
+
 import "react-loading-wrapper/dist/index.css";
+import { AuthContext } from "../helpers";
+import network from "../helpers/network";
 import ErrorBoundary from "../helpers/ErrorBoundary";
+import { IStudent } from "../typescript/interfaces";
+import ClassRoomNavBar from "../components/ClassRoomNavBar";
+import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
 import TeacherDashboard from "../components/classroomRelated/dashboard/TeacherDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
-import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
-import ClassRoomNavBar from "../components/ClassRoomNavBar";
-import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
-import QuizPage from "../components/classroomRelated/QuizMeRelated/components/pages/QuizPage";
-import styled, { createGlobalStyle } from "styled-components";
-import network from "../helpers/network";
+import QuizSubmissionsRouter from "../components/classroomRelated/QuizMeRelated/components/QuizSubmissionsRouter";
+import Home from "../components/classroomRelated/QuizMeRelated/components/pages/Home";
+import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreator/FormCreator";
 import { challengeMeChallenges } from "../atoms";
-import { AuthContext } from "../helpers";
-import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
-import { IStudent } from "../typescript/interfaces";
+
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -65,28 +68,30 @@ export default function TeacherRoutes() {
       <ClassRoomNavBar />
       {/* <ErrorBoundary> */}
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id='interface-container' style={{ flexGrow: 1 }}>
+      <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <TeacherDashboard />
           </Route>
-          <Route path='/lessons'>
+          <Route path="/lessons">
             <Lessons />
           </Route>
-          <Route path='/schedhule'>
+          <Route path="/schedhule">
             <Schedhule />
           </Route>
-          <Route path='/tasks'>
+          <Route path="/tasks">
             <TeacherContainer />
           </Route>
-          <Route exact path='/quizme'>
-            <QuizMe />
-          </Route>
-          <Route exact path='/quizme/quiz/:id'>
-            {/* @ts-ignore */}
-            <QuizPage />
-          </Route>
-          <Route path='*'>
+          <Route
+            exact
+            path="/quizme/fieldsubmission/byform/:id"
+            component={QuizSubmissionsRouter}
+          />
+          {user.userType === "teacher" && (
+              <Route exact path="/quizme/create" component={FormCreator} />
+            )}
+          <Route exact path="/quizme" component={Home} />
+          <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>

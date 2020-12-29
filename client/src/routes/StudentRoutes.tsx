@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
@@ -11,6 +11,12 @@ import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
 import PairMeetings from "../components/mentorRelated/Meetings/PairMeetings";
 import styled, { createGlobalStyle } from "styled-components";
 
+import { AuthContext } from "../helpers";
+import Home from "../components/classroomRelated/QuizMeRelated/components/pages/Home";
+import FormRouter from "../components/classroomRelated/QuizMeRelated/components/FormRouter";
+import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreator/FormCreator";
+import QuizSubmissionsRouter from "../components/classroomRelated/QuizMeRelated/components/QuizSubmissionsRouter";
+
 const GlobalStyle = createGlobalStyle`
 body{
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
@@ -21,6 +27,10 @@ body{
 }
 `;
 export function StudentRoutes() {
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+  const { userType } = user;
+
   return (
     <>
       <ErrorBoundary>
@@ -28,24 +38,28 @@ export function StudentRoutes() {
         <ClassRoomNavBar />
         <div style={{ flexGrow: 1 }}>
           <Switch>
-            <Route exact path='/'>
+            <Route exact path="/">
               <StudentDashboard />
             </Route>
-            <Route path='/lessons'>
+            <Route path="/lessons">
               <Lessons />
             </Route>
-            <Route path='/schedhule'>
+            <Route path="/schedhule">
               <Schedhule />
             </Route>
-            <Route path='/quizme'>
-              <QuizMe />
-            </Route>
-            <Route path='/tasks'>
+            <Route path="/tasks">
               <Tasks />
             </Route>
-            <Route path='/quizme'>
-              <QuizMe />
-            </Route>
+            <Route path="/quizme/form/:id" component={FormRouter} />
+            <Route
+              exact
+              path="/quizme/fieldsubmission/byform/:id"
+              component={QuizSubmissionsRouter}
+            />
+            {/* {user.userType === "teacher" && (
+              <Route exact path="/quizme/create" component={FormCreator} />
+            )} */}
+            <Route exact path="/quizme" component={Home} />
             <Route path="/mentor/:id">
               <PairMeetings />
             </Route>

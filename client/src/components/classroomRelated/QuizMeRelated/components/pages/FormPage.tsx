@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import {useParams} from 'react-router-dom'
+import { withRouter } from "react-router";
 import {AuthContext} from '../../../../../helpers'
 // import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
@@ -36,7 +37,7 @@ const extractAnswers = (Fields:IFieldWithSubs[]) => {
   },emptyAnswers)
 }
 
-export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.Element {
+  function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.Element {
   //UPDATED
   // console.log(extractAnswers(Fields))
   const emptyAnswers:IAnswers = {}
@@ -57,7 +58,8 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
       formWrapper: {
         display: "flex",
         justifyContent: "center",
-        margin:'1em 0 '
+        margin:'1em 0 ',
+        color: 'black'
       },
       form: {
         boxShadow:'1px 3px 4px 1px  rgba(0,0,0,.2)',
@@ -213,7 +215,7 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
   function getField(typeId:number,field:IFieldExtended,id:number){
     switch(typeId){
       case 1:
-        return <TextualField 
+        return <SingleChoiceField 
           disabled={status?true:false} 
           className={classes.field} 
           key={`field ${id}`} 
@@ -224,7 +226,7 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
           value={answers[id]}
         />
       case 2:
-        return <SingleChoiceField 
+        return <TextualField 
           disabled={status?true:false} 
           className={classes.field} 
           key={`field ${id}`} 
@@ -277,19 +279,6 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
             >
               Submit Form
             </Button>
-            <Button  
-            variant="outlined"
-            type="button"
-            onClick={()=>
-              {
-                console.log('answers',answers)
-                console.log('fields',Fields)
-              }
-            }
-            
-            >
-              check
-            </Button>
             <Button 
             className={classes.reset} 
             variant="outlined" color="secondary" 
@@ -305,4 +294,6 @@ export default function FormPage({form:{Fields,id,name,Teacher}}: IProps):JSX.El
       </form>
     </Container>
   )
-}
+};
+//@ts-ignore
+export default (FormPage);

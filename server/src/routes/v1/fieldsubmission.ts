@@ -1,6 +1,6 @@
 import e, { Router, Request, Response, RequestHandler } from "express";
 //@ts-ignore
-import { FieldSubmission, Task, Field, SelectedOption, Option, Student, sequelize } from "../../models";
+import { FieldSubmission, Task, Field, SelectedOption, Option, Student, TaskOfStudent, sequelize } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import {Op, QueryInterface} from 'sequelize'
@@ -167,6 +167,7 @@ const validateForm:RequestHandler = async function (req,res,next){
 router.use(validateForm)
   
 router.post('/form', async (req: Request, res: Response) => {
+
   async function updateOrCreateField(studentId:number,fieldId:number, answer:string|IOption[]){
     try {
       let createdNew = false
@@ -233,7 +234,27 @@ router.post('/form', async (req: Request, res: Response) => {
       answer: 'string'|IOption[]
     }
     const body:submission[] = req.body;
-    
+    console.log('body: ', body);
+
+    const formId = (await Field.FindOne({
+      where: {
+        id: body[0].fieldId
+      }
+    })).formId;
+    const taskId = (await Task.findOne({
+      where: {
+        externalId: formId
+      }
+    })).id;
+    // find task where externalId === formId
+
+    const taskOfStudent = await TaskOfStudent.update({status: "done"}, {
+      where: {
+        studentId: body[0].studentId,
+        taskId: taskId
+      }
+    })
+
     const submissions = await Promise.all(body.map( async ({studentId,fieldId,answer})=>{
       const {createdNew,fieldSubmissionId} = await updateOrCreateField(studentId,fieldId, answer)
       const qi :QueryInterface = db.sequelize.getQueryInterface()

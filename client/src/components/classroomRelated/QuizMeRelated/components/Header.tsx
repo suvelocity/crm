@@ -21,5 +21,5 @@ export default function Header( {text}: {text : string }) {
         </Typography>
       </Container>
     </>
-  );
+  )
 }

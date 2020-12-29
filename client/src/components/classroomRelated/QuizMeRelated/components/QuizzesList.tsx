@@ -109,5 +109,5 @@ export default function QuizzesList() {
         </Container>
       </Container>
     </>
-  ) : null;
+  ) : null
 }
