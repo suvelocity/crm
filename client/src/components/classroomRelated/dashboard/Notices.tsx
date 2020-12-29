@@ -150,7 +150,7 @@ function Notices() {
       )}
       <hr
         style={{
-          width: "60%",
+          width: "80%",
           opacity: "50%",
           margin: 0,
           marginLeft: "auto",

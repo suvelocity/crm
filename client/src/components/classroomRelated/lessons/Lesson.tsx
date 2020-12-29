@@ -177,6 +177,7 @@ const StyledSummery = styled(AccordionSummary)`
 
 const StyledDetails = styled(AccordionDetails)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  padding: 2%;
 `;
 
 const ResourcesLinks = styled.div`

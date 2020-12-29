@@ -49,7 +49,7 @@ export default function SingleNotice(props: any) {
               <IconButton>
                 {userType === "teacher" && (
                   <DeleteForeverIcon
-                    style={{ color: "red" }}
+                    // style={{ color: "red" }}
                     onClick={() => {
                       deleteNotice(notice.id);
                     }}></DeleteForeverIcon>

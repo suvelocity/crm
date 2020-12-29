@@ -135,6 +135,7 @@ export default function Lessons() {
           marginLeft: "15px",
           backgroundColor: "white",
         }}
+        placeholder='choose a class'
         defaultValue={selectedClass}
         onChange={(e: any) => {
           const newId = e.target.value;
@@ -149,7 +150,11 @@ export default function Lessons() {
       </Select>
       <StyledButton
         onClick={handleOpen}
-        style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}>
+        style={{
+          marginLeft: "auto",
+          marginRight: "15%",
+          height: "fit-content",
+        }}>
         New Lesson
         <AddCircleIcon
           style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
@@ -198,7 +203,7 @@ export default function Lessons() {
       </FilterContainer>
       <hr
         style={{
-          width: "60%",
+          width: "70%",
           opacity: "50%",
           margin: 0,
           marginLeft: "auto",
@@ -241,8 +246,9 @@ export default function Lessons() {
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
-  height: fit-content;
+  /* height: fit-content; */
   /* justify-content: center; */
+  align-items: center;
   padding-bottom: 40px;
   padding-top: 40px;
 `;

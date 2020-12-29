@@ -481,7 +481,7 @@ export default function TeacherTaskBoard(props: any) {
               : null}
             {emptyRows > 0 && (
               <TableRow style={{ height: 91 * emptyRows }}>
-                <TableCell colSpan={6} />
+                <TableCell colSpan={8} />
               </TableRow>
             )}
           </TableBody>
