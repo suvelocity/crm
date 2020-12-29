@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@material-ui/core";
 import { CheckCircleOutline } from "@material-ui/icons/";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
@@ -32,7 +33,11 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
     borderRadius: "3px",
   },
-  text: {},
+  flexCenter: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: "1em"
+  }
 }));
 
 export default function QuizzesList() {
@@ -56,6 +61,7 @@ export default function QuizzesList() {
     const fetchQuizzes = async () => {
       try {
         const forms: IForm[] = (await network.get("/api/v1/form/all")).data;
+        console.log("forms: ", forms);
         setForms(forms);
       } catch (e) {
         console.trace(e);
@@ -65,49 +71,61 @@ export default function QuizzesList() {
       const userSubmissions: UserSubmission[] = (
         await network.get(`/api/v1/fieldsubmission/bystudent/1`)
       ).data;
+      console.log("userSubmissions: ", userSubmissions);
       setUserSubmissions(userSubmissions);
     };
     fetchUserSubmissions();
     fetchQuizzes();
   }, []);
 
-  return forms && userSubmissions ? (
-    <>
-      <Container className={classes.container}>
-        <Container className={classes.list}>
-          <List>
-            {forms.map((form, index: number) => (
-              <Link
-                to={`/quizme/form/${form.id}`}
-                style={{ textDecoration: "none" }}
-                key={index}
-              >
-                <ListItem className={classes.li}>
-                  <ListItemText
-                    primary={form.name}
-                    className={classes.text}
-                    disableTypography
-                  ></ListItemText>
-                  <ListItemIcon>
-                    {
-                      //@ts-ignore
-                      userSubmissions.some((sub) => sub.formId === form.id) ? (
-                        // <Link to={`/quizme/fieldsubmission/byform/${form.id}/full`}>
-                         //@ts-ignore
-                        <CheckCircleOutline edge="end"/>
-                       
-                      ) : (
+  if (forms && userSubmissions) {
+    forms.length > 0 ? (
+      <>
+        <Container className={classes.container}>
+          <Container className={classes.list}>
+            <List>
+              {forms.map((form, index: number) => (
+                <Link
+                  to={`/quizme/form/${form.id}`}
+                  style={{ textDecoration: "none" }}
+                  key={index}
+                >
+                  <ListItem className={classes.li}>
+                    <ListItemText
+                      primary={form.name}
+                      disableTypography
+                    ></ListItemText>
+                    <ListItemIcon>
+                      {
                         //@ts-ignore
-                        <RadioButtonUncheckedIcon edge="end" />
-                      )
-                    }
-                  </ListItemIcon>
-                </ListItem>
-              </Link>
-            ))}
-          </List>
+                        userSubmissions.some(
+                          (sub) => sub.formId === form.id
+                        ) ? (
+                          // <Link to={`/quizme/fieldsubmission/byform/${form.id}/full`}>
+                          //@ts-ignore
+                          <CheckCircleOutline edge="end" />
+                        ) : (
+                          //@ts-ignore
+                          <RadioButtonUncheckedIcon edge="end" />
+                        )
+                      }
+                    </ListItemIcon>
+                  </ListItem>
+                </Link>
+              ))}
+            </List>
+          </Container>
         </Container>
+      </>
+    ) : (
+      <Container className={classes.flexCenter}>
+        <Typography>No forms available</Typography>
       </Container>
-    </>
-  ) : null
+    );
+  }
+  return (
+    <Container className={classes.flexCenter}>
+      <Typography component={'span'}>No forms available</Typography>
+    </Container>
+  );
 }
