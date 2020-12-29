@@ -4,18 +4,18 @@ export interface IStudent {
   lastName: string;
   idNumber: string;
   email: string;
-  phone: string;
+  phone?: string;
   Class: IClass;
   address: string;
-  age: number;
+  age?: number;
   maritalStatus: string;
-  children: number;
+  children?: number;
   academicBackground: string;
-  militaryService: string;
-  workExperience: string;
-  languages: string;
-  citizenship: string;
-  additionalDetails: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
+  additionalDetails?: string;
   mentorId: number | null;
   mentor?: IMentor | null;
   MentorStudents?: IPair[];
@@ -200,6 +200,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
+  email: boolean
 }
 
 export interface IMentorForm {

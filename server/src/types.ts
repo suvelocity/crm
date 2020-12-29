@@ -1,4 +1,6 @@
 import { Model } from "sequelize/types";
+import { Request } from "express";
+
 export interface IJob {
   Company?: ICompany;
   id?: number;
@@ -29,19 +31,19 @@ export interface IStudent {
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
-  idNumber: string;
-  additionalDetails: string;
+  phone?: string;
+  idNumber: string | null;
+  additionalDetails?: string;
   classId: number;
-  age: number;
+  age?: number | string | null;
   address: string;
   maritalStatus: string;
-  children: number;
+  children?: number;
   academicBackground: string;
-  militaryService: string;
-  workExperience: string;
-  languages: string;
-  citizenship: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
 }
@@ -66,7 +68,9 @@ export interface IEvent {
   type: string;
   date: Date;
 }
-
+export interface RequestWithUser extends Request {
+  user?: IUser;
+}
 export interface ICompany {
   id?: number;
   name: string;

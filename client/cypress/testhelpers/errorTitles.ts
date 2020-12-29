@@ -12,10 +12,9 @@ export const studentFormErrorTitles = [
   "Last name is required",
   "ID number is required",
   "Email is required",
-  "Phone is required",
-  "Age is required",
   "Address is required",
   "Class is required",
+  "Academic background is required",
 ];
 
 export const companyFormErrorTitles = [
@@ -26,7 +25,6 @@ export const companyFormErrorTitles = [
 export const classFormErrorTitles = [
   "Course is required",
   "Class title is required",
-  "Zoom Link is required",
 ];
 export const teacherFormErrorTitles = [
   "First name is required",

@@ -20,6 +20,7 @@ import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
 import { Op } from "sequelize";
+import { validateTeacher, validateAdmin } from "../../middlewares";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -53,7 +54,7 @@ router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/all", async (req: Request, res: Response) => {
+router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   //@ts-ignore
   const fields: string[] = req.query.fields?.split(",");
   const onlyActive: boolean = Boolean(req.query.onlyactive);
@@ -73,7 +74,7 @@ router.get("/all", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byId/:id", async (req: Request, res: Response) => {
+router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
     const only = req.query.only;
@@ -94,14 +95,15 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
-    const body: IStudent = req.body;
+    const body = req.body;
     const studentExists = await Student.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
     if (studentExists)
       return res.status(409).json({ error: "Student already exists" });
+
     const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,
@@ -111,9 +113,9 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails: body.additionalDetails,
       classId: body.classId,
       address: body.address,
-      age: body.age,
+      age: body.age === "" ? null : body.age,
       maritalStatus: body.maritalStatus,
-      children: body.children,
+      children: body.children ? null : body.children,
       academicBackground: body.academicBackground,
       militaryService: body.militaryService,
       workExperience: body.workExperience,
@@ -154,7 +156,9 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
+  req.body.age = req.body.age === "" ? null : req.body.age;
+  req.body.children = req.body.children === "" ? null : req.body.children;
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
@@ -168,7 +172,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await Student.destroy({
