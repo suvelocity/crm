@@ -92,20 +92,21 @@ router.get("/updates", async (req: Request, res: Response) => {
   res.json(result);
 });
 router.post('/challengeMe',async (req,res)=>{
-  interface CM {
-    eventName: 'Submitted Challenge'|'Started Challenge';
-    userName: string;
-    userMail:string;
-    challengeId: number;
-    challengeName: string;
-    submissionState?: 'FAIL'|'SUCCESS';
-    team: string;
-  }
-  const body : CM = req.body
-  console.log(body)
-  const student = await Student.findOne({
-    where:{
-      email:body.userMail
+  try {
+
+    interface CM {
+      eventName: 'Submitted Challenge'|'Started Challenge';
+      userName: string;
+      userMail:string;
+      challengeId: number;
+      challengeName: string;
+      submissionState?: 'FAIL'|'SUCCESS';
+      team: string;
+    }
+    const body : CM = req.body
+    const student = await Student.findOne({
+      where:{
+        email:body.userMail
     },
     attributes:['id']
   })
@@ -115,7 +116,7 @@ router.post('/challengeMe',async (req,res)=>{
   const eventName = 'CM_' + body.eventName
   .toUpperCase().replace(' ','_').concat(
     body.submissionState
-    ? body.submissionState
+    ? '_'+ body.submissionState
     :''
   ) 
   const event :IEvent= {
@@ -125,13 +126,13 @@ router.post('/challengeMe',async (req,res)=>{
     type:'challengeMe',
     userId:student.id
   }
-  req.body = event
-  res.redirect('../aaa')
-})
-
-router.post('/aaa',(req,res)=>{
-  console.log(req.body)
-  res.send('blop')
+  const { error } = eventsSchema.validate(event);
+  if (error) return res.status(400).json({ error: error.message });
+  await Event.create(event);
+  return res.status(200).send('noice');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 })
 
 router.post("/", async (req: Request, res: Response) => {
