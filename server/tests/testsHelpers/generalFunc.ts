@@ -14,8 +14,12 @@ export const toCamelCase = (string: string) => {
 
 export const getAll = async (route: string, accessToken: string) =>
   await sendRequest("get", `/${route}/all`, accessToken);
-export const getById = async (id: number, route: string, accessToken: string) =>
-  await sendRequest("get", `/${route}/byid/${id}`, accessToken);
+export const getById = async (
+  id: number,
+  route: string,
+  accessToken: string,
+  params?: string
+) => await sendRequest("get", `/${route}/byId/${id}${params}`, accessToken);
 export const post = async (route: string, accessToken: string, body: object) =>
   await sendRequest("post", `/${route}`, accessToken, body);
 export const deleteById = async (

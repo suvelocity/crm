@@ -17,7 +17,7 @@ import { jobsTestExpectedResults } from "../mocks/jobs/jobsTestExpectedResults";
 let accessToken;
 
 const getCurrentJobs = async () => await getAll("job", accessToken);
-const getJobById = async (id) => await getById(id, "job", accessToken);
+const getJobById = async (id) => await getById(id, "job", accessToken, '?only=jobs');
 const postNewJob = async (body) => await post("job", accessToken, body);
 const patchJobById = async (id, body) =>
   await patchById(id, "job", accessToken, body);
