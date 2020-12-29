@@ -30,7 +30,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 function NewClassMentorProject() {
   const [students, setStudents] = useState<Omit<IStudent, "Class">[]>([]);
-  const [filteredCls, setFilteredCls] = useState<Omit<IStudent, "Class">[]>(students);
+  const [filteredCls, setFilteredCls] = useState<Omit<IStudent, "Class">[]>(
+    students
+  );
+  const [available, setAvailble] = useState<boolean>(true);
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -56,9 +59,7 @@ function NewClassMentorProject() {
 
   const getMentors = useCallback(async () => {
     console.log(students);
-    const { data }: { data: IMentor[] } = await network.get(
-      `/api/v1/M/mentor/available`
-    );
+    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
     const mentorList = data.map((mentor) => {
       let count = 0;
       students.forEach((student: Omit<IStudent, "Class">) => {
@@ -66,8 +67,6 @@ function NewClassMentorProject() {
           if (student.mentor?.id === mentor.id) count++;
         }
       });
-      console.log(students);
-      console.log(count);
       mentor.student = count;
       return mentor;
     });
@@ -94,9 +93,10 @@ function NewClassMentorProject() {
   }, [getMentors]);
 
   useEffect(() => {
+    const relevant = mentors.filter(mentor => mentor.available === available)
     if (searchValue !== "") {
       setFilteredMentors(
-        mentors.filter(
+        relevant.filter(
           (mentor) =>
             mentor.name
               .toLocaleLowerCase()
@@ -113,9 +113,9 @@ function NewClassMentorProject() {
         )
       );
     } else {
-      setFilteredMentors(mentors);
+      setFilteredMentors(relevant);
     }
-  }, [searchValue, mentors]);
+  }, [searchValue, mentors, available]);
 
   useEffect(() => {
     if (searchValueStudent !== "" && students) {
@@ -354,9 +354,14 @@ function NewClassMentorProject() {
       await network.put(`/api/v1/M/mentor/${id}`, {
         available: !currentAvailability,
       });
-      getMentors()
+      getMentors();
     }
   };
+
+  // useEffect(() => {
+  //   const relevant = mentors.filter(mentor => mentor.available === available)
+  //   setFilteredMentors(relevant)
+  // },[available, mentors])
 
   return (
     <div
@@ -425,58 +430,64 @@ function NewClassMentorProject() {
                     </TableHeader>
                   </li>
                 )}
-                {filteredCls &&
-                  filteredCls.map(
-                    (student: Omit<IStudent, "Class">, i: number) => {
-                      let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
-                      return (
-                        <li key={student.id} style={{ backgroundColor: color }}>
-                          {/* <StyledLink color="black" to={`/student/${student.id}`}> */}
-                          <StyledDiv repeatFormula="0.4fr 1fr 1fr 1.5fr">
-                            <PersonIcon />
-                            <StyledSpan weight="bold">
-                              {capitalize(student.firstName)}{" "}
-                              {capitalize(student.lastName)}
-                            </StyledSpan>
-                            <StyledSpan>{student.address}</StyledSpan>
-                            <StyledSpan>
-                              <Droppable
-                                droppableId={`${i}`}
-                                ignoreContainerClipping
-                              >
-                                {(provided, snapshot) => (
-                                  <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                    style={{
-                                      width: snapshot.isDraggingOver ? 0 : "",
-                                    }}
-                                  >
-                                    {student.mentor && (
-                                      <StyledDiv repeatFormula="1.5fr 1fr">
-                                        <StyledSpan>
-                                          {capitalize(student.mentor.name)}
-                                        </StyledSpan>
-                                        <Button
-                                          onClick={() =>
-                                            removeMentor(student.mentor!, i)
-                                          }
-                                        >
-                                          <DeleteIcon />
-                                        </Button>
-                                      </StyledDiv>
-                                    )}
-                                    {provided.placeholder}
-                                  </div>
-                                )}
-                              </Droppable>
-                            </StyledSpan>
-                          </StyledDiv>
-                          {/* </StyledLink> */}
-                        </li>
-                      );
-                    }
-                  )}
+                {filteredCls && (
+                  <div style={{ overflow: "scroll", maxHeight: 600 }}>
+                    {filteredCls.map(
+                      (student: Omit<IStudent, "Class">, i: number) => {
+                        let color = student.mentor ? "#b5e8ca" : "#b5b5b5";
+                        return (
+                          <li
+                            key={student.id}
+                            style={{ backgroundColor: color }}
+                          >
+                            {/* <StyledLink color="black" to={`/student/${student.id}`}> */}
+                            <StyledDiv repeatFormula="0.4fr 1fr 1fr 1.5fr">
+                              <PersonIcon />
+                              <StyledSpan weight="bold">
+                                {capitalize(student.firstName)}{" "}
+                                {capitalize(student.lastName)}
+                              </StyledSpan>
+                              <StyledSpan>{student.address}</StyledSpan>
+                              <StyledSpan>
+                                <Droppable
+                                  droppableId={`${i}`}
+                                  ignoreContainerClipping
+                                >
+                                  {(provided, snapshot) => (
+                                    <div
+                                      {...provided.droppableProps}
+                                      ref={provided.innerRef}
+                                      style={{
+                                        width: snapshot.isDraggingOver ? 0 : "",
+                                      }}
+                                    >
+                                      {student.mentor && (
+                                        <StyledDiv repeatFormula="1.5fr 1fr">
+                                          <StyledSpan>
+                                            {capitalize(student.mentor.name)}
+                                          </StyledSpan>
+                                          <Button
+                                            onClick={() =>
+                                              removeMentor(student.mentor!, i)
+                                            }
+                                          >
+                                            <DeleteIcon />
+                                          </Button>
+                                        </StyledDiv>
+                                      )}
+                                      {provided.placeholder}
+                                    </div>
+                                  )}
+                                </Droppable>
+                              </StyledSpan>
+                            </StyledDiv>
+                            {/* </StyledLink> */}
+                          </li>
+                        );
+                      }
+                    )}
+                  </div>
+                )}
               </StyledUl>
             </Loading>
           </Wrapper>
@@ -488,7 +499,7 @@ function NewClassMentorProject() {
             </Center>
             <br />
             <Loading loading={loading} size={30}>
-              <div>
+              <div style={{display: "flex", justifyContent: "space-between"}}>
                 <TextField
                   label="Search"
                   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -496,6 +507,17 @@ function NewClassMentorProject() {
                   }}
                   value={searchValue}
                 />
+                <StyledSpan>
+                  <Switch
+                    checked={available}
+                    onChange={() =>
+                      setAvailble(!available)
+                    }
+                    color="primary"
+                    name="checkedB"
+                    inputProps={{ "aria-label": "primary checkbox" }}
+                  />
+                </StyledSpan>
               </div>
               <StyledUl>
                 <li>
@@ -512,50 +534,60 @@ function NewClassMentorProject() {
                 <Droppable droppableId="mentors">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                      {filteredMentors &&
-                        filteredMentors.sort(
-                          (a, b) => (a.student || 0) - (b.student || 0)
-                        ) &&
-                        filteredMentors.map((mentor, i) => (
-                          <Draggable key={i} draggableId={`${i}`} index={i}>
-                            {(provided) => (
-                              <li
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr 0.5fr">
-                                  <StyledSpan weight="bold">
-                                    {mentor.student ? mentor.student : 0}
-                                  </StyledSpan>
-                                  <StyledLink
-                                    to={`/mentor/${mentor.id}`}
-                                    color="black"
+                      {filteredMentors && (
+                        <div style={{ overflow: "scroll", maxHeight: 600 }}>
+                          {filteredMentors.sort(
+                            (a, b) => (a.student || 0) - (b.student || 0)
+                          ) &&
+                            filteredMentors.map((mentor, i) => (
+                              <Draggable key={i} draggableId={`${i}`} index={i}>
+                                {(provided) => (
+                                  <li
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
                                   >
-                                    <StyledSpan weight="bold">
-                                      {capitalize(mentor.name)}
-                                    </StyledSpan>
-                                  </StyledLink>
-                                  <StyledSpan>{mentor.address}</StyledSpan>
-                                  <StyledSpan>{mentor.company}</StyledSpan>
-                                  <StyledSpan>{mentor.role}</StyledSpan>
-                                  <StyledSpan>{mentor.experience}</StyledSpan>
-                                  <StyledSpan>
-                                    <Switch
-                                      checked={mentor.available}
-                                      onChange={() =>
-                                        changeAvailabilityOfMentor(mentor?.id, mentor.available)
-                                      }
-                                      color='primary'
-                                      name='checkedB'
-                                      inputProps={{ 'aria-label': 'primary checkbox' }}
-                                    />
-                                  </StyledSpan>
-                                </StyledDiv>
-                              </li>
-                            )}
-                          </Draggable>
-                        ))}
+                                    <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr 0.5fr">
+                                      <StyledSpan weight="bold">
+                                        {mentor.student ? mentor.student : 0}
+                                      </StyledSpan>
+                                      <StyledLink
+                                        to={`/mentor/${mentor.id}`}
+                                        color="black"
+                                      >
+                                        <StyledSpan weight="bold">
+                                          {capitalize(mentor.name)}
+                                        </StyledSpan>
+                                      </StyledLink>
+                                      <StyledSpan>{mentor.address}</StyledSpan>
+                                      <StyledSpan>{mentor.company}</StyledSpan>
+                                      <StyledSpan>{mentor.role}</StyledSpan>
+                                      <StyledSpan>
+                                        {mentor.experience}
+                                      </StyledSpan>
+                                      <StyledSpan>
+                                        <Switch
+                                          checked={mentor.available}
+                                          onChange={() =>
+                                            changeAvailabilityOfMentor(
+                                              mentor?.id,
+                                              mentor.available
+                                            )
+                                          }
+                                          color="primary"
+                                          name="checkedB"
+                                          inputProps={{
+                                            "aria-label": "primary checkbox",
+                                          }}
+                                        />
+                                      </StyledSpan>
+                                    </StyledDiv>
+                                  </li>
+                                )}
+                              </Draggable>
+                            ))}
+                        </div>
+                      )}
                       {provided.placeholder}
                     </div>
                   )}
