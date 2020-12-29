@@ -16,7 +16,7 @@ export const classSchemaToPut = Joi.object({
   startingDate: Joi.string(),
   endingDate: Joi.string(),
   cycleNumber: Joi.number(),
-  zoomLink: Joi.string(),
+  zoomLink: Joi.string().allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 

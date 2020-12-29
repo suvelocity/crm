@@ -142,7 +142,9 @@ function SingleStudent() {
               </SingleListItem>
               <SingleListItem
                 primary="Phone Number"
-                secondary={formatPhone(student?.phone)}
+                secondary={
+                  student?.phone ? formatPhone(student?.phone) : "לא ידוע"
+                }
               >
                 <PhoneIcon />
               </SingleListItem>
@@ -157,21 +159,19 @@ function SingleStudent() {
                   <PostAddIcon />
                 </SingleListItem>
               )}
-              {student?.militaryService && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <TrackChangesIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Military Service"
-                    secondary={
-                      student?.militaryService
-                        ? capitalize(student?.militaryService)
-                        : "לא ידוע"
-                    }
-                  />
-                </MultilineListItem>
-              )}
+              <MultilineListItem>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Military Service"
+                  secondary={
+                    student?.militaryService
+                      ? capitalize(student?.militaryService)
+                      : "לא ידוע"
+                  }
+                />
+              </MultilineListItem>
             </List>
             <List>
               <SingleListItem
