@@ -12,7 +12,15 @@ import {
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Button, TextField, Switch } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  Switch,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
@@ -33,7 +41,7 @@ function NewClassMentorProject() {
   const [filteredCls, setFilteredCls] = useState<Omit<IStudent, "Class">[]>(
     students
   );
-  const [available, setAvailble] = useState<boolean>(true);
+  const [available, setAvailble] = useState<boolean | string>(true);
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -93,7 +101,10 @@ function NewClassMentorProject() {
   }, [getMentors]);
 
   useEffect(() => {
-    const relevant = mentors.filter(mentor => mentor.available === available)
+    const relevant =
+      available === "all"
+        ? mentors
+        : mentors.filter((mentor) => mentor.available === available);
     if (searchValue !== "") {
       setFilteredMentors(
         relevant.filter(
@@ -173,10 +184,10 @@ function NewClassMentorProject() {
           : itemsMentor.push(prevMentor);
       }
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
-      setStudents(itemsStudents);
+      setFilteredCls(itemsStudents);
       setMentors(itemsMentor);
-      setSearchValue("");
-      setSearchValueStudent("");
+      // setSearchValue("");
+      // setSearchValueStudent("");
     }
   };
 
@@ -300,10 +311,10 @@ function NewClassMentorProject() {
 
   const addressGenerator = async () => {
     if (students) {
-      const emptyMentors: IMentor[] = mentors.filter(
+      const emptyMentors: IMentor[] = filteredMentors.filter(
         (mentor) => !mentor.student || mentor.student === 0
       );
-      const newMentors: IMentor[] = Array.from(mentors);
+      const newMentors: IMentor[] = Array.from(filteredMentors);
       const studentsWithMentor = students.filter((student) => student.mentor);
       const emptyStudents = students.filter((student) => !student.mentor);
       try {
@@ -375,7 +386,7 @@ function NewClassMentorProject() {
           style={{ marginTop: 20, minWidth: 150 }}
           onClick={async () => await addressGenerator()}
         >
-          Generate
+          Auto assign
         </Button>
         <Button
           variant="contained"
@@ -400,7 +411,7 @@ function NewClassMentorProject() {
       </div>
       <div style={{ display: "flex" }}>
         <DragDropContext onDragEnd={onDropLeftEnd}>
-          <Wrapper width="40%">
+          <Wrapper width="35%">
             <Center>
               <TitleWrapper>
                 <H1 color={"#c47dfa"}>Students In Class</H1>
@@ -408,25 +419,31 @@ function NewClassMentorProject() {
             </Center>
             <br />
             <Loading loading={loading} size={30}>
-              <TextField
-                label="Search"
-                onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                  changeSearchValueStudent(e.target.value as string);
-                }}
-                value={searchValueStudent}
-              />
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <TextField
+                  label="Search"
+                  onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                    changeSearchValueStudent(e.target.value as string);
+                  }}
+                  value={searchValueStudent}
+                />
+
+                <div style={{ display: "flex",flexDirection: "column", justifyContent: "space-between" }}>
+                  <StyledSpan>sort</StyledSpan>
+                  <ExpandMoreIcon
+                    style={{ cursor: "pointer" }}
+                    onClick={availableSort}
+                  />
+                </div>
+              </div>
               <StyledUl>
                 {students && (
                   <li>
-                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1.5fr 0.05fr">
+                    <TableHeader repeatFormula="0.4fr 1fr 1fr 1fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">Name</StyledSpan>
                       <StyledSpan weight="bold">Address</StyledSpan>
-                      <StyledSpan weight="bold">Select Mentor</StyledSpan>
-                      <ExpandMoreIcon
-                        style={{ cursor: "pointer" }}
-                        onClick={availableSort}
-                      />
+                      <StyledSpan weight="bold">Mentor</StyledSpan>
                     </TableHeader>
                   </li>
                 )}
@@ -462,7 +479,7 @@ function NewClassMentorProject() {
                                       }}
                                     >
                                       {student.mentor && (
-                                        <StyledDiv repeatFormula="1.5fr 1fr">
+                                        <StyledDiv repeatFormula="2fr 0.5fr">
                                           <StyledSpan>
                                             {capitalize(student.mentor.name)}
                                           </StyledSpan>
@@ -491,15 +508,15 @@ function NewClassMentorProject() {
               </StyledUl>
             </Loading>
           </Wrapper>
-          <Wrapper width="40%">
+          <Wrapper width="45%">
             <Center>
               <TitleWrapper>
-                <H1 color={"#c47dfa"}>Available Mentors</H1>
+                <H1 color={"#c47dfa"}>Mentors</H1>
               </TitleWrapper>
             </Center>
             <br />
             <Loading loading={loading} size={30}>
-              <div style={{display: "flex", justifyContent: "space-between"}}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <TextField
                   label="Search"
                   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -507,28 +524,29 @@ function NewClassMentorProject() {
                   }}
                   value={searchValue}
                 />
-                <StyledSpan>
-                  <Switch
-                    checked={available}
-                    onChange={() =>
-                      setAvailble(!available)
+                <FormControl style={{ minWidth: 200, marginRight: 20 }}>
+                  <InputLabel>Availability</InputLabel>
+                  <Select
+                    onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
+                      setAvailble(e.target.value as boolean)
                     }
-                    color="primary"
-                    name="checkedB"
-                    inputProps={{ "aria-label": "primary checkbox" }}
-                  />
-                </StyledSpan>
+                  >
+                    <MenuItem value={true}>Available</MenuItem>
+                    <MenuItem value={false}>Not available</MenuItem>
+                    <MenuItem value="all">All</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
               <StyledUl>
                 <li>
-                  <TableHeader repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr 0.5fr">
+                  <TableHeader repeatFormula="0.5fr 1fr 1fr 1fr 1.25fr 1.25fr 1fr">
                     <PersonIcon />
                     <StyledSpan weight="bold">Name</StyledSpan>
                     <StyledSpan weight="bold">Address</StyledSpan>
                     <StyledSpan weight="bold">company</StyledSpan>
                     <StyledSpan weight="bold">role</StyledSpan>
                     <StyledSpan weight="bold">experience</StyledSpan>
-                    <span></span>
+                    <StyledSpan weight="bold">available</StyledSpan>
                   </TableHeader>
                 </li>
                 <Droppable droppableId="mentors">
@@ -547,7 +565,7 @@ function NewClassMentorProject() {
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                   >
-                                    <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1fr 1fr 0.5fr">
+                                    <StyledDiv repeatFormula="0.5fr 1fr 1fr 1fr 1.5fr 1fr 1fr">
                                       <StyledSpan weight="bold">
                                         {mentor.student ? mentor.student : 0}
                                       </StyledSpan>

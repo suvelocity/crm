@@ -9,7 +9,7 @@ module.exports = {
         id:1,
         mentor_program_id: 1,
         mentor_id:1,
-        student_id:1,
+        student_id:7,
         created_at: new Date(),
         updated_at: new Date(),
       },
