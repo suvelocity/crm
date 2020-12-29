@@ -287,11 +287,8 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
                 userId: studentId,
                 eventName: "FCC_BULK_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
-            // console.log("=====================");
-
-            // console.log(event);
 
             if (event) {
               await TaskofStudent.update(
@@ -305,14 +302,14 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
-        case "challenge":
+        case "challengeMe":
           try {
             const event: any = await Event.findAll({
               where: {
                 userId: studentId,
                 eventName: "CHALLENGEME_SUBMIT_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
             if (event) {
               await TaskofStudent.update(
