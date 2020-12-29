@@ -67,7 +67,17 @@ export default function SingleTask(props: any) {
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
           id='panel1a-header'>
-          {task.Task.title + " - " + task.Task.type}
+          <p style={{ flexGrow: 1 }}>
+            {task.Task.title + " - " + task.Task.type}
+          </p>
+          <p
+            style={{
+              marginTop: "auto",
+              marginBottom: "auto",
+              fontSize: "1rem",
+            }}>
+            Deadline: {task.Task.endDate.substring(0, 10)}
+          </p>
         </StyledSummery>
         <hr style={{ width: "95%", opacity: "50%" }} />
         <StyledDetails>{task.Task.body}</StyledDetails>
@@ -114,6 +124,7 @@ const StyledSummery = styled(AccordionSummary)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
   font-weight: bold;
   font-size: 20px;
+  display: flex;
 `;
 
 const StyledDetails = styled(AccordionDetails)`

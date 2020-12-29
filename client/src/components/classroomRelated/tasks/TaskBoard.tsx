@@ -49,6 +49,14 @@ export default function TaskBoard() {
     margin-top: 2%;
   `;
 
+  const checkSubmit = async () => {
+    try {
+      await network.post(`/api/v1/task/checksubmit/${user.id}`);
+    } catch (error) {
+      //todo error handler
+    }
+  };
+
   const getMyTasks = async () => {
     try {
       const { data }: { data: ITask[] } = await network.get(
@@ -75,6 +83,7 @@ export default function TaskBoard() {
 
   useEffect(() => {
     try {
+      // checkSubmit();
       getMyTasks();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");

@@ -82,10 +82,11 @@ export default function DataGridDemo(props: any) {
       return {
         id: task.id,
         taskId: task.Task.id,
-        taskName: task.Task.body,
+        taskName: task.Task.title,
         lesson: task.Task?.Lesson?.title || "not in a lesson",
         type: task.Task.type,
-        deadline: manipulateDate(task.Task.endDate), //.split("T").join(" At ").slice(0, 19),
+        // deadline: manipulateDate(task.Task.endDate), //.split("T").join(" At ").slice(0, 19),
+        deadline: task.Task.endDate.substring(0, 10),
         link: task.Task.externalLink,
         status: task.status,
         submitLink: task.submitLink,
