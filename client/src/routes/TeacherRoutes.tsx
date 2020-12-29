@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
-import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
+import TeacherDashboard from "../components/classroomRelated/dashboard/TeacherDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
@@ -68,7 +68,7 @@ export default function TeacherRoutes() {
       <div id='interface-container' style={{ flexGrow: 1 }}>
         <Switch>
           <Route exact path='/'>
-            <Dashboard />
+            <TeacherDashboard />
           </Route>
           <Route path='/lessons'>
             <Lessons />

@@ -19,6 +19,7 @@ import LinkIcon from "@material-ui/icons/Link";
 import network from "../../../helpers/network";
 import Swal from "sweetalert2";
 import styled from "styled-components";
+import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 
 const StyledCard = styled(Card)`
   /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
@@ -31,12 +32,11 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 300,
       width: 300,
       marginRight: 15,
-      //   backgroundColor: "green",
-      //   color: `${({ theme }: { theme: any }) => theme.colors.font}`,
-      //   backgroundColor: `${({ theme }: { theme: any }) =>
-      //     theme.colors.container}`,
-      //   padding: ?15,
-      //   marginTop: "5vh",
+      // backgroundColor: "#f2f2f2",
+      // backgroundColor:"black",
+      color: `${({ theme }: { theme: any }) => theme.colors.font}`,
+      // backgroundColor: `${({ theme }: { theme: any }) =>
+      //   theme.colors.background}`,
     },
     media: {
       height: 0,
@@ -53,8 +53,14 @@ const useStyles = makeStyles((theme: Theme) =>
     expandOpen: {
       transform: "rotate(90deg)",
     },
-    avatar: {
-      backgroundColor: red[500],
+    manual: {
+      backgroundColor: "#c0b62e",
+    },
+    challengeMe: {
+      backgroundColor: "#d66910",
+    },
+    fcc: {
+      backgroundColor: "#0e2557",
     },
   })
 );
@@ -71,19 +77,32 @@ export default function SingleTask(props: any) {
   return (
     <StyledCard className={classes.root}>
       <CardHeader
+        style={{ backgroundColor: "#f2f2f2" }}
         avatar={
-          <Avatar aria-label='recipe' className={classes.avatar}>
-            !
+          <Avatar
+            aria-label='recipe'
+            className={
+              task.type === "fcc"
+                ? classes.fcc
+                : task.type === "challengeMe"
+                ? classes.challengeMe
+                : classes.manual
+            }>
+            {task.type === "fcc"
+              ? "fcc"
+              : task.type === "challengeMe"
+              ? "C"
+              : "!"}
           </Avatar>
         }
-        title={`${task.title} - ${task.type}`}
+        title={task.title}
         subheader={`deadline :${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
-      <CardMedia
+      {/* <CardMedia
         className={classes.media}
         image={taskImg}
         title='get to work!'
-      />
+      /> */}
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
           {task.body}
@@ -95,11 +114,13 @@ export default function SingleTask(props: any) {
           disabled={task.type !== "manual" ? true : false}>
           <PublishIcon />
         </IconButton>
-        <IconButton
-          aria-label='external link?'
-          disabled={task.externalLink ? true : false}>
-          <LinkIcon />
-        </IconButton>
+        <StyledAtavLink href={task.externalLink} target='_blank'>
+          <IconButton
+            aria-label='external link?'
+            disabled={task.externalLink ? false : true}>
+            <LinkIcon />
+          </IconButton>
+        </StyledAtavLink>
       </CardActions>
     </StyledCard>
   );

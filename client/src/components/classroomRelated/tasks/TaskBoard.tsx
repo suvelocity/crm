@@ -3,7 +3,7 @@ import { ITask, ITaskofStudent } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import Swal from "sweetalert2";
 import network from "../../../helpers/network";
-import Button from "@material-ui/core/Button";
+import { Typography } from "@material-ui/core/";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
@@ -46,7 +46,7 @@ export default function TaskBoard() {
   `;
   const Content = styled.div`
     /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
-    margin-top: 5%;
+    margin-top: 2%;
   `;
 
   const getMyTasks = async () => {
@@ -117,9 +117,18 @@ export default function TaskBoard() {
 
   return (
     <DashboardContainer>
+      <Typography
+        variant='h2'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "15%",
+        }}>
+        Tasks
+      </Typography>
       <Content>
         <Loading size={30} loading={loading}>
-          {/* <Carus showArrows={true}> */}
           {unfinishedTasks ? (
             unfinishedTasks?.map((unfinishedTask: any) => (
               <TaskAccordion
@@ -129,9 +138,18 @@ export default function TaskBoard() {
               />
             ))
           ) : (
-            <h1>no tasks</h1>
+            <Typography
+              variant='h4'
+              style={{
+                marginRight: 15,
+                marginTop: "2%",
+                marginBottom: "auto",
+                marginLeft: "15%",
+              }}>
+              You have finished all of your tasks!
+            </Typography>
           )}
-          {/* </Carus> */}
+
           <Modal
             open={open}
             onClose={handleClose}
@@ -139,7 +157,16 @@ export default function TaskBoard() {
             aria-describedby='simple-modal-description'>
             {body}
           </Modal>
-          <h2>History </h2>
+          <Typography
+            variant='h2'
+            style={{
+              marginRight: 15,
+              marginTop: "5%",
+              marginBottom: "2%",
+              marginLeft: "15%",
+            }}>
+            History
+          </Typography>
           <TaskTable myTasks={finishedTasks} />
         </Loading>
       </Content>

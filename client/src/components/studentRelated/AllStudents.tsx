@@ -43,7 +43,7 @@ function AllStudents() {
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
     type JobEvents = { [id: string]: { time: number; status: string } };
     let jobs: JobEvents = {};
-    const filteredEvents = events.filter(event => event.type === 'jobs');
+    const filteredEvents = events.filter((event) => event.type === "jobs");
     for (let i = 0; i < filteredEvents.length; i++) {
       const id: number = filteredEvents[i].Job!.id!;
       const eventTime = new Date(filteredEvents[i].date);
@@ -120,43 +120,55 @@ function AllStudents() {
 
   const filterFunc = useCallback(() => {
     return students.filter((student) => {
-      console.log(filterAttributes.Class.length)
-      const classCondition = filterAttributes.Class.length === 1 && filterAttributes.Class[0] === ""
-        ? true
-        : filterAttributes.Class.includes(student.Class.name);
-      console.log(student.Class.name, filterAttributes.Class)
-      const courseCondition = filterAttributes.Course.length === 1 && filterAttributes.Course[0] === ""
-        ? true
-        : filterAttributes.Course.includes(student.Class.course);
-      console.log(student.Class.course, filterAttributes.Course)
+      // console.log(filterAttributes.Class!.length);
+      const classCondition =
+        filterAttributes.Class!.length === 1 &&
+        filterAttributes.Class![0] === ""
+          ? true
+          : filterAttributes.Class!.includes(student.Class.name);
+      // console.log(student.Class.name, filterAttributes.Class!);
+      const courseCondition =
+        filterAttributes.Course!.length === 1 &&
+        filterAttributes.Course![0] === ""
+          ? true
+          : filterAttributes.Course!.includes(student.Class.course);
+      // console.log(student.Class.course, filterAttributes.Course!);
       // console.log(student)
       const recentJobStatus = getRecentJobsStatus(student.Events);
       const jobless =
         recentJobStatus.length === 0 ||
         recentJobStatus.every((status) => status === "Rejected");
-      const jobStatusCondition = filterAttributes.JobStatus.length === 1 && filterAttributes.JobStatus[0] === ""
-        ? true
-        : (filterAttributes.JobStatus.includes("None") && jobless) || 
-        filterAttributes.JobStatus.find(status => recentJobStatus.includes(status))
-      const fullNames = filterAttributes.Name.map(fullname => fullname.split(" ").filter(name => name != ""));
-      const firstAndLastNamesMatch = fullNames.find(fullname => {
+      const jobStatusCondition =
+        filterAttributes.JobStatus!.length === 1 &&
+        filterAttributes.JobStatus![0] === ""
+          ? true
+          : (filterAttributes.JobStatus!.includes("None") && jobless) ||
+            filterAttributes.JobStatus!.find((status) =>
+              recentJobStatus.includes(status)
+            );
+      const fullNames = filterAttributes.Name!.map((fullname) =>
+        fullname.split(" ").filter((name) => name != "")
+      );
+      const firstAndLastNamesMatch = fullNames.find((fullname) => {
         const firstName = fullname[0];
         const lastName = fullname[1];
         // console.log(fullname, firstName, lastName)
-        const firstNameCondition = (!firstName && fullNames.length === 1)
-        ? true
-        : student.firstName.trim() === firstName;
-        const lastNameCondition = (!lastName && fullNames.length === 1)
-        ? true
-        : student.lastName.trim() === lastName;
-        return firstNameCondition && lastNameCondition
-      })
-      console.log(
-        classCondition,
-        courseCondition,
-        firstAndLastNamesMatch,
-        jobStatusCondition
-      );
+        const firstNameCondition =
+          !firstName && fullNames.length === 1
+            ? true
+            : student.firstName.trim() === firstName;
+        const lastNameCondition =
+          !lastName && fullNames.length === 1
+            ? true
+            : student.lastName.trim() === lastName;
+        return firstNameCondition && lastNameCondition;
+      });
+      // console.log(
+      //   classCondition,
+      //   courseCondition,
+      //   firstAndLastNamesMatch,
+      //   jobStatusCondition
+      // );
       return (
         classCondition &&
         courseCondition &&

@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
-import Dashboard from "../components/classroomRelated/dashboard/Dashboard";
+import StudentDashboard from "../components/classroomRelated/dashboard/StudentDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
 import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import Tasks from "../components/classroomRelated/tasks/TaskBoard";
@@ -29,7 +29,7 @@ export function StudentRoutes() {
         <div style={{ flexGrow: 1 }}>
           <Switch>
             <Route exact path='/'>
-              <Dashboard />
+              <StudentDashboard />
             </Route>
             <Route path='/lessons'>
               <Lessons />

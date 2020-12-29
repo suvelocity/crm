@@ -8,6 +8,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Loading } from "react-loading-wrapper";
@@ -20,6 +21,8 @@ import Lesson from "./Lesson";
 import { classesOfTeacher } from "../../../atoms";
 import { useRecoilValue } from "recoil";
 import { fetchSuperChallenges } from "./FccSelector";
+import { StyledButton } from "../teacher/Teacher";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 export default function Lessons() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -144,7 +147,7 @@ export default function Lessons() {
           </MenuItem>
         ))}
       </Select>
-      <Button
+      {/* <Button
         variant='outlined'
         onClick={handleOpen}
         style={{
@@ -155,7 +158,15 @@ export default function Lessons() {
           backgroundColor: "white",
         }}>
         Add Lesson
-      </Button>
+      </Button> */}
+      <StyledButton
+        onClick={handleOpen}
+        style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}>
+        New Lesson
+        <AddCircleIcon
+          style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
+        />{" "}
+      </StyledButton>
       <Modal
         open={open}
         onClose={handleClose}
@@ -170,6 +181,16 @@ export default function Lessons() {
 
   return (
     <Loading size={30} loading={loading}>
+      <Typography
+        variant='h2'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "15%",
+        }}>
+        Lessons
+      </Typography>
       <FilterContainer>
         <TextField
           label='Search'
@@ -180,7 +201,7 @@ export default function Lessons() {
             boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
             textAlign: "center",
             backgroundColor: "white",
-            marginLeft: "5%",
+            marginLeft: "15%",
           }}
           onChange={handleFilter}
           variant='outlined'
@@ -189,11 +210,12 @@ export default function Lessons() {
       </FilterContainer>
       <hr
         style={{
-          width: "90%",
+          width: "60%",
           opacity: "50%",
           margin: 0,
           marginLeft: "auto",
           marginRight: "auto",
+          boxShadow: "1px",
         }}
       />
       <LessonsContainer>

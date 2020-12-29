@@ -8,6 +8,7 @@ import AdminClassesRoutes from "./adminRoutes/AdminClassesRoutes";
 import AdminJobsRoutes from "./adminRoutes/AdminJobsRoutes";
 import AdminStudentsRoutes from "./adminRoutes/AdminStudentsRoutes";
 import AdminMentorRoutes from "./adminRoutes/AdminMentorRoutes";
+import AdminTeacherRoutes from "./adminRoutes/AdminTeacherRoutes";
 
 export function AdminRoutes() {
   return (
@@ -26,6 +27,9 @@ export function AdminRoutes() {
           </Route>
           <Route path="/class">
             <AdminClassesRoutes />
+          </Route>
+          <Route path="/teacher">
+            <AdminTeacherRoutes />
           </Route>
           <Route path="/job">
             <AdminJobsRoutes />

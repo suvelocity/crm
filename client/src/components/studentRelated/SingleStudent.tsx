@@ -122,7 +122,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editStudentButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr">
@@ -170,7 +170,10 @@ function SingleStudent() {
               )}
             </List>
             <List>
-              <SingleListItem primary="Age" secondary={student?.age}>
+              <SingleListItem
+                primary="Age"
+                secondary={student?.age ? student.age : "לא ידוע"}
+              >
                 <DateRangeIcon />
               </SingleListItem>
               <SingleListItem
@@ -185,7 +188,10 @@ function SingleStudent() {
               >
                 <FavoriteIcon />
               </SingleListItem>
-              <SingleListItem primary="Children" secondary={student?.children}>
+              <SingleListItem
+                primary="Children"
+                secondary={student?.children ? student.children : "אין"}
+              >
                 <ChildFriendlyIcon />
               </SingleListItem>
               <SingleListItem

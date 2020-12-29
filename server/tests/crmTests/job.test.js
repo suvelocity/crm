@@ -4,6 +4,7 @@ import { classesMock, studentsMock, jobsMock } from "../mocks";
 import {
   deleteById,
   extractAccessTokenFull,
+  sendRequest,
   getAll,
   getById,
   handleSignIn,
@@ -73,6 +74,11 @@ describe("Job tests", () => {
       );
     }
   });
+
+  it("Can Access event process-options route", async () => {
+    const {status} = await sendRequest("get", '/event/process-options', accessToken)
+    expect(status).toBe(200);
+  })
 
   it("Should get a job by id", async () => {
     const id = 2;
