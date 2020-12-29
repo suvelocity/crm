@@ -164,7 +164,11 @@ function SingleStudent() {
                   </ListItemIcon>
                   <ListItemText
                     primary="Military Service"
-                    secondary={capitalize(student?.militaryService)}
+                    secondary={
+                      student?.militaryService
+                        ? capitalize(student?.militaryService)
+                        : "לא ידוע"
+                    }
                   />
                 </MultilineListItem>
               )}
@@ -199,7 +203,7 @@ function SingleStudent() {
                 secondary={
                   student?.workExperience
                     ? capitalize(student?.workExperience)
-                    : "None"
+                    : "לא ידוע"
                 }
               >
                 <WorkIcon />
@@ -208,13 +212,21 @@ function SingleStudent() {
             <List>
               <SingleListItem
                 primary="Citizenships"
-                secondary={capitalize(student?.citizenship)}
+                secondary={
+                  student?.citizenship
+                    ? capitalize(student?.citizenship)
+                    : "לא ידוע"
+                }
               >
                 <LanguageIcon />
               </SingleListItem>
               <SingleListItem
                 primary="Languages"
-                secondary={capitalize(student?.languages)}
+                secondary={
+                  student?.languages
+                    ? capitalize(student?.languages)
+                    : "לא ידוע"
+                }
               >
                 <TranslateIcon />
               </SingleListItem>
