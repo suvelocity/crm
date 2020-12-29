@@ -112,8 +112,9 @@ describe("Job tests", () => {
     expect(updatedJobMsg.body.message).toBe("Job updated");
 
     const { body: updatedJob } = await getJobById(id);
-
+    console.log(updatedJob)
     for (let field in mockUpdate) {
+      console.log(field, updatedJob[field], mockUpdate[field])
       expect(updatedJob[field]).toBe(mockUpdate[field]);
     }
   });
