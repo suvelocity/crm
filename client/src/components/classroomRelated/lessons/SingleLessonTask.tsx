@@ -30,6 +30,15 @@ import BlockIcon from "@material-ui/icons/Block";
 const StyledCard = styled(Card)`
   /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
   color: ${({ theme }: { theme: any }) => theme.colors.font}; */
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledCardContent = styled(CardContent)`
+  /* background-color: ${({ theme }: { theme: any }) => theme.colors.card};
+  color: ${({ theme }: { theme: any }) => theme.colors.font}; */
+
+  flex-grow: 1;
 `;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -104,15 +113,15 @@ export default function SingleLessonTask(props: any) {
         title={task.title}
         subheader={`deadline: ${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
       />
-      <CardContent>
+      <StyledCardContent>
         <Typography variant='body1' color='textPrimary' component='p'>
           {task.body}
+          {task.status === "disabled" && (
+            <h3 style={{ color: "red" }}>Disabled!, edit to activate</h3>
+          )}
         </Typography>
-        {task.status === "disabled" && (
-          <h3 style={{ color: "red" }}>Disabled!, edit to activate</h3>
-        )}
-      </CardContent>
-      <CardActions disableSpacing>
+      </StyledCardContent>
+      <CardActions>
         {task.type === "manual" && (
           <Link to='/tasks'>
             <IconButton

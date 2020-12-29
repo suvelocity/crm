@@ -7,7 +7,7 @@ module.exports = {
       [
         {
           id: 999999,
-          id_number:123,
+          id_number: 123,
           first_name: "lonir",
           last_name: "lotomer",
           email: "teacher@teacher.com",
