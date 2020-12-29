@@ -14,7 +14,7 @@ module.exports = {
       [
         {
           teacher_id: 999999,
-          class_id: 6,
+          class_id: 5,
           created_at: new Date(),
           updated_at: new Date(),
         },

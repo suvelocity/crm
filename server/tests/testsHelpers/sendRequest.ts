@@ -5,8 +5,9 @@ export const sendRequest = (
   method: string,
   url: string,
   accessToken?: string,
-  body?: object
-): request => {
+  body?: object,
+  query?: object
+) => {
   if (!url.startsWith("/api/v1")) {
     const base = "/api/v1";
     url = base + url;
@@ -17,6 +18,9 @@ export const sendRequest = (
   }
   if (body) {
     newRequest = newRequest.send(body);
+  }
+  if (query) {
+    newRequest = newRequest.query(query);
   }
   return newRequest;
 };

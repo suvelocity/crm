@@ -11,6 +11,8 @@ module.exports = {
           first_name: "lonir",
           last_name: "lotomer",
           email: "teacher@teacher.com",
+          phone: "054-334-6767",
+          id_number: "311711087",
           created_at: new Date(),
           updated_at: new Date(),
         },

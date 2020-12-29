@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
+      this.hasMany(models.MentorForm, {
+        foreignKey: "programId",
+        onDelete: "cascade",
+        hooks: true,
+      });
     }
   }
   MentorProgram.init(
@@ -25,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
       open: DataTypes.BOOLEAN,
+      email: DataTypes.BOOLEAN
     },
     {
       sequelize,

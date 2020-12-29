@@ -189,7 +189,7 @@ function AddStudent(props: Props) {
                 name="phone"
                 defaultValue={props.student ? props.student.phone : ""}
                 inputRef={register({
-                  required: "Phone is required",
+                  // required: "Phone is required",
                   pattern: {
                     value: validPhoneNumberRegex,
                     message: "Invalid phone number",
@@ -232,7 +232,7 @@ function AddStudent(props: Props) {
                   name="languages"
                   control={control}
                   defaultValue={
-                    props.student ? props.student.languages.split(", ") : []
+                    props.student ? props.student.languages?.split(", ") : []
                   }
                 />
               </FormControl>
@@ -296,6 +296,18 @@ function AddStudent(props: Props) {
                 )
               ) : null}
               <br />
+              <FormControl
+                style={{ minWidth: 195 }}
+                error={Boolean(errors.classId)}
+              >
+                <GoogleMaps
+                  id="address"
+                  name="address"
+                  defaultValue={props.student ? props.student.address : ""}
+                  inputRef={register({ required: "Address is required" })}
+                  label="Address"
+                />
+              </FormControl>
               {!empty ? (
                 errors.address ? (
                   <ErrorBtn tooltipTitle={errors.address.message} />
@@ -303,19 +315,11 @@ function AddStudent(props: Props) {
                   <ActionBtn />
                 )
               ) : null}
-              <GoogleMaps
-                id="address"
-                name="address"
-                defaultValue={props.student ? props.student.address : ""}
-                inputRef={register({ required: "Address is required" })}
-                label="Address"
-              />
               <TextField
                 id="age"
                 name="age"
-                defaultValue={props.student ? props.student.age : ""}
+                defaultValue={props.student ? props.student.age : 0}
                 inputRef={register({
-                  required: "Age is required",
                   pattern: {
                     value: onlyNumbersRegex,
                     message: "Age needs to be a number",
@@ -335,7 +339,12 @@ function AddStudent(props: Props) {
                 id="maritalStatus"
                 name="maritalStatus"
                 defaultValue={props.student ? props.student.maritalStatus : ""}
-                inputRef={register()}
+                inputRef={register({
+                  maxLength: {
+                    value: 20,
+                    message: "Marital status max length is 20 letters",
+                  },
+                })}
                 label="Marital Status"
               />
               {!empty ? (
@@ -353,7 +362,7 @@ function AddStudent(props: Props) {
                 label="Number of children"
                 defaultValue={props.student ? props.student.children : 0}
                 inputRef={register({
-                  required: "Number of children is required",
+                  // required: "Number of children is required",
                   min: {
                     value: 0,
                     message: "Negative children are not allowed",
@@ -383,10 +392,56 @@ function AddStudent(props: Props) {
                   <ActionBtn />
                 )
               ) : null}
+              <br />
+              <TextField
+                id="fcc_account"
+                name="fccAccount"
+                defaultValue={props.student ? props.student.fccAccount : ""}
+                inputRef={register()}
+                label="FreeCodeCamp Account"
+              />
+              {!empty ? (
+                errors.fccAccount ? (
+                  <ErrorBtn tooltipTitle={errors.fccAccount.message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
             </div>
           </GridDiv>
           {generateBrs(2)}
 
+          {/* Make it a dropdaown? */}
+          {/* <FormControl
+                style={{ width: "90%" }}
+                error={Boolean(errors.classId)}
+              > */}
+          <TextField
+            id="academicBackground"
+            multiline
+            fullWidth
+            defaultValue={props.student ? props.student.academicBackground : ""}
+            rows={4}
+            variant="outlined"
+            name="academicBackground"
+            inputRef={register({
+              required: "Academic background is required",
+              maxLength: {
+                value: 500,
+                message: "Military Service is too long",
+              },
+            })}
+            label="Academic Background"
+          />
+          {!empty ? (
+            errors.academicBackground ? (
+              <ErrorBtn tooltipTitle={errors.academicBackground.message} />
+            ) : (
+              <ActionBtn />
+            )
+          ) : null}
+          {/* </FormControl> */}
+          {generateBrs(2)}
           <TextField
             id="militaryService"
             multiline
@@ -403,6 +458,13 @@ function AddStudent(props: Props) {
             })}
             label="Military Service"
           />
+          {!empty ? (
+            errors.militaryService ? (
+              <ErrorBtn tooltipTitle={errors.militaryService.message} />
+            ) : (
+              <ActionBtn />
+            )
+          ) : null}
           {generateBrs(2)}
 
           <TextField
@@ -421,19 +483,13 @@ function AddStudent(props: Props) {
             })}
             label="Work Experience"
           />
-          {generateBrs(2)}
-
-          <TextField
-            id="academicBackground"
-            multiline
-            fullWidth
-            defaultValue={props.student ? props.student.academicBackground : ""}
-            rows={4}
-            variant="outlined"
-            name="academicBackground"
-            inputRef={register()}
-            label="Academic Background"
-          />
+          {!empty ? (
+            errors.workExperience ? (
+              <ErrorBtn tooltipTitle={errors.workExperience.message} />
+            ) : (
+              <ActionBtn />
+            )
+          ) : null}
           {generateBrs(2)}
           <TextField
             id="additionalDetails"
@@ -451,6 +507,13 @@ function AddStudent(props: Props) {
             })}
             label="Additional Details"
           />
+          {!empty ? (
+            errors.additionalDetails ? (
+              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
+            ) : (
+              <ActionBtn />
+            )
+          ) : null}
           {generateBrs(2)}
           <Button
             id="submitButton"

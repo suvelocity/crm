@@ -1,10 +1,8 @@
-import { AxiosResponse } from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   ILesson,
-  ITask,
   ITaskofStudent,
-} from "../../../../../server/src/types";
+} from "../../../typescript/interfaces";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";

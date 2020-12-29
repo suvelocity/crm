@@ -33,10 +33,9 @@ const mockAddedClass = {
   zoomLink: "www.zoom.com",
   additionalDetails: "none",
   mentorProject: false,
-  createdAt: "2020-12-20",
-  updatedAt: "2020-12-20",
+  createdAt: (new Date).toISOString().slice(0,10),
+  updatedAt: (new Date).toISOString().slice(0,10),
 };
-
 const mockUpdate = {
   course: " staupdateck",
   name: "update Test",
