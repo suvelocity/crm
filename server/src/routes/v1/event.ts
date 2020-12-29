@@ -60,11 +60,17 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
   const company = JSON.parse(
     req.query.company ? String(req.query.company) : "{}"
   );
-  let clsWhere = {};
+  const course = JSON.parse(req.query.course ? String(req.query.course) : "{}");
+  let clsWhere: { course?: object; name?: object } = {};
   let companyWhere = {};
 
   if (cls.name) {
-    clsWhere = { name: { [Op.or]: cls.name } };
+    clsWhere = {
+      name: { [Op.or]: cls.name },
+    };
+  }
+  if (course.name) {
+    clsWhere.course = { [Op.or]: course.name };
   }
   if (company.name) companyWhere = { name: { [Op.or]: company.name } };
 
@@ -72,11 +78,14 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
     interface IStudentWRelationship extends IStudent {
       Class: IClass;
     }
-    interface IEventWRelationship extends IEvent {
+    interface dataValues extends IEvent {
       Student: IStudentWRelationship;
       Job: IJob;
     }
-    const events: IEventWRelationship[] = await Event.findAll({
+    // interface IEventWRelationship {
+    //   dataValues:dataValues
+    // }
+    const events: { dataValues: dataValues }[] = await Event.findAll({
       where: { type: "jobs" },
       include: [
         {
@@ -102,26 +111,54 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
           required: true,
         },
       ],
-      order: [["date", "DESC"]],
+      // order: [["date", "ASC"]],
     });
-    const processesData: IEventWRelationship[] = [];
-    const JobOfStudentWevePast: IEventWRelationship[] = [];
-    events.forEach((event: IEventWRelationship) => {
-      if (
-        JobOfStudentWevePast.findIndex(
-          (process: IEventWRelationship) =>
-            process.Student.id === event.Student.id &&
-            process.Job.id === event.Job!.id
-        ) === -1
-      ) {
-        JobOfStudentWevePast.push(event);
-        if (process.name) {
-          if (process.name.includes(event.eventName)) {
-            processesData.push(event);
+    const processesData: dataValues[] = [];
+    const JobOfStudentWevePast: dataValues[] = [];
+
+    for (let i = events.length - 1; i > -1; i--) {
+      const event = events[i].dataValues;
+      const found = JobOfStudentWevePast.find(
+        (process: dataValues) =>
+          process.Student.id === event.Student.id &&
+          process.Job.id === event.Job!.id
+      );
+      JobOfStudentWevePast.push(event);
+      if (process.name) {
+        if (process.name.includes(event.eventName)) {
+          if (!found) processesData.push(event);
+          else {
+            const index = processesData.findIndex(
+              (process: dataValues) =>
+                process.Student.id === event.Student.id &&
+                process.Job.id === event.Job!.id
+            );
+            // console.log(event.eventName, i, found.date);
+            if (index !== -1 && event.date.getTime() > found.date.getTime()) {
+              processesData.splice(index, 1, event);
+              JobOfStudentWevePast.splice(index, 1, event);
+            } else if (event.date.getTime() > found.date.getTime()) {
+              processesData.push(event);
+            }
           }
-        } else processesData.push(event);
+        }
+      } else {
+        if (!found) processesData.push(event);
+        else {
+          const index = processesData.findIndex(
+            (process: dataValues) =>
+              process.Student.id === event.Student.id &&
+              process.Job.id === event.Job!.id
+          );
+          if (
+            index !== -1 &&
+            event.date.getTime() > processesData[index].date.getTime()
+          ) {
+            processesData.splice(index, 1, event);
+          }
+        }
       }
-    });
+    }
     res.json(processesData);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -131,17 +168,29 @@ router.get("/allProcesses", async (req: Request, res: Response) => {
 router.get("/process-options", async (req: Request, res: Response) => {
   interface options {
     classes: { name: string; id: string }[];
+    courses: string[];
     statuses: string[];
     companies: string[];
   }
   try {
     const uniqueClassesQuery = `
-    SELECT DISTINCT(Classes.id), Classes.name  FROM Events
+    SELECT DISTINCT Classes.name  FROM Events
     join Students on Events.user_id = Students.id
     join Classes on Students.class_id = Classes.id
     WHERE Events.type = 'jobs'`;
     const classes: { name: string; id: string }[] = await sequelize.query(
       uniqueClassesQuery,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    const uniqueCoursesQuery = `
+    SELECT DISTINCT Classes.course FROM Events
+    join Students on Events.user_id = Students.id
+    join Classes on Students.class_id = Classes.id
+    WHERE Events.type = 'jobs'`;
+    const courses: { course: string }[] = await sequelize.query(
+      uniqueCoursesQuery,
       {
         type: QueryTypes.SELECT,
       }
@@ -155,13 +204,44 @@ router.get("/process-options", async (req: Request, res: Response) => {
       type: QueryTypes.SELECT,
     });
 
-    const values = await Event.aggregate("eventName", "DISTINCT", {
-      plain: false,
+    const uniqueStatuses = `
+    SELECT DISTINCT Events.event_name, Events.related_id, Events.user_id, Events.date FROM Events
+    WHERE Events.type = 'jobs' and Events.deleted_at IS NULL`;
+    // order by Events.date , "ASC"`
+    const statuses: { event_name: string }[] = await sequelize.query(
+      uniqueStatuses,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    const statusesToSend: any = [];
+    statuses.forEach((status: any) => {
+      const index = statusesToSend.findIndex(
+        (status2: any) =>
+          status2.related_id === status.related_id &&
+          status2.user_id === status.user_id
+      );
+      if (index !== -1) {
+        if (status.date.getTime() >= statusesToSend[index].date.getTime()) {
+          statusesToSend.splice(index, 1, status);
+        }
+      } else {
+        statusesToSend.push(status);
+      }
     });
-    const statusesArray: string[] = values.map((item: any) => item.DISTINCT);
+    const finalStatuses: string[] = [];
+    statusesToSend.forEach((status: any, i: number) => {
+      if (
+        !finalStatuses.find((status2: string) => status2 === status.event_name)
+      ) {
+        finalStatuses.push(status.event_name);
+      }
+    });
     const options: options = {
+      courses: courses.map((object: { course: string }) => object.course),
       classes: [...classes],
-      statuses: [...statusesArray],
+      statuses: [...finalStatuses],
       companies: companies.map((object: { name: string }) => object.name),
     };
 
