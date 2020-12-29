@@ -207,7 +207,7 @@ export const fetchFCC: () => void = async () => {
     date = new Date(
       (
         await Event.findOne({
-          where: { eventName: "FCC_SUBMIT_SUCCESS" },
+          where: { eventName: "FCC_BULK_SUCCESS" }, // can change to FCC_SUBMIT_SUCCESS for single tasks
           order: [["updatedAt", "DESC"]],
         })
       ).toJSON().createdAt
@@ -268,7 +268,7 @@ export const fetchFCC: () => void = async () => {
         const parsedEvent: IEvent = {
           relatedId: challenge.id,
           userId: userId,
-          eventName: "FCC_SUBMIT_SUCCESS",
+          eventName: "FCC_BULK_SUCCESS", // can change to FCC_SUBMIT_SUCCESS for single tasks
           type: "fcc",
           date: challenge.completedDate,
         };
