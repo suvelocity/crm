@@ -304,7 +304,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
           }
         case "challengeMe":
           try {
-            const event: any = await Event.findAll({
+            const event: any = await Event.findOne({
               where: {
                 userId: studentId,
                 eventName: "CM_SUBMITTED_CHALLENGE_SUCCESS",

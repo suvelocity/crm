@@ -82,15 +82,16 @@ export default function SingleTask(props: any) {
         <hr style={{ width: "95%", opacity: "50%" }} />
         <StyledDetails>{task.Task.body}</StyledDetails>
         <StyledDetails>
-          <IconButton
-            // label='test'
-            aria-label='submit button'
-            onClick={() => {
-              handleOpen(task.id);
-            }}
-            disabled={task.Task.type !== "manual" ? true : false}>
-            <PublishIcon />
-          </IconButton>
+          {task.Task.type === "manual" && (
+            <IconButton
+              aria-label='submit button'
+              onClick={() => {
+                handleOpen(task.id);
+              }}
+              disabled={task.Task.type !== "manual" ? true : false}>
+              <PublishIcon />
+            </IconButton>
+          )}
           {task.Task.externalLink && (
             <StyledAtavLink href={task.Task.externalLink} target='_blank'>
               <IconButton aria-label='external link?'>

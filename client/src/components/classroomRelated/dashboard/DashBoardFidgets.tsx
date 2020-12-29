@@ -137,6 +137,7 @@ export function LessonsFidget() {
             <div
               className='today-info'
               style={{ display: "flex", flexDirection: "column" }}>
+              <p>{lesson.body}</p>
               <div
                 className='today-info'
                 style={{
@@ -181,12 +182,6 @@ export function LessonsFidget() {
                     <ListItemComponent task={task}></ListItemComponent>
                   ))}
                 </List>
-                <p>
-                  flexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflex
-                  DirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionf
-                  lexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionflexDirectionf
-                  lexDirectionflexDirectionflexDirectionflexDirectionflexDirection
-                </p>
               </div>
             </div>
           </div>
