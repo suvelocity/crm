@@ -83,7 +83,7 @@ export default function TaskBoard() {
 
   useEffect(() => {
     try {
-      // checkSubmit();
+      checkSubmit();
       getMyTasks();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");

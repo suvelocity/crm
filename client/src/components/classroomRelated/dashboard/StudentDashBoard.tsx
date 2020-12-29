@@ -50,14 +50,16 @@ const InformationTile = styled.div`
 
 const LeftContainer = styled.div`
   width: 50%;
-  min-height: 100%;
+  /* min-height: 100%; */
+  max-height: 95vh;
 `;
 const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
   max-width: 50%;
-  min-height: 100%;
+  /* min-height: 100%; */
+  max-height: 95vh;
 `;
 
 const TilesRow = styled.div`

@@ -307,7 +307,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
             const event: any = await Event.findAll({
               where: {
                 userId: studentId,
-                eventName: "CHALLENGEME_SUBMIT_SUCCESS",
+                eventName: "CM_SUBMITTED_CHALLENGE_SUCCESS",
                 relatedId: task.Task.externalId,
               },
             });
@@ -323,6 +323,27 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
+        // case "quizMe":
+        //   try {
+        //     const event: any = await Event.findAll({
+        //       where: {
+        //         userId: studentId,
+        //         eventName: "QM_SUBMITTED", //todo check with nir
+        //         relatedId: task.Task.externalId,
+        //       },
+        //     });
+        //     if (event) {
+        //       await TaskofStudent.update(
+        //         {
+        //           status: "done",
+        //         },
+        //         { where: { id: task.id } }
+        //       );
+        //     }
+        //     return;
+        //   } catch (error) {
+        //     return;
+        //   }
 
         default:
           break;
