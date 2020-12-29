@@ -10,7 +10,7 @@ export const studentsMock = [
     address: "kibbutz shefayim",
     maritalStatus: "singel",
     children: 0,
-    academicBackground: null,
+    academicBackground: "something",
     militaryService: "p-7",
     workExperience: null,
     languages: "hebrew",

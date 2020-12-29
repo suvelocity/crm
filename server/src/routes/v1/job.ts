@@ -43,6 +43,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
         {
           model: Event,
           where: only ? { type: only } : {},
+          required: false,
           include: [
             {
               model: Student,
