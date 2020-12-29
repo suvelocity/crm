@@ -112,7 +112,10 @@ function SingleClass() {
                   secondary={formatToIsraeliDate(cls?.endingDate!)}
                 />
               </ListItem>
-              <SingleListItem primary="Zoom Link" secondary={cls?.zoomLink}>
+              <SingleListItem
+                primary="Zoom Link"
+                secondary={cls?.zoomLink ? cls?.zoomLink : "לא ידוע"}
+              >
                 <LinkIcon />
               </SingleListItem>
             </List>

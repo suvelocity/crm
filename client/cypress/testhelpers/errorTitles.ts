@@ -25,7 +25,6 @@ export const companyFormErrorTitles = [
 export const classFormErrorTitles = [
   "Course is required",
   "Class title is required",
-  "Zoom Link is required",
 ];
 export const teacherFormErrorTitles = [
   "First name is required",

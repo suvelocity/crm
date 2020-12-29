@@ -13,7 +13,6 @@ import {
   TeacherofClass,
   //@ts-ignore
 } from "../../models";
-import { validateAdmin } from "../../middlewares";
 import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
@@ -21,6 +20,7 @@ import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
 import { Op } from "sequelize";
+import { validateTeacher, validateAdmin } from "../../middlewares";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -54,7 +54,7 @@ router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/all", async (req: Request, res: Response) => {
+router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   //@ts-ignore
   const fields: string[] = req.query.fields?.split(",");
   const onlyActive: boolean = Boolean(req.query.onlyactive);
@@ -74,7 +74,7 @@ router.get("/all", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byId/:id", async (req: Request, res: Response) => {
+router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
     const only = req.query.only;
@@ -172,7 +172,7 @@ router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await Student.destroy({

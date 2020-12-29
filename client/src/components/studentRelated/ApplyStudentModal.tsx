@@ -91,7 +91,7 @@ function ApplyStudentModal({
   if (jobs) {
     body = (
       <div style={modalStyle} className={classes.paper}>
-        <div className={classes.root}>
+        <div className={classes.accordionContainer}>
           <h1>Choose Jobs To Apply To</h1>
           {jobs.length > 0 ? (
             <>
@@ -174,24 +174,35 @@ function ApplyStudentModal({
 
 export default ApplyStudentModal;
 
-function getModalStyle() {
+function getModalStyle(): {
+  top: string;
+  left: string;
+  transform: string;
+  overflowY: "auto";
+} {
   return {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+    overflowY: "auto",
   };
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    accordionContainer: {
+      position: "relative",
       width: "100%",
+      height: "90%",
+      overflowY: "auto",
     },
     paper: {
       position: "absolute",
       width: "50%",
       maxWidth: 700,
       minWidth: 300,
+      maxHeight: "80%",
+      overflow: "scroll",
       backgroundColor: theme.palette.background.paper,
       borderRadius: 7,
       boxShadow: theme.shadows[5],
