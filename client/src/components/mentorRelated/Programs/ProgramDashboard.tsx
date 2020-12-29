@@ -125,6 +125,7 @@ const ProgramDashboard: React.FC = () => {
         idArr: studentsToTask,
       });
       await network.put(`/api/v1/M/program/editForm/${id}`);
+      getForms();
       Swal.fire("Success", "task added successfully", "success");
     } catch(err){
       Swal.fire("Error Occurred", err.message, "error");
@@ -340,7 +341,7 @@ const ProgramDashboard: React.FC = () => {
                       onClick={()=>postTask(form.title, form.answerUrl, form.id!)} 
                       disabled={form.sent ? true : false}
                     >
-                      {form.sent ? 'send to the students' : 'Sent!'}
+                      {!form.sent ? 'send to the students' : 'Sent!'}
                     </Button>
                   </StyledSpan>
                   <StyledSpan>
