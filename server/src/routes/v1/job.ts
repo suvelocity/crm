@@ -37,6 +37,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
     const only = req.query.only;
+    console.log(only, id);
     const job: IJob | null = await Job.findByPk(id, {
       include: [
         {

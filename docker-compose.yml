@@ -30,6 +30,7 @@ services:
       - crm-network
     env_file:
       - ./server/src/.env
+    command: "./wait-for-it/wait-for-it.sh mysql:3306 -- npm run test"
     environment:
       MYSQL_USER: root
       MYSQL_PASSWORD: password
