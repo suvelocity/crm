@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme) => ({
 export default function FormRouter() {
   const id: number = Number(useParams<{id:string}>().id);
   const [form, setForm] = useState<IFormWithSubs>();
-  console.log(form)
+  console.log("form: ", form)
   useEffect(() => {
     const fetchForm = async () => {
-      const {form,submissions} = (await network.get(`/api/v1/form/${id}`)).data;
+      const form = (await network.get(`/api/v1/form/${id}`)).data;
       setForm(form);
     };
     fetchForm();

@@ -103,7 +103,7 @@ router.get("/all", async (req: any, res: Response) => {
       
     //   return res.json({form,submissions});
     // } else {
-      return res.json({form});
+      return res.json(form);
     // }
   }catch(err){
     console.error(err.message)

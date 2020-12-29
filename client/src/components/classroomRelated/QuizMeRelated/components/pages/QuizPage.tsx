@@ -144,12 +144,12 @@ export default function QuizPage(props: IProps) {
       setQuizIsOver(true);
       const answersArray = [...answers, newAnswer];
       const studentId = user.id;
-      const sub = {
+      const submissions = {
         studentId,
         answersArray,
       };
-      console.log(sub);
-      await network.post("/api/v1/fieldsubmission/quiz", sub);
+      console.log(submissions);
+      await network.post("/api/v1/fieldsubmission/quiz", {id: quiz?.id, submissions});
       setFinishTitle("Well done, quiz submitted successfully");
     } catch (error) {
       setQuizIsOver(true);
@@ -157,6 +157,9 @@ export default function QuizPage(props: IProps) {
       setFinishTitle(errorMessage);
     }
   };
+  console.log("quiz: ", quiz);
+  console.log("quiz?.Fields: ", quiz?.Fields);
+  
   if (quiz) {
     if (!quizIsOver) {
       return (

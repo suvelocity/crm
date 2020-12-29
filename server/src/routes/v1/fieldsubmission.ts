@@ -160,7 +160,7 @@ const validateForm:RequestHandler = async function (req,res,next){
     next()
   }catch(err){
     console.trace(err)
-    return res.send('a') 
+    return res.send(err.message) 
   }
 }
 
@@ -209,7 +209,7 @@ router.post('/form', async (req: Request, res: Response) => {
       
   }
   async function insertOptionsField(createdNew:boolean,submissionId:number,answer:IOption[]){
-    console.log(answer)
+    // console.log(answer)
     try{
       
       const qi :QueryInterface = db.sequelize.getQueryInterface()
@@ -248,7 +248,7 @@ router.post('/form', async (req: Request, res: Response) => {
     })).id;
     // find task where externalId === formId
 
-    const taskOfStudent = await TaskOfStudent.update({status: "done"}, {
+    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: ""}, {
       where: {
         studentId: body[0].studentId,
         taskId: taskId
@@ -292,6 +292,7 @@ router.post('/quiz', async (req: Request, res: Response) => {
       });
     }); 
     const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs);
+    
     const createdFieldSubmissionsWithId = await FieldSubmission.findAll({
       where: {
         studentId: fieldSubs[0].studentId,
@@ -310,9 +311,31 @@ router.post('/quiz', async (req: Request, res: Response) => {
       });
     });
     const createdSelectedOptions = await SelectedOption.bulkCreate(optionSubs);
+
+    const formId = (await Field.findOne({
+      where: {
+        id: answers[0].fieldId
+      }
+    })).formId;
+    console.log("form id is: ", formId);
+    const taskId = (await Task.findOne({
+      where: {
+        externalId: formId
+      }
+    })).id;
+    // find task where externalId === formId
+
+    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: ""}, {
+      where: {
+        studentId: studentId,
+        taskId: taskId
+      }
+    });
     return res.json({createdFieldSubmissions, createdSelectedOptions});
   }
   catch(error) {
+    console.log("error: ", error);
+    
     return res.status(400).json(error.message);
   }
 });
