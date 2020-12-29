@@ -21,7 +21,7 @@ let accessToken: string;
 
 const getCurrentStudents = async () => await getAll("student", accessToken);
 const getStudentById = async (id: number) =>
-  await getById(id, "student", accessToken);
+  await getById(id, "student", accessToken, "?only=jobs");
 const patchStudentById = async (id: number, body: object) =>
   await patchById(id, "student", accessToken, body);
 const deleteStudentById = async (id: number) =>

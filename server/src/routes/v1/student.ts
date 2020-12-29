@@ -13,6 +13,7 @@ import {
   TeacherofClass,
   //@ts-ignore
 } from "../../models";
+import { validateAdmin } from "../../middlewares";
 import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
@@ -94,7 +95,7 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
     const body = req.body;
     const studentExists = await Student.findOne({
@@ -155,11 +156,9 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   req.body.age = req.body.age === "" ? null : req.body.age;
   req.body.children = req.body.children === "" ? null : req.body.children;
-  console.log(req.body);
-
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {

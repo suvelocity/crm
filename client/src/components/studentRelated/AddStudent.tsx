@@ -320,7 +320,6 @@ function AddStudent(props: Props) {
                 name="age"
                 defaultValue={props.student ? props.student.age : 0}
                 inputRef={register({
-                  // required: "Age is required",
                   pattern: {
                     value: onlyNumbersRegex,
                     message: "Age needs to be a number",
