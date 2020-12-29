@@ -111,7 +111,7 @@ const TaskTableConatiner = styled.div`
   /* background-color: ${({ theme }: { theme: any }) =>
     theme.colors.background}; */
   height: 70vh;
-  width: 90%;
+  width: 70%;
   overflow: hidden;
   margin-bottom: 10px;
   margin-left: auto;

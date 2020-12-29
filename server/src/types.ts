@@ -11,24 +11,37 @@ export interface IJob {
   additionalDetails: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Class?: IClass;
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+
 export interface IStudent {
   id?: number;
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
-  idNumber: string;
-  additionalDetails: string;
+  phone?: string;
+  idNumber: string | null;
+  additionalDetails?: string;
   classId: number;
-  age: number;
+  age?: number | string | null;
   address: string;
   maritalStatus: string;
-  children: number;
+  children?: number;
   academicBackground: string;
-  militaryService: string;
-  workExperience: string;
-  languages: string;
-  citizenship: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
 }

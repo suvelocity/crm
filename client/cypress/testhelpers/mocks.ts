@@ -12,7 +12,7 @@ export const studentTestMocks = {
     children: 0,
     academicBackground: "High school diploma.",
     militaryService: "Combat intelligence commander. ",
-    workExperience: "",
+    workExperience: "none",
     languages: "English, Hebrew",
     citizenship: "Israel",
     additionalDetails: "",
@@ -278,3 +278,72 @@ export const jobTestMock = {
     },
   ],
 };
+
+export const companyTestMocks = {
+  company: {
+    id: 2,
+    name: "Facebook",
+    contactName: "Doron Alon",
+    contactNumber: "0523485940",
+    contactPosition: "CEO",
+    location: "Tel Aviv, Israel",
+    description: "A social network corporation.",
+    createdAt: "2020-12-14T07:17:35.000Z",
+    updatedAt: "2020-12-14T07:17:35.000Z",
+    deletedAt: null,
+    Jobs: []
+  }
+};
+
+export const classTestMocks = {
+  oneClass: {
+    id: 6,
+    course: "Cyber4s",
+    name: "Cyber4s",
+    startingDate: "2020-07-01T00:00:00.000Z",
+    endingDate: "2020-12-31T00:00:00.000Z",
+    cycleNumber: 1,
+    zoomLink: "https://sncentral.zoom.us/j/99857324080?pwd=ZDhsRWt0UGxXM0hhUjBYa0Y3QmJZZz09",
+    additionalDetails: "A cyber full stack course for combat veterans. ",
+    mentorProject: false,
+    createdAt: "2020-12-14T07:14:06.000Z",
+    updatedAt: "2020-12-14T07:14:06.000Z",
+    deletedAt: null,
+    Students: []
+  },
+  twoClass: {
+    id: 3,
+    course: "Cyber4s2",
+    name: "Cyber4s2",
+    startingDate: "2020-07-01T00:00:00.000Z",
+    endingDate: "2020-12-31T00:00:00.000Z",
+    cycleNumber: 1,
+    zoomLink: "https://sncentral.zoom.us/j/99857324080?pwd=ZDhsRWt0UGxXM0hhUjBYa0Y3QmJZZz09",
+    additionalDetails: "A cyber full stack course for combat veterans. ",
+    mentorProject: false,
+    createdAt: "2020-12-14T07:14:06.000Z",
+    updatedAt: "2020-12-14T07:14:06.000Z",
+    deletedAt: null,
+    Students: []
+  },
+  
+}
+
+
+export const teacherTestMocks = {
+  teacher: {
+    id: 3,
+    firstName: "Shahar",
+    lastName: "Eliyahu",
+    idNumber: "772331882",
+    email: "shahareli1222@gmail.com",
+    phone: "0545610405",
+    createdAt: "2020-12-14T07:14:06.000Z",
+    updatedAt: "2020-12-14T07:14:06.000Z",
+    Classes: [{
+      Class: classTestMocks.oneClass,
+      classId: 6
+    }]
+  },
+  addedClass: classTestMocks.twoClass
+}

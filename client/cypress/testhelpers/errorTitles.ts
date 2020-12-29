@@ -28,3 +28,10 @@ export const classFormErrorTitles = [
   "Class title is required",
   "Zoom Link is required",
 ];
+export const teacherFormErrorTitles = [
+  "First name is required",
+  "Last name is required",
+  "ID number is required",
+  "Email is required",
+  "Phone is required",
+];
