@@ -236,7 +236,7 @@ router.post('/form', async (req: Request, res: Response) => {
     const body:submission[] = req.body;
     console.log('body: ', body);
 
-    const formId = (await Field.FindOne({
+    const formId = (await Field.findOne({
       where: {
         id: body[0].fieldId
       }
