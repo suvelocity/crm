@@ -170,7 +170,10 @@ function SingleStudent() {
               )}
             </List>
             <List>
-              <SingleListItem primary="Age" secondary={student?.age}>
+              <SingleListItem
+                primary="Age"
+                secondary={student?.age ? student.age : "לא ידוע"}
+              >
                 <DateRangeIcon />
               </SingleListItem>
               <SingleListItem
@@ -185,7 +188,10 @@ function SingleStudent() {
               >
                 <FavoriteIcon />
               </SingleListItem>
-              <SingleListItem primary="Children" secondary={student?.children}>
+              <SingleListItem
+                primary="Children"
+                secondary={student?.children ? student.children : "אין"}
+              >
                 <ChildFriendlyIcon />
               </SingleListItem>
               <SingleListItem

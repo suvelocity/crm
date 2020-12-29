@@ -42,7 +42,7 @@ module.exports = {
         {
           id: 7,
           course: "Excellentteam",
-          name: "Geffen class",
+          name: "Dafna class",
           starting_date: new Date(),
           ending_date: new Date(),
           cycle_number: 4,
