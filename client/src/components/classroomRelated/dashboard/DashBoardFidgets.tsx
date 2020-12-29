@@ -20,9 +20,7 @@ import List from "@material-ui/core/List";
 import { Typography } from "@material-ui/core";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
-    []
-  );
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>();
 
   const { user } = useContext<any>(AuthContext);
 
@@ -61,31 +59,33 @@ export function TasksFidget() {
         <Headline>Unfinished Tasks</Headline>
       </TitleWrapper> */}
 
-        {incompletedTasks?.length !== 0 ? (
-          <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
-            {/* <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2> */}
-            <List>
-              {incompletedTasks.map((
-                task: any,
-                i: number //todo change intefacce
-              ) => (
-                <ListItemComponent
-                  key={`incompTask${i}`}
-                  task={task.Task}></ListItemComponent>
-              ))}
-            </List>
-          </div>
-        ) : (
-          <Center>
-            <img
-              src={sunshine}
-              alt='sunshine'
-              style={{
-                maxHeight: "100px",
-              }}
-            />
-          </Center>
-        )}
+        {incompletedTasks ? (
+          incompletedTasks.length !== 0 ? (
+            <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
+              {/* <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2> */}
+              <List>
+                {incompletedTasks.map((
+                  task: any,
+                  i: number //todo change intefacce
+                ) => (
+                  <ListItemComponent
+                    key={`incompTask${i}`}
+                    task={task.Task}></ListItemComponent>
+                ))}
+              </List>
+            </div>
+          ) : (
+            <Center>
+              <img
+                src={sunshine}
+                alt='sunshine'
+                style={{
+                  maxHeight: "100px",
+                }}
+              />
+            </Center>
+          )
+        ) : null}
       </Wrapper>
     </>
   );
