@@ -51,31 +51,32 @@ const ProgramDashboard: React.FC = () => {
     setProgramDetails(program.data);
     const dashboardData = await network.get(
       `/api/v1/M/program/dashboard/${id}`
-    );
-    setTabelData(dashboardData.data);
-    setLoading(false);
-  }, []);
-
-  const getAvailableMentors = useCallback(async () => {
-    const { data } = await network.get(`/api/v1/M/mentor/available`);
-    setAvailableMentors(data);
-  }, []);
-
-  const getForms = useCallback(async () => {
-    const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
-    console.log(formsData.data);
-    setForms(formsData.data);
-  }, []);
-
-  useEffect(() => {
-    getTableData();
-    getAvailableMentors();
-    getForms();
-  }, [getTableData, getAvailableMentors, getForms]);
-
-  const endProgram = async () => {
-    try {
-      await network.put(`/api/v1/M/program/end/${id}`);
+      );
+      setTabelData(dashboardData.data);
+      setLoading(false);
+    }, [id]);
+    
+    const getAvailableMentors = useCallback(async () => {
+      const { data } = await network.get(`/api/v1/M/mentor/available`);
+      setAvailableMentors(data);
+    }, []);
+    
+    const getForms = useCallback(async () => {
+      const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
+      console.log(formsData.data);
+      setForms(formsData.data);
+    }, [id]);
+    
+    useEffect(() => {
+      getTableData();
+      getAvailableMentors();
+      getForms();
+    }, [getTableData, getAvailableMentors, getForms]);
+    
+    console.log(programdetails)
+    const endProgram = async () => {
+      try {
+        await network.put(`/api/v1/M/program/end/${id}`);
       history.push("/mentor");
     } catch (err) {
       console.error(err.message);
@@ -161,7 +162,7 @@ const ProgramDashboard: React.FC = () => {
           </div>
           <div>
         <AddFormModal getForms={getForms} id={id} />
-            <SendMailModal id={id} />
+            <SendMailModal id={id} forms={forms} startMail={programdetails?.email} getProgram={getTableData}/>
           </div>
         </div>
         <SimpleModal
