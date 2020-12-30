@@ -539,8 +539,8 @@ function NewClassMentorProject() {
                       setAvailble(e.target.value as boolean)
                     }
                   >
-                    <MenuItem value={true}>Available</MenuItem>
-                    <MenuItem value={false}>Not available</MenuItem>
+                    {/* <MenuItem value={true}>Available</MenuItem>
+                    <MenuItem value={false}>Not available</MenuItem> */}
                     <MenuItem value="all">All</MenuItem>
                   </Select>
                 </FormControl>
