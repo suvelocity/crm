@@ -96,6 +96,11 @@ export default function Lesson({
                   <EditIcon />
                 </EditDiv>
               )}
+              {lesson.zoomLink && (
+                <ZoomDiv top='90px' onClick={() => setModalState(true)}>
+                  <a href={lesson.zoomLink}>Zoom</a>{" "}
+                </ZoomDiv>
+              )}
 
               <ResourcesLinks>
                 {lessonState.resource?.includes("%#splitingResource#%")
@@ -118,6 +123,7 @@ export default function Lesson({
               </ResourcesLinks>
             </Loading>
           </StyledDetails>
+
           <StyledDetails>
             <StyledTask>
               {user.userType === "student"
@@ -198,4 +204,11 @@ const Link = styled.a`
   border-radius: 8px;
   padding: 5px;
   color: white;
+`;
+
+export const ZoomDiv = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 66px;
+  top: ${(props: { top: string }) => props.top || "25px"};
 `;
