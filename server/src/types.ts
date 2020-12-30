@@ -1,4 +1,6 @@
 import { Model } from "sequelize/types";
+import { Request } from "express";
+
 export interface IJob {
   Company?: ICompany;
   id?: number;
@@ -11,24 +13,37 @@ export interface IJob {
   additionalDetails: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Class?: IClass;
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+}
+
 export interface IStudent {
   id?: number;
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
-  idNumber: string;
-  additionalDetails: string;
+  phone?: string;
+  idNumber: string | null;
+  additionalDetails?: string;
   classId: number;
-  age: number;
+  age?: number | string | null;
   address: string;
   maritalStatus: string;
-  children: number;
+  children?: number;
   academicBackground: string;
-  militaryService: string;
-  workExperience: string;
-  languages: string;
-  citizenship: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
 }
@@ -53,7 +68,9 @@ export interface IEvent {
   type: string;
   date: Date;
 }
-
+export interface RequestWithUser extends Request {
+  user?: IUser;
+}
 export interface ICompany {
   id?: number;
   name: string;
@@ -116,6 +133,7 @@ export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
+  required?: boolean;
   where?: {};
 }
 
@@ -151,21 +169,26 @@ export interface IFormSubmission {
 }
 
 type meeting = { date: string };
-// type class = {name: string, cycleNumber: number}
 
 export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  // Class: class;
   Mentor: IMentor;
   Meetings: meeting[];
 }
+
 export interface IMeeting {
   id?: number;
   mentorId: number;
   studentId: number;
   place: string;
+}
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  title: string;
 }
 
 export interface IFccEvent {}

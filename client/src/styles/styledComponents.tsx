@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
-  /* position: relative; */
+  position: relative;
 `;
 
 export const Center = styled.div`

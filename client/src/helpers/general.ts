@@ -12,7 +12,6 @@ export const searchResults = (search: string | number, array: IStudent[]) => {
 };
 
 export const getRefreshToken = () => Cookies.get("refreshToken") || "";
-
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
   if (isNaN(+phoneNumber)) return phoneNumber;
@@ -75,5 +74,10 @@ export function formatToIsraeliDateAndTime(date: string) {
     baseDate.getMonth() + 1
   )
     .toString()
-    .padStart(2, "0")}/${baseDate.getFullYear()} - ${baseDate.toLocaleTimeString().slice(0,-3)}`;
+    .padStart(
+      2,
+      "0"
+    )}/${baseDate.getFullYear()} - ${baseDate
+    .toLocaleTimeString()
+    .slice(0, -3)}`;
 }

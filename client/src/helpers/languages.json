@@ -1,22 +1,22 @@
 {
   "he": {
-    "name": "Hebrew",
+    "name": "עברית",
     "nativeName": "עברית"
   },
   "en": {
-    "name": "English",
+    "name": "אנגלית",
     "nativeName": "English"
   },
   "sp": {
-    "name": "Spanish",
+    "name": "ספרדית",
     "nativeName": "Español"
   },
   "ru": {
-    "name": "Russian",
+    "name": "רוסית",
     "nativeName": "Русский"
   },
   "ar": {
-    "name": "Arabic",
+    "name": "ערבית",
     "nativeName": "اللغة العربية "
   }
 }

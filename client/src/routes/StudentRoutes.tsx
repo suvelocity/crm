@@ -46,7 +46,10 @@ export function StudentRoutes() {
             <Route path='/quizme'>
               <QuizMe />
             </Route>
-            <Route path='*'>
+            <Route path="/mentor/:id">
+              <PairMeetings />
+            </Route>
+            <Route path="*">
               <div>404 Not Found</div>
             </Route>
           </Switch>

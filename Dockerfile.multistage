@@ -1,0 +1,37 @@
+FROM node:14-slim as builder
+
+WORKDIR /client
+
+COPY ./client/package.json ./client/package-lock.json ./
+
+RUN npm install --only=production
+
+COPY ./client .
+
+RUN npm run build:prod
+
+FROM node:14-slim as serverbuilder
+
+WORKDIR /server
+
+COPY ./server/package.json ./server/package-lock.json ./
+
+RUN npm install --only=production
+
+COPY ./server .
+
+RUN npm run build 
+
+FROM node:14-slim
+
+WORKDIR /server
+
+COPY /server/package.json /server/package-lock.json ./
+
+RUN npm install --only=production
+
+EXPOSE 8080
+
+COPY --from=serverbuilder ./server/out ./out
+
+COPY --from=builder ./client/build ./build

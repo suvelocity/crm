@@ -47,7 +47,7 @@ function SingleJob() {
 
   const getJob = useCallback(async () => {
     const { data }: { data: IJob } = await network.get(
-      `/api/v1/job/byId/${id}`
+      `/api/v1/job/byId/${id}?only=jobs`
     );
     const uniqueStudents: IEvent[] = [];
     const sortedEvents = data.Events.sort(
@@ -131,7 +131,7 @@ function SingleJob() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editJobButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>

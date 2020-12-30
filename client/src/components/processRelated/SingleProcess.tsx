@@ -36,11 +36,11 @@ function SingleProcess() {
     (async () => {
       try {
         const { data: studentData } = await network.get(
-          `/api/v1/student/byId/${studentId}`
+          `/api/v1/student/byId/${studentId}?only=jobs`
         );
         setStudent(studentData);
         const { data: jobData } = await network.get(
-          `/api/v1/job/byId/${jobId}`
+          `/api/v1/job/byId/${jobId}?only=jobs`
         );
         setJob(jobData);
         const filteredEvents = studentData?.Events.filter(
@@ -78,8 +78,6 @@ function SingleProcess() {
   const classesTypeRequirements = {
     primary: classes.primaryReq,
   };
-
-  console.log(events);
   return (
     <Wrapper width="90%">
       <Center>
