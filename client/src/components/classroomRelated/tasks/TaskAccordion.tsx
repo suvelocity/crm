@@ -23,6 +23,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import styled from "styled-components";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,89 +55,51 @@ export default function SingleTask(props: any) {
   const { task, handleOpen, handleClose } = props;
   const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
-  console.log(task);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   return (
-    // <Card className={classes.root}>
-    //   <CardHeader
-    //     avatar={
-    //       <Avatar aria-label='recipe' className={classes.avatar}>
-    //         !
-    //       </Avatar>
-    //     }
-    //     // action={
-    //     //   <IconButton aria-label='settings'>
-    //     //     <MoreVertIcon />
-    //     //   </IconButton>
-    //     // }
-    //     title={`${task.Task.title} - ${task.Task.type}`}
-    //     subheader={`deadline :${task.Task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
-    //   />
-    //   <CardMedia
-    //     className={classes.media}
-    //     image={taskImg}
-    //     title='get to work!'
-    //   />
-    //   <CardContent>
-    //     <Typography variant='body2' color='textSecondary' component='p'>
-    //       {task.Task.body}
-    //     </Typography>
-    //   </CardContent>
-    //   <CardActions disableSpacing>
-    //     <IconButton
-    //       aria-label='submit button'
-    //       onClick={() => {
-    //         handleOpen(task.id);
-    //       }}
-    //       disabled={task.Task.type !== "manual" ? true : false}>
-    //       <PublishIcon />
-    //     </IconButton>
-    //     <IconButton
-    //       aria-label='external link?'
-    //       disabled={task.Task.externalLink ? true : false}>
-    //       <LinkIcon />
-    //     </IconButton>
-    //     {/* <IconButton
-    //       className={clsx(classes.expand, {
-    //         [classes.expandOpen]: expanded,
-    //       })}
-    //       onClick={handleExpandClick}
-    //       aria-expanded={expanded}
-    //       aria-label='show more'>
-    //       <ExpandMoreIcon />
-    //     </IconButton> */}
-    //   </CardActions>
-    // </Card>
     <TaskAccordrionContainer>
       <StyledAccordion>
         <StyledSummery
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1a-content'
           id='panel1a-header'>
-          {task.Task.title + " - " + task.Task.type}
+          <AssignmentLateIcon style={{ margin: "auto 10px" }} />
+          <p style={{ flexGrow: 1 }}>
+            {task.Task.title + " - " + task.Task.type}
+          </p>
+          <p
+            style={{
+              marginTop: "auto",
+              marginBottom: "auto",
+              fontSize: "1rem",
+            }}>
+            Deadline: {task.Task.endDate.substring(0, 10)}
+          </p>
         </StyledSummery>
         <hr style={{ width: "95%", opacity: "50%" }} />
         <StyledDetails>{task.Task.body}</StyledDetails>
         <StyledDetails>
-          <IconButton
-            aria-label='submit button'
-            onClick={() => {
-              handleOpen(task.id);
-            }}
-            disabled={task.Task.type !== "manual" ? true : false}>
-            <PublishIcon />
-          </IconButton>
-          <StyledAtavLink href={task.Task.externalLink} target='_blank'>
+          {task.Task.type === "manual" && (
             <IconButton
-              aria-label='external link?'
-              disabled={task.Task.externalLink ? false : true}>
-              <LinkIcon />
+              aria-label='submit button'
+              onClick={() => {
+                handleOpen(task.id);
+              }}
+              disabled={task.Task.type !== "manual" ? true : false}>
+              <PublishIcon />
             </IconButton>
-          </StyledAtavLink>
+          )}
+          {task.Task.externalLink && (
+            <StyledAtavLink href={task.Task.externalLink} target='_blank'>
+              <IconButton aria-label='external link?'>
+                <LinkIcon />
+              </IconButton>
+            </StyledAtavLink>
+          )}
         </StyledDetails>
         {/* <StyledDetails></StyledDetails> */}
       </StyledAccordion>
@@ -151,18 +114,21 @@ const TaskAccordrionContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
 `;
 
 const StyledAccordion = styled(Accordion)`
   background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.accordion}; //TODO change
+    theme.colors.container}; //TODO change
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
   font-weight: bold;
   font-size: 20px;
+  display: flex;
 `;
 
 const StyledDetails = styled(AccordionDetails)`

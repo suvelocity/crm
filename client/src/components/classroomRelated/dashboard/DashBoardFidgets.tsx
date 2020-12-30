@@ -1,8 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import {
-  ILesson,
-  ITaskofStudent,
-} from "../../../typescript/interfaces";
+import { ILesson, ITaskofStudent } from "../../../typescript/interfaces";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";
@@ -13,9 +10,12 @@ import {
 } from "../../../styles/styledComponents";
 import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
+import ListItemComponent from "./ListItem";
+import List from "@material-ui/core/List";
+import { Typography } from "@material-ui/core";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>();
 
   const { user } = useContext<any>(AuthContext);
 
@@ -33,46 +33,60 @@ export function TasksFidget() {
         allTasks.filter((task: ITaskofStudent) => task.status !== "done")
       );
     } catch (e) {
-      console.log(e);
+      //todo error handler
     }
   };
 
   return (
-    <Wrapper style={{ height: "100%" }}>
-      <Center>
-        <TitleWrapper>
-          <Headline>Unfinished Tasks</Headline>
-        </TitleWrapper>
-      </Center>
-
-      {incompletedTasks?.length !== 0 ? (
-        <div
-          style={{ lineHeight: "2em", fontSize: "1.1em", textAlign: "center" }}>
-          <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2>
-
-          {incompletedTasks.map((task: ITaskofStudent, i: number) => (
-            <li key={`incompTask${i}`}>
-              {/* @ts-ignore */}
-              {task.Task.title}, to finish by {/* @ts-ignore */}
-              {task.Task.endDate.substring(0, 10)} {/* @ts-ignore */}
-              <StyledAtavLink href={task.Task?.externalLink}>
-                <LinkIcon />
-              </StyledAtavLink>
-            </li>
-          ))}
-        </div>
-      ) : (
+    <>
+      {/* <Typography
+        variant='h3'
+        style={{
+          marginRight: 15,
+          marginTop: "2%",
+          marginBottom: "auto",
+          marginLeft: "12.5%",
+        }}>
+        Unfinished Tasks
+      </Typography> */}
+      <Wrapper style={{ height: "100%" }}>
+        {/* <TitleWrapper> */}
         <Center>
-          <img
-            src={sunshine}
-            alt='sunshine'
-            style={{
-              maxHeight: "100px",
-            }}
-          />
+          <Headline>
+            <u>Unfinished Tasks</u>
+          </Headline>
         </Center>
-      )}
-    </Wrapper>
+        {/* </TitleWrapper> */}
+
+        {incompletedTasks ? (
+          incompletedTasks.length !== 0 ? (
+            <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
+              {/* <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2> */}
+              <List>
+                {incompletedTasks.map((
+                  task: any,
+                  i: number //todo change intefacce
+                ) => (
+                  <ListItemComponent
+                    key={`incompTask${i}`}
+                    task={task.Task}></ListItemComponent>
+                ))}
+              </List>
+            </div>
+          ) : (
+            <Center>
+              <img
+                src={sunshine}
+                alt='sunshine'
+                style={{
+                  maxHeight: "100px",
+                }}
+              />
+            </Center>
+          )
+        ) : null}
+      </Wrapper>
+    </>
   );
 }
 
@@ -91,72 +105,79 @@ export function LessonsFidget() {
       );
       settodayLessons(latestLesson);
     } catch (e) {
-      console.log(e);
+      //todo error handler
     }
   };
 
   return (
     <Wrapper style={{ height: "100%" }}>
       <Center>
-        <TitleWrapper>
-          <Headline>Last Lesson</Headline>
-        </TitleWrapper>
+        <Headline>
+          <u>Last Lesson</u>
+        </Headline>
       </Center>
       {todayLessons?.map((lesson: any, i: number) => (
         <div
+          key='key_lesson'
           className='infoData'
           style={{
             lineHeight: "2em",
             fontSize: "1.1em",
-            textAlign: "center",
+            overflowY: "auto",
+            maxWidth: "100%",
           }}>
-          {console.log(lesson)}
           <h2>{lesson.title}</h2>
 
           <div
             className='today-info'
-            style={{ display: "flex", justifyContent: "space-around" }}>
+            style={{ display: "flex", flexDirection: "column" }}>
+            <p>{lesson.body}</p>
             <div
               className='today-info'
               style={{
                 display: "flex",
                 flexDirection: "column",
-                maxWidth: "50%",
-                textAlign: "start",
-                // overflowY: "auto",
-                // maxHeight: "30px",
+                width: "fit-content",
+                height: "100%",
               }}>
               <h3>Resources</h3>
-              {lesson.resource?.includes("%#splitingResource#%")
-                ? lesson.resource
-                    .split("%#splitingResource#%")
-                    .map((resource: string, index: number) => (
-                      <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
-                          {resource}
-                        </Link>
-                      </ResourcesLink>
-                    ))
-                : //@ts-ignore
-                  lesson.resource?.length > 0 && (
-                    //@ts-ignore
-                    <Link target='_blank' href={lesson.resource}>
-                      {lesson.resource}
-                    </Link>
-                  )}
+              <ResourcesLinks>
+                {lesson.resource?.includes("%#splitingResource#%")
+                  ? lesson.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target='_blank' href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lesson.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target='_blank' href={lesson.resource}>
+                        {lesson.resource}
+                      </Link>
+                    )}
+              </ResourcesLinks>
             </div>
             <div
               className='today-info'
               style={{
                 display: "flex",
                 flexDirection: "column",
-                maxWidth: "50%",
-                textAlign: "start",
+                maxWidth: "100%",
+                height: "100%",
+                // textAlign: "start",
               }}>
               <h3>Tasks</h3>
-              {lesson.Tasks.map((task: any) => (
-                <li>{task.title}</li>
-              ))}
+              <List>
+                {lesson.Tasks.map((task: any, index: number) => (
+                  <ListItemComponent
+                    key={"key" + index}
+                    task={task}></ListItemComponent>
+                ))}
+              </List>
             </div>
           </div>
         </div>
@@ -165,27 +186,15 @@ export function LessonsFidget() {
   );
 }
 
-export function ScheduleFidget() {
-  return (
-    <Wrapper style={{ height: "100%" }}>
-      <Center>
-        <TitleWrapper>
-          <Headline>Schedule</Headline>
-        </TitleWrapper>
-      </Center>
-      <p>checkpoint 16:00</p>
-    </Wrapper>
-  );
-}
 export const Headline = styled.h1`
+  /* width: 75%; */
+  margin-left: auto;
+  margin-right: auto;
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
   color: white;
-  /* position: relative; */
-  /* left: -50%;
-  top: -80px; */
-  margin: 0;
+  /* margin: 0; */
   display: inline;
   background-color: ${({ theme }: { theme: any }) => theme.colors.item};
   border-radius: 5px;
@@ -196,6 +205,13 @@ export const Headline = styled.h1`
 
 const ResourcesLink = styled.div`
   margin-top: 15px;
+`;
+
+const ResourcesLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 5px;
 `;
 
 const Link = styled.a`
@@ -221,5 +237,33 @@ const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    display: unset;
+    height: 5px;
+    width: 12px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(173, 173, 173, 0.6);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #838383;
+    transition: 0.5s;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #525252;
+  }
+
+  /* 
+  -ms-overflow-style: auto; */
+
+  /* height: 80%; */
   /* position: relative; */
 `;

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { IUser } from "../../../typescript/interfaces";
 import Notices from "./Notices";
 //@ts-ignore
-import { TasksFidget, LessonsFidget, ScheduleFidget } from "./DashBoardFidgets";
+import { TasksFidget, LessonsFidget } from "./DashBoardFidgets";
 import dashImg from "../../../media/dashboard.jpg";
 import scaleup from "../../../media/scale-up.jpg";
 import classroom from "../../../media/classroom-new.jpg";

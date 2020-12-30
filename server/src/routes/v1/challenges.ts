@@ -4,6 +4,7 @@ import { Form } from "../../models";
 import { IForm } from "../../types";
 import { Sequelize, Op } from "sequelize";
 import axios from "axios";
+import { any } from "joi";
 const router = Router();
 require("dotenv").config();
 
@@ -18,8 +19,6 @@ router.get("/challengeMe", async (req: Request, res: Response) => {
   try {
     const { name: query } = req.query;
     const url = `${challengeMe}/challenges${query ? "?name=" + query : ""}`;
-    console.log(query);
-    console.log(url);
     const { data } = await axios.get(url, {
       headers: {
         authorization: CM_ACCESS,
@@ -58,7 +57,7 @@ router.get("/quiz", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/fcc", async (req: Request, res: Response) => {
+router.get("/fccsingle", async (req: Request, res: Response) => {
   try {
     const fccArray = await fetchBulkFcc();
     res.json(fccArray);
@@ -68,9 +67,15 @@ router.get("/fcc", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/fccblock", async (req: Request, res: Response) => {
+router.get("/fcc", async (req: Request, res: Response) => {
   try {
-    const fccArray = await fetchBlockChallenges();
+    const { name: query } = req.query;
+    const string = "" + query;
+    const fccArray = await fetchBlockChallenges(string.toLowerCase());
+    // const filtered = fccArray.filter((fccChallenge: any) => {
+    //   return fccChallenge.label.includes(string.toLowerCase());
+    // });
+
     res.json(fccArray);
   } catch (error) {
     console.trace(error);
@@ -88,7 +93,6 @@ export async function fetchBulkFcc() {
       const link = chlng.node.fields.slug;
       const title = chlng.node.title;
       const id = chlng.node.id;
-      console.log(id);
       return { label: title, value: id, link };
     }
   );
@@ -163,7 +167,7 @@ export async function fetchSuperChallenges() {
   return challengeMap;
 }
 
-export async function fetchBlockChallenges() {
+export async function fetchBlockChallengesGuy() {
   let challengeMap: any[] = [];
   const { data: pageData } = await axios.get(
     "https://www.freecodecamp.org/page-data/learn/page-data.json"
@@ -177,12 +181,12 @@ export async function fetchBlockChallenges() {
       )
     ) {
       challengeMap.push({
-        name: challenge.superBlock,
+        label: challenge.superBlock,
         challenges: [
           {
-            name: challenge.fields.blockName,
+            label: challenge.fields.blockName,
             dashedName: challenge.block,
-            id: "ide" + challenge.block,
+            value: "id" + challenge.block,
           },
         ],
       });
@@ -207,5 +211,30 @@ export async function fetchBlockChallenges() {
   });
 
   return challengeMap;
+}
+
+export async function fetchBlockChallenges(search: string) {
+  const { data: pageData } = await axios.get(
+    "https://www.freecodecamp.org/page-data/learn/page-data.json"
+  );
+
+  let cache = pageData.result.data.allMarkdownRemark.edges;
+  // console.log(cache);
+  const fccBulkArr = <any>[];
+  cache.forEach(({ node: challenge }: { node: any }) => {
+    const title = challenge.frontmatter.title.substring(16);
+    if (title.toLowerCase().includes(search)) {
+      const id = challenge.fields.slug.split("/")[3];
+      const newChallenge = {
+        label: title[0] === "t" ? title.substring(4) : title,
+        value: "id" + id,
+        link: challenge.fields.slug,
+      };
+      fccBulkArr.push(newChallenge);
+    }
+    return;
+  });
+
+  return fccBulkArr;
 }
 export default router;

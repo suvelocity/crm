@@ -21,6 +21,7 @@ import { Loading } from "react-loading-wrapper";
 import { SingleListItem } from "../tableRelated";
 import "react-loading-wrapper/dist/index.css";
 import Swal from "sweetalert2";
+import { formatToIsraeliDate } from "../../helpers";
 
 function AssignTeacherModal({
   assignedClasses,
@@ -130,12 +131,12 @@ function AssignTeacherModal({
                   <AccordionDetails>
                     <List dense>
                       <SingleListItem
-                        primary="startingDate"
-                        secondary={c.startingDate}
+                        primary="Start Date"
+                        secondary={formatToIsraeliDate(c.startingDate)}
                       />
                       <SingleListItem
-                        primary="endingDate"
-                        secondary={c.endingDate}
+                        primary="End Date"
+                        secondary={formatToIsraeliDate(c.endingDate)}
                       />
                       <ListItem>
                         <ListItemText primary="Course" secondary={c.course} />

@@ -99,7 +99,6 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
 
 router.get("/options/:id", async (req: Request, res: Response) => {
   const id: string = req.params.id;
-  console.log(id);
   if (!id) res.status(400).json({ error: "Malformed data" });
   const options: any = {};
 
@@ -128,6 +127,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
         {
           model: Task,
           include: [{ model: Lesson, attributes: ["id", "title"] }],
+          where: { status: "active" },
         },
       ],
     });
@@ -183,9 +183,7 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
     const task = await createTask(req, res);
-    console.log(task);
     const { idArr } = req.body;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (studentId: number): ITaskofStudent => {
@@ -220,7 +218,6 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
     const taskType: any = await TaskofStudent.findByPk(req.params.id, {
       attributes: ["type"],
     });
-    console.log(taskType);
 
     if (taskType.type === "manual") {
       await TaskofStudent.update(
@@ -260,7 +257,6 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const deleteFromStudents = await TaskofStudent.destroy({
       where: { taskId: req.params.id },
     });
-    console.log(deleteFromStudents);
     return res.status(200).json({
       message: `Task deleted from ${deleted} lesson and ${deleteFromStudents} students`,
     });
@@ -269,12 +265,13 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-//* checks submitted external task
-router.post("/checksubmit", async (req: Request, res: Response) => {
+// //* checks submitted external task
+router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
+  const { studentId } = req.params;
   try {
     const unfinishedTasks: any = await TaskofStudent.findAll({
       where: {
-        studentId: req.body.studentId,
+        studentId: studentId,
         type: !"manual",
         status: !"done",
       },
@@ -287,11 +284,12 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           try {
             const event: any = await Event.findOne({
               where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "FCC_SUBMIT_SUCCESS", //!check if this will be the name of the event
+                userId: studentId,
+                eventName: "FCC_BULK_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
+
             if (event) {
               await TaskofStudent.update(
                 {
@@ -304,14 +302,14 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
-        case "challenge":
+        case "challengeMe":
           try {
-            const event: any = await Event.findAll({
+            const event: any = await Event.findOne({
               where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "CHALLENGEME_SUBMIT_SUCCESS",
+                userId: studentId,
+                eventName: "CM_SUBMITTED_CHALLENGE_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
             if (event) {
               await TaskofStudent.update(
@@ -325,6 +323,27 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
+        // case "quizMe":
+        //   try {
+        //     const event: any = await Event.findAll({
+        //       where: {
+        //         userId: studentId,
+        //         eventName: "QM_SUBMITTED", //todo check with nir
+        //         relatedId: task.Task.externalId,
+        //       },
+        //     });
+        //     if (event) {
+        //       await TaskofStudent.update(
+        //         {
+        //           status: "done",
+        //         },
+        //         { where: { id: task.id } }
+        //       );
+        //     }
+        //     return;
+        //   } catch (error) {
+        //     return;
+        //   }
 
         default:
           break;

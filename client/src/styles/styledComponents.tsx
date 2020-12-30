@@ -148,7 +148,7 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
-  top: ${(props: { top: string }) => props.top || "25px"};
+  top: ${(props: { top: string }) => props.top || "30px"};
 `;
 
 export const StyledAtavLink = styled.a`

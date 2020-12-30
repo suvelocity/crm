@@ -30,6 +30,7 @@ import { AuthContext } from "../helpers";
 import { ThemeContext } from "../helpers";
 import network from "../helpers/network";
 import { IStudent } from "../typescript/interfaces";
+import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 //@ts-ignore
 import DarkModeToggle from "react-dark-mode-toggle";
 import "./classroomNavBar.css";
@@ -43,7 +44,7 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user)
+  console.log(user);
   //@ts-ignore
   const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -55,15 +56,15 @@ function ClassRoomNavBar() {
     setAnchorEl(null);
   };
 
-   
   const getMentors = useCallback(async () => {
     try {
       if (user.userType === "student") {
         const { data }: { data: IStudent } = await network.get(
           `/api/V1/M/student/${user.id}`
-      );
-      setMentorProgram(data);
-    } } catch (err) {
+        );
+        setMentorProgram(data);
+      }
+    } catch (err) {
       alert(err.message);
     }
   }, [user]);
@@ -103,11 +104,11 @@ function ClassRoomNavBar() {
             }}>
             Classroom
           </Typography>
-          <DarkModeToggle
+          {/* <DarkModeToggle
             onChange={handleChangeTheme}
             checked={currentTheme === "dark"}
             size={50}
-          />
+          /> */}
           <Typography
             variant='h6'
             style={{
@@ -126,14 +127,23 @@ function ClassRoomNavBar() {
                 </Badge>
               </IconButton>
             </> */}
-
-            <AccountCircleIcon
-              style={{
-                marginRight: 10,
-                marginTop: "auto",
-                marginBottom: "auto",
-              }}
-            />
+            {user.userType === "teacher" ? (
+              <SchoolIcon
+                style={{
+                  marginRight: 10,
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                }}
+              />
+            ) : (
+              <AccountCircleIcon
+                style={{
+                  marginRight: 10,
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                }}
+              />
+            )}
             {user.firstName + " " + user.lastName}
           </Typography>
         </Toolbar>
@@ -154,15 +164,9 @@ function ClassRoomNavBar() {
           <StyledLink to='/lessons'>
             <DrawerItem onClick={() => setOpen(false)}>
               Lessons
-              <SchoolIcon style={{ position: "absolute", right: 10 }} />
+              <ImportContactsIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
 
-            {/* <StyledLink to="/schedhule">
-            <DrawerItem onClick={() => setOpen(false)}>
-              Schedhule
-              <TodayIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
-          </StyledLink> */}
             <StyledLink to='/tasks'>
               <DrawerItem onClick={() => setOpen(false)}>
                 Tasks
@@ -187,7 +191,7 @@ function ClassRoomNavBar() {
               </DrawerItem>
             </StyledLink>
           )}
-          <DrawerItem style={{ alignContent: "flex-end" }}>
+          <DrawerItem style={{}}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
         </StyledDrawer>
@@ -250,6 +254,8 @@ const StyledDrawer = styled.div`
   height: 100%;
   width: 220px;
   overflow: hidden;
+  /* display:flex;
+  flex-direction:column; */
 `;
 
 const StyledAppBar = styled(AppBar)`

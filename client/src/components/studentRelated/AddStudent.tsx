@@ -340,6 +340,7 @@ function AddStudent(props: Props) {
                 name="maritalStatus"
                 defaultValue={props.student ? props.student.maritalStatus : ""}
                 inputRef={register({
+                  required: "Marital Status is required",
                   maxLength: {
                     value: 20,
                     message: "Marital status max length is 20 letters",

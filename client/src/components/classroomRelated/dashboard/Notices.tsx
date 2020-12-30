@@ -27,7 +27,6 @@ function Notices() {
   const [selectedClass, setSelectedClass] = useState<number>(
     classesToTeacher[0]?.classId
   );
-  console.log(selectedClass);
 
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
@@ -44,15 +43,6 @@ function Notices() {
   const handleClose = () => {
     setOpen(false);
   };
-  const body = (
-    <div style={modalStyle} className={classes.paper}>
-      <AddNotice
-        updateLocal={setNotices}
-        closeModal={handleClose}
-        classId={selectedClass}
-      />
-    </div>
-  );
 
   useEffect(() => {
     (async () => {
@@ -73,12 +63,16 @@ function Notices() {
     }
   };
 
-  useEffect(() => {
+  const loadNotices = () => {
     (async () => {
       const notices = await getNotices();
       setNotices(notices);
       setLoading(false);
     })();
+  };
+
+  useEffect(() => {
+    loadNotices();
   }, [selectedClass]);
 
   const deleteNotice = async (id: number) => {
@@ -94,6 +88,17 @@ function Notices() {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <AddNotice
+        loadNotices={loadNotices}
+        // updateLocal={setNotices}
+        closeModal={handleClose}
+        classId={selectedClass}
+      />
+    </div>
+  );
 
   return (
     <Loading size={30} loading={loading}>
@@ -118,8 +123,10 @@ function Notices() {
                 const newId = e.target.value;
                 setSelectedClass(newId);
               }}>
-              {classesToTeacher?.map((teacherClass: any) => (
-                <MenuItem value={teacherClass.classId}>
+              {classesToTeacher?.map((teacherClass: any, index: number) => (
+                <MenuItem
+                  key={"class_key" + index}
+                  value={teacherClass.classId}>
                   {teacherClass.Class.name}
                 </MenuItem>
               ))}
@@ -144,7 +151,7 @@ function Notices() {
       )}
       <hr
         style={{
-          width: "60%",
+          width: "80%",
           opacity: "50%",
           margin: 0,
           marginLeft: "auto",
@@ -154,11 +161,11 @@ function Notices() {
       />
       <NoticeContainer>
         {notices.length ? (
-          notices.map((notice) => (
+          notices.map((notice, index) => (
             //@ts-ignore
             <SingleNotice
               notice={notice}
-              key={notice.id}
+              key={"notice_key" + index}
               deleteNotice={deleteNotice}
               userType={user.userType}
             />
@@ -222,7 +229,7 @@ const NoticeContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 2%;
-  max-height: 45vh;
+  max-height: 74vh;
   height: fit-content;
   overflow-y: scroll;
   /* box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset; */
