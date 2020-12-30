@@ -80,7 +80,7 @@ export default function QuizzesList() {
 
   // if (forms && userSubmissions) {
     // forms.length > 0 ? 
-    return forms ? (
+    return (forms && forms.length > 0) ? (
       <>
         <Container className={classes.container}>
           <Container className={classes.list}>

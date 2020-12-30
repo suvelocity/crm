@@ -76,6 +76,7 @@ export default function FormCreator() {
     []
   );
   const [isQuiz, setIsQuiz] = useState<boolean>(false);
+  // const [finishTitle, setFinishTitle] = useState<string>();
   // const { register, handleSubmit, control, watch, errors } = useForm();
   
   const onSubmit = async () => {
@@ -90,6 +91,7 @@ export default function FormCreator() {
     };
     // console.log(formattedData);
     const createdForm = await network.post("/api/v1/form/full", formattedData);
+    // setFinishTitle("well done");
   };
 
   const addField = () => {

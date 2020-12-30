@@ -413,6 +413,7 @@ export default function Field({
           <>
             <Input // field title
               className={classes.fieldInput}
+              fullWidth
               // inputRef={register({ required: true })}
               // name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
