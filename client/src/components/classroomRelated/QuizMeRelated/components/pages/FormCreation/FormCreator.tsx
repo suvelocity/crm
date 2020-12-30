@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     padding: "2em",
+    minWidth: '500px'
   },
   form: {
     padding: "1em",
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     border: "8px solid #6d90d4",
     borderRadius: "10px",
     width: "50vw",
+    minWidth: '450px'
   },
   flexCenter: {
     display: "flex",
@@ -103,7 +105,7 @@ export default function FormCreator() {
     if (typeId) {
       fieldsArr[index].typeId = typeId;
     }
-    if (title !== undefined) {
+    if (title || title === "") {
       fieldsArr[index].title = title;
     }
     if (options) {
@@ -173,6 +175,10 @@ export default function FormCreator() {
             <Field
               key={index}
               register={register}
+
+              Controller={Controller}
+              control={control}
+
               fieldIndex={index}
               typeId={field.typeId}
               value={field.title}

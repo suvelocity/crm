@@ -27,21 +27,35 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "#d6e4ff",
     borderRadius: "3px",
   },
+  fieldInput: {
+    margin: '0.5em 0'
+  },
   select: {
-    width: "10em",
-    // height: "1.5em"
+    width: "14em",
+    // height: "1em",
+    fontSize: "0.75em",
+    fontWeight: 600,
     display: "inline-block",
-    margin: "0 0.5em",
+    margin: "0 0.75em",
   },
   horizontalMargin: {
     margin: "0 0.5em",
   },
-  delete: {
+  deleteFieldWrapper: {
+    display: "flex",
+    flexDirection: "row-reverse",
+  },
+  deleteField: {
     cursor: "pointer",
+    position: "absolute",
   },
 }));
 interface IProps {
   register: any;
+
+  control: any;
+  Controller: any;
+
   fieldIndex: number;
   value: string;
   typeId: number | undefined;
@@ -57,6 +71,10 @@ interface IProps {
 export default function Field({
   ////////// RFC
   register,
+
+  control,
+  Controller,
+
   fieldIndex,
   value,
   typeId,
@@ -195,9 +213,37 @@ export default function Field({
   };
   return (
     <div className={classes.field}>
+      <div className={classes.deleteFieldWrapper}>
+        <DeleteIcon
+          className={classes.deleteField}
+          onClick={() => {
+            deleteField(fieldIndex);
+          }}
+        />
+      </div>
       <label htmlFor={`field[${fieldIndex}].title`}>
-        Question number {fieldIndex + 1}
+        Question #{fieldIndex + 1}
       </label>
+
+      <Controller
+        control={control}
+        name={`fields[${fieldIndex}].typeId`}
+        render={(
+          { onChange, onBlur, value, name, ref }: any,
+          { invalid, isTouched, isDirty }: any
+        ) => (
+          <Select
+            onChange={(e) => {
+              changeField(fieldIndex, Number(e!.value), undefined, options);
+            }}
+            className={classes.select}
+            options={fieldTypes}
+            value={fieldTypes.find((type) => type.value === typeId)}
+            // checked={value}
+            inputRef={ref}
+          />
+        )}
+      />
 
       {/* <Select
         options={fieldTypes}
@@ -210,33 +256,37 @@ export default function Field({
         }}
       /> */}
 
-            
-      <select  
+      {/* <select
         name={`fields[${fieldIndex}].typeId`}
         ref={register}
         onChange={(e) => {
-          console.log(e.target.value)
+          console.log(e.target.value);
           changeField(fieldIndex, Number(e.target.value), undefined, options);
         }}
       >
         <option value={2}>Open Question</option>
         <option value={1}>Select-One</option>
-      </select>
+      </select> */}
 
       <div>
         {typeId === 2 ? ( // 2 is the typeId of openQuestion
           // OPEN QUESTION
           <Input // field title
+            className={classes.fieldInput}
+            fullWidth
             inputRef={register({ required: true })}
             name={`fields[${fieldIndex}].title`}
             placeholder="Your Question"
             onChange={(e) => changeField(fieldIndex, undefined, e.target.value)}
+            // onChange={(e) => console.log(e)}
             value={value}
           />
         ) : (
           // SELECT-ONE | CHECKBOX
           <>
             <Input // field title
+              className={classes.fieldInput}
+              fullWidth
               inputRef={register({ required: true })}
               name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
@@ -274,12 +324,6 @@ export default function Field({
           </>
         )}
       </div>
-      <DeleteIcon
-        className={classes.delete}
-        onClick={() => {
-          deleteField(fieldIndex);
-        }}
-      />
       {/* {errors["isQuiz"] && <span>This field is required</span>} */}
     </div>
   );
