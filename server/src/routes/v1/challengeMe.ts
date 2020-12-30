@@ -24,7 +24,7 @@ interface ICMUser{
 }
 interface ICMEventRegistration{
   webhookUrl: string;  // webhook address to send events to you on
-  events: ("submitted Challenge"|"started Challenge")[];// array of strings, event names to listen for
+  events: ("Submitted Challenge"|"Started Challenge")[];// array of strings, event names to listen for
   authorizationToken: string; 
   // the requesting team's Access token to ChallengeMe
 }
@@ -55,15 +55,15 @@ interface ICMTeamResponse{
 router.post('/team/forClass/:id',async (req,res)=>{
   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
   
-  function generateUsername(email:string): string|never {
-    const regex = /[\n\w\.]*@[\n\w]*/
-    const match = email.match(regex)  
-    if(match){
-      const userName = match[0].replace('@','')
+  function generateUsername(firstName:string,lastName:string,idNumber:string): string {
+    // const regex = /[\n\w\.]*@[\n\w]*/
+    // const match = email.match(regex)  
+    // if(match){
+      const userName = firstName+lastName+String(idNumber!).substring(0,2)
       return userName;
-    }else{
-      throw `invalid email "${email}"` 
-    }
+    // }else{
+      // throw `invalid email "${email}"` 
+    // }
   }
   function composeMail(
   to: string,
@@ -92,17 +92,19 @@ suvelocity`,
   };
 
   try{
+
     if (!url||!cmAccess){
       throw `env variables missing ${url?'CM_ACCESS':'URL'}`
     }
 
     const {id} = req.params
+
     const classToAdd :IClass & {
       Teachers:ITeacher[],
       Students:IStudent[],
     } = await Class.findOne({
       where:{id},
-      include:['Students','Teachers','Course'],
+      include:['Students','Teachers'],
       attributes:['id','name','course','cycleNumber','cmId']
     })
     
@@ -111,15 +113,15 @@ suvelocity`,
     
     const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
     
-    if(cmId){throw "can't create with no teachers"}
+    if(cmId){throw "class already integrated"}
     
     if(!Teachers.length){throw "can't create with no teachers"}
     
     const leadersWithNoUser : {[key:number]:ICMUser} = {}
 
     const leaders :ICMTeam['leaders'] = Teachers
-    .map(({cmUser,email,id})=>{
-        const userName = cmUser || generateUsername(email)
+    .map(({cmUser,firstName,lastName,idNumber,email,id})=>{
+        const userName = cmUser || generateUsername(firstName,lastName,String(idNumber))
         if((!cmUser)&&id){
           leadersWithNoUser[id] = { email,userName } 
         }
@@ -127,10 +129,10 @@ suvelocity`,
     })
     
     const usersToCreate : ICMTeam['usersToCreate'] = Students
-    .map(({email})=>{
+    .map(({firstName,lastName,idNumber,email})=>{
       return {
         email,
-        userName: generateUsername(email)
+        userName: generateUsername(firstName,lastName,String(idNumber))
       }
     })
     .concat(Object.values(leadersWithNoUser))
@@ -139,7 +141,7 @@ suvelocity`,
     
     const eventsRegistration :ICMTeam['eventsRegistration'] = {
       webhookUrl: url+'/api/v1/event/challengeMe',
-      events:["submitted Challenge","Started Challenge"],
+      events:["Submitted Challenge","Started Challenge"],
       authorizationToken: cmAccess 
     }
     const CMTeam :Required< ICMTeam > = {
@@ -147,7 +149,7 @@ suvelocity`,
     }
     
     const {data}:{data:ICMTeamResponse} = await axios.post(
-      'http://35.239.15.221:8080/api/v1/webhooks/teams',
+      'http://35.239.15.221/api/v1/webhooks/teams',
       CMTeam,
       {
         headers:{
@@ -167,7 +169,7 @@ suvelocity`,
     } :ICMTeamResponse= data
     
     // record the class' CM id 
-    await Class.update({cmId:teamId},{where:{id}})
+    await Class.update({cmId:teamId},{where:{id:id}})
     
     // mail new users their new credentials 
     if(newUsers){ 
@@ -175,7 +177,7 @@ suvelocity`,
         return transporter.sendMail(composeMail(email,userName,password,course))
       }))
     }
-
+    // update teachers that didn't have a cmUser
     await Promise.all(
       Object.entries(leadersWithNoUser)
       .map(([userId,user])=>{
@@ -186,7 +188,7 @@ suvelocity`,
           }})
       })
     )
-      
+    
     res.json({
       message,
       teamId,
@@ -265,7 +267,7 @@ router.post('/webhook/forClass/:id',async (req,res)=>{
     
     const eventsRegistration :ICMTeam['eventsRegistration'] = {
       webhookUrl: url+'/api/v1/event/challengeMe',
-      events: ["submittedChallenge","startedChallenge"],
+      events: ["Submitted Challenge","Started Challenge"],
       authorizationToken: cmAccess 
     }
     const CMTeam :Required< ICMTeam > = {
