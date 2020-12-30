@@ -7,6 +7,7 @@ import axios from "axios";
 import { any } from "joi";
 const router = Router();
 require("dotenv").config();
+import { validateAdmin, validateTeacher } from "../../middlewares";
 
 const { CM_ACCESS } = process.env;
 
@@ -15,25 +16,29 @@ if (!CM_ACCESS) {
 }
 const challengeMe = "http://35.239.15.221:8080/api/v1";
 
-router.get("/challengeMe", async (req: Request, res: Response) => {
-  try {
-    const { name: query } = req.query;
-    const url = `${challengeMe}/challenges${query ? "?name=" + query : ""}`;
-    const { data } = await axios.get(url, {
-      headers: {
-        authorization: CM_ACCESS,
-      },
-    });
-    const challenges = data.map((challenge: any) => {
-      const { id: value, name: label } = challenge;
-      return { label, value: String(value) };
-    });
-    res.json(challenges);
-  } catch (error) {
-    console.trace(error);
-    res.json({ status: "error", message: error.message });
+router.get(
+  "/challengeMe",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const { name: query } = req.query;
+      const url = `${challengeMe}/challenges${query ? "?name=" + query : ""}`;
+      const { data } = await axios.get(url, {
+        headers: {
+          authorization: CM_ACCESS,
+        },
+      });
+      const challenges = data.map((challenge: any) => {
+        const { id: value, name: label } = challenge;
+        return { label, value: String(value) };
+      });
+      res.json(challenges);
+    } catch (error) {
+      console.trace(error);
+      res.json({ status: "error", message: error.message });
+    }
   }
-});
+);
 
 router.get("/quiz", async (req: Request, res: Response) => {
   const { name: query } = req.query;
@@ -57,25 +62,21 @@ router.get("/quiz", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/fccsingle", async (req: Request, res: Response) => {
-  try {
-    const fccArray = await fetchBulkFcc();
-    res.json(fccArray);
-  } catch (error) {
-    console.trace(error);
-    res.json({ status: "error", message: error.message });
-  }
-});
+// router.get("/fccsingle", async (req: Request, res: Response) => {
+//   try {
+//     const fccArray = await fetchBulkFcc();
+//     res.json(fccArray);
+//   } catch (error) {
+//     console.trace(error);
+//     res.json({ status: "error", message: error.message });
+//   }
+// });
 
-router.get("/fcc", async (req: Request, res: Response) => {
+router.get("/fcc", validateTeacher, async (req: Request, res: Response) => {
   try {
     const { name: query } = req.query;
     const string = "" + query;
     const fccArray = await fetchBlockChallenges(string.toLowerCase());
-    // const filtered = fccArray.filter((fccChallenge: any) => {
-    //   return fccChallenge.label.includes(string.toLowerCase());
-    // });
-
     res.json(fccArray);
   } catch (error) {
     console.trace(error);

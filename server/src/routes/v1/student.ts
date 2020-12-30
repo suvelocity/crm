@@ -34,25 +34,29 @@ const mailOptions = (to: string, password: string) => ({
 
 const router = Router();
 
-router.get("/byTeacher/:teacherId", async (req: Request, res: Response) => {
-  try {
-    const teacherId: string = req.params.teacherId;
-    const teacherClasses: any | null = await TeacherofClass.findAll({
-      include: [
-        { model: Class, attributes: ["id", "name"], include: [Student] },
-      ],
-      where: { teacherId },
-    });
+router.get(
+  "/byTeacher/:teacherId",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const teacherId: string = req.params.teacherId;
+      const teacherClasses: any | null = await TeacherofClass.findAll({
+        include: [
+          { model: Class, attributes: ["id", "name"], include: [Student] },
+        ],
+        where: { teacherId },
+      });
 
-    if (teacherClasses) {
-      return res.json(teacherClasses);
-    } else {
-      return res.status(404).json({ error: "Teacher don`t have classes" });
+      if (teacherClasses) {
+        return res.json(teacherClasses);
+      } else {
+        return res.status(404).json({ error: "Teacher don`t have classes" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
-});
+);
 
 router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   //@ts-ignore

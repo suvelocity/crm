@@ -273,6 +273,7 @@ router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
   res.json(result);
 });
 router.post("/challengeMe", async (req, res) => {
+  //todo add validate chllengeme!
   try {
     interface CM {
       eventName: "Submitted Challenge" | "Started Challenge";
