@@ -29,7 +29,7 @@ const router = Router();
           [Op.gte]:new Date()
         }
       }}]
-  })
+  });
   const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
   req.formIds=formIds
   next()
@@ -39,7 +39,7 @@ router.use(validateFormAccess)
 
 // GET ALL FORMS
 router.get("/all", async (req: any, res: Response) => {
-  const {formIds} = req
+  const {formIds} = req;
   const forms = await Form.findAll({
     where:{
       id:{
@@ -48,6 +48,8 @@ router.get("/all", async (req: any, res: Response) => {
     },
     attributes: ["id", "name", "isQuiz"],
   });
+  console.log("forms: ", forms);
+  
   return res.json(forms);
 });
 
@@ -152,8 +154,8 @@ router.post("/full", async (req: Request, res: Response) => {
       }
     }));
     let optionsArr: IOption[] = [];
-    fields.forEach((field: IField & {options: IOption[]}, fieldIndex: number) => {
-      (field.options) && field.options.forEach((option: IOption) => {
+    fields.forEach((field: IField & {Options: IOption[]}, fieldIndex: number) => {
+      (field.Options) && field.Options.forEach((option: IOption) => {
         const isCorrect = (option.isCorrect !== undefined) ? option.isCorrect : null; 
         optionsArr.push({
           title: option.title,

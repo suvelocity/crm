@@ -34,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "3px",
   },
   flexCenter: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: "1em"
-  }
+    display: "flex",
+    justifyContent: "center",
+    padding: "1em",
+  },
 }));
 
 export default function QuizzesList() {
@@ -78,8 +78,9 @@ export default function QuizzesList() {
     fetchQuizzes();
   }, []);
 
-  if (forms && userSubmissions) {
-    forms.length > 0 ? (
+  // if (forms && userSubmissions) {
+    // forms.length > 0 ? 
+    return forms ? (
       <>
         <Container className={classes.container}>
           <Container className={classes.list}>
@@ -123,9 +124,10 @@ export default function QuizzesList() {
       </Container>
     );
   }
-  return (
-    <Container className={classes.flexCenter}>
-      <Typography component={'span'}>No forms available</Typography>
-    </Container>
-  );
-}
+      // return (
+      //   <Container className={classes.flexCenter}>
+      //     <Typography component={"span"}>No forms available!!!!!!</Typography>
+      //   </Container>
+      // );
+
+// }
