@@ -41,7 +41,7 @@ function NewClassMentorProject() {
   const [filteredCls, setFilteredCls] = useState<Omit<IStudent, "Class">[]>(
     students
   );
-  const [available, setAvailble] = useState<boolean | string>(true);
+  const [available, setAvailble] = useState<boolean | string>('true');
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
