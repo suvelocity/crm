@@ -11,8 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Student, {
         foreignKey: "classId",
       });
-      this.hasMany(models.Teacher, {
-        foreignKey: "classId",
+      this.belongsToMany(models.Teacher, {
+        through: models.TeacherofClass,
+        foreignKey: 'classId',
+        otherKey: 'teacherId'
       });
       this.hasMany(models.Lesson, {
         foreignKey: "classId",
@@ -35,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
       zoomLink: DataTypes.STRING,
       additionalDetails: DataTypes.STRING,
       mentorProject: DataTypes.BOOLEAN,
+      cmId: DataTypes.STRING,
+
     },
     {
       sequelize,

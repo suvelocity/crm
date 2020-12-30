@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import {  fetchFCC } from "../../helper";
-import webhook from './webhook'
+import challengeMe from './challengeMe'
 import { checkToken, validateAdmin } from "../../middlewares";
 require("dotenv").config();
 
@@ -26,7 +26,7 @@ router.use("/notice", require("./notice"));
 // quizme routes
 router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
-router.use("/webhook", webhook);
+router.use("/challengeMe", challengeMe);
 
 router.use(unknownEndpoint);
 export default router;

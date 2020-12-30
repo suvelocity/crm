@@ -1,10 +1,11 @@
 import e, { Router, Request, Response } from "express";
 import axios from 'axios'
 //@ts-ignore
-import { Event, Student, Teacher, Company, Class } from "../../models";
+import db,{ Event, Student, Teacher, Company, Class, sequelize,} from "../../models";
 import { IClass, ITeacher, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
+import { QueryInterface } from "sequelize/types";
 
 const router = Router();
 
@@ -67,21 +68,24 @@ router.post('/team/forClass/:id',async (req,res)=>{
     })
     
     if(!classToAdd){throw 'no such class'}
-    res.json(classToAdd)
     
-    const {Students,Teachers,name,course,cycleNumber} = classToAdd 
+    
+    const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
+    
+    if(cmId){throw "can't create with no teachers"}
     if(!Teachers.length){throw "can't create with no teachers"}
     
-    const leadersWithNoUser : ICMUser[] = []
+    const leadersWithNoUser : {[key:number]:ICMUser} = {}
 
     const leaders :ICMTeam['leaders'] = Teachers
-    .map(({cm_user,email,})=>{
-        const userName = cm_user || generateUsername(email)
-        if(!cm_user){
-          leadersWithNoUser.push( { email,userName } )
+    .map(({cmUser,email,id})=>{
+        const userName = cmUser || generateUsername(email)
+        if((!cmUser)&&id){
+          leadersWithNoUser[id] = { email,userName } 
         }
         return { userName }
     })
+    
     const usersToCreate : ICMTeam['usersToCreate'] = Students
     .map(({email})=>{
       return {
@@ -89,7 +93,10 @@ router.post('/team/forClass/:id',async (req,res)=>{
         userName: generateUsername(email)
       }
     })
+    .concat(Object.values(leadersWithNoUser))
+
     const teamName : ICMTeam['teamName'] = `${course}(${cycleNumber}) "${name}"`
+    
     const eventsRegistration :ICMTeam['eventsRegistration'] = {
       webhookUrl: url+'/api/v1/event/challengeMe',
       events: ["submittedChallenge","startedChallenge"],
@@ -99,19 +106,30 @@ router.post('/team/forClass/:id',async (req,res)=>{
       leaders,usersToCreate, teamName, eventsRegistration
     }
     // const {data:response} = await axios.post(
-    //   'http://35.239.15.221:8080/api/v1/webhooks/teams',
-    //   CMTeam,
-    //   {
-    //     headers:{
-    //       Authorization: cmAccess
-    //     }
-    //   }
-    // )
-    // res.json(CMTeam)
-  }catch(err){
-    console.error(err)
-    res.json({
-      status:'error',
+      //   'http://35.239.15.221:8080/api/v1/webhooks/teams',
+      //   CMTeam,
+      //   {
+        //     headers:{
+          //       Authorization: cmAccess
+          //     }
+          //   }
+          // )
+          await Promise.all(
+            Object.entries(leadersWithNoUser)
+            .map(([userId,user])=>{
+            return Teacher.update(
+              {cmUser:user.userName},
+              {where:{
+                id:userId
+              }})
+          })
+          )
+          // res.json(classToAdd)          
+          res.json(CMTeam)
+        }catch(err){
+          console.error(err)
+          res.json({
+            status:'error',
       message:err
     })
   }
