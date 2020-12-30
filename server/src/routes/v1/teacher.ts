@@ -82,19 +82,7 @@ router.post("/", async (req: Request, res: Response) => {
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const teachers: ITeacher[] = await Teacher.findAll({
-      include: [
-        {
-          model: TeacherofClass,
-          as: "Classes",
-          attributes: ["classId"],
-          required: false,
-          include: [
-            {
-              model: Class,
-            },
-          ],
-        },
-      ],
+      include: [ 'Classes'],
     });
     res.json(teachers);
   } catch (error) {
@@ -110,25 +98,9 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
     const teacher: ITeacher = await Teacher.findByPk(req.params.id, {
       include: [
         {
-          model: TeacherofClass,
-          as: "Classes",
-          attributes: ["classId"],
+          model: Class,
+          // as: "Classes",
           required: false,
-          include: [
-            {
-              model: Class,
-              // include: [
-              //     {
-              //     model: Lesson,
-              //     include: [
-              //         {
-              //         model: Task,
-              //         },
-              //     ],
-              //     },
-              // ],
-            },
-          ],
         },
       ],
     });

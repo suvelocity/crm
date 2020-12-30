@@ -10,8 +10,9 @@ const unknownEndpoint = (req: Request, res: Response) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 
+router.use("/challengeMe", challengeMe);
 router.use("/auth", require("./auth"));
-// router.use(checkToken);
+router.use(checkToken);
 router.use("/class", validateAdmin, require("./class"));
 router.use("/job", validateAdmin, require("./job"));
 router.use("/student", require("./student"));
@@ -26,7 +27,6 @@ router.use("/notice", require("./notice"));
 // quizme routes
 router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
-router.use("/challengeMe", challengeMe);
 
 router.use(unknownEndpoint);
 export default router;

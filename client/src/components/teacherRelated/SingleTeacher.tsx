@@ -42,9 +42,9 @@ function SingleTeacher() {
       `/api/v1/teacher/byId/${id}`
     );
     console.log(data.Classes);
-    const classes: tempTeacherClass[] = data.Classes || [];
-    const classArray = classes.map((c: tempTeacherClass) => c.Class);
-    setClasses(classArray);
+    // const classes: tempTeacherClass[] = data.Classes || [];
+    // const classArray = classes.map((c: tempTeacherClass) => c.Class);
+    setClasses(data.Classes);
     setTeacher(data);
     setLoading(false);
   }, [id, setTeacher, setLoading, setClasses]);

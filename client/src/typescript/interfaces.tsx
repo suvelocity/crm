@@ -31,7 +31,7 @@ export interface ITeacher {
   email: string;
   phone: string;
   idNumber: string;
-  Classes?: { classId: string; Class: IClass }[];
+  Classes:  IClass[];
   Task?: ITask;
   Lesson?: ILesson;
   Notice?: INotice;

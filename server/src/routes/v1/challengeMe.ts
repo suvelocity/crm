@@ -38,6 +38,18 @@ interface ICMTeam{
   eventsRegistration?: ICMEventRegistration //  Webhook registration data to register a webhook for the team
 
 }
+interface ICMTeamResponse{
+  message: string;
+  leaders: { userName:string}[];
+  teamId: string;
+  newUsers?:{
+    userName: string;
+    email: string;
+    password: string;
+  };
+  eventRegistrationStatus:201;
+  eventRegistrationMessage: string;
+}
 
 router.post('/team/forClass/:id',async (req,res)=>{
   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
@@ -57,6 +69,7 @@ router.post('/team/forClass/:id',async (req,res)=>{
     if (!url||!cmAccess){
       throw `env variables missing ${url?'CM_ACCESS':'URL'}`
     }
+
     const {id} = req.params
     const classToAdd :IClass & {
       Teachers:ITeacher[],
@@ -64,7 +77,7 @@ router.post('/team/forClass/:id',async (req,res)=>{
     } = await Class.findOne({
       where:{id},
       include:['Students','Teachers'],
-      attributes:['name','course']
+      attributes:['id','name','course','cycleNumber','cmId']
     })
     
     if(!classToAdd){throw 'no such class'}
@@ -73,6 +86,7 @@ router.post('/team/forClass/:id',async (req,res)=>{
     const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
     
     if(cmId){throw "can't create with no teachers"}
+    
     if(!Teachers.length){throw "can't create with no teachers"}
     
     const leadersWithNoUser : {[key:number]:ICMUser} = {}
@@ -95,7 +109,7 @@ router.post('/team/forClass/:id',async (req,res)=>{
     })
     .concat(Object.values(leadersWithNoUser))
 
-    const teamName : ICMTeam['teamName'] = `${course}(${cycleNumber}) "${name}"`
+    const teamName : ICMTeam['teamName'] = `${course}${cycleNumber}${name}`.slice(0,32).replace(' ','')
     
     const eventsRegistration :ICMTeam['eventsRegistration'] = {
       webhookUrl: url+'/api/v1/event/challengeMe',
@@ -105,17 +119,28 @@ router.post('/team/forClass/:id',async (req,res)=>{
     const CMTeam :Required< ICMTeam > = {
       leaders,usersToCreate, teamName, eventsRegistration
     }
-    res.json(CMTeam)
-    // const {data:response} = await axios.post(
-    //   'http://35.239.15.221:8080/api/v1/webhooks/teams',
-    //   CMTeam,
-    //   {
-    //     headers:{
-    //       Authorization: cmAccess
-    //     }
-    //   }
-    // )
-    //TODO: update class with cmId
+    const {data}:{data:ICMTeamResponse} = await axios.post(
+      'http://35.239.15.221:8080/api/v1/webhooks/teams',
+      CMTeam,
+      {
+        headers:{
+          Authorization: cmAccess
+        }
+      }
+    ).catch(e=>{
+      throw e.response.data
+    })
+
+    console.log(data)
+    const { 
+      eventRegistrationMessage,
+      eventRegistrationStatus,
+      teamId,
+      message,
+      newUsers
+    } = data
+    
+    await Class.update({cmId:teamId},{where:{id}})
     await Promise.all(
       Object.entries(leadersWithNoUser)
       .map(([userId,user])=>{
@@ -126,11 +151,136 @@ router.post('/team/forClass/:id',async (req,res)=>{
           }})
         })
       )
-    }catch(err){
+    res.json({
+      message,
+      teamId,
+      eventRegistrationMessage,
+      eventRegistrationStatus,
+      newUsers
+    })
+    
+  }catch(err){
     console.error(err)
     res.json({
       status:'error',
-      message:err
+      message:err.message?err.message:err,
+      error:err.isAxiosError?err.response:undefined
+    })
+  }
+})
+
+router.post('/webhook/forClass/:id',async (req,res)=>{
+  const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
+  
+  function generateUsername(email:string): string|never {
+    const regex = /[\n\w\.]*@[\n\w]*/
+    const match = email.match(regex)  
+    if(match){
+      const userName = match[0].replace('@','')
+      return userName;
+    }else{
+      throw `invalid email "${email}"` 
+    }
+  }
+  
+  try{
+    if (!url||!cmAccess){
+      throw `env variables missing ${url?'CM_ACCESS':'URL'}`
+    }
+
+    const {id} = req.params
+    const classToAdd :IClass & {
+      Teachers:ITeacher[],
+      Students:IStudent[]
+    } = await Class.findOne({
+      where:{id},
+      include:['Students','Teachers'],
+      attributes:['id','name','course','cycleNumber','cmId']
+    })
+    
+    if(!classToAdd){throw 'no such class'}
+    
+    
+    const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
+    
+    if(cmId){throw "can't create with no teachers"}
+    
+    if(!Teachers.length){throw "can't create with no teachers"}
+    
+    const leadersWithNoUser : {[key:number]:ICMUser} = {}
+
+    const leaders :ICMTeam['leaders'] = Teachers
+    .map(({cmUser,email,id})=>{
+        const userName = cmUser || generateUsername(email)
+        if((!cmUser)&&id){
+          leadersWithNoUser[id] = { email,userName } 
+        }
+        return { userName }
+    })
+    
+    const usersToCreate : ICMTeam['usersToCreate'] = Students
+    .map(({email})=>{
+      return {
+        email,
+        userName: generateUsername(email)
+      }
+    })
+    .concat(Object.values(leadersWithNoUser))
+
+    const teamName : ICMTeam['teamName'] = `${course}${cycleNumber}${name}`.slice(0,32).replace(' ','')
+    
+    const eventsRegistration :ICMTeam['eventsRegistration'] = {
+      webhookUrl: url+'/api/v1/event/challengeMe',
+      events: ["submittedChallenge","startedChallenge"],
+      authorizationToken: cmAccess 
+    }
+    const CMTeam :Required< ICMTeam > = {
+      leaders,usersToCreate, teamName, eventsRegistration
+    }
+    const {data} = await axios.post(
+      'http://35.239.15.221:8080/api/v1/webhooks/teams',
+      CMTeam,
+      {
+        headers:{
+          Authorization: cmAccess
+        }
+      }
+    ).catch(e=>{
+      throw e.response.data
+    })
+
+    console.log(data)
+    const { 
+      eventRegistrationMessage,
+      eventRegistrationStatus,
+      teamId,
+      message
+    } = data
+    
+    await Class.update({cmId:teamId},{where:{id}})
+    await Promise.all(
+      Object.entries(leadersWithNoUser)
+      .map(([userId,user])=>{
+        return Teacher.update(
+          {cmUser:user.userName},
+          {where:{
+            id:userId
+          }})
+        })
+      )
+    res.json({
+      message,
+      teamId,
+      eventRegistrationMessage,
+      eventRegistrationStatus,
+    })
+    
+  }catch(err){
+    console.error(err)
+    res.json({
+      status:'error',
+      message:err.message?err.message:err,
+      error:err.isAxiosError?err.response:undefined
     })
   }
 })
@@ -191,7 +341,7 @@ router.post('/signup',async (req,res)=>{
       res.json(team)
     }catch(err){
       console.error(err)
-      res.json({status:'error',message:err.message})
+      res.json({status:'error',message:err.message?err.message:''})
     }
 })
 
