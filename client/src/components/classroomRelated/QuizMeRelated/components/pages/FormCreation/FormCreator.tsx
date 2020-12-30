@@ -100,19 +100,24 @@ export default function FormCreator() {
     });
     setFields(newFields);
   };
+  const changeFieldTitle = (fieldIndex: number, title: string) => {
+    const fieldsArr = fields.slice();
+    fieldsArr[fieldIndex].title = title;
+    setFields(fieldsArr);
+  };
   const changeField = (
     index: number,
     typeId?: number,
-    title?: string,
+    // title?: string,
     options?: IOption[]
   ) => {
     const fieldsArr = fields.slice();
     if (typeId) {
       fieldsArr[index].typeId = typeId;
     }
-    if (title || title === "") {
-      fieldsArr[index].title = title;
-    }
+    // if (title || title === "") {
+    //   fieldsArr[index].title = title;
+    // }
     if (options) {
       fieldsArr[index].Options = options;
     }
@@ -187,8 +192,10 @@ export default function FormCreator() {
               control={control}
               fieldIndex={index}
               typeId={field.typeId}
+              typeIndex={field.typeId-1}
               value={field.title}
               changeField={changeField}
+              changeFieldTitle={changeFieldTitle}
               deleteField={deleteField}
               isQuiz={isQuiz}
             />

@@ -10,6 +10,7 @@ import {
   Typography,
   Chip,
   Input,
+  // Select
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -21,6 +22,7 @@ import {
   IOption,
 } from "../../../../../../typescript/interfaces";
 import Option from "./Option";
+import { type } from "os";
 const useStyles = makeStyles(() => ({
   field: {
     margin: "1em 0",
@@ -52,7 +54,7 @@ const useStyles = makeStyles(() => ({
   },
   addOption: {
     cursor: "pointer",
-  },
+  }
 }));
 interface IProps {
   register: any;
@@ -63,27 +65,32 @@ interface IProps {
   fieldIndex: number;
   value: string;
   typeId: number | undefined;
+  typeIndex: number;
   isQuiz: boolean;
   changeField: (
     index: number,
     typeId?: number,
-    title?: string,
+    // title?: string,
     options?: IOption[]
+  ) => void;
+  changeFieldTitle: (
+    index: number,
+    title: string
   ) => void;
   deleteField: (index: number) => void;
 }
 export default function Field({
   ////////// RFC
   register,
-
   control,
   Controller,
-
   fieldIndex,
   value,
   typeId,
+  typeIndex,
   isQuiz,
   changeField,
+  changeFieldTitle,
   deleteField,
 }: IProps) {
   const classes = useStyles();
@@ -171,8 +178,8 @@ export default function Field({
   }, [isQuiz]);
 
   const fieldTypes = [
-    { value: 2, label: "Open Question" },
     { value: 1, label: "Select-One" },
+    { value: 2, label: "Open Question" }
   ];
   const addOption = (e: any) => {
     e.preventDefault();
@@ -200,7 +207,7 @@ export default function Field({
     optionsArr[index].title =
       title || title === "" ? title : options[index].title;
     setOptions(optionsArr);
-    changeField(fieldIndex, undefined, undefined, optionsArr);
+    changeField(fieldIndex, undefined, optionsArr);
   };
   const selectCorrectOption = (correctOptionIndex: number) => {
     console.log("this option: ", options[correctOptionIndex].isCorrect);
@@ -212,7 +219,7 @@ export default function Field({
           : { ...option, isCorrect: false }
       );
       setOptions(optionsArr);
-      changeField(fieldIndex, undefined, undefined, optionsArr);
+      changeField(fieldIndex, undefined, optionsArr);
     }
   };
   return (
@@ -238,15 +245,12 @@ export default function Field({
         ) => (
           <Select
             onChange={(e) => {
-              changeField(fieldIndex, e!.value, undefined, options);
+              changeField(fieldIndex, e!.value);
             }}
             className={classes.select}
             options={fieldTypes}
-            value={fieldTypes.find((type) => {
-              
-              return type.value === typeId
-            })}
-            // checked={value}
+            value={fieldTypes[typeIndex]}
+            // getValue={() => fieldTypes.find(field => field.value === typeId)}
             inputRef={ref}
           />
         )}
@@ -284,7 +288,12 @@ export default function Field({
             inputRef={register({ required: true })}
             name={`fields[${fieldIndex}].title`}
             placeholder="Your Question"
-            onChange={(e) => changeField(fieldIndex, undefined, e.target.value)}
+            onChange={(e) => {
+              console.log("inputValue: ", e.target.value);
+              // console.log("state value: ", value);
+              
+              changeFieldTitle(fieldIndex, e.target.value)
+            }}
             // onChange={(e) => console.log(e)}
             value={value}
           />
@@ -298,7 +307,7 @@ export default function Field({
               name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
               onChange={(e) =>
-                changeField(fieldIndex, undefined, e.target.value)
+                changeFieldTitle(fieldIndex, e.target.value)
               }
               value={value}
             />
