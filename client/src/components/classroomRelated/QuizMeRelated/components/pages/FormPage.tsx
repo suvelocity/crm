@@ -40,6 +40,7 @@ export default function FormPage(props: IProps) {
   const [finishTitle, setFinishTitle] = useState<string>();
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = async (formSubmission: any) => {
+    // setFormSubmitted(true);
     try {
       const studentId = 1;
       let fieldSubsArr = [];
@@ -54,7 +55,6 @@ export default function FormPage(props: IProps) {
       setFinishTitle("Well done, from submitted successfully");
     } catch (error) {
       setFinishTitle(error.message);
-      console.log(error);
     }
   };
 

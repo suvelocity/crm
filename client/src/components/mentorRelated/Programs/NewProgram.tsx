@@ -140,6 +140,9 @@ const NewProgram: React.FC = () => {
                     },
                   })}
                   label="Program Name"
+                  onChange={(e) => {
+                    setProgramName(e.target.value)
+                  }}
                 />
                 {!empty ? (
                   errors.name ? (

@@ -22,6 +22,7 @@ import { flatMap, flatten, orderBy, reduce } from "lodash";
 import { parse } from "dotenv/types";
 import { object } from "joi";
 //TODO fix types
+
 export const cancelAllJobsOfStudent: (
   studentId: number,
   hiredJobId: number,
@@ -190,7 +191,7 @@ export const fetchFCC: () => void = async () => {
     date = new Date(
       (
         await Event.findOne({
-          where: { eventName: "FCC_SUBMIT_SUCCESS" },
+          where: { eventName: "FCC_BULK_SUCCESS" }, // can change to FCC_SUBMIT_SUCCESS for single tasks
           order: [["updatedAt", "DESC"]],
         })
       ).toJSON().createdAt
@@ -203,7 +204,11 @@ export const fetchFCC: () => void = async () => {
   try {
     const studentsData: any = (
       await Student.findAll(getQuery(["fcc", "id"], true, true))
-    ).map((a: any) => a.toJSON());
+    )
+      .filter((student: IStudent) => {
+        student.fccAccount;
+      })
+      .map((a: any) => a.toJSON());
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
@@ -218,47 +223,48 @@ export const fetchFCC: () => void = async () => {
     ).data;
 
     //TODO fix types
+    //! bottom code is for single fcc subtasks, we may support this in the future
+    // const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
+    //   const username = userEvents.username;
+    //   const { id: userId } = studentsData.find(
+    //     (sd: any) => sd.fcc_account === username
+    //   );
+    //   const newSolvedChallengesIds: string[] = userEvents.progress.map(
+    //     (challenge: any) => challenge.id
+    //   );
 
-    const parsedEvents: IEvent[] = flatMap(fccEvents[0], (userEvents: any) => {
-      const username = userEvents.username;
-      const { id: userId } = studentsData.find(
-        (sd: any) => sd.fcc_account === username
-      );
-      const newSolvedChallengesIds: string[] = userEvents.progress.map(
-        (challenge: any) => challenge.id
-      );
+    //   TaskofStudent.findAll({
+    //     where: { student_id: userId, status: !"done", type: "fcc" },
+    //     include: [{ model: Task, attributes: ["id", "externalId"] }],
+    //   }).then((unfinishedTOS: any) => {
+    //     Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
+    //       unfinishedTask = unfinishedTask.toJSON();
 
-      TaskofStudent.findAll({
-        where: { student_id: userId, status: !"done", type: "fcc" },
-        include: [{ model: Task, attributes: ["id", "externalId"] }],
-      }).then((unfinishedTOS: any) => {
-        Array.from(unfinishedTOS).forEach((unfinishedTask: any) => {
-          unfinishedTask = unfinishedTask.toJSON();
-          let match = newSolvedChallengesIds.includes(
-            unfinishedTask.Task.externalId
-          );
-          if (match)
-            TaskofStudent.update(
-              { status: "done" },
-              { where: { id: unfinishedTask.id } }
-            );
-        });
-      });
+    //       let match = newSolvedChallengesIds.includes(
+    //         unfinishedTask.Task.externalId
+    //       );
+    //       if (match)
+    //         TaskofStudent.update(
+    //           { status: "done" },
+    //           { where: { id: unfinishedTask.id } }
+    //         );
+    //     });
+    //   });
 
-      return userEvents.progress.map((challenge: any) => {
-        const parsedEvent: IEvent = {
-          relatedId: challenge.id,
-          userId: userId,
-          eventName: "FCC_SUBMIT_SUCCESS",
-          type: "fcc",
-          date: challenge.completedDate,
-        };
-        if (challenge.hasOwnProperty("repetition")) {
-          parsedEvent.entry!.repetition = challenge.repetition;
-        }
-        return parsedEvent;
-      });
-    });
+    //   return userEvents.progress.map((challenge: any) => {
+    //     const parsedEvent: IEvent = {
+    //       relatedId: challenge.id,
+    //       userId: userId,
+    //       eventName: "FCC_SUBMIT_SUCCESS",
+    //       type: "fcc",
+    //       date: challenge.completedDate,
+    //     };
+    //     if (challenge.hasOwnProperty("repetition")) {
+    //       parsedEvent.entry!.repetition = challenge.repetition;
+    //     }
+    //     return parsedEvent;
+    //   });
+    // });
 
     const parsedBulkEvents: IEvent[] = flatMap(
       fccEvents[1],
@@ -308,11 +314,12 @@ export const fetchFCC: () => void = async () => {
       }
     );
 
-    await Event.bulkCreate([...parsedEvents, ...parsedBulkEvents]);
+    // await Event.bulkCreate([...parsedEvents, ...parsedBulkEvents]); // bothe single and bulk fcc tasks
+    await Event.bulkCreate(parsedBulkEvents);
 
     return {
       success: true,
-      newEvents: parsedEvents.length,
+      // newEvents: parsedEvents.length, //single tasks
       newBulks: parsedBulkEvents.length,
     };
   } catch (err) {
@@ -381,41 +388,3 @@ export const parseFilters: (stringified: string) => any = (
     return undefined;
   }
 };
-
-// export const newparseFilters: (
-//   stringifiedFilter: string,
-//   outputTemplate: object,
-//   fields: object
-// ) => object = (
-//   stringifiedFilter: string,
-//   outputTemplate: object,
-//   fields: object
-// ) => {
-//   try {
-
-//     const parsedFilter: object = JSON.parse(stringifiedFilter);
-//     for(let filter in parsedFilter) {
-//       //@ts-ignore
-//       // const aba:object = Object.values(parsedFilter[filter]).reduce((ima:object,filterField:Array<string|object>)=>{
-//       //   const [key,value] = filterField;
-//       //   if(typeof value !== object && typeof value !== null) {
-//       //     ima.id = value;
-//       //     return ima;
-//       //   }
-// if(typeof parsedFilter[filter]!== object && typeof parsedFilter[filter]!==null) {
-//   outputTemplate[filter] = parsedFilter[filter]
-// }
-
-//       },{})
-
-//     }
-//   }catch(e){
-//     return e;
-//     // return {err:e, message:"Can't parse filters"}
-//   }
-
-//   }
-// //   return Object.values(fields).reduce((output:object,field:string)=>{
-// // if
-//   // },outputTemplate)
-// };

@@ -8,6 +8,7 @@ import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
+import { validateTeacher } from "../../middlewares";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -49,53 +50,57 @@ const createTask = async (req: Request, res: Response) => {
 
 router.use("/challenges", challenges);
 
-router.get("/byteacherid/:id", async (req: Request, res: Response) => {
-  const { filters } = req.query;
-  const parsedFilters = parseFilters(filters as string);
+router.get(
+  "/byteacherid/:id",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    const { filters } = req.query;
+    const parsedFilters = parseFilters(filters as string);
 
-  try {
-    const tosWhereCLause: any = {
-      created_by: req.params.id,
-    };
-    const studentWhereClause: any = parsedFilters.student;
-    Object.assign(tosWhereCLause, parsedFilters.task);
+    try {
+      const tosWhereCLause: any = {
+        created_by: req.params.id,
+      };
+      const studentWhereClause: any = parsedFilters.student;
+      Object.assign(tosWhereCLause, parsedFilters.task);
 
-    const myTasks: any[] = await Task.findAll({
-      where: tosWhereCLause,
-      include: [
-        {
-          model: TaskofStudent,
-          attributes: ["studentId", "status", "submitLink", "updatedAt"],
-          required: true,
-          include: [
-            {
-              model: Student,
-              attributes: ["firstName", "lastName"],
-              required: true,
-              include: [
-                {
-                  model: Class,
-                  required: true,
-                  attributes: ["id", "name", "endingDate"],
-                  where: studentWhereClause,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: Lesson,
-          attributes: ["title"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
+      const myTasks: any[] = await Task.findAll({
+        where: tosWhereCLause,
+        include: [
+          {
+            model: TaskofStudent,
+            attributes: ["studentId", "status", "submitLink", "updatedAt"],
+            required: true,
+            include: [
+              {
+                model: Student,
+                attributes: ["firstName", "lastName"],
+                required: true,
+                include: [
+                  {
+                    model: Class,
+                    required: true,
+                    attributes: ["id", "name", "endingDate"],
+                    where: studentWhereClause,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: Lesson,
+            attributes: ["title"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
 
-    return res.json(myTasks);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+      return res.json(myTasks);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 router.get("/options/:id", async (req: Request, res: Response) => {
   const id: string = req.params.id;
@@ -127,6 +132,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
         {
           model: Task,
           include: [{ model: Lesson, attributes: ["id", "title"] }],
+          where: { status: "active" },
         },
       ],
     });
@@ -136,79 +142,85 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   }
 });
 
-//todo support post of array of tasks
-//posts a single task to entire class
-router.post("/toclass/:classid", async (req: Request, res: Response) => {
-  try {
-    const task = await createTask(req, res);
-    const classStudents = await Class.findByPk(req.params.classid, {
-      attributes: ["id", "name"],
-      include: [
-        {
-          model: Student,
-          attributes: ["id"],
-        },
-      ],
-    });
-    const idArr = classStudents.Students;
-    if (task) {
-      const taskArr = await idArr.map(
-        (student: any): ITaskofStudent => {
-          return {
-            studentId: student.id,
-            //@ts-ignore
-            taskId: task.id,
-            //@ts-ignore
-            type: task.type,
-            status: "pending",
-            submitLink: "",
-            description: "",
-          };
-        }
-      );
+router.post(
+  "/toclass/:classid",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const task = await createTask(req, res);
+      const classStudents = await Class.findByPk(req.params.classid, {
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: Student,
+            attributes: ["id"],
+          },
+        ],
+      });
+      const idArr = classStudents.Students;
+      if (task) {
+        const taskArr = await idArr.map(
+          (student: any): ITaskofStudent => {
+            return {
+              studentId: student.id,
+              //@ts-ignore
+              taskId: task.id,
+              //@ts-ignore
+              type: task.type,
+              status: "pending",
+              submitLink: "",
+              description: "",
+            };
+          }
+        );
 
-      const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
-        taskArr
-      );
+        const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
+          taskArr
+        );
+      }
+
+      return res.status(200).json(task);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-
-    return res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
-});
+);
 
 //posts a single toask to 1 or more students
-router.post("/tostudents", async (req: Request, res: Response) => {
-  try {
-    const task = await createTask(req, res);
-    const { idArr } = req.body;
-    if (task) {
-      const taskArr = await idArr.map(
-        (studentId: number): ITaskofStudent => {
-          return {
-            studentId: studentId,
-            //@ts-ignore
-            taskId: task.id,
-            //@ts-ignore
-            type: task.type,
-            status: "pending",
-            submitLink: "",
-            description: "",
-          };
-        }
-      );
+router.post(
+  "/tostudents",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const task = await createTask(req, res);
+      const { idArr } = req.body;
+      if (task) {
+        const taskArr = await idArr.map(
+          (studentId: number): ITaskofStudent => {
+            return {
+              studentId: studentId,
+              //@ts-ignore
+              taskId: task.id,
+              //@ts-ignore
+              type: task.type,
+              status: "pending",
+              submitLink: "",
+              description: "",
+            };
+          }
+        );
 
-      const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
-        taskArr
-      );
+        const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
+          taskArr
+        );
+      }
+
+      return res.status(200).json(task);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-
-    return res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
-});
+);
 
 //todo support 3rd party apps fcc/challengeme
 
@@ -234,7 +246,7 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", validateTeacher, async (req: Request, res: Response) => {
   try {
     const task = req.body;
     const { error } = taskSchema.validate(task);
@@ -250,7 +262,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", validateTeacher, async (req: Request, res: Response) => {
   try {
     const deleted = await Task.destroy({ where: { id: req.params.id } });
     const deleteFromStudents = await TaskofStudent.destroy({
@@ -264,12 +276,13 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-//* checks submitted external task
-router.post("/checksubmit", async (req: Request, res: Response) => {
+// //* checks submitted external task
+router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
+  const { studentId } = req.params;
   try {
     const unfinishedTasks: any = await TaskofStudent.findAll({
       where: {
-        studentId: req.body.studentId,
+        studentId: studentId,
         type: !"manual",
         status: !"done",
       },
@@ -282,11 +295,12 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           try {
             const event: any = await Event.findOne({
               where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "FCC_SUBMIT_SUCCESS", //!check if this will be the name of the event
+                userId: studentId,
+                eventName: "FCC_BULK_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
+
             if (event) {
               await TaskofStudent.update(
                 {
@@ -299,14 +313,14 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
-        case "challenge":
+        case "challengeMe":
           try {
-            const event: any = await Event.findAll({
+            const event: any = await Event.findOne({
               where: {
-                userId: req.body.studentId, //!check if this will be userid or studentid
-                eventName: "CHALLENGEME_SUBMIT_SUCCESS",
+                userId: studentId,
+                eventName: "CM_SUBMITTED_CHALLENGE_SUCCESS",
                 relatedId: task.Task.externalId,
-              }, //todo create this event
+              },
             });
             if (event) {
               await TaskofStudent.update(
@@ -320,6 +334,27 @@ router.post("/checksubmit", async (req: Request, res: Response) => {
           } catch (error) {
             return;
           }
+        // case "quizMe":
+        //   try {
+        //     const event: any = await Event.findAll({
+        //       where: {
+        //         userId: studentId,
+        //         eventName: "QM_SUBMITTED", //todo check with nir
+        //         relatedId: task.Task.externalId,
+        //       },
+        //     });
+        //     if (event) {
+        //       await TaskofStudent.update(
+        //         {
+        //           status: "done",
+        //         },
+        //         { where: { id: task.id } }
+        //       );
+        //     }
+        //     return;
+        //   } catch (error) {
+        //     return;
+        //   }
 
         default:
           break;

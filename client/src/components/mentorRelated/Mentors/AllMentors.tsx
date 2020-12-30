@@ -218,37 +218,43 @@ function AllMentors() {
               </TableHeader>
             </li>
           )}
-          {mentors &&
-            mentors.map((mentor) => (
-              <li>
-                <StyledDiv repeatFormula="0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr">
-                  <PersonIcon />
-                  <StyledLink color="black" to={`/mentor/${mentor?.id}`}>
-                    <StyledSpan weight="bold">
-                      {capitalize(mentor.name)}
+          {mentors && (
+            <div style={{ overflow: "scroll", maxHeight: 500 }}>
+              {mentors.map((mentor) => (
+                <li>
+                  <StyledDiv repeatFormula="0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr">
+                    <PersonIcon />
+                    <StyledLink color="black" to={`/mentor/${mentor?.id}`}>
+                      <StyledSpan weight="bold">
+                        {capitalize(mentor.name)}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
+                    <StyledSpan>{mentor.email}</StyledSpan>
+                    {/* <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan> */}
+                    <StyledSpan>{mentor.address}</StyledSpan>
+                    <StyledSpan>{mentor.role}</StyledSpan>
+                    <StyledSpan>{mentor.experience}</StyledSpan>
+                    <StyledSpan>{mentor.gender}</StyledSpan>
+                    <StyledSpan>
+                      <Switch
+                        checked={mentor.available}
+                        onChange={() =>
+                          changeAvailabilityOfMentor(
+                            mentor?.id,
+                            mentor.available
+                          )
+                        }
+                        color="primary"
+                        name="checkedB"
+                        inputProps={{ "aria-label": "primary checkbox" }}
+                      />
                     </StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
-                  <StyledSpan>{mentor.email}</StyledSpan>
-                  {/* <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan> */}
-                  <StyledSpan>{mentor.address}</StyledSpan>
-                  <StyledSpan>{mentor.role}</StyledSpan>
-                  <StyledSpan>{mentor.experience}</StyledSpan>
-                  <StyledSpan>{mentor.gender}</StyledSpan>
-                  <StyledSpan>
-                    <Switch
-                      checked={mentor.available}
-                      onChange={() =>
-                        changeAvailabilityOfMentor(mentor?.id, mentor.available)
-                      }
-                      color="primary"
-                      name="checkedB"
-                      inputProps={{ "aria-label": "primary checkbox" }}
-                    />
-                  </StyledSpan>
-                </StyledDiv>
-              </li>
-            ))}
+                  </StyledDiv>
+                </li>
+              ))}
+            </div>
+          )}
         </StyledUl>
       </Loading>
     </Wrapper>

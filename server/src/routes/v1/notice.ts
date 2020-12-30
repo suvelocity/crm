@@ -4,9 +4,10 @@ const router = Router();
 import { Teacher, Notice } from "../../models";
 import { INotice } from "../../types";
 import { noticeSchema } from "../../validations";
+import { validateTeacher } from "../../middlewares";
 
 //create a nottice
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateTeacher, async (req: Request, res: Response) => {
   try {
     const { classId, type, body, createdBy } = req.body;
     const { error } = noticeSchema.validate({
@@ -35,7 +36,7 @@ router.get("/byclass/:id", async (req: Request, res: Response) => {
     const notices: INotice[] = await Notice.findAll({
       where: { classId: paramsId },
       include: [{ model: Teacher, attributes: ["firstName", "lastName"] }],
-      // order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
     if (notices) return res.json(notices);
     res.status(404).json({ error: "notices not found" });
@@ -44,20 +45,24 @@ router.get("/byclass/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/byid/:id", async (req: Request, res: Response) => {
-  const paramsId: string = req.params.id;
-  try {
-    await Notice.update(
-      {
-        body: req.body.body,
-      },
-      { where: { id: paramsId } }
-    );
-    return res.json("updated sucsessfuly");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+router.put(
+  "/byid/:id",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    const paramsId: string = req.params.id;
+    try {
+      await Notice.update(
+        {
+          body: req.body.body,
+        },
+        { where: { id: paramsId } }
+      );
+      return res.json("updated sucsessfuly");
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 router.delete("/:id", async (req: Request, res: Response) => {
   const paramsId: string = req.params.id;

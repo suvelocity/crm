@@ -99,6 +99,7 @@ export const StyledDiv = styled.div`
 
 export const StyledSpan = styled.span`
   font-size: 16px;
+  padding-right: 7px;
   font-weight: ${(props: { weight: string }) =>
     props.weight === "bold" && "bold"};
 `;
@@ -147,7 +148,7 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
-  top: ${(props: { top: string }) => props.top || "25px"};
+  top: ${(props: { top: string }) => props.top || "30px"};
 `;
 
 export const StyledAtavLink = styled.a`

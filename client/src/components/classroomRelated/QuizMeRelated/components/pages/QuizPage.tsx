@@ -161,8 +161,7 @@ export default function QuizPage(props: IProps) {
                 <Typography
                   component={"h6"}
                   variant={"h6"}
-                  className={classes.timeRemaining}
-                >
+                  className={classes.timeRemaining}>
                   Time Remaining: {minutes}:
                   {seconds < 10 ? "0" + seconds : seconds}
                   <AccessAlarmIcon className={classes.clockIcon} />
@@ -181,8 +180,12 @@ export default function QuizPage(props: IProps) {
                           findSelectedAnswerIdByTitle(e.target.innerText)
                         );
                       }}
+<<<<<<< HEAD
                       className={classes.field}
                     >
+=======
+                      className={classes.field}>
+>>>>>>> dev
                       <ListItemText
                         primary={`${option.title}`}
                         disableTypography
