@@ -899,9 +899,9 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
-  
+
       //#endregion
-  
+
       //#region Excellentteam students
       {
         first_name: "abeer",
@@ -1169,7 +1169,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
-  
+
       {
         first_name: "אור",
         last_name: "שרוני",
@@ -1182,8 +1182,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "האוניברסיטה הפ סיים ב.      עם ממוצע 84 בתאריך 2021,ת",
+        academic_background: "האוניברסיטה הפתחוה סיים עם ממוצע 84 בתאריך 2021",
       },
       {
         first_name: "אביגיל",
@@ -1198,7 +1197,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         academic_background:
-          "סמינר בנות אלישבע-תואר הנדסאי ממשרד הח סיים ב.      עם ממוצע 98 בתאריך 2017",
+          "סמינר בנות אלישבע-תואר הנדסאי סיים עם ממוצע 98 בתאריך 2017",
       },
       {
         first_name: "אביטל",
@@ -1213,7 +1212,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         academic_background:
-          "הדסה - קמפוס שטראו. סיים עם ממוצע 95 בתאריך 9.202",
+          "הדסה - קמפוס שטראוס סיים עם ממוצע 95 בתאריך 9.202",
       },
       {
         first_name: "אורפז",
@@ -1241,8 +1240,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "מכון לב - לו סיים ב.      עם ממוצע 91 בתאריך 2020,ס ",
+        academic_background: "מכון לב - לו סיים עם ממוצע 91 בתאריך 2020 ",
       },
       {
         first_name: "איילת",
@@ -1256,7 +1254,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכון.לב סייעם ממוצע  ב8בתאריך 8 1.8",
+        academic_background: "מכון לב סיים עם ממוצע 88 בתאריך 1.8",
       },
       {
         first_name: "ברוריה",
@@ -1270,8 +1268,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "מכון לב + הפ סיים ב.      עם ממוצע 87 בתאריך 2013,ת",
+        academic_background: "מכון לב + הפ סיים עם ממוצע 87 בתאריך 2013",
       },
       {
         first_name: "ברכה",
@@ -1285,7 +1282,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכו סיים ב.      עם ממוצע 88 בתאריך 2018,ן  ",
+        academic_background: "מכוון לב סיים עם ממוצע 88 בתאריך 2018",
       },
       {
         first_name: "הדס",
@@ -1299,7 +1296,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "האוניברסיטה העברי. סיים עם ממוצע 92 בתאריך 9.202",
+        academic_background: "האוניברסיטה העברית סיים עם ממוצע 92 בתאריך 9.202",
       },
       {
         first_name: "חביבה",
@@ -1313,8 +1310,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          " הדסה - קמפוס שטראוס,.  סייםעם ממוצע בAבתאריך ug-20",
+        academic_background: "קמפוס שטראוס סיים בתאריך 2020",
       },
       {
         first_name: "יהודית",
@@ -1329,7 +1325,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         academic_background:
-          "מכללת עזריאלי - תמורה.סיים בעם ממוצע 0 7בתאריך .2021",
+          "מכללת עזריאלי - תמורה. סיים בעם ממוצע 70 בתאריך .2021",
       },
       {
         first_name: "יעל",
@@ -1343,8 +1339,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "מכון לב - לו סיים ב.      עם ממוצע 92 בתאריך 2020,ס ",
+        academic_background: "מכון לב - לו סיים עם ממוצע 92 בתאריך 2020 ",
       },
       {
         first_name: "לבנה",
@@ -1358,8 +1353,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "האוניברסיטה הפ סיים ב.      עם ממוצע 90 בתאריך 2020,ת",
+        academic_background: "האוניברסיטה הפתוחה סיים עם ממוצע 90 בתאריך 2020",
       },
       {
         first_name: "נאורה",
@@ -1401,7 +1395,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "סמינר בנות אלישבע.סיים בעם ממוצע 8 7בתאריך .2017",
+        academic_background: "סמינר בנות אלישבע סיים בעם ממוצע 78 בתאריך 2017",
       },
       {
         first_name: "רבקה",
@@ -1415,8 +1409,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "מכון לב - לו סיים ב.      עם ממוצע 92 בתאריך 2020,ס",
+        academic_background: "מכון לב - לו סיים עם ממוצע 92 בתאריך 2020",
       },
       {
         first_name: "רחל",
@@ -1430,7 +1423,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכון ל. סיים עם ממוצע 94 בתאריך 9.202",
+        academic_background: "מכון לב סיים עם ממוצע 94 בתאריך 9.202",
       },
       {
         first_name: "שרה",
@@ -1444,7 +1437,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכו סיים ב.      עם ממוצע 93 בתאריך 2019,ן",
+        academic_background: "מכון לב סיים עם ממוצע 93 בתאריך 2019",
       },
       {
         first_name: "שרה",
@@ -1459,7 +1452,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         academic_background:
-          "מכללת עזריאלי - תמורה.סיים בעם ממוצע 3 5בתאריך .2019",
+          "מכללת עזריאלי - תמורה. סיים בעם ממוצע 93 בתאריך 2019",
       },
       {
         first_name: "שרון",
@@ -1473,7 +1466,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכו סיים ב.      עם ממוצע 90 בתאריך 2019,ן",
+        academic_background: "מכון - לב סיים עם ממוצע 90 בתאריך 2019",
       },
       {
         first_name: "שרי",
@@ -1501,8 +1494,7 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background:
-          "האוניברסיטה הפ סיים ב.      עם ממוצע 98 בתאריך 2020,ת",
+        academic_background: "האוניברסיטה הפתוחה סיים עם ממוצע 98 בתאריך 2020",
       },
       {
         first_name: "תמר",
@@ -1516,9 +1508,9 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-        academic_background: "מכון לב - לוס.יג סייעם ממוצע  ב9בתאריך 8 8.2",
+        academic_background: "מכון לב - לוסטינג סיים עם ממוצע 98 בתאריך 2018 ",
       },
-  ]),
+    ]),
       {};
   },
 

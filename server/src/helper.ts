@@ -205,10 +205,10 @@ export const fetchFCC: () => void = async () => {
     const studentsData: any = (
       await Student.findAll(getQuery(["fcc", "id"], true, true))
     )
-    .filter((student:IStudent)=>{
-      student.fccAccount
-    })
-    .map((a: any) => a.toJSON());
+      .filter((student: IStudent) => {
+        student.fccAccount;
+      })
+      .map((a: any) => a.toJSON());
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );
@@ -221,7 +221,6 @@ export const fetchFCC: () => void = async () => {
         }
       )
     ).data;
-    // console.log(fccEvents[1]);
 
     //TODO fix types
     //! bottom code is for single fcc subtasks, we may support this in the future
@@ -389,41 +388,3 @@ export const parseFilters: (stringified: string) => any = (
     return undefined;
   }
 };
-
-// export const newparseFilters: (
-//   stringifiedFilter: string,
-//   outputTemplate: object,
-//   fields: object
-// ) => object = (
-//   stringifiedFilter: string,
-//   outputTemplate: object,
-//   fields: object
-// ) => {
-//   try {
-
-//     const parsedFilter: object = JSON.parse(stringifiedFilter);
-//     for(let filter in parsedFilter) {
-//       //@ts-ignore
-//       // const aba:object = Object.values(parsedFilter[filter]).reduce((ima:object,filterField:Array<string|object>)=>{
-//       //   const [key,value] = filterField;
-//       //   if(typeof value !== object && typeof value !== null) {
-//       //     ima.id = value;
-//       //     return ima;
-//       //   }
-// if(typeof parsedFilter[filter]!== object && typeof parsedFilter[filter]!==null) {
-//   outputTemplate[filter] = parsedFilter[filter]
-// }
-
-//       },{})
-
-//     }
-//   }catch(e){
-//     return e;
-//     // return {err:e, message:"Can't parse filters"}
-//   }
-
-//   }
-// //   return Object.values(fields).reduce((output:object,field:string)=>{
-// // if
-//   // },outputTemplate)
-// };

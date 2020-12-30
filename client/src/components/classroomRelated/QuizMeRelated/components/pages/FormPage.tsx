@@ -37,7 +37,6 @@ interface IProps {
 export default function FormPage(props: IProps) {
   const form = props.form;
   const classes = useStyles();
-  // const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [finishTitle, setFinishTitle] = useState<string>();
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = async (formSubmission: any) => {
@@ -75,14 +74,14 @@ export default function FormPage(props: IProps) {
                 <input
                   ref={register({ required: true })}
                   name={field.id.toString()}
-                  placeholder='Your answer'
+                  placeholder="Your answer"
                 />
                 {errors[field.title] && <span>This field is required</span>}
               </div>
             </div>
           ))}
           <div>
-            <input type='submit' />
+            <input type="submit" />
           </div>
         </form>
       </Container>

@@ -60,9 +60,10 @@ function ChallengeSelector({
   return type !== "manual" ? (
     <>
       <InputLabel
-        id='challenge-label'
+        id="challenge-label"
         shrink={true}
-        style={{ backgroundColor: "white" }}>
+        style={{ backgroundColor: "white" }}
+      >
         Challenge Selection*
       </InputLabel>
       <Select

@@ -232,7 +232,9 @@ function AddStudent(props: Props) {
                   name="languages"
                   control={control}
                   defaultValue={
-                    props.student ? props.student.languages?.split(", ") : []
+                    props.student?.languages
+                      ? props.student.languages?.split(", ")
+                      : []
                   }
                 />
               </FormControl>
