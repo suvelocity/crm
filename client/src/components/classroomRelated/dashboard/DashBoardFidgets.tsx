@@ -195,18 +195,6 @@ export function LessonsFidget() {
   );
 }
 
-export function ScheduleFidget() {
-  return (
-    <Wrapper style={{ height: "100%" }}>
-      <Center>
-        <TitleWrapper>
-          <Headline>Schedule</Headline>
-        </TitleWrapper>
-      </Center>
-      <p>checkpoint 16:00</p>
-    </Wrapper>
-  );
-}
 export const Headline = styled.h1`
   /* width: 75%; */
   margin-left: auto;

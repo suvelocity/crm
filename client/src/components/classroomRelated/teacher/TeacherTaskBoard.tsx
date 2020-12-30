@@ -395,8 +395,6 @@ export default function TeacherTaskBoard(props: any) {
     getFilterOptins();
   }, []);
 
-  // console.log(teacherTasks);
-
   const taskArray =
     teacherTasks?.map((task: any) => {
       return createTask(
@@ -411,7 +409,6 @@ export default function TeacherTaskBoard(props: any) {
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, taskArray.length - page * rowsPerPage);
-  console.log(taskArray);
 
   return (
     <>
