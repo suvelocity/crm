@@ -30,7 +30,7 @@ Your resume was sent to the company "${company}", for the position of "${job}".
 Please keep me posted.
   
 Good luck!
-Hadar.`,
+Scale-Up Velocity.`,
 });
 
 router.get("/all/job", validateAdmin, async (req: Request, res: Response) => {
