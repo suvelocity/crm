@@ -41,7 +41,7 @@ function NewClassMentorProject() {
   const [filteredCls, setFilteredCls] = useState<Omit<IStudent, "Class">[]>(
     students
   );
-  const [available, setAvailble] = useState<boolean | string>('true');
+  const [available, setAvailble] = useState<boolean | string>(true);
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [filteredMentors, setFilteredMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -538,9 +538,11 @@ function NewClassMentorProject() {
                     onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
                       setAvailble(e.target.value as boolean)
                     }
-                  >   
-                    <MenuItem value={'true'}>Available</MenuItem>
-                    <MenuItem value={'false'}>Not available</MenuItem>
+                  >
+                    {/*@ts-ignore*/}
+                    <MenuItem value={true}>Available</MenuItem>
+                    {/* @ts-ignore */}
+                    <MenuItem value={false}>Not available</MenuItem>
                     <MenuItem value="all">All</MenuItem>
                   </Select>
                 </FormControl>
