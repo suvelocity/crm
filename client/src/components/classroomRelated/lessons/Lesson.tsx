@@ -103,7 +103,7 @@ export default function Lesson({
                 </EditDiv>
               )}
               {lesson.zoomLink && lesson.zoomLink.length > 0 && (
-                <ZoomDiv top='140px' onClick={() => setModalState(true)}>
+                <ZoomDiv top='140px'>
                   <StyledAtavLink href={lesson.zoomLink} target='_blank'>
                     <VideocamIcon />
                   </StyledAtavLink>
