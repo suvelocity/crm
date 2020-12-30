@@ -44,7 +44,7 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user)
+  console.log(user);
   //@ts-ignore
   const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,15 +56,15 @@ function ClassRoomNavBar() {
     setAnchorEl(null);
   };
 
-   
   const getMentors = useCallback(async () => {
     try {
       if (user.userType === "student") {
         const { data }: { data: IStudent } = await network.get(
           `/api/V1/M/student/${user.id}`
-      );
-      setMentorProgram(data);
-    } } catch (err) {
+        );
+        setMentorProgram(data);
+      }
+    } catch (err) {
       alert(err.message);
     }
   }, [user]);
@@ -191,7 +191,7 @@ function ClassRoomNavBar() {
               </DrawerItem>
             </StyledLink>
           )}
-          <DrawerItem style={{ position: "fixed", bottom: 0, width: "170px" }}>
+          <DrawerItem style={{}}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
         </StyledDrawer>
