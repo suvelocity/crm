@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     programId: DataTypes.INTEGER,
     title: DataTypes.STRING,
     url: DataTypes.STRING,
-    answerUrl: DataTypes.STRING
+    answerUrl: DataTypes.STRING,
+    sent: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'MentorForm',

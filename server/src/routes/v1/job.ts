@@ -36,10 +36,13 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
+    const only = req.query.only;
     const job: IJob | null = await Job.findByPk(id, {
       include: [
         {
           model: Event,
+          where: only ? { type: only } : {},
+          required: false,
           include: [
             {
               model: Student,

@@ -162,7 +162,7 @@ const AddClass = (props: Props) => {
               <TextField
                 name="zoomLink"
                 id="zoomLink"
-                inputRef={register({ required: "Zoom Link is required" })}
+                inputRef={register()}
                 label="Zoom Link"
                 defaultValue={props.cls ? props.cls.zoomLink : ""}
               />

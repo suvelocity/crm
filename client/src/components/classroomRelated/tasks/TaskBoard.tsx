@@ -9,7 +9,7 @@ import { AuthContext } from "../../../helpers";
 import styled from "styled-components";
 import TaskTable from "./TaskTable";
 import Nofitication from "./Nofitication";
-import SingleTask from "./SingleTask";
+// import SingleTask from "./SingleTask";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import Modal from "@material-ui/core/Modal";
@@ -34,20 +34,28 @@ export default function TaskBoard() {
     height: 100vh;
   `;
 
-  const Carus = styled(Carousel)`
-    /* background-color: ${({ theme }: { theme: any }) =>
-      theme.colors.background}; */
-    width: 36%;
-    border-radius: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    /* margin-top: 5vh; */
-    margin-bottom: 5vh;
-  `;
+  // const Carus = styled(Carousel)`
+  //   /* background-color: ${({ theme }: { theme: any }) =>
+  //     theme.colors.background}; */
+  //   width: 36%;
+  //   border-radius: 10px;
+  //   margin-left: auto;
+  //   margin-right: auto;
+  //   /* margin-top: 5vh; */
+  //   margin-bottom: 5vh;
+  // `;
   const Content = styled.div`
     /* color: ${({ theme }: { theme: any }) => theme.colors.font}; */
     margin-top: 2%;
   `;
+
+  const checkSubmit = async () => {
+    try {
+      await network.post(`/api/v1/task/checksubmit/${user.id}`);
+    } catch (error) {
+      //todo error handler
+    }
+  };
 
   const getMyTasks = async () => {
     try {
@@ -75,6 +83,7 @@ export default function TaskBoard() {
 
   useEffect(() => {
     try {
+      checkSubmit();
       getMyTasks();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -100,7 +109,7 @@ export default function TaskBoard() {
       if (data.error) {
         Swal.fire("Error Occurred", data.error, "error");
       } else {
-        Swal.fire("Task Submitted", "", "success");
+        Swal.fire("Task Submitted", "", "success").then((_) => getMyTasks());
       }
     } catch (error) {
       handleClose();

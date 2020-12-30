@@ -66,7 +66,7 @@ export function SignIn() {
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            style={{ minWidth: 270 }}
+            style={{ minWidth: 280 }}
             id="email"
             label="Email"
             type="email"

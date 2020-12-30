@@ -75,7 +75,7 @@ function SingleClass() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editClassButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatingFormula="1fr 1fr">
@@ -112,7 +112,10 @@ function SingleClass() {
                   secondary={formatToIsraeliDate(cls?.endingDate!)}
                 />
               </ListItem>
-              <SingleListItem primary="Zoom Link" secondary={cls?.zoomLink}>
+              <SingleListItem
+                primary="Zoom Link"
+                secondary={cls?.zoomLink ? cls?.zoomLink : "לא ידוע"}
+              >
                 <LinkIcon />
               </SingleListItem>
             </List>

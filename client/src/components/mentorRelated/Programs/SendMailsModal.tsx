@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { IMeeting } from "../../../typescript/interfaces";
+import { IMeeting, IMentorProgramForms } from "../../../typescript/interfaces";
 import network from "../../../helpers/network";
 import {
   Modal,
@@ -10,6 +10,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  StepContent,
+  FormControl,
 } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
@@ -60,11 +62,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function SendMailModal({ id }: { id: number }) {
+interface MailProps {
+  id: number;
+  forms: IMentorProgramForms | undefined;
+  startMail: Boolean | undefined;
+  getProgram: Function
+}
+
+function SendMailModal({ id, forms }: MailProps) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
   const [recievers, setRecievers] = useState<string>("");
+  const [content, setContent] = useState<string>('')
   const { register, handleSubmit, errors } = useForm();
 
   const handleOpen = () => {
@@ -76,6 +86,7 @@ function SendMailModal({ id }: { id: number }) {
   };
 
   const submitStatus = async (data: any) => {
+    data.content = content
     handleClose();
     try {
       await network.post(`/api/V1/M/program/mails/${id}`, data, {
@@ -96,19 +107,31 @@ function SendMailModal({ id }: { id: number }) {
         </Center>
         <form onSubmit={handleSubmit(submitStatus)}>
           <Center>
+            <FormControl style={{ minWidth: 200, marginRight: 20}}>
             <InputLabel>Recievers</InputLabel>
             <Select
               onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
                 setRecievers(e.target.value as string)
               }
             >
-              <MenuItem value={""}>All</MenuItem>
+              <MenuItem value="" selected>All</MenuItem>
               <MenuItem value="mentors">Mentors</MenuItem>
               <MenuItem value="students">Students</MenuItem>
-            </Select>
+              </Select></FormControl>
+              <FormControl style={{ minWidth: 200 }}>
+            <InputLabel>Attach Form</InputLabel>
+            <Select
+              onChange={(e) => {
+                setContent(prev => prev + e.target.value)
+              }}
+            >
+              <MenuItem value=''>none</MenuItem>
+             {forms && forms.MentorForms!.map((form => <MenuItem value={form.answerUrl}>{form.title}</MenuItem>))}
+            </Select></FormControl>
             <br />
             <br />
             <TextField
+              
               id="subject"
               inputRef={register({
                 required: true,
@@ -121,9 +144,10 @@ function SendMailModal({ id }: { id: number }) {
             <br />
             <TextField
               id="content"
-              inputRef={register({
-                required: true,
-              })}
+              onChange={(e) => {
+                setContent(e.target.value)
+              }}
+              value={content}
               multiline
               fullWidth
               rows={4}
@@ -134,6 +158,7 @@ function SendMailModal({ id }: { id: number }) {
             <br />
           </Center>
           <Center>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly'}}>
             <Button
               type="submit"
               className={classes.button}
@@ -144,35 +169,16 @@ function SendMailModal({ id }: { id: number }) {
             </Button>
             <br />
             <br />
-            <Button
-              style={{
-                textAlign: "center",
-                margin: 10,
-                backgroundColor: "#d50000",
-              }}
+              <Button
+                className={classes.button}
+              color="secondary"
               variant="contained"
               onClick={handleClose}
             >
-              cancel
+                cancel
             </Button>
+            </div>
             <br />
-            <br />
-            <Button
-              style={{
-                textAlign: "center",
-                margin: 10,
-                backgroundColor: "green",
-              }}
-              variant="contained"
-                          onClick={async () => {
-                              await network.post(`/api/V1/M/program/startmails/${id}`);
-                              handleClose()
-                  
-              }
-              }
-            >
-              start program mail
-            </Button>
           </Center>
         </form>
       </div>

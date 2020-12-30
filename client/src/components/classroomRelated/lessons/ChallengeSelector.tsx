@@ -85,8 +85,6 @@ function ChallengeSelector({
         placeholder={`search in ${site}`}
         loadOptions={loadChallenges}
         onChange={(value, action) => {
-          // console.log('v',value)
-          // console.log('a',action)
           if (action.action === "clear") {
             changeValue(null, "externalId");
             changeValue(null, "externalLink");

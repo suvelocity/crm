@@ -19,6 +19,7 @@ import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../helpers";
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import Cookies from "js-cookie";
 
 function NavAppBar() {
@@ -50,6 +51,7 @@ function NavAppBar() {
             color="inherit"
             edge="start"
             aria-label="menu"
+            id="menuButton"
           >
             <Menu />
           </IconButton>
@@ -84,6 +86,12 @@ function NavAppBar() {
               <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
+          <StyledLink to="/teacher/all">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Teachers
+              <PersonOutlineIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
           <StyledLink to="/mentor">
             <DrawerItem onClick={() => setOpen(false)}>
               Mentors
@@ -102,7 +110,7 @@ function NavAppBar() {
               <TimelineIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <DrawerItem onClick={signOut}>
+          <DrawerItem id="signOut" onClick={signOut}>
             Sign Out
             <ExitToAppIcon style={{ position: "absolute", right: 10 }} />
           </DrawerItem>

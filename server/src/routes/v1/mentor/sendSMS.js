@@ -76,4 +76,4 @@ const from = 'YOUR-MENTOR';
             })
             process.send(Aftermeeting[0].MentorStudent.Student.phone)
         }
-    }, [1000*60*60*30])
+    }, [1000*60*30])

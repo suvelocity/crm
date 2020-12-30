@@ -62,7 +62,6 @@ export async function fetchSuperChallenges() {
       });
     }
   });
-  console.log(challengeMap);
 
   return challengeMap;
 }

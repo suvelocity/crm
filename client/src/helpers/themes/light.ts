@@ -8,7 +8,9 @@ export const lightTheme = {
     font: "black",
     addItem: "#FFFFFF",
     divider: "black",
+    // accordion: "#dbdef0",
     accordion: "#dbdef0",
+
     card: "#FFFFFF",
   },
 };

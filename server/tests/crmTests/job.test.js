@@ -4,6 +4,7 @@ import { classesMock, studentsMock, jobsMock } from "../mocks";
 import {
   deleteById,
   extractAccessTokenFull,
+  sendRequest,
   getAll,
   getById,
   handleSignIn,
@@ -16,7 +17,8 @@ import { jobsTestExpectedResults } from "../mocks/jobs/jobsTestExpectedResults";
 let accessToken;
 
 const getCurrentJobs = async () => await getAll("job", accessToken);
-const getJobById = async (id) => await getById(id, "job", accessToken);
+const getJobById = async (id) =>
+  await getById(id, "job", accessToken, { only: "jobs" });
 const postNewJob = async (body) => await post("job", accessToken, body);
 const patchJobById = async (id, body) =>
   await patchById(id, "job", accessToken, body);
@@ -31,8 +33,8 @@ const mockAddedJob = {
   location: "Tel Mond, Israel",
   requirements: "be awesome",
   additionalDetails: "Shahar Eliyahu is a MASSIVE snake",
-  createdAt: (new Date).toISOString().slice(0,10),
-  updatedAt: (new Date).toISOString().slice(0,10),
+  createdAt: new Date().toISOString().slice(0, 10),
+  updatedAt: new Date().toISOString().slice(0, 10),
   deletedAt: null,
 };
 
@@ -74,6 +76,15 @@ describe("Job tests", () => {
     }
   });
 
+  it("Can Access event process-options route", async () => {
+    const { status } = await sendRequest(
+      "get",
+      "/event/process-options",
+      accessToken
+    );
+    expect(status).toBe(200);
+  });
+
   it("Should get a job by id", async () => {
     const id = 2;
     const singleJob = await getJobById(id);
@@ -106,8 +117,9 @@ describe("Job tests", () => {
     expect(updatedJobMsg.body.message).toBe("Job updated");
 
     const { body: updatedJob } = await getJobById(id);
-
+    console.log(updatedJob);
     for (let field in mockUpdate) {
+      console.log(field, updatedJob[field], mockUpdate[field]);
       expect(updatedJob[field]).toBe(mockUpdate[field]);
     }
   });

@@ -75,8 +75,7 @@ export default function QuizPage(props: IProps) {
   useEffect(() => {
     const fetchQuiz = async () => {
       const quiz = (await network.get(`/api/v1/form/${form.id}`)).data;
-      // console.log(quiz);
-      
+
       setQuiz(quiz);
     };
     fetchQuiz();
@@ -103,7 +102,8 @@ export default function QuizPage(props: IProps) {
   }, [seconds, minutes]);
 
   const findSelectedAnswerIdByTitle = (title: any): number => {
-    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex].Options;
+    const currentOptionsArray: IOption[] = quiz!.Fields[currentQuestionIndex]
+      .Options;
     const selectedAnswer: any = currentOptionsArray.find(
       (option) => option.title === title
     );
@@ -112,17 +112,13 @@ export default function QuizPage(props: IProps) {
   };
   const onAnswerSelect = (selectedAnswerId: number, interval?: any): void => {
     if (!quizIsOver) {
-      console.log(selectedAnswerId);
-      const newAnswer =  {
+      const newAnswer = {
         //@ts-ignore
         fieldId: quiz.Fields[currentQuestionIndex].id,
         optionId: selectedAnswerId,
       };
       //@ts-ignore
-      setAnswers([
-        ...answers,
-        newAnswer
-      ]);
+      setAnswers([...answers, newAnswer]);
       //@ts-ignore
       if (quiz.Fields.length - 1 > currentQuestionIndex) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -143,7 +139,7 @@ export default function QuizPage(props: IProps) {
       const studentId = 1;
       const sub = {
         studentId,
-        answersArray
+        answersArray,
       };
       console.log(sub);
       await network.post("/api/v1/fieldsubmission/quiz", sub);
@@ -167,8 +163,7 @@ export default function QuizPage(props: IProps) {
                 <Typography
                   component={"h6"}
                   variant={"h6"}
-                  className={classes.timeRemaining}
-                >
+                  className={classes.timeRemaining}>
                   Time Remaining: {minutes}:
                   {seconds < 10 ? "0" + seconds : seconds}
                   <AccessAlarmIcon className={classes.clockIcon} />
@@ -181,11 +176,13 @@ export default function QuizPage(props: IProps) {
                       button
                       disableGutters
                       key={index}
-                      onClick={(e) => {onAnswerSelect( //@ts-ignore
+                      onClick={(e) => {
+                        onAnswerSelect(
+                          //@ts-ignore
                           findSelectedAnswerIdByTitle(e.target.innerText)
-                      )}}
-                      className={classes.field}
-                    >
+                        );
+                      }}
+                      className={classes.field}>
                       <ListItemText
                         primary={`${option.title}`}
                         disableTypography
