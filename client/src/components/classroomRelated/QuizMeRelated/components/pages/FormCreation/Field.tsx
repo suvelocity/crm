@@ -32,6 +32,9 @@ const useStyles = makeStyles(() => ({
   },
   fieldInput: {
     margin: "0.5em 0",
+    backgroundColor: "rgba(255, 0, 0, 0)",
+    border: 'none',
+    borderBottom: '1px solid black'
   },
   select: {
     width: "14em",
@@ -58,12 +61,10 @@ const useStyles = makeStyles(() => ({
 }));
 interface IProps {
   register: any;
-
   control: any;
   Controller: any;
-
   fieldIndex: number;
-  value: string;
+  title: string;
   typeId: number | undefined;
   typeIndex: number;
   isQuiz: boolean;
@@ -85,7 +86,7 @@ export default function Field({
   control,
   Controller,
   fieldIndex,
-  value,
+  title,
   typeId,
   typeIndex,
   isQuiz,
@@ -204,13 +205,13 @@ export default function Field({
     isCorrect?: boolean | null
   ) => {
     const optionsArr = options.slice();
-    optionsArr[index].title =
-      title || title === "" ? title : options[index].title;
+    if(title || title === "") {
+      optionsArr[index].title = title;
+    }
     setOptions(optionsArr);
     changeField(fieldIndex, undefined, optionsArr);
   };
   const selectCorrectOption = (correctOptionIndex: number) => {
-    console.log("this option: ", options[correctOptionIndex].isCorrect);
     if (!options[correctOptionIndex].isCorrect) {
       let optionsArr = options.slice();
       optionsArr = optionsArr.map((option: IOption, index: number) =>
@@ -222,6 +223,7 @@ export default function Field({
       changeField(fieldIndex, undefined, optionsArr);
     }
   };
+  
   return (
     <div className={classes.field}>
       <div className={classes.deleteFieldWrapper}>
@@ -282,21 +284,42 @@ export default function Field({
       <div>
         {typeId === 2 ? ( // 2 is the typeId of openQuestion
           // OPEN QUESTION
-          <Input // field title
-            className={classes.fieldInput}
-            fullWidth
-            inputRef={register({ required: true })}
-            name={`fields[${fieldIndex}].title`}
-            placeholder="Your Question"
-            onChange={(e) => {
-              console.log("inputValue: ", e.target.value);
-              // console.log("state value: ", value);
-              
-              changeFieldTitle(fieldIndex, e.target.value)
-            }}
-            // onChange={(e) => console.log(e)}
-            value={value}
-          />
+        <Controller
+          control={control}
+          name={`fields[${fieldIndex}].title`}
+          // defaultValue={''}
+          render={(
+           { onChange, onBlur, value, name, ref }: any,
+           { invalid, isTouched, isDirty }: any
+           ) => (
+             <Input
+                className={classes.fieldInput}
+                fullWidth
+                inputRef={ref}
+                placeholder="Your Question"
+                onBlur={onBlur}
+                // onChange={(e) => {
+                //   changeFieldTitle(fieldIndex, e.target.value)
+                // }}
+                onChange={(e) => {
+                    onChange();
+                    changeFieldTitle(fieldIndex, e.target.value);
+                }}
+                value={value}
+             />
+           )}
+         />
+
+          // <input // field title
+          //   className={classes.fieldInput}
+          //   ref={register({ required: true })}
+          //   name={`fields[${fieldIndex}].title`}
+          //   placeholder="Your Question"
+          //   onChange={(e) => {
+          //     changeFieldTitle(fieldIndex, e.target.value)
+          //   }}
+          //   value={title}
+          // />
         ) : (
           // SELECT-ONE | CHECKBOX
           <>
@@ -306,10 +329,11 @@ export default function Field({
               inputRef={register({ required: true })}
               name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
-              onChange={(e) =>
-                changeFieldTitle(fieldIndex, e.target.value)
+              onChange={(e) => {
+                  changeFieldTitle(fieldIndex, e.target.value)
+                }
               }
-              value={value}
+              value={title}
             />
             {options.map((
               option: IOption,

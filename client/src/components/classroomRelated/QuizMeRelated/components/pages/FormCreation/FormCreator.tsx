@@ -101,9 +101,19 @@ export default function FormCreator() {
     setFields(newFields);
   };
   const changeFieldTitle = (fieldIndex: number, title: string) => {
-    const fieldsArr = fields.slice();
-    fieldsArr[fieldIndex].title = title;
-    setFields(fieldsArr);
+    // console.log('e.target.value: ', title);
+    // console.log('field index: ', fieldIndex);
+    // console.log('e.target.value TYPE: ', typeof title);
+    
+    // const fieldsArr = fields.slice();
+    // console.log("fieldsArr before: ", fieldsArr);
+    // fieldsArr[fieldIndex].title = title;
+    // console.log("fieldsArr after: ", fieldsArr);
+    setFields((prev: Omit<IFieldExtended, "id" | "formId">[]) => {
+      const newState = [...prev];
+      newState[fieldIndex].title = title;
+      return newState;
+    });
   };
   const changeField = (
     index: number,
@@ -123,6 +133,7 @@ export default function FormCreator() {
     }
     setFields(fieldsArr);
   };
+  
   const deleteField = (index: number) => {
     const fieldsArr = fields.slice();
     fieldsArr.splice(index, 1);
@@ -131,9 +142,9 @@ export default function FormCreator() {
 
   return (
     <Container className={classes.formWrapper}>
-      <button onClick={() => console.log(fields)}> 
+      {/* <button onClick={() => console.log(fields)}> 
         LOG
-      </button>
+      </button> */}
       <form className={classes.form}>
         <Container
         // className={classes.flexCenter}
@@ -193,7 +204,7 @@ export default function FormCreator() {
               fieldIndex={index}
               typeId={field.typeId}
               typeIndex={field.typeId-1}
-              value={field.title}
+              title={field.title}
               changeField={changeField}
               changeFieldTitle={changeFieldTitle}
               deleteField={deleteField}
@@ -201,7 +212,7 @@ export default function FormCreator() {
             />
           ))}
           <div className={classes.verticalMargin}>
-            <Button onClick={addField} variant={"contained"} color={"primary"}>
+            <Button onClick={addField} variant={"contained"} color={"primary"} size={'small'}>
               <Typography component={'span'}>
                 Add Field
               </Typography>
