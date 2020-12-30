@@ -21,6 +21,7 @@ import {
   StyledLink,
   repeatFormula,
   EditDiv,
+  RegisterToCM
 } from "../../styles/styledComponents";
 import {
   CalendarToday as CalendarTodayIcon,
@@ -29,6 +30,7 @@ import {
   Class as ClassIcon,
   ContactSupport as ContactSupportIcon,
 } from "@material-ui/icons";
+import ComputerIcon from '@material-ui/icons/Computer';
 import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
@@ -56,6 +58,14 @@ function SingleClass() {
     setLoading(true);
     getClass();
   };
+  const connectToCM = async ()=>{
+    try{
+      const {data} = await network.post(`/api/v1/challengeMe/team/forClass/${id}`)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
 
   useEffect(() => {
     try {
@@ -78,6 +88,15 @@ function SingleClass() {
           <EditDiv id="editClassButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
+          {cls&&cls.cmId?
+          <RegisterToCM  title="Connected to ChallengeMe">
+            <ComputerIcon  style={{color:"green"}}/>
+          </RegisterToCM>:
+          <RegisterToCM  title="Class is not connected to ChallengeMe" onClick={() => connectToCM()}>
+          <ComputerIcon  style={{color:"red",marginTop:"5px"}}/>
+        </RegisterToCM>
+
+          }
           <GridDiv repeatingFormula="1fr 1fr">
             <List>
               <SingleListItem primary="Name" secondary={capitalize(cls?.name)}>

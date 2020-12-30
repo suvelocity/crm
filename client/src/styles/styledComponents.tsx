@@ -151,6 +151,13 @@ export const EditDiv = styled.div`
   top: ${(props: { top: string }) => props.top || "25px"};
 `;
 
+export const RegisterToCM = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 33px;
+  top: ${(props: { top: string }) => props.top || "50px"};
+`;
+
 export const StyledAtavLink = styled.a`
   cursor: pointer;
   transition: 0.2s;

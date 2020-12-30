@@ -268,71 +268,73 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// //* checks submitted external task
-// router.post("/checksubmit", async (req: Request, res: Response) => {
-//   try {
-//     const unfinishedTasks: any = await TaskofStudent.findAll({
-//       where: {
-//         studentId: req.body.studentId,
-//         type: !"manual",
-//         status: !"done",
-//       },
-//       include: [Task],
-//     });
+router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+  const updated: ITaskofStudent[] = [];
+  try {
+    const unfinishedTasks: any = await TaskofStudent.findAll({
+      where: {
+        studentId: studentId,
+        type: !"manual",
+        status: !"done",
+      },
+      include: [Task],
+    });
 
-//     unfinishedTasks.forEach(async (task: any) => {
-//       switch (task.type) {
-//         case "fcc":
-//           try {
-//             const event: any = await Event.findOne({
-//               where: {
-//                 userId: req.body.studentId,
-//                 eventName: "FCC_SUBMIT_SUCCESS",
-//                 relatedId: task.Task.externalId,
-//               }, //todo create this event
-//             });
-//             if (event) {
-//               await TaskofStudent.update(
-//                 {
-//                   status: "done",
-//                 },
-//                 { where: { id: task.id } }
-//               );
-//             }
-//             return;
-//           } catch (error) {
-//             return;
-//           }
-//         case "challenge":
-//           try {
-//             const event: any = await Event.findAll({
-//               where: {
-//                 userId: req.body.studentId, //!check if this will be userid or studentid
-//                 eventName: "CHALLENGEME_SUBMIT_SUCCESS",
-//                 relatedId: task.Task.externalId,
-//               }, //todo create this event
-//             });
-//             if (event) {
-//               await TaskofStudent.update(
-//                 {
-//                   status: "done",
-//                 },
-//                 { where: { id: task.id } }
-//               );
-//             }
-//             return;
-//           } catch (error) {
-//             return;
-//           }
-
-//         default:
-//           break;
-//       }
-//     });
-//     res.status(200).json("updated submittions");
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+    unfinishedTasks.forEach(async (task: any) => {
+      switch (task.type) {
+        case "fcc":
+          try {
+            const event: any = await Event.findOne({
+              where: {
+                userId: studentId,
+                eventName: "FCC_BULK_SUCCESS",
+                relatedId: task.Task.externalId,
+              },
+            });
+            if (event) {
+              const updatedTask: ITaskofStudent = await TaskofStudent.update(
+                {
+                  status: "done",
+                },
+                { where: { id: task.id } }
+              );
+              updated.push(updatedTask);
+            }
+            return;
+          } catch (error) {
+            return;
+          }
+        case "challengeMe":
+          try {
+            const event: any = await Event.findOne({
+              where: {
+                userId: studentId,
+                eventName: "CM_SUBMITTED_CHALLENGE_SUCCESS",
+                relatedId: task.Task.externalId,
+              },
+            });
+            if (event) {
+              const updatedTask: ITaskofStudent = await TaskofStudent.update(
+                {
+                  status: "done",
+                },
+                { where: { id: task.id } }
+              );
+              updated.push(updatedTask);
+            }
+            return;
+          } catch (error) {
+            return;
+          }
+        default:
+          break;
+      }
+    });
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

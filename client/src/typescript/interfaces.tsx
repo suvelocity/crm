@@ -71,6 +71,7 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
+  cmId?:string
 }
 export interface IClassOfTeacher {
   id: number;
