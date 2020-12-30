@@ -26,6 +26,7 @@ router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));
 // code review routes
 router.use("/projects", require("./projects"));
+router.use("/rules", require("./rules"));
 
 router.use(unknownEndpoint);
 export default router;
