@@ -99,6 +99,7 @@ export const StyledDiv = styled.div`
 
 export const StyledSpan = styled.span`
   font-size: 16px;
+  padding-right: 7px;
   font-weight: ${(props: { weight: string }) =>
     props.weight === "bold" && "bold"};
 `;

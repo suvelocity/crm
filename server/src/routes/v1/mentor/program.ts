@@ -247,4 +247,17 @@ router.post("/mails/:id", async (req, res) => {
   }
 });
 
+// Edit mentor forms sent attribute
+router.put("/editForm/:id", async (req, res) => {
+  try {
+    const programForms = await MentorForm.update({ sent: true },
+      {
+        where: { id: req.params.id },
+      })
+    res.json('sent!');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
