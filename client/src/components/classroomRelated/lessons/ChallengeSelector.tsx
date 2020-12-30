@@ -60,9 +60,10 @@ function ChallengeSelector({
   return type !== "manual" ? (
     <>
       <InputLabel
-        id='challenge-label'
+        id="challenge-label"
         shrink={true}
-        style={{ backgroundColor: "white" }}>
+        style={{ backgroundColor: "white" }}
+      >
         Challenge Selection*
       </InputLabel>
       <Select
@@ -85,8 +86,6 @@ function ChallengeSelector({
         placeholder={`search in ${site}`}
         loadOptions={loadChallenges}
         onChange={(value, action) => {
-          // console.log('v',value)
-          // console.log('a',action)
           if (action.action === "clear") {
             changeValue(null, "externalId");
             changeValue(null, "externalLink");

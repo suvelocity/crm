@@ -18,8 +18,6 @@ router.get("/challengeMe", async (req: Request, res: Response) => {
   try {
     const { name: query } = req.query;
     const url = `${challengeMe}/challenges${query ? "?name=" + query : ""}`;
-    console.log(query);
-    console.log(url);
     const { data } = await axios.get(url, {
       headers: {
         authorization: CM_ACCESS,
@@ -88,7 +86,6 @@ export async function fetchBulkFcc() {
       const link = chlng.node.fields.slug;
       const title = chlng.node.title;
       const id = chlng.node.id;
-      console.log(id);
       return { label: title, value: id, link };
     }
   );

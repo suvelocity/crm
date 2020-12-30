@@ -54,7 +54,6 @@ export default function SingleTask(props: any) {
   const { task, handleOpen, handleClose } = props;
   const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
-  console.log(task);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -115,25 +114,28 @@ export default function SingleTask(props: any) {
       <StyledAccordion>
         <StyledSummery
           expandIcon={<ExpandMoreIcon />}
-          aria-controls='panel1a-content'
-          id='panel1a-header'>
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
           {task.Task.title + " - " + task.Task.type}
         </StyledSummery>
         <hr style={{ width: "95%", opacity: "50%" }} />
         <StyledDetails>{task.Task.body}</StyledDetails>
         <StyledDetails>
           <IconButton
-            aria-label='submit button'
+            aria-label="submit button"
             onClick={() => {
               handleOpen(task.id);
             }}
-            disabled={task.Task.type !== "manual" ? true : false}>
+            disabled={task.Task.type !== "manual" ? true : false}
+          >
             <PublishIcon />
           </IconButton>
-          <StyledAtavLink href={task.Task.externalLink} target='_blank'>
+          <StyledAtavLink href={task.Task.externalLink} target="_blank">
             <IconButton
-              aria-label='external link?'
-              disabled={task.Task.externalLink ? false : true}>
+              aria-label="external link?"
+              disabled={task.Task.externalLink ? false : true}
+            >
               <LinkIcon />
             </IconButton>
           </StyledAtavLink>

@@ -99,7 +99,6 @@ router.get("/byteacherid/:id", async (req: Request, res: Response) => {
 
 router.get("/options/:id", async (req: Request, res: Response) => {
   const id: string = req.params.id;
-  console.log(id);
   if (!id) res.status(400).json({ error: "Malformed data" });
   const options: any = {};
 
@@ -183,9 +182,7 @@ router.post("/toclass/:classid", async (req: Request, res: Response) => {
 router.post("/tostudents", async (req: Request, res: Response) => {
   try {
     const task = await createTask(req, res);
-    console.log(task);
     const { idArr } = req.body;
-    console.log(idArr);
     if (task) {
       const taskArr = await idArr.map(
         (studentId: number): ITaskofStudent => {
@@ -220,7 +217,6 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
     const taskType: any = await TaskofStudent.findByPk(req.params.id, {
       attributes: ["type"],
     });
-    console.log(taskType);
 
     if (taskType.type === "manual") {
       await TaskofStudent.update(
@@ -260,7 +256,6 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const deleteFromStudents = await TaskofStudent.destroy({
       where: { taskId: req.params.id },
     });
-    console.log(deleteFromStudents);
     return res.status(200).json({
       message: `Task deleted from ${deleted} lesson and ${deleteFromStudents} students`,
     });

@@ -105,7 +105,7 @@ export const studentInputs = [
       },
     ],
     trueValue: "Amir@mail.com",
-    updatedValue: "Amir@mail2.com"
+    updatedValue: "Amir@mail2.com",
   },
   {
     field: "phone",
@@ -117,13 +117,13 @@ export const studentInputs = [
       },
     ],
     trueValue: "054-7834393",
-    updatedValue: "054-7834040"
+    updatedValue: "054-7834040",
   },
   {
     field: "languages",
     type: "select",
-    selector: "Hebrew",
-    updatedValue: "English",
+    selector: "עברית",
+    updatedValue: "אנגלית",
   },
   {
     field: "resumeLink",
@@ -249,7 +249,7 @@ export const teacherInputs = [
       },
     ],
     trueValue: "Amir@mail.com",
-    updatedValue: "Amir@mail2.com"
+    updatedValue: "Amir@mail2.com",
   },
   {
     field: "phone",
@@ -261,9 +261,9 @@ export const teacherInputs = [
       },
     ],
     trueValue: "054-7834393",
-    updatedValue: "054-7834040"
-  }
-]
+    updatedValue: "054-7834040",
+  },
+];
 
 export const companyInputs = [
   {
@@ -330,7 +330,7 @@ export const classInputs = [
     type: "select",
     field: "course",
     selector: "Adva",
-    updatedValue: "Cyber4s"
+    updatedValue: "Cyber4s",
   },
   {
     type: "textfield",

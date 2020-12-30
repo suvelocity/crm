@@ -1,4 +1,4 @@
-const { Student, MentorStudent, Meeting }  = require("../../../models");
+const { Student, MentorStudent, Meeting } = require("../../../models");
 const Nexmo = require("nexmo");
 const { Op } = require("sequelize");
 
@@ -9,8 +9,6 @@ const nexmo = new Nexmo({
 const from = "YOUR-MENTOR";
 
 setInterval(async () => {
-  // Sorry it is really annoying :(
-  //console.log("start")
   const meeting = await Meeting.findAll({
     where: {
       date: {
@@ -85,4 +83,4 @@ setInterval(async () => {
     });
     process.send(Aftermeeting[0].MentorStudent.Student.phone);
   }
-}, [1000*60*60*30]);
+}, [1000 * 60 * 60 * 30]);

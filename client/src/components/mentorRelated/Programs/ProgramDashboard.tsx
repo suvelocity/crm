@@ -17,7 +17,7 @@ import {
   IMentorProgramDashboard,
   IMentorProgram,
   IMentorProgramForms,
-  ITask
+  ITask,
 } from "../../../typescript/interfaces";
 import EditIcon from "@material-ui/icons/Edit";
 import { Loading } from "react-loading-wrapper";
@@ -42,9 +42,7 @@ const ProgramDashboard: React.FC = () => {
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
   const { id } = useParams();
   const history = useHistory();
-  const {user} = useContext<any>(AuthContext);
-  console.log(user);
-  
+  const { user } = useContext<any>(AuthContext);
 
   const getTableData = useCallback(async () => {
     const program = await network.get(`/api/v1/M/program/${id}`);
@@ -63,7 +61,6 @@ const ProgramDashboard: React.FC = () => {
 
   const getForms = useCallback(async () => {
     const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
-    console.log(formsData.data);
     setForms(formsData.data);
   }, []);
 
@@ -102,29 +99,29 @@ const ProgramDashboard: React.FC = () => {
     if (!res) return;
     try {
       await network.patch("/api/v1/M/form/delete", { formId: id });
-      getForms()
+      getForms();
     } catch (err) {
       Swal.fire("Error Occurred", err.message, "error");
     }
   };
 
-  const postTask = async (title:string, url:string, ) => {
+  const postTask = async (title: string, url: string) => {
     try {
-      const task:ITask = {
+      const task: ITask = {
         title: `mentor program form -${title}`,
         externalLink: url,
-        createdBy: 1, /*user.id*/
-        endDate: new Date(Date.now()+(3*24*60*60*1000)),
-        type:"manual",
-        status: "active"
-    };
-    const studentsToTask = tabelsData.map(student => student.id)
+        createdBy: 1 /*user.id*/,
+        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        type: "manual",
+        status: "active",
+      };
+      const studentsToTask = tabelsData.map((student) => student.id);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
       });
       Swal.fire("Success", "task added successfully", "success");
-    } catch(err){
+    } catch (err) {
       Swal.fire("Error Occurred", err.message, "error");
     }
   };
@@ -142,25 +139,27 @@ const ProgramDashboard: React.FC = () => {
           </TitleWrapper>
         </Center>
         <br />
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-        <Button
-          style={{ backgroundColor: "#fa8c84" }}
-          onClick={() => endProgram()}
-        >
-          End Program
-        </Button>
-        <Button
-          onClick={() =>
-            history.push(`/mentor/new/${id}?class=${programdetails?.classId}`)
-          }
-          style={{ backgroundColor: "#fa8c84", margin: 10 }}
-        >
+            <Button
+              style={{ backgroundColor: "#fa8c84" }}
+              onClick={() => endProgram()}
+            >
+              End Program
+            </Button>
+            <Button
+              onClick={() =>
+                history.push(
+                  `/mentor/new/${id}?class=${programdetails?.classId}`
+                )
+              }
+              style={{ backgroundColor: "#fa8c84", margin: 10 }}
+            >
               Edit Program
-        </Button>
+            </Button>
           </div>
           <div>
-        <AddFormModal getForms={getForms} id={id} />
+            <AddFormModal getForms={getForms} id={id} />
             <SendMailModal id={id} />
           </div>
         </div>
@@ -334,10 +333,17 @@ const ProgramDashboard: React.FC = () => {
                     </StyledSpan>
                   </a>
                   <StyledSpan>
-                    <Button onClick={()=>postTask(form.title, form.answerUrl)}>send to the students</Button>
+                    <Button
+                      onClick={() => postTask(form.title, form.answerUrl)}
+                    >
+                      send to the students
+                    </Button>
                   </StyledSpan>
                   <StyledSpan>
-                    <DeleteIcon style={{cursor:"pointer"}} onClick={() => deleteForm(form.id!)} />
+                    <DeleteIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => deleteForm(form.id!)}
+                    />
                   </StyledSpan>
                 </StyledDiv>
               </li>

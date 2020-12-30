@@ -159,7 +159,6 @@ export default function AddLesson({
         if (toDelete.hasOwnProperty("id")) {
           const updateDeleted = tasksToDelete.slice();
           updateDeleted.push(toDelete);
-          console.log(updateDeleted);
           setTasksToDelete(updateDeleted);
         }
         setTasks(prevTasks);
@@ -225,19 +224,19 @@ export default function AddLesson({
     <AddLessonContainer>
       <AddLessonForm onSubmit={handleSubmit}>
         <Input
-          label='Lesson name'
+          label="Lesson name"
           value={title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "title")
           }
-          aria-describedby='my-helper-text'
+          aria-describedby="my-helper-text"
           required={true}
-          variant='outlined'
+          variant="outlined"
         />
 
         <Input
-          label='Lesson content'
-          variant='outlined'
+          label="Lesson content"
+          variant="outlined"
           value={body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "body")
@@ -246,26 +245,27 @@ export default function AddLesson({
           multiline
         />
         <Input
-          label='Zoom link'
+          label="Zoom link"
           value={zoomLink}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(e, "zoomLink")
           }
-          variant='outlined'
+          variant="outlined"
         />
         <AddRsourcesContainer onSubmit={handleSubmit}>
           <Input
-            variant='outlined'
-            label='Resource'
+            variant="outlined"
+            label="Resource"
             value={resource}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleChange(e, "resource")
             }
           />
           <ResourceBtn
-            variant='outlined'
+            variant="outlined"
             onClick={handleAddResource}
-            style={{ marginLeft: "15px" }}>
+            style={{ marginLeft: "15px" }}
+          >
             Add Resource
           </ResourceBtn>
         </AddRsourcesContainer>
@@ -273,8 +273,9 @@ export default function AddLesson({
           {resources.map((resource: string, index: number) => (
             <OneInfo
               key={index}
-              onClick={() => handleRemove(index, "resource")}>
-              <Tooltip title='delete resource'>
+              onClick={() => handleRemove(index, "resource")}
+            >
+              <Tooltip title="delete resource">
                 <Link>{resource}</Link>
               </Tooltip>
             </OneInfo>
@@ -283,8 +284,9 @@ export default function AddLesson({
 
         <Info
           className={tasks.length && "open"}
-          style={{ marginBottom: "10%" }}>
-          <AddBtn variant='outlined' onClick={addTask}>
+          style={{ marginBottom: "10%" }}
+        >
+          <AddBtn variant="outlined" onClick={addTask}>
             Add Task
           </AddBtn>
           {tasks.map((task: ITask, index: number) => (
@@ -300,7 +302,7 @@ export default function AddLesson({
         </Info>
       </AddLessonForm>
       <CreateLessonButton
-        variant='outlined'
+        variant="outlined"
         onClick={handleSubmit}
         // style={{
 

@@ -6,10 +6,6 @@ const network = axios.create();
 const getAccessToken = () => Cookies.get("accessToken");
 
 network.interceptors.request.use((config) => {
-  // console.log(config.url);
-  // if(config.url && !config.url.includes("auth")){
-  //   config.url = config.url.replace("/api/v1", `/api/v1/`)
-  // }
   config.headers.authorization = `bearer ${getAccessToken()}`;
   return config;
 });

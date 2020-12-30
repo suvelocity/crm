@@ -220,8 +220,6 @@ export default function TeacherTaskBoard(props: any) {
     getFilterOptins();
   }, []);
 
-  // console.log(teacherTasks);
-
   const taskArray = teacherTasks?.map((task: any) => {
     return createTask(
       task.title,
@@ -233,7 +231,6 @@ export default function TeacherTaskBoard(props: any) {
     );
   });
 
-  console.log(teacherTasks);
   return (
     <>
       <TableContainer component={Paper}>

@@ -1,8 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import {
-  ILesson,
-  ITaskofStudent,
-} from "../../../typescript/interfaces";
+import { ILesson, ITaskofStudent } from "../../../typescript/interfaces";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";
@@ -15,7 +12,9 @@ import sunshine from "../../../media/sunshine.gif";
 import LinkIcon from "@material-ui/icons/Link";
 
 export function TasksFidget() {
-  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>([]);
+  const [incompletedTasks, setIncompletedTasks] = useState<ITaskofStudent[]>(
+    []
+  );
 
   const { user } = useContext<any>(AuthContext);
 
@@ -47,7 +46,8 @@ export function TasksFidget() {
 
       {incompletedTasks?.length !== 0 ? (
         <div
-          style={{ lineHeight: "2em", fontSize: "1.1em", textAlign: "center" }}>
+          style={{ lineHeight: "2em", fontSize: "1.1em", textAlign: "center" }}
+        >
           <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2>
 
           {incompletedTasks.map((task: ITaskofStudent, i: number) => (
@@ -65,7 +65,7 @@ export function TasksFidget() {
         <Center>
           <img
             src={sunshine}
-            alt='sunshine'
+            alt="sunshine"
             style={{
               maxHeight: "100px",
             }}
@@ -104,20 +104,21 @@ export function LessonsFidget() {
       </Center>
       {todayLessons?.map((lesson: any, i: number) => (
         <div
-          className='infoData'
+          className="infoData"
           style={{
             lineHeight: "2em",
             fontSize: "1.1em",
             textAlign: "center",
-          }}>
-          {console.log(lesson)}
+          }}
+        >
           <h2>{lesson.title}</h2>
 
           <div
-            className='today-info'
-            style={{ display: "flex", justifyContent: "space-around" }}>
+            className="today-info"
+            style={{ display: "flex", justifyContent: "space-around" }}
+          >
             <div
-              className='today-info'
+              className="today-info"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -125,14 +126,15 @@ export function LessonsFidget() {
                 textAlign: "start",
                 // overflowY: "auto",
                 // maxHeight: "30px",
-              }}>
+              }}
+            >
               <h3>Resources</h3>
               {lesson.resource?.includes("%#splitingResource#%")
                 ? lesson.resource
                     .split("%#splitingResource#%")
                     .map((resource: string, index: number) => (
                       <ResourcesLink key={index}>
-                        <Link target='_blank' href={resource}>
+                        <Link target="_blank" href={resource}>
                           {resource}
                         </Link>
                       </ResourcesLink>
@@ -140,19 +142,20 @@ export function LessonsFidget() {
                 : //@ts-ignore
                   lesson.resource?.length > 0 && (
                     //@ts-ignore
-                    <Link target='_blank' href={lesson.resource}>
+                    <Link target="_blank" href={lesson.resource}>
                       {lesson.resource}
                     </Link>
                   )}
             </div>
             <div
-              className='today-info'
+              className="today-info"
               style={{
                 display: "flex",
                 flexDirection: "column",
                 maxWidth: "50%",
                 textAlign: "start",
-              }}>
+              }}
+            >
               <h3>Tasks</h3>
               {lesson.Tasks.map((task: any) => (
                 <li>{task.title}</li>

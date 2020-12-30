@@ -27,7 +27,6 @@ function Notices() {
   const [selectedClass, setSelectedClass] = useState<number>(
     classesToTeacher[0]?.classId
   );
-  console.log(selectedClass);
 
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
@@ -99,12 +98,12 @@ function Notices() {
     <Loading size={30} loading={loading}>
       {user.userType === "teacher" && selectedClass && (
         <FilterContainer>
-          <FormControl color='primary' variant='outlined'>
+          <FormControl color="primary" variant="outlined">
             {/* <InputLabel>Class</InputLabel> */}
             <Select
-              id='class-select'
-              variant='outlined'
-              labelId='class-select-label'
+              id="class-select"
+              variant="outlined"
+              labelId="class-select-label"
               style={{
                 width: 250,
                 boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
@@ -117,7 +116,8 @@ function Notices() {
               onChange={(e: any) => {
                 const newId = e.target.value;
                 setSelectedClass(newId);
-              }}>
+              }}
+            >
               {classesToTeacher?.map((teacherClass: any) => (
                 <MenuItem value={teacherClass.classId}>
                   {teacherClass.Class.name}
@@ -127,7 +127,8 @@ function Notices() {
           </FormControl>
           <StyledButton
             onClick={handleOpen}
-            style={{ marginLeft: "auto", height: "auto" }}>
+            style={{ marginLeft: "auto", height: "auto" }}
+          >
             New Notice
             <AddCircleIcon
               style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
@@ -136,8 +137,9 @@ function Notices() {
           <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby='simple-modal-title'
-            aria-describedby='simple-modal-description'>
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
             {body}
           </Modal>
         </FilterContainer>

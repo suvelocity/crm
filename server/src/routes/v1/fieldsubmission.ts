@@ -181,11 +181,9 @@ router.post("/quiz", async (req: Request, res: Response) => {
       fieldSubs,
       { returning: true }
     );
-    console.log("created field subs: ", createdFieldSubmissions);
     const optionSubs: any = [];
     createdFieldSubmissions.forEach((fieldSub: any) => {
       const fieldSubmissionsId = fieldSub.id;
-      console.log("fieldSubmissionsId: ", fieldSubmissionsId);
 
       const fieldId = fieldSub.fieldId;
       const optionId = answers.find((answer: any) => answer.fieldId === fieldId)

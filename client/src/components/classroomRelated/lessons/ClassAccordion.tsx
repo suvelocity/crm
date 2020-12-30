@@ -132,7 +132,6 @@ export default function ClassAccordion({
     setExpanded(newExpanded ? panel : false);
   };
 
-  console.log(pickStates);
   return (
     <>
       {classes.map((cls: classList, i: number) => (
