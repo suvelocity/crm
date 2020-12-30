@@ -104,7 +104,7 @@ function NewClassMentorProject() {
     const relevant =
       available === "all"
         ? mentors
-        : mentors.filter((mentor) => mentor.available === available);
+        : mentors.filter((mentor) => mentor.available === (available==='true'));
     if (searchValue !== "") {
       setFilteredMentors(
         relevant.filter(
@@ -538,9 +538,9 @@ function NewClassMentorProject() {
                     onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
                       setAvailble(e.target.value as boolean)
                     }
-                  >
-                    {/* <MenuItem value={true}>Available</MenuItem>
-                    <MenuItem value={false}>Not available</MenuItem> */}
+                  >   
+                    <MenuItem value={'true'}>Available</MenuItem>
+                    <MenuItem value={'false'}>Not available</MenuItem>
                     <MenuItem value="all">All</MenuItem>
                   </Select>
                 </FormControl>
