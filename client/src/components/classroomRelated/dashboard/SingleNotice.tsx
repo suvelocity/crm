@@ -13,7 +13,6 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 export default function SingleNotice(props: any) {
   const { notice, deleteNotice, userType } = props;
   const [open, setOpen] = React.useState(true);
-  console.log(notice);
 
   return (
     <div

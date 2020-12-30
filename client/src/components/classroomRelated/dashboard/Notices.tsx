@@ -27,7 +27,6 @@ function Notices() {
   const [selectedClass, setSelectedClass] = useState<number>(
     classesToTeacher[0]?.classId
   );
-  console.log(selectedClass);
 
   const [loading, setLoading] = useState<boolean>(true);
   const classes = useStyles();
@@ -124,9 +123,10 @@ function Notices() {
                 const newId = e.target.value;
                 setSelectedClass(newId);
               }}>
-              {console.log(classesToTeacher)}
-              {classesToTeacher?.map((teacherClass: any) => (
-                <MenuItem value={teacherClass.classId}>
+              {classesToTeacher?.map((teacherClass: any, index: number) => (
+                <MenuItem
+                  key={"class_key" + index}
+                  value={teacherClass.classId}>
                   {teacherClass.Class.name}
                 </MenuItem>
               ))}
@@ -161,11 +161,11 @@ function Notices() {
       />
       <NoticeContainer>
         {notices.length ? (
-          notices.map((notice) => (
+          notices.map((notice, index) => (
             //@ts-ignore
             <SingleNotice
               notice={notice}
-              key={notice.id}
+              key={"notice_key" + index}
               deleteNotice={deleteNotice}
               userType={user.userType}
             />

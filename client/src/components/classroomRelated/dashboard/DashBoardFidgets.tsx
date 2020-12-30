@@ -33,7 +33,7 @@ export function TasksFidget() {
         allTasks.filter((task: ITaskofStudent) => task.status !== "done")
       );
     } catch (e) {
-      console.log(e);
+      //todo error handler
     }
   };
 
@@ -105,93 +105,84 @@ export function LessonsFidget() {
       );
       settodayLessons(latestLesson);
     } catch (e) {
-      console.log(e);
+      //todo error handler
     }
   };
 
   return (
-    <>
-      {/* <Typography
-        variant='h3'
-        style={{
-          marginRight: 15,
-          marginTop: "2%",
-          marginBottom: "auto",
-          marginLeft: "12.5%",
-        }}>
-        Last Lesson
-      </Typography> */}
-      <Wrapper style={{ height: "100%" }}>
-        <Center>
-          <Headline>
-            <u>Last Lesson</u>
-          </Headline>
-        </Center>
-        {todayLessons?.map((lesson: any, i: number) => (
-          <div
-            className='infoData'
-            style={{
-              lineHeight: "2em",
-              fontSize: "1.1em",
-              overflowY: "auto",
-              maxWidth: "100%",
-            }}>
-            <h2>{lesson.title}</h2>
+    <Wrapper style={{ height: "100%" }}>
+      <Center>
+        <Headline>
+          <u>Last Lesson</u>
+        </Headline>
+      </Center>
+      {todayLessons?.map((lesson: any, i: number) => (
+        <div
+          key='key_lesson'
+          className='infoData'
+          style={{
+            lineHeight: "2em",
+            fontSize: "1.1em",
+            overflowY: "auto",
+            maxWidth: "100%",
+          }}>
+          <h2>{lesson.title}</h2>
 
+          <div
+            className='today-info'
+            style={{ display: "flex", flexDirection: "column" }}>
+            <p>{lesson.body}</p>
             <div
               className='today-info'
-              style={{ display: "flex", flexDirection: "column" }}>
-              <p>{lesson.body}</p>
-              <div
-                className='today-info'
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "fit-content",
-                  height: "100%",
-                }}>
-                <h3>Resources</h3>
-                <ResourcesLinks>
-                  {lesson.resource?.includes("%#splitingResource#%")
-                    ? lesson.resource
-                        .split("%#splitingResource#%")
-                        .map((resource: string, index: number) => (
-                          <ResourcesLink key={index}>
-                            <Link target='_blank' href={resource}>
-                              {resource}
-                            </Link>
-                          </ResourcesLink>
-                        ))
-                    : //@ts-ignore
-                      lesson.resource?.length > 0 && (
-                        //@ts-ignore
-                        <Link target='_blank' href={lesson.resource}>
-                          {lesson.resource}
-                        </Link>
-                      )}
-                </ResourcesLinks>
-              </div>
-              <div
-                className='today-info'
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  maxWidth: "100%",
-                  height: "100%",
-                  // textAlign: "start",
-                }}>
-                <h3>Tasks</h3>
-                <List>
-                  {lesson.Tasks.map((task: any) => (
-                    <ListItemComponent task={task}></ListItemComponent>
-                  ))}
-                </List>
-              </div>
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "fit-content",
+                height: "100%",
+              }}>
+              <h3>Resources</h3>
+              <ResourcesLinks>
+                {lesson.resource?.includes("%#splitingResource#%")
+                  ? lesson.resource
+                      .split("%#splitingResource#%")
+                      .map((resource: string, index: number) => (
+                        <ResourcesLink key={index}>
+                          <Link target='_blank' href={resource}>
+                            {resource}
+                          </Link>
+                        </ResourcesLink>
+                      ))
+                  : //@ts-ignore
+                    lesson.resource?.length > 0 && (
+                      //@ts-ignore
+                      <Link target='_blank' href={lesson.resource}>
+                        {lesson.resource}
+                      </Link>
+                    )}
+              </ResourcesLinks>
+            </div>
+            <div
+              className='today-info'
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                maxWidth: "100%",
+                height: "100%",
+                // textAlign: "start",
+              }}>
+              <h3>Tasks</h3>
+              <List>
+                {lesson.Tasks.map((task: any, index: number) => (
+                  <ListItemComponent
+                    key={"key" + index}
+                    task={task}></ListItemComponent>
+                ))}
+              </List>
             </div>
           </div>
-        ))}
-      </Wrapper>
-    </>
+        </div>
+      ))}
+    </Wrapper>
   );
 }
 

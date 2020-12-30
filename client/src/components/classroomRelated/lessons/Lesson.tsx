@@ -137,13 +137,18 @@ export default function Lesson({
               {user.userType === "student"
                 ? tasks &&
                   tasks.map(
-                    (task: ITask) =>
+                    (task: ITask, index: number) =>
                       task.status === "active" && (
-                        <SingleLessonTask task={task} />
+                        <SingleLessonTask
+                          key={"task_key" + index}
+                          task={task}
+                        />
                       )
                   )
                 : tasks &&
-                  tasks.map((task: ITask) => <SingleLessonTask task={task} />)}
+                  tasks.map((task: ITask) => (
+                    <SingleLessonTask key={"task_key" + index} task={task} />
+                  ))}
             </StyledTask>
           </StyledDetails>
         </StyledAccordion>

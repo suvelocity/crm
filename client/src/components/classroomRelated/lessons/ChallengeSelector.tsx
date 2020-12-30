@@ -36,7 +36,6 @@ function ChallengeSelector({
       const { data } = await network.get(
         `/api/v1/task/challenges/${type}?name=${query}`
       );
-      console.log(data);
       if (data.status === "error") {
         throw data.message;
       }
@@ -86,8 +85,6 @@ function ChallengeSelector({
         placeholder={`search in ${site}`}
         loadOptions={loadChallenges}
         onChange={(value, action) => {
-          // console.log('v',value)
-          // console.log('a',action)
           if (action.action === "clear") {
             changeValue(null, "externalId");
             changeValue(null, "externalLink");

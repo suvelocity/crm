@@ -142,8 +142,10 @@ export default function Lessons() {
           setSelectedClass(newId);
         }}
         variant='outlined'>
-        {classesToTeacher?.map((classOfTeacher) => (
-          <MenuItem value={classOfTeacher.classId}>
+        {classesToTeacher?.map((classOfTeacher, index: number) => (
+          <MenuItem
+            key={"classPicker_key" + index}
+            value={classOfTeacher.classId}>
             {classOfTeacher.Class.name}
           </MenuItem>
         ))}

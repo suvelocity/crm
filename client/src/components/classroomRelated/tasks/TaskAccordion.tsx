@@ -55,7 +55,6 @@ export default function SingleTask(props: any) {
   const { task, handleOpen, handleClose } = props;
   const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
-  console.log(task);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);

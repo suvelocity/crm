@@ -77,7 +77,6 @@ export default function AddTask({
   const removeTask = () => {
     handleRemove(index, "task");
   };
-  console.log(students);
 
   return (
     <Form

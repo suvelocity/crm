@@ -40,59 +40,54 @@ export default function FormPage(props: IProps) {
   // const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [finishTitle, setFinishTitle] = useState<string>();
   const { register, handleSubmit, watch, errors } = useForm();
-  const onSubmit = async (formSubmission: any) => { 
+  const onSubmit = async (formSubmission: any) => {
     // setFormSubmitted(true);
     try {
       const studentId = 1;
-      // console.log(submission.formSubmission);
       let fieldSubsArr = [];
       for (const sub in formSubmission) {
         fieldSubsArr.push({
           studentId,
           fieldId: Number(sub),
-          textualAnswer: formSubmission[sub]
+          textualAnswer: formSubmission[sub],
         });
-      };
+      }
       await network.post(`/api/v1/fieldsubmission/form`, fieldSubsArr);
       setFinishTitle("Well done, from submitted successfully");
-    }
-    catch(error) {
+    } catch (error) {
       setFinishTitle(error.message);
-      console.log(error);
     }
   };
 
-  return (!finishTitle) ? (
+  return !finishTitle ? (
     <Container className={classes.formWrapper}>
       <Container className={classes.form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {form.Fields.map((field, index) => (
             <div key={index}>
-                {/* LABEL */}
-                <div>
-                  <label htmlFor={field.id.toString()}>{field.title}</label>
-                </div>
+              {/* LABEL */}
+              <div>
+                <label htmlFor={field.id.toString()}>{field.title}</label>
+              </div>
 
-                {/* INPUT */}
-                <div>
-                  <input
-                    ref={register({ required: true })}
-                    name={field.id.toString()}
-                    placeholder="Your answer"
-                  />
-                  {errors[field.title] && (
-                    <span>This field is required</span>
-                  )}
-                </div>
+              {/* INPUT */}
+              <div>
+                <input
+                  ref={register({ required: true })}
+                  name={field.id.toString()}
+                  placeholder='Your answer'
+                />
+                {errors[field.title] && <span>This field is required</span>}
+              </div>
             </div>
           ))}
           <div>
-            <input type="submit" />
+            <input type='submit' />
           </div>
         </form>
       </Container>
     </Container>
   ) : (
     <div>{finishTitle}</div>
-  )
+  );
 }

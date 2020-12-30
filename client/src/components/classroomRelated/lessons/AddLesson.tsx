@@ -159,7 +159,6 @@ export default function AddLesson({
         if (toDelete.hasOwnProperty("id")) {
           const updateDeleted = tasksToDelete.slice();
           updateDeleted.push(toDelete);
-          console.log(updateDeleted);
           setTasksToDelete(updateDeleted);
         }
         setTasks(prevTasks);

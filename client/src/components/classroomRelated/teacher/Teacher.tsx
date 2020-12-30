@@ -49,7 +49,6 @@ export default function Teacher() {
       handleClose(true);
       //@ts-ignore
     } catch (e) {
-      console.log(e);
       Swal.fire("Error", e.message, "error");
     }
   };
