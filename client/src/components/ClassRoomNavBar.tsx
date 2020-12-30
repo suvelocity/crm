@@ -30,6 +30,7 @@ import { AuthContext } from "../helpers";
 import { ThemeContext } from "../helpers";
 import network from "../helpers/network";
 import { IStudent } from "../typescript/interfaces";
+import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 //@ts-ignore
 import DarkModeToggle from "react-dark-mode-toggle";
 import "./classroomNavBar.css";
@@ -124,14 +125,23 @@ function ClassRoomNavBar() {
                 </Badge>
               </IconButton>
             </> */}
-
-            <AccountCircleIcon
-              style={{
-                marginRight: 10,
-                marginTop: "auto",
-                marginBottom: "auto",
-              }}
-            />
+            {user.userType === "teacher" ? (
+              <SchoolIcon
+                style={{
+                  marginRight: 10,
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                }}
+              />
+            ) : (
+              <AccountCircleIcon
+                style={{
+                  marginRight: 10,
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                }}
+              />
+            )}
             {user.firstName + " " + user.lastName}
           </Typography>
         </Toolbar>
@@ -152,15 +162,9 @@ function ClassRoomNavBar() {
           <StyledLink to='/lessons'>
             <DrawerItem onClick={() => setOpen(false)}>
               Lessons
-              <SchoolIcon style={{ position: "absolute", right: 10 }} />
+              <ImportContactsIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
 
-            {/* <StyledLink to="/schedhule">
-            <DrawerItem onClick={() => setOpen(false)}>
-              Schedhule
-              <TodayIcon style={{ position: "absolute", right: 10 }} />
-            </DrawerItem>
-          </StyledLink> */}
             <StyledLink to='/tasks'>
               <DrawerItem onClick={() => setOpen(false)}>
                 Tasks
@@ -185,7 +189,7 @@ function ClassRoomNavBar() {
               </DrawerItem>
             </StyledLink>
           )}
-          <DrawerItem style={{ alignContent: "flex-end" }}>
+          <DrawerItem style={{ position: "fixed", bottom: 0, width: "170px" }}>
             <SignOutButton style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
         </StyledDrawer>
@@ -248,6 +252,8 @@ const StyledDrawer = styled.div`
   height: 100%;
   width: 220px;
   overflow: hidden;
+  /* display:flex;
+  flex-direction:column; */
 `;
 
 const StyledAppBar = styled(AppBar)`

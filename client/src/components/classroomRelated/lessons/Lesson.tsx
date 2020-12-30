@@ -5,7 +5,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { EditDiv } from "../../../styles/styledComponents";
+import { EditDiv, StyledAtavLink } from "../../../styles/styledComponents";
 import { useState, useCallback, useEffect, useContext } from "react";
 import { Loading } from "react-loading-wrapper";
 import EditIcon from "@material-ui/icons/Edit";
@@ -16,6 +16,8 @@ import { modalStyle, useStyles } from "./Lessons";
 import Select from "@material-ui/core/Select";
 import { AuthContext } from "../../../helpers";
 import SingleLessonTask from "./SingleLessonTask";
+import VideocamIcon from "@material-ui/icons/Videocam";
+import { IconButton } from "@material-ui/core";
 
 export default function Lesson({
   lesson,
@@ -88,7 +90,11 @@ export default function Lesson({
             {"#" + index + " " + lessonState.title}
           </StyledSummery>
           <hr style={{ width: "80%", opacity: "80%" }} />
-          <StyledDetails>{lessonState.body}</StyledDetails>
+          <StyledDetails>
+            <p style={{ width: "90%", margin: "0 auto 0 0" }}>
+              {lessonState.body}
+            </p>
+          </StyledDetails>
           <StyledDetails>
             <Loading size={30} loading={loading}>
               {user.userType === "teacher" && (
@@ -96,9 +102,11 @@ export default function Lesson({
                   <EditIcon />
                 </EditDiv>
               )}
-              {lesson.zoomLink && (
-                <ZoomDiv top='90px' onClick={() => setModalState(true)}>
-                  <a href={lesson.zoomLink}>Zoom</a>{" "}
+              {lesson.zoomLink && lesson.zoomLink.length > 0 && (
+                <ZoomDiv top='140px' onClick={() => setModalState(true)}>
+                  <StyledAtavLink href={lesson.zoomLink} target='_blank'>
+                    <VideocamIcon />
+                  </StyledAtavLink>
                 </ZoomDiv>
               )}
 
@@ -173,6 +181,8 @@ const LessonContainer = styled.div`
 const StyledAccordion = styled(Accordion)`
   background-color: ${({ theme }: { theme: any }) =>
     theme.colors.accordion}; //TODO change
+  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
@@ -183,7 +193,7 @@ const StyledSummery = styled(AccordionSummary)`
 
 const StyledDetails = styled(AccordionDetails)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
-  padding: 2%;
+  /* padding: 2%; */
 `;
 
 const ResourcesLinks = styled.div`
@@ -209,6 +219,6 @@ const Link = styled.a`
 export const ZoomDiv = styled.div`
   cursor: pointer;
   position: absolute;
-  right: 66px;
+  right: 33px;
   top: ${(props: { top: string }) => props.top || "25px"};
 `;
