@@ -14,7 +14,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { AuthContext } from "../helpers";
 import Home from "../components/classroomRelated/QuizMeRelated/components/pages/Home";
 import FormRouter from "../components/classroomRelated/QuizMeRelated/components/FormRouter";
-import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreator/FormCreator";
+import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreation/FormCreator";
 import QuizSubmissionsRouter from "../components/classroomRelated/QuizMeRelated/components/QuizSubmissionsRouter";
 
 const GlobalStyle = createGlobalStyle`

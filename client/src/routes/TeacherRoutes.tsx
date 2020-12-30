@@ -16,7 +16,7 @@ import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import QuizSubmissionsRouter from "../components/classroomRelated/QuizMeRelated/components/QuizSubmissionsRouter";
 import Home from "../components/classroomRelated/QuizMeRelated/components/pages/Home";
-import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreator/FormCreator";
+import FormCreator from "../components/classroomRelated/QuizMeRelated/components/pages/FormCreation/FormCreator";
 import { challengeMeChallenges } from "../atoms";
 import { teacherStudents, classesOfTeacher } from "../atoms";
 

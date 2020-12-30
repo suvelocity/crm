@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import "./QuizMe.css";
 import Home from "./components/pages/Home";
 import FormRouter from "./components/FormRouter";
-import FormCreator from "./components/pages/FormCreator/FormCreator";
+import FormCreator from "./components/pages/FormCreation/FormCreator";
 import QuizPage from "./components/pages/QuizPage";
 import NavBar from "./components/NavBar";
 import QuizSubmissionsRouter from "./components/QuizSubmissionsRouter";
