@@ -39,7 +39,7 @@ export function TasksFidget() {
 
   return (
     <>
-      <Typography
+      {/* <Typography
         variant='h3'
         style={{
           marginRight: 15,
@@ -48,11 +48,15 @@ export function TasksFidget() {
           marginLeft: "12.5%",
         }}>
         Unfinished Tasks
-      </Typography>
+      </Typography> */}
       <Wrapper style={{ height: "100%" }}>
-        {/* <TitleWrapper>
-        <Headline>Unfinished Tasks</Headline>
-      </TitleWrapper> */}
+        {/* <TitleWrapper> */}
+        <Center>
+          <Headline>
+            <u>Unfinished Tasks</u>
+          </Headline>
+        </Center>
+        {/* </TitleWrapper> */}
 
         {incompletedTasks ? (
           incompletedTasks.length !== 0 ? (
@@ -107,7 +111,7 @@ export function LessonsFidget() {
 
   return (
     <>
-      <Typography
+      {/* <Typography
         variant='h3'
         style={{
           marginRight: 15,
@@ -116,8 +120,13 @@ export function LessonsFidget() {
           marginLeft: "12.5%",
         }}>
         Last Lesson
-      </Typography>
+      </Typography> */}
       <Wrapper style={{ height: "100%" }}>
+        <Center>
+          <Headline>
+            <u>Last Lesson</u>
+          </Headline>
+        </Center>
         {todayLessons?.map((lesson: any, i: number) => (
           <div
             className='infoData'
@@ -199,7 +208,7 @@ export function ScheduleFidget() {
   );
 }
 export const Headline = styled.h1`
-  width: 75%;
+  /* width: 75%; */
   margin-left: auto;
   margin-right: auto;
   padding: 10px 20px;

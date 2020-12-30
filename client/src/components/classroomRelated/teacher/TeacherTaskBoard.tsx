@@ -507,7 +507,7 @@ export default function TeacherTaskBoard(props: any) {
           </TableFooter>
         </Table>
       </TableContainer>
-      {Array.isArray(taskArray) && taskArray.length === 0 && (
+      {Array.isArray(teacherTasks) && taskArray.length === 0 && (
         <Center>
           <h1>No results Found</h1>
           <SentimentVeryDissatisfiedIcon style={{ fontSize: "10em" }} />
