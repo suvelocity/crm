@@ -218,7 +218,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const StyledButton = styled.div`
   /* position: absolute; */
-  background-color: rgb(22, 121, 35);
+  background-color: rgb(22, 121, 30);
   display: flex;
   justify-content: center;
   align-items: center;
