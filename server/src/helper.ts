@@ -22,6 +22,7 @@ import { flatMap, flatten, orderBy, reduce } from "lodash";
 import { parse } from "dotenv/types";
 import { object } from "joi";
 //TODO fix types
+
 export const cancelAllJobsOfStudent: (
   studentId: number,
   hiredJobId: number,
@@ -203,7 +204,11 @@ export const fetchFCC: () => void = async () => {
   try {
     const studentsData: any = (
       await Student.findAll(getQuery(["fcc", "id"], true, true))
-    ).map((a: any) => a.toJSON());
+    )
+    .filter((student:IStudent)=>{
+      student.fccAccount
+    })
+    .map((a: any) => a.toJSON());
     const usernames: string[] = studentsData.map(
       (d: { fcc_account: string; id: string }) => d.fcc_account
     );

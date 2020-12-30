@@ -195,6 +195,11 @@ router.post("/startmails/:id", async (req, res) => {
         ), (error: any) => res.status(500).json({ error: error.message })
       );
     });
+    await MentorProgram.update({ email: true },{
+      where: {
+        id: req.params.id
+      }
+    })
     res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -237,6 +242,19 @@ router.post("/mails/:id", async (req, res) => {
       };
     })
     res.json(pairs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Edit mentor forms sent attribute
+router.put("/editForm/:id", async (req, res) => {
+  try {
+    const programForms = await MentorForm.update({ sent: true },
+      {
+        where: { id: req.params.id },
+      })
+    res.json('sent!');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
