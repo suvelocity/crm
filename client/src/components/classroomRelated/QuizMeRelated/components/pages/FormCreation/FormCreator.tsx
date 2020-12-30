@@ -71,25 +71,25 @@ export default function FormCreator() {
   // console.log('user: ', user);
 
   const classes = useStyles();
+  const [formName, setFormName] = useState<string>("");
   const [fields, setFields] = useState<Omit<IFieldExtended, "id" | "formId">[]>(
     []
   );
   const [isQuiz, setIsQuiz] = useState<boolean>(false);
-  const { register, handleSubmit, control, watch, errors } = useForm();
-
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    // const formattedData = {
-    //   ...data,
-    //   fields: data.fields.map((field: IField) => ({
-    //     ...field,
-    //     typeId: Number(field.typeId),
-    //   })),
-    //   isQuiz: Number(data.isQuiz) ? true : false,
-    //   creatorId: user.id, // user context!!
-    // };
+  // const { register, handleSubmit, control, watch, errors } = useForm();
+  
+  const onSubmit = async () => {
+    const formattedData = {
+      name: formName,
+      fields: fields.map((field: Omit<IFieldExtended, "id" | "formId">) => ({
+        ...field,
+        typeId: Number(field.typeId),
+      })),
+      isQuiz: Number(isQuiz) ? true : false,
+      creatorId: user.id, // user context!!
+    };
     // console.log(formattedData);
-    // const createdForm = await network.post("/api/v1/form/full", formattedData);
+    const createdForm = await network.post("/api/v1/form/full", formattedData);
   };
 
   const addField = () => {
@@ -101,35 +101,38 @@ export default function FormCreator() {
     setFields(newFields);
   };
   const changeFieldTitle = (fieldIndex: number, title: string) => {
-    // console.log('e.target.value: ', title);
-    // console.log('field index: ', fieldIndex);
-    // console.log('e.target.value TYPE: ', typeof title);
-    
-    // const fieldsArr = fields.slice();
-    // console.log("fieldsArr before: ", fieldsArr);
-    // fieldsArr[fieldIndex].title = title;
-    // console.log("fieldsArr after: ", fieldsArr);
-    setFields((prev: Omit<IFieldExtended, "id" | "formId">[]) => {
-      const newState = [...prev];
-      newState[fieldIndex].title = title;
-      return newState;
-    });
+    const fieldsArr = fields.slice();
+    fieldsArr[fieldIndex].title = title;
+    setFields(fieldsArr);
+    // setFields((prev: Omit<IFieldExtended, "id" | "formId">[]) => {
+    //   const newState = [...prev];
+    //   newState[fieldIndex].title = title;
+    //   return newState;
+    // });
   };
-  const changeField = (
+
+  const changeFieldType = (
     index: number,
-    typeId?: number,
-    // title?: string,
-    options?: IOption[]
+    type: string,
   ) => {
     const fieldsArr = fields.slice();
-    if (typeId) {
-      fieldsArr[index].typeId = typeId;
+    if (type) {
+      fieldsArr[index].typeId = Number(type);
     }
-    // if (title || title === "") {
-    //   fieldsArr[index].title = title;
-    // }
+    setFields(fieldsArr);
+  };
+  const changeFieldOptions = (
+    index: number,
+    options: IOption[] | undefined,
+  ) => {
+    const fieldsArr = fields.slice();
     if (options) {
       fieldsArr[index].Options = options;
+    } else {
+      fieldsArr[index] = {
+        title: fieldsArr[index].title,
+        typeId: fieldsArr[index].typeId
+      };
     }
     setFields(fieldsArr);
   };
@@ -137,6 +140,8 @@ export default function FormCreator() {
   const deleteField = (index: number) => {
     const fieldsArr = fields.slice();
     fieldsArr.splice(index, 1);
+    console.log(fieldsArr);
+    
     setFields(fieldsArr);
   };
 
@@ -151,16 +156,25 @@ export default function FormCreator() {
         >
           <div className={classes.setting}>
             {/* NAME OF THE FORM */}
+            {/* <button onClick={(e) => {
+                e.preventDefault();
+                console.log(fields)
+              }}
+            >
+              LOG
+            </button> */}
             <div className={classes.label}>
               <label htmlFor={"name"}>What is the name of your form?</label>
               {/* INPUT */}
                 <Input
-                  inputRef={register({ required: true })}
-                  name={"name"}
+                  // inputRef={register({ required: true })}
+                  // name={"name"}
                   placeholder={"Your answer"}
                   className={classes.horizontalMargin}
+                  onChange={(e) => {setFormName(e.target.value)}}
+                  value={formName}
                 />
-                {errors["name"] && <span>This field is required</span>}
+                {/* {errors["name"] && <span>This field is required</span>} */}
             </div>
             {/* IS QUIZ? */}
             <div>
@@ -172,8 +186,8 @@ export default function FormCreator() {
               {/* <div> */}
               <input
                 type="radio"
-                ref={register({ required: true })}
-                name="isQuiz"
+                // ref={register({ required: true })}
+                // name="isQuiz"
                 value={0}
                 checked={!isQuiz}
                 onChange={() => setIsQuiz(!isQuiz)}
@@ -183,29 +197,30 @@ export default function FormCreator() {
               {/* <div> */}
               <input
                 type="radio"
-                ref={register({ required: true })}
-                name="isQuiz"
+                // ref={register({ required: true })}
+                // name="isQuiz"
                 value={1}
                 checked={isQuiz}
                 onChange={() => setIsQuiz(!isQuiz)}
               />
               <label htmlFor="isQuiz">Quiz</label>
-              {/* </div> */}
-              {/* </div> */}
             </div>
           </div>
 
           {fields.map((field, index) => (
             <Field
               key={index}
-              register={register}
-              Controller={Controller}
-              control={control}
+              // register={register}
+              // Controller={Controller}
+              // control={control}
               fieldIndex={index}
-              typeId={field.typeId}
               typeIndex={field.typeId-1}
-              title={field.title}
-              changeField={changeField}
+              // typeId={field.typeId}
+              // title={field.title}
+              field={field}
+              options={field.Options}
+              changeFieldType={changeFieldType}
+              changeFieldOptions={changeFieldOptions}
               changeFieldTitle={changeFieldTitle}
               deleteField={deleteField}
               isQuiz={isQuiz}
@@ -227,7 +242,7 @@ export default function FormCreator() {
             <Button
               variant={"contained"}
               color={"primary"}
-              onClick={handleSubmit(onSubmit)}
+              onClick={onSubmit}
             >
               Submit
             </Button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
+// import Select from "react-select";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -10,7 +10,9 @@ import {
   Typography,
   Chip,
   Input,
-  // Select
+  Select,
+  MenuItem,
+  FormControl,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -19,6 +21,7 @@ import network from "../../../../../../helpers/network";
 import {
   IFormExtended,
   IField,
+  IFieldExtended,
   IOption,
 } from "../../../../../../typescript/interfaces";
 import Option from "./Option";
@@ -33,15 +36,15 @@ const useStyles = makeStyles(() => ({
   fieldInput: {
     margin: "0.5em 0",
     backgroundColor: "rgba(255, 0, 0, 0)",
-    border: 'none',
-    borderBottom: '1px solid black'
+    // border: 'none',
+    // borderBottom: '1px solid black'
   },
   select: {
-    width: "14em",
+    // width: "14em",
     // height: "1em",
-    fontSize: "0.75em",
-    fontWeight: 600,
-    display: "inline-block",
+    // fontSize: "0.75em",
+    // fontWeight: 600,
+    // display: "inline-block",
     margin: "0 0.75em",
   },
   horizontalMargin: {
@@ -57,40 +60,44 @@ const useStyles = makeStyles(() => ({
   },
   addOption: {
     cursor: "pointer",
-  }
+  },
 }));
 interface IProps {
-  register: any;
-  control: any;
-  Controller: any;
+  // register: any;
+  // control: any;
+  // Controller: any;
   fieldIndex: number;
-  title: string;
-  typeId: number | undefined;
+  // title: string;
+  // typeId: number;
+  field: Omit<IFieldExtended, "id" | "formId">;
+  options: IOption[] | undefined;
   typeIndex: number;
   isQuiz: boolean;
-  changeField: (
+  changeFieldType: (
     index: number,
-    typeId?: number,
-    // title?: string,
-    options?: IOption[]
+    type: string,
   ) => void;
-  changeFieldTitle: (
+  changeFieldOptions: (
     index: number,
-    title: string
+    options: IOption[] | undefined
   ) => void;
+  changeFieldTitle: (index: number, title: string) => void;
   deleteField: (index: number) => void;
 }
 export default function Field({
   ////////// RFC
-  register,
-  control,
-  Controller,
+  // register,
+  // control,
+  // Controller,
   fieldIndex,
-  title,
-  typeId,
+  // title,
+  // typeId,
+  field,
+  options,
   typeIndex,
   isQuiz,
-  changeField,
+  changeFieldType,
+  changeFieldOptions,
   changeFieldTitle,
   deleteField,
 }: IProps) {
@@ -128,7 +135,75 @@ export default function Field({
           title: "",
         },
       ];
-  const [options, setOptions] = useState<IOption[]>([
+  // const [options, setOptions] = useState<IOption[]>([
+  //   {
+  //     title: "",
+  //   },
+  //   {
+  //     title: "",
+  //   },
+  //   {
+  //     title: "",
+  //   },
+  //   {
+  //     title: "",
+  //   },
+  // ]);
+  // useEffect(() => {
+  //   const newOptionsArray = isQuiz ? [
+  //         {
+  //           title: "",
+  //           isCorrect: true,
+  //         },
+  //         {
+  //           title: "",
+  //           isCorrect: false,
+  //         },
+  //         {
+  //           title: "",
+  //           isCorrect: false,
+  //         },
+  //         {
+  //           title: "",
+  //           isCorrect: false,
+  //         },
+  //       ]
+  //     : [
+  //         {
+  //           title: "",
+  //         },
+  //         {
+  //           title: "",
+  //         },
+  //         {
+  //           title: "",
+  //         },
+  //         {
+  //           title: "",
+  //         },
+  //       ];
+  //       // changeFieldOptions(fieldIndex, newOptionsArray);
+  // }, [isQuiz]);
+
+  const getOptions = () => isQuiz ? [
+    {
+      title: "",
+      isCorrect: true,
+    },
+    {
+      title: "",
+      isCorrect: false,
+    },
+    {
+      title: "",
+      isCorrect: false,
+    },
+    {
+      title: "",
+      isCorrect: false,
+    },
+  ]
+: [
     {
       title: "",
     },
@@ -141,89 +216,84 @@ export default function Field({
     {
       title: "",
     },
-  ]);
-  useEffect(() => {
-    isQuiz
-      ? setOptions([
-          {
-            title: "",
-            isCorrect: true,
-          },
-          {
-            title: "",
-            isCorrect: false,
-          },
-          {
-            title: "",
-            isCorrect: false,
-          },
-          {
-            title: "",
-            isCorrect: false,
-          },
-        ])
-      : setOptions([
-          {
-            title: "",
-          },
-          {
-            title: "",
-          },
-          {
-            title: "",
-          },
-          {
-            title: "",
-          },
-        ]);
-  }, [isQuiz]);
+  ];
 
   const fieldTypes = [
     { value: 1, label: "Select-One" },
-    { value: 2, label: "Open Question" }
+    { value: 2, label: "Open Question" },
   ];
   const addOption = (e: any) => {
     e.preventDefault();
-    const optionsArr = options.slice();
+    const optionsArr = options!.slice();
     optionsArr.push({
       title: "",
       isCorrect: false,
     });
-    setOptions(optionsArr);
+    // setOptions(optionsArr);
+    changeFieldOptions(fieldIndex, optionsArr);
   };
   const deleteOption = (index: number) => {
-    if (!options[index].isCorrect) {
-      const optionArr = options.slice();
-      optionArr.splice(index, 1);
-      setOptions(optionArr);
+    if (!options![index].isCorrect) {
+      const optionsArr = options!.slice();
+      optionsArr.splice(index, 1);
+      // setOptions(optionsArr);
+      changeFieldOptions(fieldIndex, optionsArr);
     }
   };
-  const changeOption = (
+  
+  const changeOptionTitle = (
     index: number,
     fieldIndex: number,
-    title?: string,
-    isCorrect?: boolean | null
+    title: string,
   ) => {
-    const optionsArr = options.slice();
-    if(title || title === "") {
-      optionsArr[index].title = title;
-    }
-    setOptions(optionsArr);
-    changeField(fieldIndex, undefined, optionsArr);
+    const optionsArr = options!.slice();
+    optionsArr[index].title = title;
+    // setOptions(optionsArr);
+    changeFieldOptions(fieldIndex, optionsArr);
   };
+  const changeOptionIsCorrect = (
+    index: number,
+    fieldIndex: number,
+    isCorrect: boolean | null
+  ) => {
+    const optionsArr = options!.slice();
+    if(isCorrect) {
+      optionsArr[index].isCorrect = isCorrect;
+    } else {
+      optionsArr[index] = {
+        title: optionsArr[index].title,
+      };
+    }
+    // setOptions(optionsArr);
+    changeFieldOptions(fieldIndex, optionsArr);
+  };
+  
   const selectCorrectOption = (correctOptionIndex: number) => {
-    if (!options[correctOptionIndex].isCorrect) {
-      let optionsArr = options.slice();
+    if (!options![correctOptionIndex].isCorrect) {
+      let optionsArr = options!.slice();
       optionsArr = optionsArr.map((option: IOption, index: number) =>
         index === correctOptionIndex
           ? { ...option, isCorrect: true }
           : { ...option, isCorrect: false }
       );
-      setOptions(optionsArr);
-      changeField(fieldIndex, undefined, optionsArr);
+      // setOptions(optionsArr);
+      changeFieldOptions(fieldIndex, optionsArr);
     }
   };
-  
+  const getFieldType = (): string => {
+    switch (field.typeId) {
+      case 1:
+        return "Select-One";
+        break;
+      case 2:
+        return "Open-Question";
+        break;
+      default:
+        return "Open-Question";
+        break;
+    }
+  };
+
   return (
     <div className={classes.field}>
       <div className={classes.deleteFieldWrapper}>
@@ -238,7 +308,7 @@ export default function Field({
         Question #{fieldIndex + 1}
       </label>
 
-      <Controller
+      {/* <Controller
         control={control}
         name={`fields[${fieldIndex}].typeId`}
         render={(
@@ -252,22 +322,31 @@ export default function Field({
             className={classes.select}
             options={fieldTypes}
             value={fieldTypes[typeIndex]}
-            // getValue={() => fieldTypes.find(field => field.value === typeId)}
             inputRef={ref}
           />
         )}
-      />
-
-      {/* <Select
-        options={fieldTypes}
-        className={classes.select}
-        // name={`fields[${fieldIndex}].typeId`}
-        // ref={register}
-        onChange={(e) => {
-          console.log(e!.value);
-          changeField(fieldIndex, Number(e!.value), undefined, options);
-        }}
       /> */}
+      <FormControl>
+        <Select
+          // options={fieldTypes}
+          className={classes.select}
+          // name={`fields[${fieldIndex}].typeId`}
+          // ref={register}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            changeFieldType(fieldIndex, e.target.value as string);
+            if(e.target.value === 1) {
+              changeFieldOptions(fieldIndex, getOptions());
+            }
+            if(e.target.value === 2) {
+              changeFieldOptions(fieldIndex, undefined);
+            }
+          }}
+          value={field.typeId}
+        >
+          <MenuItem value={2}>Open-Question</MenuItem>
+          <MenuItem value={1}>Select-One</MenuItem>
+        </Select>
+      </FormControl>
 
       {/* <select
         name={`fields[${fieldIndex}].typeId`}
@@ -282,34 +361,44 @@ export default function Field({
       </select> */}
 
       <div>
-        {typeId === 2 ? ( // 2 is the typeId of openQuestion
+        {field.typeId === 2 ? ( // 2 is the typeId of openQuestion
           // OPEN QUESTION
-        <Controller
-          control={control}
-          name={`fields[${fieldIndex}].title`}
-          // defaultValue={''}
-          render={(
-           { onChange, onBlur, value, name, ref }: any,
-           { invalid, isTouched, isDirty }: any
-           ) => (
-             <Input
-                className={classes.fieldInput}
-                fullWidth
-                inputRef={ref}
-                placeholder="Your Question"
-                onBlur={onBlur}
-                // onChange={(e) => {
-                //   changeFieldTitle(fieldIndex, e.target.value)
-                // }}
-                onChange={(e) => {
-                    onChange();
-                    changeFieldTitle(fieldIndex, e.target.value);
-                }}
-                value={value}
-             />
-           )}
-         />
+          // <Controller
+          //   name={`fields[${fieldIndex}].title`}
+          //   // defaultValue={''}
+          //   render={(
+          //    { onChange, onBlur, value, name, ref }: any,
+          //    { invalid, isTouched, isDirty }: any
+          //    ) => (
+          //      <Input
+          //         className={classes.fieldInput}
+          //         fullWidth
+          //         inputRef={ref}
+          //         placeholder="Your Question"
+          //         onBlur={onBlur}
+          //         // onChange={(e) => {
+          //         //   changeFieldTitle(fieldIndex, e.target.value)
+          //         // }}
+          //         onChange={(e) => {
+          //             onChange();
+          //             changeFieldTitle(fieldIndex, e.target.value);
+          //         }}
+          //         value={value}
+          //      />
+          //    )}
+          //  />
 
+          <Input
+            className={classes.fieldInput}
+            fullWidth
+            //  inputRef={ref}
+            placeholder="Your Question"
+            onChange={(e) => {
+              changeFieldTitle(fieldIndex, e.target.value);
+            }}
+            value={field.title}
+          />
+        ) : (
           // <input // field title
           //   className={classes.fieldInput}
           //   ref={register({ required: true })}
@@ -320,32 +409,30 @@ export default function Field({
           //   }}
           //   value={title}
           // />
-        ) : (
           // SELECT-ONE | CHECKBOX
           <>
             <Input // field title
               className={classes.fieldInput}
-              fullWidth
-              inputRef={register({ required: true })}
-              name={`fields[${fieldIndex}].title`}
+              // inputRef={register({ required: true })}
+              // name={`fields[${fieldIndex}].title`}
               placeholder="Your Question"
               onChange={(e) => {
-                  changeFieldTitle(fieldIndex, e.target.value)
-                }
-              }
-              value={title}
+                changeFieldTitle(fieldIndex, e.target.value);
+              }}
+              value={field.title}
             />
-            {options.map((
+            {options && options.map((
               option: IOption,
-              index: number // OPTIONS
+              optionIndex: number // OPTIONS
             ) => (
               <Option
-                key={index}
-                index={index}
+                key={optionIndex}
+                optionIndex={optionIndex}
                 fieldIndex={fieldIndex}
-                register={register}
+                // register={register}
                 deleteOption={deleteOption}
-                changeOption={changeOption}
+                changeOptionTitle={changeOptionTitle}
+                // changeOptionIsCorrect={changeOptionIsCorrect}
                 selectCorrectOption={selectCorrectOption}
                 value={option.title}
                 // isCorrect={option.isCorrect}

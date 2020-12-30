@@ -43,35 +43,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 interface IProps {
-  index: number;
+  optionIndex: number;
   fieldIndex: number;
   value: string;
   options: IOption[];
   isQuiz: boolean;
-  register: any;
+  // register: any;
   deleteOption: (index: number) => void;
-  changeOption: (
-    index: number,
+  changeOptionTitle: (
+    optionIndex: number,
     fieldIndex: number,
-    title?: string,
-    isCorrect?: boolean
+    title: string,
   ) => void;
+  // changeOptionIsCorrect: (
+  //   index: number,
+  //   fieldIndex: number,
+  //   isCorrect?: boolean
+  // ) => void;
   selectCorrectOption: (index: number) => void;
 }
 export default function Option({
-  index,
+  optionIndex,
   fieldIndex,
   value,
   options,
-  register,
+  // register,
   isQuiz,
-  changeOption,
+  changeOptionTitle,
+  // changeOptionIsCorrect,
   deleteOption,
   selectCorrectOption,
 }: IProps) {
   const classes = useStyles();
   const { control } = useForm();
-  const isCorrect = options[index].isCorrect;
+  const isCorrect = options[optionIndex].isCorrect;
   const isOnlyOne = options.length === 1;
   const onlyOneCorrect =
     options.filter((option) => option.isCorrect).length === 1;
@@ -81,17 +86,18 @@ export default function Option({
     <>
       <div className={classes.option}>
         <Input
-          name={`fields[${fieldIndex}].options[${index}].title`}
-          inputRef={register({ required: true })}
-          placeholder={`option ${index + 1}`}
+          name={`fields[${fieldIndex}].options[${optionIndex}].title`}
+          // inputRef={register({ required: true })}
+          placeholder={`option ${optionIndex + 1}`}
           onChange={(e) => {
             const title = e.target.value ? e.target.value : "";
-            changeOption(index, fieldIndex, title, undefined);
+            changeOptionTitle(optionIndex, fieldIndex, title);
           }}
           value={value}
         />
         {/* <button onClick={() => console.log(isCorrect)}>LOG</button> */}
-        {isQuiz && options[index].isCorrect !== undefined && (
+        {(isQuiz) && (
+          // options[optionIndex].isCorrect !== undefined
           <>
             {/* <Switch
               color={"default"}
@@ -119,10 +125,10 @@ export default function Option({
             <FormControlLabel
               labelPlacement="start"
               control={<Switch 
-                          checked={options[index].isCorrect}
-                          onChange={() => selectCorrectOption(index)}
-                          inputRef={register} 
-                          name={`fields[${fieldIndex}].options[${index}].isCorrect`} 
+                          checked={options[optionIndex].isCorrect}
+                          onChange={() => selectCorrectOption(optionIndex)}
+                          // inputRef={register} 
+                          name={`fields[${fieldIndex}].options[${optionIndex}].isCorrect`} 
                       />}
               label="Correct?"
             />
@@ -150,10 +156,10 @@ export default function Option({
         {ableToDelete() && (
           <DeleteIcon
             onClick={() => {
-              deleteOption(index);
+              deleteOption(optionIndex);
             }}
             className={
-              options[index].isCorrect ? classes.forbidden : classes.pointer
+              options[optionIndex].isCorrect ? classes.forbidden : classes.pointer
             }
           >
             Delete
