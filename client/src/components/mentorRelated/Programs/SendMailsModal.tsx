@@ -69,7 +69,7 @@ interface MailProps {
   getProgram: Function
 }
 
-function SendMailModal ({ id, forms, startMail, getProgram}: MailProps) {
+function SendMailModal({ id, forms }: MailProps) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
@@ -126,7 +126,7 @@ function SendMailModal ({ id, forms, startMail, getProgram}: MailProps) {
               }}
             >
               <MenuItem value=''>none</MenuItem>
-             {forms && forms.MentorForms!.map((form => <MenuItem value={form.url}>{form.title}</MenuItem>))}
+             {forms && forms.MentorForms!.map((form => <MenuItem value={form.answerUrl}>{form.title}</MenuItem>))}
             </Select></FormControl>
             <br />
             <br />
@@ -179,24 +179,6 @@ function SendMailModal ({ id, forms, startMail, getProgram}: MailProps) {
             </Button>
             </div>
             <br />
-            <Button
-              disabled={startMail? true : false}
-              style={{
-                textAlign: "center",
-                margin: 10,
-                backgroundColor: "#c47dfa",
-              }}
-              variant="contained"
-                          onClick={async () => {
-                            await network.post(`/api/V1/M/program/startmails/${id}`);
-                            await getProgram()
-                            handleClose()
-                  
-              }
-              }
-            >
-              Start Program Mail
-            </Button>
           </Center>
         </form>
       </div>
