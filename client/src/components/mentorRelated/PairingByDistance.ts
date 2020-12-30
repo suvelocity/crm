@@ -4,12 +4,12 @@ import axios from "axios";
 async function GeoCoding(obj: any) {
   try {
     const { data } = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${obj.address}&key=${process.env.REACT_APP_API_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(obj.address)}&key=${process.env.REACT_APP_API_KEY}`
     );
     obj.geo = data.results[0].geometry.location;
     return obj;
   } catch (error) {
-    return error;
+    return (obj.address, " is not valid address");
   }
 }
 

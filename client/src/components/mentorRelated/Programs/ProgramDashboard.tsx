@@ -52,7 +52,7 @@ const ProgramDashboard: React.FC = () => {
     );
     setTabelData(dashboardData.data);
     setLoading(false);
-  }, []);
+  }, [id]);
 
   const getAvailableMentors = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/mentor/available`);
@@ -61,8 +61,9 @@ const ProgramDashboard: React.FC = () => {
 
   const getForms = useCallback(async () => {
     const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
+    console.log(formsData.data);
     setForms(formsData.data);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     getTableData();
@@ -70,6 +71,7 @@ const ProgramDashboard: React.FC = () => {
     getForms();
   }, [getTableData, getAvailableMentors, getForms]);
 
+  console.log(programdetails);
   const endProgram = async () => {
     try {
       await network.put(`/api/v1/M/program/end/${id}`);
@@ -160,7 +162,14 @@ const ProgramDashboard: React.FC = () => {
           </div>
           <div>
             <AddFormModal getForms={getForms} id={id} />
-            <SendMailModal id={id} />
+            <SendMailModal
+              id={id}
+              //@ts-ignore
+              forms={forms}
+              //@ts-ignore
+              startMail={programdetails?.email}
+              getProgram={getTableData}
+            />
           </div>
         </div>
         <SimpleModal

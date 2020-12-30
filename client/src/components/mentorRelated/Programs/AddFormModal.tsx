@@ -109,7 +109,7 @@ function AddFormModal({ getForms, id }: { getForms: any; id: number }) {
               inputRef={register({
                 required: "URL is required",
               })}
-              label="Form URL"
+              label="Edit Form URL"
             />
             <br />
             <br />
