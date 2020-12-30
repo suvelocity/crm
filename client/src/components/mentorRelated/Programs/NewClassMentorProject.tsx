@@ -539,7 +539,9 @@ function NewClassMentorProject() {
                       setAvailble(e.target.value as boolean)
                     }
                   >
+                    {/*@ts-ignore*/}
                     <MenuItem value={true}>Available</MenuItem>
+                    {/* @ts-ignore */}
                     <MenuItem value={false}>Not available</MenuItem>
                     <MenuItem value="all">All</MenuItem>
                   </Select>
