@@ -14,7 +14,6 @@ const port = process.env.PORT || 8080;
 //   establishConnection()
 // }
 
-console.log("port", process.env.PORT);
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
 });
