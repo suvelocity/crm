@@ -155,6 +155,7 @@ function NewClassMentorProject() {
     if (!destination) return;
     if (source.droppableId === destination.droppableId) {
       const itemsMentor: IMentor[] = Array.from(mentors || []);
+      
       const [reorderedMentor] = itemsMentor.splice(result.source.index, 1);
       itemsMentor.splice(result.destination.index, 0, reorderedMentor);
       setMentors(itemsMentor);
@@ -162,7 +163,7 @@ function NewClassMentorProject() {
       source.droppableId === "mentors" &&
       destination.droppableId !== "students"
     ) {
-      const itemsMentor: IMentor[] = Array.from(mentors || []);
+      const itemsMentor: IMentor[] = Array.from(filteredMentors || []);
       const itemsStudents: Omit<IStudent, "Class">[] = Array.from(
         filteredCls || []
       );
@@ -184,8 +185,11 @@ function NewClassMentorProject() {
           : itemsMentor.push(prevMentor);
       }
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
+      const newMentors = Array.from(mentors)
+      const mentorIndex = newMentors.findIndex(mentor => mentor.id === itemsMentor[result.source.index].id)
+      newMentors[mentorIndex] = itemsMentor[result.source.index]
       setFilteredCls(itemsStudents);
-      setMentors(itemsMentor);
+      setMentors(newMentors);
       // setSearchValue("");
       // setSearchValueStudent("");
     }
@@ -201,7 +205,8 @@ function NewClassMentorProject() {
     } else newMentors.push(mentor);
     setMentors(newMentors);
     const newCls: Omit<IStudent, "Class">[] = Array.from(students);
-    newCls[i].mentor = null;
+    const studentIndex = newCls.findIndex(old => old.id === filteredCls[i].id)
+    newCls[studentIndex].mentor = null
     setStudents(newCls);
   };
 
@@ -314,13 +319,16 @@ function NewClassMentorProject() {
       const emptyMentors: IMentor[] = filteredMentors.filter(
         (mentor) => !mentor.student || mentor.student === 0
       );
+      const emptyStudents = filteredCls.filter((student) => !student.mentor);
+      // const studentsWithMentor = filteredCls.filter((student) => student.mentor);
       const newMentors: IMentor[] = Array.from(filteredMentors);
-      const studentsWithMentor = students.filter((student) => student.mentor);
-      const emptyStudents = students.filter((student) => !student.mentor);
+      const newStudents: Omit<IStudent, "Class">[] = Array.from(students);
       try {
         const pairs = await fixedPairing(emptyStudents, emptyMentors);
         pairs &&
           pairs.forEach((student) => {
+            const studentIndex = newStudents.findIndex(old => old.id === student.id)
+            newStudents[studentIndex] = student
             const currMentor = student.mentor;
             const mentorIndex = newMentors.findIndex(
               (mentor: IMentor) => mentor.id === currMentor?.id
@@ -333,7 +341,7 @@ function NewClassMentorProject() {
           });
         setMentors(newMentors);
         pairs.sort((a, b) => a.id - b.id);
-        setStudents([...pairs, ...studentsWithMentor]);
+        setStudents(newStudents);
       } catch (error) {
         const proceed = await promptRandomAssign();
         if (!proceed) return;
@@ -351,7 +359,7 @@ function NewClassMentorProject() {
           emptyStudents[i].mentor = newMentors[i];
           newMentors[i].student = 1;
         }
-        setStudents([...emptyStudents, ...studentsWithMentor]);
+        setStudents(newStudents);
         setMentors(newMentors);
       }
     }

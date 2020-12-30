@@ -19,13 +19,11 @@ import {
   IMentorProgramForms,
   ITask,
 } from "../../../typescript/interfaces";
-import EditIcon from "@material-ui/icons/Edit";
 import { Loading } from "react-loading-wrapper";
 import { AuthContext } from "../../../helpers";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../../helpers/general";
-import SimpleModal from "../Modal";
 import AddFormModal from "./AddFormModal";
 import { formatToIsraeliDate } from "../../../helpers/general";
 import Swal from "sweetalert2";
@@ -38,8 +36,6 @@ const ProgramDashboard: React.FC = () => {
   const [tabelsData, setTabelData] = useState<IMentorProgramDashboard[]>([]);
   const [programdetails, setProgramDetails] = useState<IMentorProgram>();
   const [forms, setForms] = useState<IMentorProgramForms>();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [modalBody, setModalBody] = useState<any>();
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
   const { id } = useParams();
   const history = useHistory();
@@ -287,6 +283,7 @@ const ProgramDashboard: React.FC = () => {
                     href={form.url}
                     color="black"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     <StyledSpan>{form.title}</StyledSpan>
                   </a>
@@ -295,6 +292,8 @@ const ProgramDashboard: React.FC = () => {
                     href={form.url}
                     color="black"
                     target="_blank"
+                    rel="noreferrer"
+                  
                   >
                     <StyledSpan>
                       {formatToIsraeliDate(form.createdAt)}
