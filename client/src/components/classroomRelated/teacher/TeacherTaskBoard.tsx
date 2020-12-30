@@ -225,6 +225,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                     <TableRow key={studentRow.studentId}>
                       <TableCell component='th' scope='row'>
                         {studentRow?.Student?.firstName +
+                          " " +
                           studentRow?.Student?.lastName}
                       </TableCell>
                       <TableCell>{studentRow?.Student?.Class.name}</TableCell>

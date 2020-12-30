@@ -77,12 +77,14 @@ export default function AddTask({
   const removeTask = () => {
     handleRemove(index, "task");
   };
+  console.log(students);
+
   return (
     <Form
       key={index}
       className='create-task'
       style={{
-        maxWidth: "20vw",
+        maxWidth: students ? "70vw" : "20vw",
       }}>
       <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
         <CloseIcon onClick={removeTask} />
@@ -195,7 +197,6 @@ export default function AddTask({
         <InputLabel id='task-status-label'>Status</InputLabel>
         <Select
           defaultValue='Pick a Status'
-          // id='task-status'
           labelId='task-status-label'
           id='task-status'
           label='status'

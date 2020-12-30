@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { IClass, IStudent } from "../../../typescript/interfaces";
 import {
   Checkbox,
@@ -15,16 +16,22 @@ import styled from "styled-components";
 const Accordion = withStyles({
   root: {
     border: "1px solid rgba(0, 0, 0, .125)",
+    width: "98%",
+    margin: "0 auto",
     boxShadow: "none",
     "&:not(:last-child)": {
       borderBottom: 0,
     },
+
     "&:before": {
       display: "none",
     },
     "&$expanded": {
       margin: "auto",
-      width: "100%",
+      width: "98%",
+      maxHeight: "42vh",
+      height: "42vh",
+      overFlowY: "auto",
     },
   },
   expanded: {},
@@ -132,19 +139,16 @@ export default function ClassAccordion({
     setExpanded(newExpanded ? panel : false);
   };
 
-  console.log(pickStates);
   return (
     <>
       {classes.map((cls: classList, i: number) => (
         <Accordion
           square
           expanded={expanded === `panel${i}`}
-          onChange={handleChange(`panel${i}`)}
-        >
+          onChange={handleChange(`panel${i}`)}>
           <AccordionSummary
             aria-controls={`panel${i}d-content`}
-            id={`panel${i}d-header`}
-          >
+            id={`panel${i}d-header`}>
             <FormControlLabel
               aria-label={`Pick Class${i}`}
               onClick={(event) => {
@@ -160,10 +164,17 @@ export default function ClassAccordion({
               }
               label={cls.name}
             />
+            <ExpandMoreIcon
+              style={{
+                margin: "auto 0 auto auto",
+                transform: expanded ? "rotate(180deg)" : "rotate(360deg)",
+                transition: "0.3s",
+              }}
+            />
           </AccordionSummary>
           <AccordionDetails>
-            <FormControl component="fieldset">
-              <FormGroup>
+            <FormControl component='fieldset'>
+              <FormGroup style={{ maxHeight: "35vh" }}>
                 {cls.students.map((s: IStudent, j: number) => (
                   <FormControlLabel
                     aria-label={`Pick Student${j} Class${i}`}

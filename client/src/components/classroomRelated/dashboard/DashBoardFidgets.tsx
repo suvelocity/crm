@@ -1,8 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import {
-  ILesson,
-  ITaskofStudent,
-} from "../../../typescript/interfaces";
+import { ILesson, ITaskofStudent } from "../../../typescript/interfaces";
 import { AuthContext } from "../../../helpers";
 import network from "../../../helpers/network";
 import styled from "styled-components";
@@ -252,7 +249,30 @@ const Wrapper = styled.div`
   background-color: ${(props: { backgroundColor: string }) =>
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: { color: string }) => (props.color ? props.color : "black")};
-  overflow-y: scroll;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    display: unset;
+    height: 5px;
+    width: 12px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(173, 173, 173, 0.6);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #838383;
+    transition: 0.5s;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #525252;
+  }
+
   /* 
   -ms-overflow-style: auto; */
 

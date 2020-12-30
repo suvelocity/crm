@@ -1,34 +1,32 @@
 import * as React from "react";
 import { DataGrid, ColDef } from "@material-ui/data-grid";
 import { Loading } from "react-loading-wrapper";
+// import {Link} from 'react-dom'
+import LinkIcon from "@material-ui/icons/Link";
 import styled from "styled-components";
+import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 
 const columns: ColDef[] = [
-  { field: "taskId", headerName: "#", width: 50 },
-  { field: "taskName", headerName: "Task", flex: 1 },
-  { field: "lesson", headerName: "Lesson", flex: 1 },
-  { field: "type", headerName: "Type", width: 100 },
+  // { field: "taskId", headerName: "#", width: 50 },
+  { field: "taskName", headerName: "Task", width: 200 },
+  { field: "lesson", headerName: "Lesson", width: 150 },
+  { field: "type", headerName: "Type", width: 90 },
   {
     field: "deadline",
     headerName: "Deadline",
     type: "string",
-    width: 300,
+    width: 110,
   },
   {
     field: "link",
     headerName: "External Link",
     type: "string",
-    flex: 1,
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    width: 100,
+    flex: 500,
   },
   {
     field: "submitLink",
     headerName: "URL Submitted",
-    width: 300,
+    flex: 400,
   },
 ];
 const separateToValues = (dateTimeBigger: number, dateTimeSmaller: number) => {
@@ -88,7 +86,7 @@ export default function DataGridDemo(props: any) {
         // deadline: manipulateDate(task.Task.endDate), //.split("T").join(" At ").slice(0, 19),
         deadline: task.Task.endDate.substring(0, 10),
         link: task.Task.externalLink,
-        status: task.status,
+        // status: task.status,
         submitLink: task.submitLink,
       };
     }) || [];
@@ -112,7 +110,7 @@ const TaskTableConatiner = styled.div`
   /* background-color: ${({ theme }: { theme: any }) =>
     theme.colors.background}; */
   height: 70vh;
-  width: 70%;
+  width: 90%;
   overflow: hidden;
   margin-bottom: 10px;
   margin-left: auto;

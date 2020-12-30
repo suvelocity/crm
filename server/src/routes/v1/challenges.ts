@@ -226,7 +226,7 @@ export async function fetchBlockChallenges(search: string) {
     if (title.toLowerCase().includes(search)) {
       const id = challenge.fields.slug.split("/")[3];
       const newChallenge = {
-        label: title,
+        label: title[0] === "t" ? title.substring(4) : title,
         value: "id" + id,
         link: challenge.fields.slug,
       };

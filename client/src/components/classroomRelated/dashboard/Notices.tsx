@@ -124,6 +124,7 @@ function Notices() {
                 const newId = e.target.value;
                 setSelectedClass(newId);
               }}>
+              {console.log(classesToTeacher)}
               {classesToTeacher?.map((teacherClass: any) => (
                 <MenuItem value={teacherClass.classId}>
                   {teacherClass.Class.name}
