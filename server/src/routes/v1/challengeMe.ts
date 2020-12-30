@@ -105,31 +105,31 @@ router.post('/team/forClass/:id',async (req,res)=>{
     const CMTeam :Required< ICMTeam > = {
       leaders,usersToCreate, teamName, eventsRegistration
     }
+    res.json(CMTeam)
     // const {data:response} = await axios.post(
-      //   'http://35.239.15.221:8080/api/v1/webhooks/teams',
-      //   CMTeam,
-      //   {
-        //     headers:{
-          //       Authorization: cmAccess
-          //     }
-          //   }
-          // )
-          await Promise.all(
-            Object.entries(leadersWithNoUser)
-            .map(([userId,user])=>{
-            return Teacher.update(
-              {cmUser:user.userName},
-              {where:{
-                id:userId
-              }})
-          })
-          )
-          // res.json(classToAdd)          
-          res.json(CMTeam)
-        }catch(err){
-          console.error(err)
-          res.json({
-            status:'error',
+    //   'http://35.239.15.221:8080/api/v1/webhooks/teams',
+    //   CMTeam,
+    //   {
+    //     headers:{
+    //       Authorization: cmAccess
+    //     }
+    //   }
+    // )
+    //TODO: update class with cmId
+    await Promise.all(
+      Object.entries(leadersWithNoUser)
+      .map(([userId,user])=>{
+        return Teacher.update(
+          {cmUser:user.userName},
+          {where:{
+            id:userId
+          }})
+        })
+      )
+    }catch(err){
+    console.error(err)
+    res.json({
+      status:'error',
       message:err
     })
   }
