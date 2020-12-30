@@ -126,7 +126,7 @@ function SendMailModal({ id, forms }: MailProps) {
               }}
             >
               <MenuItem value=''>none</MenuItem>
-             {forms && forms.MentorForms!.map((form => <MenuItem value={form.url}>{form.title}</MenuItem>))}
+             {forms && forms.MentorForms!.map((form => <MenuItem value={form.answerUrl}>{form.title}</MenuItem>))}
             </Select></FormControl>
             <br />
             <br />
