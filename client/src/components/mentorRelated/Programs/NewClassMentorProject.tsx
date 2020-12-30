@@ -105,7 +105,7 @@ function NewClassMentorProject() {
       available === "all"
         ? mentors
         : mentors.filter(
-            (mentor) => mentor.available === (available === "true")
+            (mentor) => mentor.available === available
           );
     if (searchValue !== "") {
       setFilteredMentors(
