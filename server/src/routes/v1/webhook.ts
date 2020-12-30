@@ -5,10 +5,11 @@ import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
+import { validateTeacher } from "../../middlewares";
 
 const router = Router();
 
-router.post("/team", async (req, res) => {
+router.post("/team", validateTeacher, async (req, res) => {
   const { MY_URL: url, CM_ACCESS: cmAccess } = process.env;
   if (!url) {
     throw "no url!";
@@ -40,7 +41,7 @@ router.post("/team", async (req, res) => {
     res.json({ status: "error", message: err.message });
   }
 });
-router.post("/signup", async (req, res) => {
+router.post("/signup", validateTeacher, async (req, res) => {
   const { MY_URL: url, CM_ACCESS: cmAccess } = process.env;
   if (!url) {
     throw "no url!";
