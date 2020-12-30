@@ -12,6 +12,7 @@ import {
   Input,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import network from "../../../../../../helpers/network";
 import {
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: "3px",
   },
   fieldInput: {
-    margin: '0.5em 0'
+    margin: "0.5em 0",
   },
   select: {
     width: "14em",
@@ -48,6 +49,9 @@ const useStyles = makeStyles(() => ({
   deleteField: {
     cursor: "pointer",
     position: "absolute",
+  },
+  addOption: {
+    cursor: "pointer",
   },
 }));
 interface IProps {
@@ -234,11 +238,14 @@ export default function Field({
         ) => (
           <Select
             onChange={(e) => {
-              changeField(fieldIndex, Number(e!.value), undefined, options);
+              changeField(fieldIndex, e!.value, undefined, options);
             }}
             className={classes.select}
             options={fieldTypes}
-            value={fieldTypes.find((type) => type.value === typeId)}
+            value={fieldTypes.find((type) => {
+              
+              return type.value === typeId
+            })}
             // checked={value}
             inputRef={ref}
           />
@@ -295,14 +302,6 @@ export default function Field({
               }
               value={value}
             />
-            <button
-              onClick={(e: any) => {
-                addOption(e);
-              }}
-            >
-              Add Option
-            </button>
-            <div></div>
             {options.map((
               option: IOption,
               index: number // OPTIONS
@@ -321,6 +320,16 @@ export default function Field({
                 options={options}
               />
             ))}
+            <div>
+              <AddCircleOutlineIcon
+                // color={'primary'}
+                // fontSize={'large'}
+                className={classes.addOption}
+                onClick={(e: any) => {
+                  addOption(e);
+                }}
+              />
+            </div>
           </>
         )}
       </div>

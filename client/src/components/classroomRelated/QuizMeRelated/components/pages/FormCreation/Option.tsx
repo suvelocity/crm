@@ -11,7 +11,8 @@ import {
   Button,
   Switch,
   FormControl,
-  FormControlLabel
+  FormControlLabel,
+  Input
 } from "@material-ui/core";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -31,9 +32,11 @@ const useStyles = makeStyles((theme) => ({
   },
   pointer: {
     cursor: "pointer",
+    margin: '0 0.4em'
   },
   forbidden: {
     cursor: "not-allowed",
+    margin: '0 0.4em'
   },
   button: {
     minWidth: "8em",
@@ -77,9 +80,9 @@ export default function Option({
   return (
     <>
       <div className={classes.option}>
-        <input
+        <Input
           name={`fields[${fieldIndex}].options[${index}].title`}
-          ref={register({ required: true })}
+          inputRef={register({ required: true })}
           placeholder={`option ${index + 1}`}
           onChange={(e) => {
             const title = e.target.value ? e.target.value : "";

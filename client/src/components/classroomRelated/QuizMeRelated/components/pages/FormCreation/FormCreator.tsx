@@ -13,6 +13,8 @@ import {
   InputLabel,
   FormControl,
 } from "@material-ui/core";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+
 
 import network from "../../../../../../helpers/network";
 import { AuthContext } from "../../../../../../helpers";
@@ -58,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
   verticalMargin: {
     margin: "1em 0",
   },
+  addField: {
+    marginLeft: '0.25em'
+  }
 }));
 
 export default function FormCreator() {
@@ -121,6 +126,9 @@ export default function FormCreator() {
 
   return (
     <Container className={classes.formWrapper}>
+      <button onClick={() => console.log(fields)}> 
+        LOG
+      </button>
       <form className={classes.form}>
         <Container
         // className={classes.flexCenter}
@@ -175,10 +183,8 @@ export default function FormCreator() {
             <Field
               key={index}
               register={register}
-
               Controller={Controller}
               control={control}
-
               fieldIndex={index}
               typeId={field.typeId}
               value={field.title}
@@ -189,7 +195,14 @@ export default function FormCreator() {
           ))}
           <div className={classes.verticalMargin}>
             <Button onClick={addField} variant={"contained"} color={"primary"}>
-              Add Field
+              <Typography component={'span'}>
+                Add Field
+              </Typography>
+              <AddCircleOutlineIcon 
+                className={classes.addField}
+                color={'inherit'}
+                // fontSize={'large'}
+              />
             </Button>
           </div>
           <div className={classes.flexCenter}>
