@@ -13,26 +13,32 @@ import jwt from 'jsonwebtoken'
 const router = Router();
 
  const validateFormAccess :RequestHandler = async (req:any,res,next)=>{
-  const {id} = req.user;
-  const studentTasks = await TaskOfStudent.findAll({
-    where:{
-      [Op.and]:{
-        studentId:id,
-        type:'quizMe'
-      }},
-    include:[{
-      model:Task,
-      attributes:['externalId','endDate'],
+  try{
+    const {id} = req.user;
+    if (!id){throw { message:'no ID!'}}
+    const studentTasks = await TaskOfStudent.findAll({
       where:{
-        status:'active',
-        endDate:{
-          [Op.gte]:new Date()
-        }
-      }}]
-  });
-  const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
-  req.formIds=formIds
-  next()
+        [Op.and]:{
+          studentId:id,
+          type:'quizMe'
+        }},
+        include:[{
+          model:Task,
+          attributes:['externalId','endDate'],
+          where:{
+            status:'active',
+            endDate:{
+              [Op.gte]:new Date()
+            }
+          }}]
+        });
+        const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
+        req.formIds=formIds
+        next()
+  }catch(e){
+    console.error(e)
+    res.send(e.message)
+  } 
 }
 
 router.use(validateFormAccess)
@@ -63,7 +69,7 @@ router.get("/all", async (req: any, res: Response) => {
     // });
     
     // GET QUIZ BY ID
-    router.get("/:id", async (req: any, res: Response) => {
+router.get("/:id", async (req: any, res: Response) => {
       try{
         const {formIds,user} = req
         const {id} = req.params
