@@ -44,7 +44,6 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user);
   //@ts-ignore
   const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

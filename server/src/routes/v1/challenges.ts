@@ -7,14 +7,14 @@ import axios from "axios";
 import { any } from "joi";
 const router = Router();
 require("dotenv").config();
-import { validateAdmin, validateTeacher } from "../../middlewares";
+import { validateTeacher } from "../../middlewares";
 
 const { CM_ACCESS } = process.env;
 
 if (!CM_ACCESS) {
   console.trace("ChallengeMe Access Token Missing!");
 }
-const challengeMe = "http://35.239.15.221:8080/api/v1";
+const challengeMe = "http://35.239.15.221/api/v1";
 
 router.get(
   "/challengeMe",
