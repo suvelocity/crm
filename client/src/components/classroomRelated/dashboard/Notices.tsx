@@ -27,6 +27,7 @@ function Notices() {
   const [selectedClass, setSelectedClass] = useState<number>(
     classesToTeacher[0]?.classId
   );
+  console.log('cc',classesToTeacher)
   console.log(selectedClass);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,6 +112,9 @@ function Notices() {
               id='class-select'
               variant='outlined'
               labelId='class-select-label'
+              onMouseEnter={()=>{
+                console.log(selectedClass)
+              }}
               style={{
                 width: 250,
                 boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
@@ -126,7 +130,7 @@ function Notices() {
               }}>
               {classesToTeacher?.map((teacherClass: any) => (
                 <MenuItem value={teacherClass.classId}>
-                  {teacherClass.Class.name}
+                  {teacherClass.length?teacherClass.Class.name:''}
                 </MenuItem>
               ))}
             </Select>

@@ -2,11 +2,11 @@ import e, { Router, Request, Response } from "express";
 import axios from 'axios'
 //@ts-ignore
 import db,{ Event, Student, Teacher, Company, Class, sequelize,} from "../../models";
-import { IClass, ITeacher, IStudent } from "../../types";
+import { IClass, ITeacher, IStudent,} from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
 import { QueryInterface } from "sequelize/types";
-
+import messageHtml from './message'
 const router = Router();
 
 interface ICMUser{
@@ -24,7 +24,7 @@ interface ICMUser{
 }
 interface ICMEventRegistration{
   webhookUrl: string;  // webhook address to send events to you on
-  events: ("submittedChallenge"|"startedChallenge")[];// array of strings, event names to listen for
+  events: ("submitted Challenge"|"started Challenge")[];// array of strings, event names to listen for
   authorizationToken: string; 
   // the requesting team's Access token to ChallengeMe
 }
@@ -46,10 +46,11 @@ interface ICMTeamResponse{
     userName: string;
     email: string;
     password: string;
-  };
+  }[];
   eventRegistrationStatus:201;
   eventRegistrationMessage: string;
 }
+
 
 router.post('/team/forClass/:id',async (req,res)=>{
   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
@@ -64,7 +65,32 @@ router.post('/team/forClass/:id',async (req,res)=>{
       throw `invalid email "${email}"` 
     }
   }
-  
+  function composeMail(
+  to: string,
+  userName: string,
+  password: string,
+  course:string,
+){
+  return {
+    from: process.env.EMAIL_USER,
+    to: to,
+    subject: `ChallengeMe Account for your ${course} course `,
+    html:messageHtml(userName,password),
+    text: `
+Hello,
+Welcome to our program! 
+In the upcoming course, you will be using the ChallengeMe system.
+It is a system for submitting tasks, learning and more.
+Provided below are your username and password for access into the system.
+
+user: ${userName}
+password:${password}
+
+Good luck! we hope to see you soon.
+suvelocity`,
+}
+  };
+
   try{
     if (!url||!cmAccess){
       throw `env variables missing ${url?'CM_ACCESS':'URL'}`
@@ -73,10 +99,10 @@ router.post('/team/forClass/:id',async (req,res)=>{
     const {id} = req.params
     const classToAdd :IClass & {
       Teachers:ITeacher[],
-      Students:IStudent[]
+      Students:IStudent[],
     } = await Class.findOne({
       where:{id},
-      include:['Students','Teachers'],
+      include:['Students','Teachers','Course'],
       attributes:['id','name','course','cycleNumber','cmId']
     })
     
@@ -113,12 +139,13 @@ router.post('/team/forClass/:id',async (req,res)=>{
     
     const eventsRegistration :ICMTeam['eventsRegistration'] = {
       webhookUrl: url+'/api/v1/event/challengeMe',
-      events: ["submittedChallenge","startedChallenge"],
+      events:["submitted Challenge","Started Challenge"],
       authorizationToken: cmAccess 
     }
     const CMTeam :Required< ICMTeam > = {
       leaders,usersToCreate, teamName, eventsRegistration
     }
+    
     const {data}:{data:ICMTeamResponse} = await axios.post(
       'http://35.239.15.221:8080/api/v1/webhooks/teams',
       CMTeam,
@@ -131,16 +158,24 @@ router.post('/team/forClass/:id',async (req,res)=>{
       throw e.response.data
     })
 
-    console.log(data)
     const { 
       eventRegistrationMessage,
       eventRegistrationStatus,
       teamId,
       message,
       newUsers
-    } = data
+    } :ICMTeamResponse= data
     
+    // record the class' CM id 
     await Class.update({cmId:teamId},{where:{id}})
+    
+    // mail new users their new credentials 
+    if(newUsers){ 
+      await Promise.all(newUsers.map(({email,userName,password})=>{
+        return transporter.sendMail(composeMail(email,userName,password,course))
+      }))
+    }
+
     await Promise.all(
       Object.entries(leadersWithNoUser)
       .map(([userId,user])=>{
@@ -149,14 +184,14 @@ router.post('/team/forClass/:id',async (req,res)=>{
           {where:{
             id:userId
           }})
-        })
-      )
+      })
+    )
+      
     res.json({
       message,
       teamId,
       eventRegistrationMessage,
       eventRegistrationStatus,
-      newUsers
     })
     
   }catch(err){
@@ -164,7 +199,6 @@ router.post('/team/forClass/:id',async (req,res)=>{
     res.json({
       status:'error',
       message:err.message?err.message:err,
-      error:err.isAxiosError?err.response:undefined
     })
   }
 })
