@@ -96,7 +96,7 @@ export default function QuizzesList() {
   // if (forms && userSubmissions) {
     // forms.length > 0 ? 
     if(title) {return <Container className={classes.flexCenter}>{title}</Container>};
-    return (forms && forms.length > 0) ? (
+    return (forms && userSubmissions && forms.length > 0) ? (
       <>
         <Container className={classes.container}>
           <Container className={classes.list}>
