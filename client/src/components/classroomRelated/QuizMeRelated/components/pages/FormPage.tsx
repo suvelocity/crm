@@ -26,7 +26,7 @@ const extractAnswers = (Fields:IFieldWithSubs[]) => {
       console.log('ineA',typeId,submission)
       const {textualAnswer,SelectedOptions} = submission
       //@ts-ignore
-      prev[id] = typeId === 1
+      prev[id] = typeId === 2
       ? textualAnswer
       : SelectedOptions.map(({optionId,})=>({id:optionId}))
     }else{
