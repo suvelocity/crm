@@ -9,6 +9,7 @@ import AdminJobsRoutes from "./adminRoutes/AdminJobsRoutes";
 import AdminStudentsRoutes from "./adminRoutes/AdminStudentsRoutes";
 import AdminMentorRoutes from "./adminRoutes/AdminMentorRoutes";
 import AdminTeacherRoutes from "./adminRoutes/AdminTeacherRoutes";
+import Landing from "../components/Landing";
 
 export function AdminRoutes() {
   return (
@@ -17,7 +18,7 @@ export function AdminRoutes() {
       <ErrorBoundary>
         <Switch>
           <Route exact path="/">
-            <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
+            <Landing />
           </Route>
           <Route path="/company">
             <AdminCompanyRoutes />
