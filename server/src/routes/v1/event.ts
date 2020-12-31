@@ -6,8 +6,10 @@ import {
   parseFilters,
 } from "../../helper";
 //@ts-ignore
-import { Event, Student, Job, Company, Class, Task, TaskofStudent, sequelize } from "../../models";
-import {Model} from 'sequelize'
+import { Event, Student, Job, Class } from "../../models";
+//@ts-ignore
+import { Company, ClassTask, TaskofStudent, sequelize } from "../../models";
+import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import { validateAdmin, validateTeacher } from "../../middlewares";
@@ -270,53 +272,61 @@ router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
   const result = await fetchFCC();
   res.json(result);
 });
-router.post('/challengeMe',async (req,res)=>{
+router.post("/challengeMe", async (req, res) => {
   try {
+    console.log(req.body);
 
     interface CM {
-      eventName: 'Submitted Challenge'|'Started Challenge';
+      eventName: "Submitted Challenge" | "Started Challenge";
       userName: string;
-      userMail:string;
+      userMail: string;
       challengeId: number;
       challengeName: string;
-      submissionState?: 'FAIL'|'SUCCESS';
+      submissionState?: "FAIL" | "SUCCESS";
       team: string;
     }
-    const body : CM = req.body
+    const body: CM = req.body;
     const student = await Student.findOne({
-      where:{
-        email:body.userMail
-    },
-    attributes:['id']
-  })
-  if(!student){
-    return res.send('no such student')
-  }
-  const eventName = 'CM_' + body.eventName
-  .toUpperCase().replace(' ','_').concat(
-    body.submissionState
-    ? '_'+ body.submissionState
-    :''
-  ) 
-  const event :IEvent= {
-    date:new Date(),
-    eventName,
-    relatedId:String(body.challengeId),
-    type:'challengeMe',
-    userId:student.id
-  }
-  const { error } = eventsSchema.validate(event);
-  if (error) return res.status(400).json({ error: error.message });
-  await Event.create(event);
-  return res.status(200).send('noice');
+      where: {
+        email: body.userMail,
+      },
+      attributes: ["id"],
+    });
+    if (!student) {
+      return res.send("no such student");
+    }
+    const eventName =
+      "CM_" +
+      body.eventName
+        .toUpperCase()
+        .replace(" ", "_")
+        .concat(body.submissionState ? "_" + body.submissionState : "");
+    const event: IEvent = {
+      date: new Date(),
+      eventName,
+      relatedId: String(body.challengeId),
+      type: "challengeMe",
+      userId: student.id,
+    };
+    const { error } = eventsSchema.validate(event);
+    if (error) return res.status(400).json({ error: error.message });
+    await Event.create(event);
+    return res.status(200).send("noice");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-})
+});
 
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date, type } :IEvent = req.body;
+    const {
+      relatedId,
+      eventName,
+      userId,
+      entry,
+      date,
+      type,
+    }: IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
