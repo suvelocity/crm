@@ -206,112 +206,54 @@ suvelocity`,
   }
 })
 
-// router.post('/webhook/forClass/:id',async (req,res)=>{
-//   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
-//   try{
-//     if (!url||!cmAccess){
-//       throw `env variables missing ${url?'CM_ACCESS':'URL'}`
-//     }
-//     const {id} = req.params
+router.post('/webhook/forClass/:id',async (req,res)=>{
+  const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
+  try{
+    if (!url||!cmAccess){
+      throw `env variables missing ${url?'CM_ACCESS':'URL'}`
+    }
+    const {id} = req.params
 
-//     const classToAdd :IClass & {
-//     } = await Class.findOne({
-//       where:{id},
-//       include:['Students','Teachers'],
-//       attributes:['id','name','course','cycleNumber','cmId']
-//     })
+    const classToAdd :IClass = await Class.findOne({
+      where:{id},
+      include:['Students','Teachers'],
+      attributes:['id','name','course','cycleNumber','cmId']
+    })
     
-//     if(!classToAdd){throw 'no such class'}
-//     'http://35.239.15.221:8080/api/v1/webhooks/events/registration/:teamId'
+    if(!classToAdd){throw "no class found with id " + id}
+    
+    const {cmId} = classToAdd
 
-//     const webhookRequest : ICMEventRegistration ={
-//       authorizationToken:cmAccess,
-//       events: ["Started Challenge","Submitted Challenge"],
-//       webhookUrl: url+eventRoute
-//     }
-    
-//     const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
-    
-//     if(cmId){throw "can't create with no teachers"}
-    
-//     if(!Teachers.length){throw "can't create with no teachers"}
-    
-//     const leadersWithNoUser : {[key:number]:ICMUser} = {}
+    if(!cmId){throw "Class has no CM integration"}
 
-//     const leaders :ICMTeam['leaders'] = Teachers
-//     .map(({cmUser,email,id,firstName,lastName,idNumber})=>{
-//         if((!cmUser)&&id){
-//           leadersWithNoUser[id] = { email,userName } 
-//         }
-//         return { userName }
-//     })
-    
-//     const usersToCreate : ICMTeam['usersToCreate'] = Students
-//     .map(({email,firstName,lastName,idNumber})=>{
-//       return {
-//         email,
-//         // userName: generateUsername(firstName,lastName,String(idNumber))
-//       }
-//     })
-//     .concat(Object.values(leadersWithNoUser))
+    const requestUrl = `http://35.239.15.221/api/v1/webhooks/events/registration/${cmId}`
 
-//     const teamName : ICMTeam['teamName'] = `${course}${cycleNumber}${name}`.slice(0,32).replace(' ','')
-    
-//     const eventsRegistration :ICMTeam['eventsRegistration'] = {
-//       webhookUrl: url+'/api/v1/event/challengeMe',
-//       events: ["Submitted Challenge","Started Challenge"],
-//       authorizationToken: cmAccess 
-//     }
-//     const CMTeam :Required< ICMTeam > = {
-//       leaders,usersToCreate, teamName, eventsRegistration
-//     }
-//     const {data} = await axios.post(
-//       'http://35.239.15.221:8080/api/v1/webhooks/teams',
-//       CMTeam,
-//       {
-//         headers:{
-//           Authorization: cmAccess
-//         }
-//       }
-//     ).catch(e=>{
-//       throw e.response.data
-//     })
-
-//     console.log(data)
-//     const { 
-//       eventRegistrationMessage,
-//       eventRegistrationStatus,
-//       teamId,
-//       message
-//     } = data
-    
-//     await Class.update({cmId:teamId},{where:{id}})
-//     await Promise.all(
-//       Object.entries(leadersWithNoUser)
-//       .map(([userId,user])=>{
-//         return Teacher.update(
-//           {cmUser:user.userName},
-//           {where:{
-//             id:userId
-//           }})
-//         })
-//       )
-//     res.json({
-//       message,
-//       teamId,
-//       eventRegistrationMessage,
-//       eventRegistrationStatus,
-//     })
-    
-//   }catch(err){
-//     console.error(err)
-//     res.status(400).json({
-//       status:'error',
-//       message:err.message?err.message:err,
-//       error:err.isAxiosError?err.response:undefined
-//     })
-//   }
-// })
+    const webhookRequest : ICMEventRegistration = {
+      authorizationToken:cmAccess,
+      events: ["Started Challenge","Submitted Challenge"],
+      webhookUrl: url+eventRoute
+    }
+    const {data} = await axios.post(
+      requestUrl,
+      webhookRequest,
+      {
+        headers:{
+          Authorization: cmAccess
+        }
+      }
+    ).catch(e=>{
+      throw e.response.data
+    })
+    console.log(data)
+    res.send(data.message)
+  }catch(err){
+    console.error(err)
+    res.status(400).json({
+      status:'error',
+      message:err.message?err.message:err,
+    })
+  }
+})
 
 // router.post('/team',async (req,res)=>{
 //   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
