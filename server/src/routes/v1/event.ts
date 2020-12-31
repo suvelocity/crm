@@ -268,8 +268,13 @@ router.get(
 );
 
 router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
-  const result = await fetchFCC();
-  res.json(result);
+  try{
+    const result = await fetchFCC();
+    res.status(200).json(result);
+  }
+  catch(e){
+    res.status(500).json(e)
+  }
 });
 router.post("/challengeMe", async (req, res) => {
   //todo add validate chllengeme!

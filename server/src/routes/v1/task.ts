@@ -279,6 +279,7 @@ router.delete("/:id", validateTeacher, async (req: Request, res: Response) => {
 // //* checks submitted external task
 router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
   const { studentId } = req.params;
+  const updated: ITaskofStudent[] = [];
   try {
     const unfinishedTasks: any = await TaskofStudent.findAll({
       where: {
@@ -300,14 +301,14 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
                 relatedId: task.Task.externalId,
               },
             });
-
             if (event) {
-              await TaskofStudent.update(
+              const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
                   status: "done",
                 },
                 { where: { id: task.id } }
               );
+              updated.push(updatedTask);
             }
             return;
           } catch (error) {
@@ -323,44 +324,23 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
               },
             });
             if (event) {
-              await TaskofStudent.update(
+              const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
                   status: "done",
                 },
                 { where: { id: task.id } }
               );
+              updated.push(updatedTask);
             }
             return;
           } catch (error) {
             return;
           }
-        // case "quizMe":
-        //   try {
-        //     const event: any = await Event.findAll({
-        //       where: {
-        //         userId: studentId,
-        //         eventName: "QM_SUBMITTED", //todo check with nir
-        //         relatedId: task.Task.externalId,
-        //       },
-        //     });
-        //     if (event) {
-        //       await TaskofStudent.update(
-        //         {
-        //           status: "done",
-        //         },
-        //         { where: { id: task.id } }
-        //       );
-        //     }
-        //     return;
-        //   } catch (error) {
-        //     return;
-        //   }
-
         default:
           break;
       }
     });
-    res.status(200).json("updated submittions");
+    res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
