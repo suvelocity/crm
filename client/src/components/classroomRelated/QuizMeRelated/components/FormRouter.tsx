@@ -6,23 +6,38 @@ import { IFormExtended, IAnswer, IOption, IFormWithSubs } from "../../../../type
 import QuizPage from "./pages/QuizPage"
 import FormPage from "./pages/FormPage"
 
-// const Failed = <div>Failed to load page</div>;
 
 const useStyles = makeStyles((theme) => ({
-  
+  flexCenter: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '5em',
+    fontWeight: 600,
+    fontSize: '1.25em',
+  }
 }));
 
 export default function FormRouter() {
+  const classes = useStyles();
   const id: number = Number(useParams<{id:string}>().id);
   const [form, setForm] = useState<IFormWithSubs>();
+  const [title, setTitle] = useState<string>();
   console.log("form: ", form)
   useEffect(() => {
     const fetchForm = async () => {
-      const form = (await network.get(`/api/v1/form/${id}`)).data;
-      setForm(form);
+      try{
+        const form = (await network.get(`/api/v1/form/${id}`)).data;
+        (!form) 
+        ? setTitle("This form is either not available or doesn't exist")
+        : setForm(form);
+      }
+      catch(err) {
+        setTitle("This form is either not available or doesn't exist");
+      }
     };
     fetchForm();
   },[]);
+  if(title) {return  <div className={classes.flexCenter}>{title}</div>}
   if(form) {
     return (form.isQuiz === true) 
     ? <QuizPage form={form}/> 
@@ -30,7 +45,7 @@ export default function FormRouter() {
   } else {
     console.log(form)
     return (
-      <div>no form with id {id}</div>
+      <div></div>
     )
   }
 }

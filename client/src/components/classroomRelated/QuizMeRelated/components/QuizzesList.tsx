@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -14,6 +14,8 @@ import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 
 import network from "../../../../helpers/network";
 import { IForm } from "../../../../typescript/interfaces";
+import { numberComparer, stringNumberComparer } from "@material-ui/data-grid";
+import { AuthContext } from "../../../../helpers";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -22,14 +24,14 @@ const useStyles = makeStyles((theme) => ({
   list: {
     width: "100%",
     maxWidth: 550,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "#d2daef",
     padding: "0 0.75em",
     borderRadius: "5px",
   },
-  li: {
+  li: { 
     margin: "0.75em 0",
     backgroundColor: theme.palette.primary.main,
-    color: theme.palette.secondary.main,
+    color: 'white',
     fontWeight: 500,
     borderRadius: "3px",
   },
@@ -42,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function QuizzesList() {
   const classes = useStyles();
+  //@ts-ignore
+  const { user } = useContext(AuthContext);
+
 
   // interface Quiz {
   //   id: number
@@ -50,7 +55,13 @@ export default function QuizzesList() {
   // type QuizArray = Quiz[];
 
   interface UserSubmission {
-    formId: number;
+    id: number;
+    studentId: number;
+    fieldId: number;
+    textualAnswer: null
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
   }
   // type UserSubmissionsArray = UserSubmissions[];
 
@@ -73,7 +84,7 @@ export default function QuizzesList() {
     };
     const fetchUserSubmissions = async () => {
       const userSubmissions: UserSubmission[] = (
-        await network.get(`/api/v1/fieldsubmission/bystudent/1`)
+        await network.get(`/api/v1/fieldsubmission/bystudent/${user.id}`)
       ).data;
       console.log("userSubmissions: ", userSubmissions);
       setUserSubmissions(userSubmissions);
@@ -105,7 +116,8 @@ export default function QuizzesList() {
                       {
                         //@ts-ignore
                         userSubmissions.some(
-                          (sub) => sub.formId === form.id
+                        //@ts-ignore
+                          (sub) => sub["field.formId"] === form.id
                         ) ? (
                           // <Link to={`/quizme/fieldsubmission/byform/${form.id}/full`}>
                           //@ts-ignore
