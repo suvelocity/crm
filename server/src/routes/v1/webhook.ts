@@ -26,7 +26,7 @@ router.post("/team", validateTeacher, async (req, res) => {
     };
     console.log(url + "/api/v1/webhook/event");
     const { data: team } = await axios.post(
-      "http://35.239.15.221:8080/api/v1/webhooks/teams",
+      "http://35.239.15.221/api/v1/webhooks/teams",
       body,
       {
         headers: {
@@ -58,7 +58,7 @@ router.post("/signup", validateTeacher, async (req, res) => {
     };
     console.log(url + "/api/v1/webhook/event");
     const { data: team } = await axios.post(
-      "http://35.239.15.221:8080/api/v1/webhooks/teams",
+      "http://35.239.15.221/api/v1/webhooks/teams",
       body,
       {
         headers: {

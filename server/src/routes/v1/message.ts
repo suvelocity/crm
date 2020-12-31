@@ -22,7 +22,7 @@ export default (
     Provided below are your username and password for access into the system.<br/>
     <br/>
     user: ${userName}<br/>
-    password:${password}<br/>
+    password: ${password}<br/>
     <br/>
     Good luck! we hope to see you soon.<br/>
     suvelocity<br/>

@@ -12,7 +12,7 @@ import { Task, TaskofStudent, sequelize } from "../../models";
 import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
-import { validateAdmin, validateTeacher } from "../../middlewares";
+import { checkToken, validateAdmin, validateTeacher } from "../../middlewares";
 import transporter from "../../mail";
 //@ts-ignore
 import { Op, Sequelize, query, QueryTypes } from "sequelize";
@@ -35,6 +35,55 @@ Please keep me posted.
 Good luck!
 Scale-Up Velocity.`,
 });
+
+router.post("/challengeMe", async (req, res) => {
+  //todo add validate chllengeme!
+  try {
+    interface CM {
+      eventName: "Submitted Challenge" | "Started Challenge";
+      userName: string;
+      challengeId: number;
+      challengeName: string;
+      submissionState?: "FAIL" | "SUCCESS";
+      team: string;
+    }
+    const body: CM = req.body;
+    const student = await Student.findOne({
+      where: {
+        cmUser: body.userName,
+      },
+      attributes: ["id"],
+    });
+    if (!student) {
+      return res.send("no such student");
+    }
+    const eventName =
+      "CM_" +
+      body.eventName
+        .toUpperCase()
+        .replace(" ", "_")
+        .concat(body.submissionState ? "_" + body.submissionState : "");
+    const event: IEvent = {
+      date: new Date(),
+      eventName,
+      relatedId: String(body.challengeId),
+      type: "challengeMe",
+      userId: student.id,
+    };
+    const { error } = eventsSchema.validate(event);
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+    const createdEvent = await Event.create(event);
+    console.log('LOGGED EVENT',event,createdEvent)
+    return res.status(200).send("noice");
+  } catch (error) {
+    console.trace(error)
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.use(checkToken)
 
 router.get("/all/job", validateAdmin, async (req: Request, res: Response) => {
   try {
@@ -276,49 +325,7 @@ router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
     res.status(500).json(e)
   }
 });
-router.post("/challengeMe", async (req, res) => {
-  //todo add validate chllengeme!
-  try {
-    interface CM {
-      eventName: "Submitted Challenge" | "Started Challenge";
-      userName: string;
-      userMail: string;
-      challengeId: number;
-      challengeName: string;
-      submissionState?: "FAIL" | "SUCCESS";
-      team: string;
-    }
-    const body: CM = req.body;
-    const student = await Student.findOne({
-      where: {
-        email: body.userMail,
-      },
-      attributes: ["id"],
-    });
-    if (!student) {
-      return res.send("no such student");
-    }
-    const eventName =
-      "CM_" +
-      body.eventName
-        .toUpperCase()
-        .replace(" ", "_")
-        .concat(body.submissionState ? "_" + body.submissionState : "");
-    const event: IEvent = {
-      date: new Date(),
-      eventName,
-      relatedId: String(body.challengeId),
-      type: "challengeMe",
-      userId: student.id,
-    };
-    const { error } = eventsSchema.validate(event);
-    if (error) return res.status(400).json({ error: error.message });
-    await Event.create(event);
-    return res.status(200).send("noice");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+
 
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {

@@ -1,12 +1,13 @@
 import e, { Router, Request, Response } from "express";
 import axios from 'axios'
 //@ts-ignore
-import db,{ Event, Student, Teacher, Company, Class, sequelize,} from "../../models";
+import db,{ Event, Student, Teacher, Company, Class, TeacherofClass,} from "../../models";
 import { IClass, ITeacher, IStudent,} from "../../types";
 import { eventsSchema } from "../../validations";
 import transporter from "../../mail";
 import { QueryInterface } from "sequelize/types";
 import messageHtml from './message'
+
 const router = Router();
 const eventRoute = '/api/v1/event/challengeMe'
 
@@ -101,23 +102,30 @@ suvelocity`,
     const {id} = req.params
 
     const classToAdd :IClass & {
-      Teachers:ITeacher[],
+      TeacherofClasses:{Teacher:ITeacher}[],
       Students:IStudent[],
     } = await Class.findOne({
       where:{id},
-      include:['Students','Teachers'],
+      include:[
+        'Students',
+        {model:TeacherofClass,
+          include:['Teacher']
+        }
+      ],
       attributes:['id','name','course','cycleNumber','cmId']
     })
     
     if(!classToAdd){throw 'no such class'}
     
     
-    const {Students,Teachers,name,course,cycleNumber,cmId} = classToAdd 
+    const {Students,TeacherofClasses,name,course,cycleNumber,cmId} = classToAdd 
     
     if(cmId){throw "class already integrated"}
     
-    if(!Teachers.length){throw "can't create with no teachers"}
+    if(!TeacherofClasses){throw "can't create with no teachers"}
     
+    const Teachers:ITeacher[] = TeacherofClasses.map(ToC=>ToC.Teacher)
+
     const leadersWithNoUser : {[key:number]:ICMUser} = {}
 
     const leaders :ICMTeam['leaders'] = Teachers
@@ -284,7 +292,7 @@ router.post('/webhook/forClass/:id',async (req,res)=>{
 //     }
 //     console.log(url+'/api/v1/webhook/event')
 //     const {data:team} =  await axios.post(
-//       'http://35.239.15.221:8080/api/v1/webhooks/teams',
+//       'http://35.239.15.221/api/v1/webhooks/teams',
 //       body,
 //       {
 //         headers:{

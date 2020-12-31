@@ -285,7 +285,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
       where: {
         studentId: studentId,
         type: !"manual",
-        status: !"done",
+        status: "pending",
       },
       include: [Task],
     });
@@ -332,7 +332,24 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
               );
               updated.push(updatedTask);
             }
-            return;
+            else{
+              const event: any = await Event.findOne({
+                where: {
+                  userId: studentId,
+                  eventName: "CM_STARTED_CHALLENGE",
+                  relatedId: task.Task.externalId,
+                },
+              });
+              if (event) {
+                const updatedTask: ITaskofStudent = await TaskofStudent.update(
+                  {
+                    status: "started",
+                  },
+                  { where: { id: task.id } }
+                );
+                updated.push(updatedTask);
+              }
+            }
           } catch (error) {
             return;
           }
