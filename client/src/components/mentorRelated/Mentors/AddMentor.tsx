@@ -5,7 +5,7 @@ import {
   validEmailRegex,
   validNameRegex,
   validPhoneNumberRegex,
-  validCompanyRegex
+  validCompanyRegex,
 } from "../../../helpers/patterns";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
@@ -35,7 +35,12 @@ interface Props {
   update?: boolean;
   handleClose?: Function;
 }
-const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
+const AddMentor: React.FC<Props> = ({
+  mentor,
+  header,
+  update,
+  handleClose,
+}) => {
   const { register, handleSubmit, errors, control } = useForm();
   const history = useHistory();
 
@@ -44,7 +49,6 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
   const onSubmit = async (data: IMentor) => {
     try {
       if (update && mentor) {
-        console.log('yay')
         await network.put(`/api/v1/M/mentor/${mentor.id}`, data);
         handleClose && handleClose();
       } else {
@@ -54,7 +58,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
         history.push("/mentor/all");
       }
     } catch (error) {
-        Swal.fire("Error Occurred", error.message, "error");
+      Swal.fire("Error Occurred", error.message, "error");
     }
   };
 
@@ -70,7 +74,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="name"
                 name="name"
-                defaultValue={mentor? mentor.name : ""}
+                defaultValue={mentor ? mentor.name : ""}
                 inputRef={register({
                   required: "Full Name is required",
                   pattern: {
@@ -104,7 +108,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="company"
                 name="company"
-                defaultValue={mentor? mentor.company : ""}
+                defaultValue={mentor ? mentor.company : ""}
                 inputRef={register({
                   required: "Company is required",
                   minLength: {
@@ -139,7 +143,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
                 id="email"
                 label="Email"
                 name="email"
-                defaultValue={mentor? mentor.email : ""}
+                defaultValue={mentor ? mentor.email : ""}
                 inputRef={register({
                   required: "Email is required",
                   pattern: {
@@ -168,7 +172,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="phone"
                 name="phone"
-                defaultValue={mentor? mentor.phone : ""}
+                defaultValue={mentor ? mentor.phone : ""}
                 inputRef={register({
                   required: "Phone is required",
                   pattern: {
@@ -200,7 +204,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               <TextField
                 id="role"
                 name="role"
-                defaultValue={mentor? mentor.role : ""}
+                defaultValue={mentor ? mentor.role : ""}
                 inputRef={register({
                   required: "role is required",
                 })}
@@ -221,16 +225,16 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
                     <DoneIcon color="action" />
                   </IconButton>
                 )
-                ) : null}
-                <br />
-            <TextField
+              ) : null}
+              <br />
+              <TextField
                 id="experience"
                 name="experience"
-                defaultValue={mentor? mentor.experience : 0}
+                defaultValue={mentor ? mentor.experience : 0}
                 type="number"
                 inputRef={register({
-                    required: "experience is required",
-                    valueAsNumber:true,
+                  required: "experience is required",
+                  valueAsNumber: true,
                 })}
                 label="Experience"
               />
@@ -252,11 +256,11 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
               ) : null}
               <br />
               <GoogleMaps
-                id='address'
-                name='address'
-                defaultValue={mentor? mentor.address : ""}
+                id="address"
+                name="address"
+                defaultValue={mentor ? mentor.address : ""}
                 inputRef={register({ required: "Address is required" })}
-                label='Address'
+                label="Address"
               />
               {!empty ? (
                 errors.address ? (
@@ -293,8 +297,7 @@ const AddMentor: React.FC<Props> = ({mentor, header, update, handleClose}) => {
                     </Select>
                   }
                   name="gender"
-                  defaultValue={mentor? mentor.gender : "Female"}
-                  
+                  defaultValue={mentor ? mentor.gender : "Female"}
                   control={control}
                 />
               </FormControl>

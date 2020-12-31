@@ -94,7 +94,6 @@ function AllMentors() {
       newAttributes = { ...newAttributes, Search: filterField };
     }
     setFilterAttributes(newAttributes);
-    console.log(newAttributes);
   };
 
   useEffect(() => {
@@ -220,7 +219,7 @@ function AllMentors() {
             </li>
           )}
           {mentors && (
-            <div style={{ overflow: "scroll", maxHeight: 500}}>
+            <div style={{ overflow: "scroll", maxHeight: 500 }}>
               {mentors.map((mentor) => (
                 <li>
                   <StyledDiv repeatFormula="0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr">

@@ -40,7 +40,6 @@ const ProgramDashboard: React.FC = () => {
   const { id } = useParams();
   const history = useHistory();
   const { user } = useContext<any>(AuthContext);
-  console.log(user);
 
   const getTableData = useCallback(async () => {
     const program = await network.get(`/api/v1/M/program/${id}`);
@@ -293,7 +292,6 @@ const ProgramDashboard: React.FC = () => {
                     color="black"
                     target="_blank"
                     rel="noreferrer"
-                  
                   >
                     <StyledSpan>
                       {formatToIsraeliDate(form.createdAt)}

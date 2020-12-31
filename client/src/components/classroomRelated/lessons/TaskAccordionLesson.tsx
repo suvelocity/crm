@@ -23,7 +23,6 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import styled from "styled-components";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
-import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,41 +67,28 @@ export default function SingleTask(props: any) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <AssignmentLateIcon style={{ margin: "auto 10px" }} />
-          <p style={{ flexGrow: 1 }}>
-            {task.Task.title + " - " + task.Task.type}
-          </p>
-          <p
-            style={{
-              marginTop: "auto",
-              marginBottom: "auto",
-              fontSize: "1rem",
-            }}
-          >
-            Deadline: {task.Task.endDate.substring(0, 10)}
-          </p>
+          {task.title + " - " + task.type}
         </StyledSummery>
         <hr style={{ width: "95%", opacity: "50%" }} />
-        <StyledDetails>{task.Task.body}</StyledDetails>
+        <StyledDetails>{task.body}</StyledDetails>
         <StyledDetails>
-          {task.Task.type === "manual" && (
+          <IconButton
+            aria-label="submit button"
+            onClick={() => {
+              handleOpen(task.id);
+            }}
+            disabled={task.type !== "manual" ? true : false}
+          >
+            <PublishIcon />
+          </IconButton>
+          <StyledAtavLink href={task.externalLink} target="_blank">
             <IconButton
-              aria-label="submit button"
-              onClick={() => {
-                handleOpen(task.id);
-              }}
-              disabled={task.Task.type !== "manual" ? true : false}
+              aria-label="external link?"
+              disabled={task.externalLink ? false : true}
             >
-              <PublishIcon />
+              <LinkIcon />
             </IconButton>
-          )}
-          {task.Task.externalLink && (
-            <StyledAtavLink href={task.Task.externalLink} target="_blank">
-              <IconButton aria-label="external link?">
-                <LinkIcon />
-              </IconButton>
-            </StyledAtavLink>
-          )}
+          </StyledAtavLink>
         </StyledDetails>
         {/* <StyledDetails></StyledDetails> */}
       </StyledAccordion>
@@ -117,21 +103,18 @@ const TaskAccordrionContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 0px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 `;
 
 const StyledAccordion = styled(Accordion)`
   background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.container}; //TODO change
-  box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-
+    theme.colors.accordion}; //TODO change
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
   color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
   font-weight: bold;
   font-size: 20px;
-  display: flex;
 `;
 
 const StyledDetails = styled(AccordionDetails)`

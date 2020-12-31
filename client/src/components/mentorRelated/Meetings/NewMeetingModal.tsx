@@ -15,7 +15,6 @@ import Swal from "sweetalert2";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -56,7 +55,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any, meetings: any}) {
+function NewMeetingModal({
+  id,
+  getMeetings,
+  meetings,
+}: {
+  id: number;
+  getMeetings: any;
+  meetings: any;
+}) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
@@ -80,9 +87,9 @@ function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any
       data.mentorEmail = meetings.Mentor.email;
       data.studentEmail = meetings.Student.email;
       data.mentorName = meetings.Mentor.name;
-      data.studentName = meetings.Student.firstName +' '+ meetings.Student.lastName
-      console.log(data);
-      await network.post(`/api/V1/M/meeting`,data);
+      data.studentName =
+        meetings.Student.firstName + " " + meetings.Student.lastName;
+      await network.post(`/api/V1/M/meeting`, data);
       getMeetings();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -106,7 +113,7 @@ function NewMeetingModal({id, getMeetings, meetings}:{id:number, getMeetings:any
               type="datetime-local"
               className={classes.dateTimePicker}
               inputRef={register({
-                required: "Date and Time is required"
+                required: "Date and Time is required",
               })}
               InputLabelProps={{
                 shrink: true,
@@ -189,4 +196,3 @@ function getModalStyle() {
     transform: "translate(-50%, -50%)",
   };
 }
-

@@ -19,7 +19,8 @@ import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../helpers";
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
+import suvelocityLogo from "../assets/scale-up-logo.png";
 import Cookies from "js-cookie";
 
 function NavAppBar() {
@@ -56,7 +57,16 @@ function NavAppBar() {
             <Menu />
           </IconButton>
           <StyledLink to="/student/all">
-            <Typography variant="h4">CRM</Typography>
+            <img
+              src={suvelocityLogo}
+              width="80"
+              height="50"
+              style={{
+                marginLeft: "10px",
+                marginBottom: "10px",
+                userSelect: "none",
+              }}
+            />{" "}
           </StyledLink>
         </Toolbar>
       </AppBar>
@@ -139,6 +149,7 @@ const StyledDrawer = styled.div`
   height: 100%;
   width: 220px;
   overflow: hidden;
+  user-select: none;
 `;
 
 export default NavAppBar;

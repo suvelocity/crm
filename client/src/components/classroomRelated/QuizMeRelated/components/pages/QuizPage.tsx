@@ -84,7 +84,6 @@ export default function QuizPage(props: IProps) {
   useEffect(() => {
     const countdown = setInterval(() => {
       if (seconds > 0) {
-        // console.log(seconds);
         setSeconds((seconds) => seconds - 1);
       } else if (seconds === 0) {
         if (minutes > 0) {
@@ -141,7 +140,6 @@ export default function QuizPage(props: IProps) {
         studentId,
         answersArray,
       };
-      console.log(sub);
       await network.post("/api/v1/fieldsubmission/quiz", sub);
 
       setFinishTitle("Well done, quiz submitted successfully");
@@ -163,7 +161,8 @@ export default function QuizPage(props: IProps) {
                 <Typography
                   component={"h6"}
                   variant={"h6"}
-                  className={classes.timeRemaining}>
+                  className={classes.timeRemaining}
+                >
                   Time Remaining: {minutes}:
                   {seconds < 10 ? "0" + seconds : seconds}
                   <AccessAlarmIcon className={classes.clockIcon} />
@@ -182,7 +181,8 @@ export default function QuizPage(props: IProps) {
                           findSelectedAnswerIdByTitle(e.target.innerText)
                         );
                       }}
-                      className={classes.field}>
+                      className={classes.field}
+                    >
                       <ListItemText
                         primary={`${option.title}`}
                         disableTypography

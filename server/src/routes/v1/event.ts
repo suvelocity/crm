@@ -142,7 +142,6 @@ router.get(
                   process.Student.id === event.Student.id &&
                   process.Job.id === event.Job!.id
               );
-              // console.log(event.eventName, i, found.date);
               if (index !== -1 && event.date.getTime() > found.date.getTime()) {
                 processesData.splice(index, 1, event);
                 JobOfStudentWevePast.splice(index, 1, event);

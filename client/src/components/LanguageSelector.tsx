@@ -64,13 +64,10 @@ export default function LanguageSelector({
   const classes = useStyles();
 
   const getOpObj = (option: any) => {
-    // console.log("AMIRRRRRRRRRRRRRRRRRRRR");
-    // console.log(option);
     if (!option.name) option = languages.find((op) => op.name === option);
     return option;
   };
 
-  console.log(value);
   return (
     <Controller
       as={
@@ -79,33 +76,13 @@ export default function LanguageSelector({
           id="tags-standard"
           options={languages}
           getOptionLabel={(option: Ilanguage) => option.name}
-          // value={value}
           includeInputInList
           autoComplete
-          // @ts-ignore
-          // onChange={(event: any, newValue: Ilanguage[] | null) => {
-          //   if (newValue) setValue(newValue);
-          // }}
           onInputChange={(event, newInputValue) => {
             setInputValue(newInputValue);
           }}
-          // getOptionSelected={(option, value) => {
-          //   return option._id === getOpObj(value)._id;
-          // }}
-          // getOptionSelected={(option, value) => {
-          //   // console.log("ZACHHHHHHHHHH");
-          //   // console.log(option);
-          //   // console.log(value);
-          //   return option.name === getOpObj(value).name;
-          // }}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              // name={name}
-              // inputRef={inputRef}
-              variant="standard"
-              label="Languages"
-            />
+            <TextField {...params} variant="standard" label="Languages" />
           )}
           renderOption={(option: Ilanguage) => {
             return (
@@ -116,11 +93,7 @@ export default function LanguageSelector({
           }}
         />
       }
-      // defaultValue={"aaaaa"}
       name={name}
-      //@ts-ignore
-      // onChange={([, obj]) => getOpObj(obj).name}
-      // inputRef={inputRef}
       control={control}
     />
   );

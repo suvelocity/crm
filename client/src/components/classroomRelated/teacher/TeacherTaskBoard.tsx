@@ -153,53 +153,54 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       <TableRow className={classes.root}>
         <TableCell>
           <IconButton
-            aria-label='expand row'
-            size='small'
+            aria-label="expand row"
+            size="small"
             onClick={() => setOpen(!open)}
-            style={{ width: "2vw" }}>
+            style={{ width: "2vw" }}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component='th' scope='row'>
+        <TableCell component="th" scope="row">
           {row.title}
         </TableCell>
-        <TableCell align='center'>{classList}</TableCell>
-        <TableCell align='center'>{row.type}</TableCell>
-        <TableCell align='center'>{row.lesson}</TableCell>
-        <TableCell align='center'>{convertedDate}</TableCell>
-        <TableCell align='center'>
+        <TableCell align="center">{classList}</TableCell>
+        <TableCell align="center">{row.type}</TableCell>
+        <TableCell align="center">{row.lesson}</TableCell>
+        <TableCell align="center">{convertedDate}</TableCell>
+        <TableCell align="center">
           <p> {Math.floor(calculatedSubmissionRate)}%</p>
           {calculatedSubmissionRate < 30 ? (
             <RedBorderLinearProgress
-              variant='determinate'
+              variant="determinate"
               value={calculatedSubmissionRate}
             />
           ) : calculatedSubmissionRate < 70 ? (
             <YellowBorderLinearProgress
-              variant='determinate'
+              variant="determinate"
               value={calculatedSubmissionRate}
             />
           ) : (
             <GreenBorderLinearProgress
-              variant='determinate'
+              variant="determinate"
               value={calculatedSubmissionRate}
             />
           )}
         </TableCell>
-        <TableCell align='center'>
-          <StyledAtavLink href={row.externalLink} target='_blank'>
+        <TableCell align="center">
+          <StyledAtavLink href={row.externalLink} target="_blank">
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography variant="h6" gutterBottom component="div">
                 Students
               </Typography>
-              <Table size='small' aria-label='purchases'>
+              <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
                     <TableCell>
@@ -208,13 +209,13 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                     <TableCell>
                       <b>Class</b>
                     </TableCell>
-                    <TableCell align='left'>
+                    <TableCell align="left">
                       <b>Submission State</b>
                     </TableCell>
-                    <TableCell align='left'>
+                    <TableCell align="left">
                       <b>Submission Date</b>
                     </TableCell>
-                    <TableCell align='left'>
+                    <TableCell align="left">
                       <b>Submission Link</b>
                     </TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
@@ -223,19 +224,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                 <TableBody>
                   {row.TaskofStudents.map((studentRow: any) => (
                     <TableRow key={studentRow.studentId}>
-                      <TableCell component='th' scope='row'>
+                      <TableCell component="th" scope="row">
                         {studentRow?.Student?.firstName +
                           " " +
                           studentRow?.Student?.lastName}
                       </TableCell>
                       <TableCell>{studentRow?.Student?.Class.name}</TableCell>
-                      <TableCell align='left'>{studentRow.status}</TableCell>
-                      <TableCell align='left'>
+                      <TableCell align="left">{studentRow.status}</TableCell>
+                      <TableCell align="left">
                         {studentRow.updatedAt
                           ? convertDateToString(studentRow.updatedAt)
                           : "hasn't submitted yet"}
                       </TableCell>
-                      <TableCell align='left'>
+                      <TableCell align="left">
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
                       </TableCell>
                     </TableRow>
@@ -302,13 +303,15 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
-        aria-label='first page'>
+        aria-label="first page"
+      >
         {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label='previous page'>
+        aria-label="previous page"
+      >
         {theme.direction === "rtl" ? (
           <KeyboardArrowRight />
         ) : (
@@ -318,7 +321,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label='next page'>
+        aria-label="next page"
+      >
         {theme.direction === "rtl" ? (
           <KeyboardArrowLeft />
         ) : (
@@ -328,7 +332,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label='last page'>
+        aria-label="last page"
+      >
         {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
@@ -413,20 +418,21 @@ export default function TeacherTaskBoard(props: any) {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table aria-label='collapsible table'>
+        <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
               <TableCell style={{ width: "2vw" }} />
               <TableCell style={{ width: "5vw" }}>
                 <b>Task</b>
               </TableCell>
-              <TableCell align='center' style={{ width: "16vw" }}>
+              <TableCell align="center" style={{ width: "16vw" }}>
                 <b>Class</b>
                 <Select
                   value={classFilter}
                   onChange={(e) => setClassFilter(e.target.value as string)}
-                  style={{ width: "160px", marginLeft: "1vw" }}>
-                  <MenuItem value='.'>All</MenuItem>
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
                   {filterOptions?.classes?.map((cls: string, i: number) => (
                     <MenuItem key={`cls${i}`} value={cls}>
                       {cls}
@@ -434,13 +440,14 @@ export default function TeacherTaskBoard(props: any) {
                   ))}
                 </Select>
               </TableCell>
-              <TableCell align='center' style={{ width: "16vw" }}>
+              <TableCell align="center" style={{ width: "16vw" }}>
                 <b>Type</b>
                 <Select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value as string)}
-                  style={{ width: "160px", marginLeft: "1vw" }}>
-                  <MenuItem value='.'>All</MenuItem>
+                  style={{ width: "160px", marginLeft: "1vw" }}
+                >
+                  <MenuItem value=".">All</MenuItem>
                   {filterOptions?.taskTypes?.map((tsktp: string, i: number) => (
                     <MenuItem key={`tsktp${i}`} value={tsktp}>
                       {tsktp}
@@ -448,16 +455,16 @@ export default function TeacherTaskBoard(props: any) {
                   ))}
                 </Select>
               </TableCell>
-              <TableCell align='center' style={{ width: "8vw" }}>
+              <TableCell align="center" style={{ width: "8vw" }}>
                 <b>Lesson</b>
               </TableCell>
-              <TableCell align='center' style={{ width: "8vw" }}>
+              <TableCell align="center" style={{ width: "8vw" }}>
                 <b>Deadline</b>
               </TableCell>
-              <TableCell align='center' style={{ width: "10vw" }}>
+              <TableCell align="center" style={{ width: "10vw" }}>
                 <b>Submissions&nbsp;(%)</b>
               </TableCell>
-              <TableCell align='center' style={{ width: "6vw" }}>
+              <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
             </TableRow>
