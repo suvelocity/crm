@@ -16,6 +16,7 @@
     "spinup:prod": "npm run migrate:prod && npm run start",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "seed": "cd src && npx sequelize db:seed:undo:all && npx sequelize db:seed:all && cd ..",
+    "seed:undo": "cd src && npx sequelize db:seed:undo:all",
     "undoseed": "cd src && npx sequelize db:seed:undo:all && cd ..",
     "schema": "cd src && npx sequelize db:create && cd ..",
     "seed:prod": "cd out && npx sequelize db:seed:undo:all && npx sequelize db:seed:all && cd ..",

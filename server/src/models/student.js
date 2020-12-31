@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       mentorId: DataTypes.INTEGER,
       fccAccount: DataTypes.STRING,
       resumeLink: DataTypes.STRING,
+      cmUser: DataTypes.STRING,
     },
     {
       sequelize,
