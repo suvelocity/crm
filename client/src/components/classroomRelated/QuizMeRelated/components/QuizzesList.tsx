@@ -56,6 +56,7 @@ export default function QuizzesList() {
 
   const [forms, setForms] = useState<IForm[]>();
   const [userSubmissions, setUserSubmissions] = useState<UserSubmission[]>();
+  const [title, setTitle] = useState<string>();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -63,6 +64,9 @@ export default function QuizzesList() {
         const forms: IForm[] = (await network.get("/api/v1/form/all")).data;
         console.log("forms: ", forms);
         setForms(forms);
+        if(forms.length === 0) {
+          setTitle("No forms available")
+        }
       } catch (e) {
         console.trace(e);
       }
@@ -80,6 +84,7 @@ export default function QuizzesList() {
 
   // if (forms && userSubmissions) {
     // forms.length > 0 ? 
+    if(title) {return <Container className={classes.flexCenter}>{title}</Container>};
     return (forms && forms.length > 0) ? (
       <>
         <Container className={classes.container}>
@@ -119,9 +124,7 @@ export default function QuizzesList() {
         </Container>
       </>
     ) : (
-      <Container className={classes.flexCenter}>
-        <Typography>No forms available</Typography>
-      </Container>
+      <div></div>
     );
   }
       // return (

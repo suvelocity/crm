@@ -391,6 +391,7 @@ export default function Field({
           <Input
             className={classes.fieldInput}
             fullWidth
+            required
             //  inputRef={ref}
             placeholder="Your Question"
             onChange={(e) => {

@@ -86,6 +86,7 @@ export default function Option({
     <>
       <div className={classes.option}>
         <Input
+          required
           name={`fields[${fieldIndex}].options[${optionIndex}].title`}
           // inputRef={register({ required: true })}
           placeholder={`option ${optionIndex + 1}`}

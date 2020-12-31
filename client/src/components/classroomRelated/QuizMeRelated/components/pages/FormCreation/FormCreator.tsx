@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -14,7 +15,6 @@ import {
   FormControl,
 } from "@material-ui/core";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-
 
 import network from "../../../../../../helpers/network";
 import { AuthContext } from "../../../../../../helpers";
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     padding: "2em",
-    minWidth: '500px'
+    minWidth: "500px",
   },
   form: {
     padding: "1em",
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     border: "8px solid #6d90d4",
     borderRadius: "10px",
     width: "50vw",
-    minWidth: '450px'
+    minWidth: "450px",
   },
   flexCenter: {
     display: "flex",
@@ -61,37 +61,53 @@ const useStyles = makeStyles((theme) => ({
     margin: "1em 0",
   },
   addField: {
-    marginLeft: '0.25em'
-  }
+    marginLeft: "0.25em",
+  },
 }));
 
 export default function FormCreator() {
   //@ts-ignore
   const { user } = useContext(AuthContext);
+  const history = useHistory();
   // console.log('user: ', user);
 
   const classes = useStyles();
   const [formName, setFormName] = useState<string>("");
+  const [ableToSubmit, setAbleToSubmit] = useState(true);
   const [fields, setFields] = useState<Omit<IFieldExtended, "id" | "formId">[]>(
     []
   );
   const [isQuiz, setIsQuiz] = useState<boolean>(false);
   // const [finishTitle, setFinishTitle] = useState<string>();
   // const { register, handleSubmit, control, watch, errors } = useForm();
-  
+
   const onSubmit = async () => {
-    const formattedData = {
-      name: formName,
-      fields: fields.map((field: Omit<IFieldExtended, "id" | "formId">) => ({
-        ...field,
-        typeId: Number(field.typeId),
-      })),
-      isQuiz: Number(isQuiz) ? true : false,
-      creatorId: user.id, // user context!!
-    };
-    // console.log(formattedData);
-    const createdForm = await network.post("/api/v1/form/full", formattedData);
-    // setFinishTitle("well done");
+    try {
+      setAbleToSubmit(false);
+      const formattedData = {
+        name: formName,
+        fields: fields.map((field: Omit<IFieldExtended, "id" | "formId">) => ({
+          ...field,
+          typeId: Number(field.typeId),
+        })),
+        isQuiz: Number(isQuiz) ? true : false,
+        creatorId: user.id, // user context!!
+      };
+      // console.log(formattedData);
+      const createdForm = await network.post(
+        "/api/v1/form/full",
+        formattedData
+      );
+      Swal.fire("Form submitted successfully!", "", "success").then((res) => {
+        return history.push("/quizme");
+      });
+
+      // setFinishTitle("well done");
+    } catch (err) {
+      Swal.fire("Error Occurred", err.message, "error").then((res) => {
+        return setAbleToSubmit(true);
+      });
+    }
   };
 
   const addField = () => {
@@ -113,10 +129,7 @@ export default function FormCreator() {
     // });
   };
 
-  const changeFieldType = (
-    index: number,
-    type: string,
-  ) => {
+  const changeFieldType = (index: number, type: string) => {
     const fieldsArr = fields.slice();
     if (type) {
       fieldsArr[index].typeId = Number(type);
@@ -125,7 +138,7 @@ export default function FormCreator() {
   };
   const changeFieldOptions = (
     index: number,
-    options: IOption[] | undefined,
+    options: IOption[] | undefined
   ) => {
     const fieldsArr = fields.slice();
     if (options) {
@@ -133,17 +146,17 @@ export default function FormCreator() {
     } else {
       fieldsArr[index] = {
         title: fieldsArr[index].title,
-        typeId: fieldsArr[index].typeId
+        typeId: fieldsArr[index].typeId,
       };
     }
     setFields(fieldsArr);
   };
-  
+
   const deleteField = (index: number) => {
     const fieldsArr = fields.slice();
     fieldsArr.splice(index, 1);
     console.log(fieldsArr);
-    
+
     setFields(fieldsArr);
   };
 
@@ -168,15 +181,18 @@ export default function FormCreator() {
             <div className={classes.label}>
               <label htmlFor={"name"}>What is the name of your form?</label>
               {/* INPUT */}
-                <Input
-                  // inputRef={register({ required: true })}
-                  // name={"name"}
-                  placeholder={"Your answer"}
-                  className={classes.horizontalMargin}
-                  onChange={(e) => {setFormName(e.target.value)}}
-                  value={formName}
-                />
-                {/* {errors["name"] && <span>This field is required</span>} */}
+              <Input
+                // inputRef={register({ required: true })}
+                // name={"name"}
+                placeholder={"Your answer"}
+                className={classes.horizontalMargin}
+                onChange={(e) => {
+                  setFormName(e.target.value);
+                }}
+                value={formName}
+                required
+              />
+              {/* {errors["name"] && <span>This field is required</span>} */}
             </div>
             {/* IS QUIZ? */}
             <div>
@@ -216,7 +232,7 @@ export default function FormCreator() {
               // Controller={Controller}
               // control={control}
               fieldIndex={index}
-              typeIndex={field.typeId-1}
+              typeIndex={field.typeId - 1}
               // typeId={field.typeId}
               // title={field.title}
               field={field}
@@ -229,13 +245,16 @@ export default function FormCreator() {
             />
           ))}
           <div className={classes.verticalMargin}>
-            <Button onClick={addField} variant={"contained"} color={"primary"} size={'small'}>
-              <Typography component={'span'}>
-                Add Field
-              </Typography>
-              <AddCircleOutlineIcon 
+            <Button
+              onClick={addField}
+              variant={"contained"}
+              color={"primary"}
+              size={"small"}
+            >
+              <Typography component={"span"}>Add Field</Typography>
+              <AddCircleOutlineIcon
                 className={classes.addField}
-                color={'inherit'}
+                color={"inherit"}
                 // fontSize={'large'}
               />
             </Button>
@@ -245,6 +264,7 @@ export default function FormCreator() {
               variant={"contained"}
               color={"primary"}
               onClick={onSubmit}
+              disabled={!ableToSubmit}
             >
               Submit
             </Button>
