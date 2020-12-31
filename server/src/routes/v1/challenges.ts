@@ -13,7 +13,7 @@ const { CM_ACCESS } = process.env;
 if (!CM_ACCESS) {
   console.trace("ChallengeMe Access Token Missing!");
 }
-const challengeMe = "http://35.239.15.221:8080/api/v1";
+const challengeMe = "http://35.239.15.221/api/v1";
 
 router.get("/challengeMe", async (req: Request, res: Response) => {
   try {

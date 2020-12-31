@@ -12,12 +12,14 @@ const unknownEndpoint = (req: Request, res: Response) => {
 
 router.use("/challengeMe", challengeMe);
 router.use("/auth", require("./auth"));
+router.use("/event", require("./event")); // needs to be above the token for ChallengeMe to access, has it inside 
+
 router.use(checkToken);
+
 router.use("/class", validateAdmin, require("./class"));
 router.use("/job", validateAdmin, require("./job"));
 router.use("/student", require("./student"));
 router.use("/teacher", validateAdmin, require("./teacher"));
-router.use("/event", require("./event"));
 router.use("/M", require("./mentor"));
 router.use("/company", validateAdmin, require("./company"));
 // classroom routes

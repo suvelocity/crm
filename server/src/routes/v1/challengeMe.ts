@@ -178,6 +178,19 @@ suvelocity`,
         return transporter.sendMail(composeMail(email,userName,password,course))
       }))
     }
+    // updateteacher with new cmUser
+    await Promise.all(
+      Students
+      .map(async ({id:userId,firstName,lastName,idNumber})=>{
+        return Student.update(
+          {cmUser:generateUsername(firstName,lastName,String(idNumber))},
+          {where:{
+            id:userId
+          }}
+        )
+      })
+    )
+
     // update teachers that didn't have a cmUser
     await Promise.all(
       Object.entries(leadersWithNoUser)
@@ -299,7 +312,7 @@ router.post('/signup',async (req,res)=>{
     }
     console.log(url+'/api/v1/webhook/event')
     const {data:team} =  await axios.post(
-      'http://35.239.15.221:8080/api/v1/webhooks/teams',
+      'http://35.239.15.221/api/v1/webhooks/teams',
       body,
       {
         headers:{

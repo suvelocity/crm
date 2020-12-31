@@ -7,7 +7,7 @@ import app from "./app";
 import { IClass } from './types';
 import axios from 'axios'
 import { urlencoded } from 'express';
-// require("dotenv").config();
+
 const port = process.env.PORT || 8080;
 
 async function establishConnection() {
@@ -32,8 +32,9 @@ if (env === 'development') {
             Authorization:cmAccess
           }}
         )
+        console.log(data)
         const [{webhookUrl}] = data
-        console.log(webhookUrl)
+
         const {data:response} = await axios.patch(
           `http://35.239.15.221/api/v1/webhooks/events/url/${cmId}`,
           {
@@ -50,6 +51,7 @@ if (env === 'development') {
       )
     console.log(ids)
   })
+  .catch(console.error)
 }
 console.log('MY_URL', process.env.MY_URL);
 

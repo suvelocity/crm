@@ -101,6 +101,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     const studentExists = await Student.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
+    console.log(studentExists)
     if (studentExists)
       return res.status(409).json({ error: "Student already exists" });
 

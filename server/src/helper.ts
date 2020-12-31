@@ -317,8 +317,11 @@ export const fetchFCC: () => void = async () => {
       newBulks: parsedBulkEvents.length,
     };
   } catch (err) {
-    console.log(err);
-    return { success: false, error: err.message };
+    const message = err.isAxiosError 
+    ? err.response.data
+    : err
+    console.log(message);
+    throw { success: false, message };
   }
 };
 
