@@ -6,8 +6,10 @@ import {
   parseFilters,
 } from "../../helper";
 //@ts-ignore
-import { Event, Student, Job, Company, Class, Task, TaskofStudent, sequelize } from "../../models";
-import {Model} from 'sequelize'
+import { Event, Student, Job, Class } from "../../models";
+//@ts-ignore
+import { Company, ClassTask, TaskofStudent, sequelize } from "../../models";
+import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import { validateAdmin, validateTeacher, checkToken } from "../../middlewares";
@@ -324,10 +326,16 @@ router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
   }
 });
 
-
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date, type } :IEvent = req.body;
+    const {
+      relatedId,
+      eventName,
+      userId,
+      entry,
+      date,
+      type,
+    }: IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
