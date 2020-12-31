@@ -1,19 +1,13 @@
 import React, { useState, useMemo } from "react";
 import network from "../../../helpers/network";
 import { IMeeting } from "../../../typescript/interfaces";
-import {
-  Modal,
-  Button,
-  TextField,
-} from "@material-ui/core";
+import { Modal, Button, TextField } from "@material-ui/core";
 import "date-fns";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import { Center } from "../../../styles/styledComponents";
 import Swal from "sweetalert2";
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-
-
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,7 +49,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function EndMeetingModal({meeting, getMeetings}:{meeting:IMeeting, getMeetings:any}) {
+function EndMeetingModal({
+  meeting,
+  getMeetings,
+}: {
+  meeting: IMeeting;
+  getMeetings: any;
+}) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
@@ -75,8 +75,7 @@ function EndMeetingModal({meeting, getMeetings}:{meeting:IMeeting, getMeetings:a
     handleClose();
     try {
       data.occurred = true;
-      console.log(meeting);
-      await network.put(`/api/V1/M/meeting/${meeting.id}`,data);
+      await network.put(`/api/V1/M/meeting/${meeting.id}`, data);
       getMeetings();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -103,15 +102,15 @@ function EndMeetingModal({meeting, getMeetings}:{meeting:IMeeting, getMeetings:a
             <br />
             <br />
             <TextField
-            id="studentFeedback"
-            multiline
-            fullWidth
-            rows={4}
-            variant="outlined"
-            name="studentFeedback"
-            inputRef={register()}
-            label="Student feedback - add your own feedback and conclusion here"
-          />
+              id="studentFeedback"
+              multiline
+              fullWidth
+              rows={4}
+              variant="outlined"
+              name="studentFeedback"
+              inputRef={register()}
+              label="Student feedback - add your own feedback and conclusion here"
+            />
             <br />
           </Center>
           <Center>
@@ -136,7 +135,7 @@ function EndMeetingModal({meeting, getMeetings}:{meeting:IMeeting, getMeetings:a
         // color="primary"
         onClick={handleOpen}
       >
-        <CheckCircleOutlineIcon/>
+        <CheckCircleOutlineIcon />
       </Button>
       <Modal open={open} onClose={handleClose}>
         {body}

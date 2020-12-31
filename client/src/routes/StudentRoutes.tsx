@@ -4,7 +4,6 @@ import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
 import StudentDashboard from "../components/classroomRelated/dashboard/StudentDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
-import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import Tasks from "../components/classroomRelated/tasks/TaskBoard";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
@@ -34,9 +33,6 @@ export function StudentRoutes() {
             <Route path='/lessons'>
               <Lessons />
             </Route>
-            <Route path='/schedhule'>
-              <Schedhule />
-            </Route>
             <Route path='/quizme'>
               <QuizMe />
             </Route>
@@ -46,10 +42,10 @@ export function StudentRoutes() {
             <Route path='/quizme'>
               <QuizMe />
             </Route>
-            <Route path="/mentor/:id">
+            <Route path='/mentor/:id'>
               <PairMeetings />
             </Route>
-            <Route path="*">
+            <Route path='*'>
               <div>404 Not Found</div>
             </Route>
           </Switch>

@@ -17,7 +17,7 @@ export type ChallengeSelectorProps = {
 
 const generateURL: { [key: string]: (id: string) => string } = {
   challengeMe(id: string) {
-    return "http://34.123.35.48:8080/challenges/" + id;
+    return "http://35.239.15.221/challenges/" + id;
   },
   fcc(link: string) {
     return "https://www.freecodecamp.org/" + link;
@@ -60,9 +60,10 @@ function ChallengeSelector({
   return type !== "manual" ? (
     <>
       <InputLabel
-        id='challenge-label'
+        id="challenge-label"
         shrink={true}
-        style={{ backgroundColor: "white" }}>
+        style={{ backgroundColor: "white" }}
+      >
         Challenge Selection*
       </InputLabel>
       <Select
@@ -85,8 +86,6 @@ function ChallengeSelector({
         placeholder={`search in ${site}`}
         loadOptions={loadChallenges}
         onChange={(value, action) => {
-          // console.log('v',value)
-          // console.log('a',action)
           if (action.action === "clear") {
             changeValue(null, "externalId");
             changeValue(null, "externalLink");

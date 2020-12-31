@@ -135,33 +135,28 @@ export default function Lessons() {
           marginLeft: "15px",
           backgroundColor: "white",
         }}
+        placeholder='choose a class'
         defaultValue={selectedClass}
         onChange={(e: any) => {
           const newId = e.target.value;
           setSelectedClass(newId);
         }}
         variant='outlined'>
-        {classesToTeacher?.map((classOfTeacher) => (
-          <MenuItem value={classOfTeacher.classId}>
+        {classesToTeacher?.map((classOfTeacher, index: number) => (
+          <MenuItem
+            key={"classPicker_key" + index}
+            value={classOfTeacher.classId}>
             {classOfTeacher.Class.name}
           </MenuItem>
         ))}
       </Select>
-      {/* <Button
-        variant='outlined'
-        onClick={handleOpen}
-        style={{
-          boxShadow: " 0 2px 3px rgba(0, 0, 0, 0.5)",
-          marginLeft: "auto",
-          marginRight: "5%",
-          height: "auto",
-          backgroundColor: "white",
-        }}>
-        Add Lesson
-      </Button> */}
       <StyledButton
         onClick={handleOpen}
-        style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}>
+        style={{
+          marginLeft: "auto",
+          marginRight: "15%",
+          height: "fit-content",
+        }}>
         New Lesson
         <AddCircleIcon
           style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
@@ -210,7 +205,7 @@ export default function Lessons() {
       </FilterContainer>
       <hr
         style={{
-          width: "60%",
+          width: "70%",
           opacity: "50%",
           margin: 0,
           marginLeft: "auto",
@@ -229,19 +224,21 @@ export default function Lessons() {
             />
           ))
         ) : (
-          <ul>
-            {" "}
-            No Lessons Found with filters:
-            <li>search: "{filter}"</li>
-            <li>
-              class:{" "}
-              {
-                classesToTeacher.find(
-                  (single) => single.classId === selectedClass
-                )?.Class.name
-              }
-            </li>
-          </ul>
+          <div style={{ marginLeft: "15%" }}>
+            <ul>
+              {" "}
+              No Lessons Found with filters:
+              <li>search: "{filter}"</li>
+              <li>
+                class:{" "}
+                {
+                  classesToTeacher.find(
+                    (single) => single.classId === selectedClass
+                  )?.Class.name
+                }
+              </li>
+            </ul>
+          </div>
         )}
       </LessonsContainer>
     </Loading>
@@ -251,8 +248,9 @@ export default function Lessons() {
 const FilterContainer = styled.div`
   background-color: ${({ theme }: { theme: any }) => theme.colors.background};
   display: flex;
-  height: fit-content;
+  /* height: fit-content; */
   /* justify-content: center; */
+  align-items: center;
   padding-bottom: 40px;
   padding-top: 40px;
 `;

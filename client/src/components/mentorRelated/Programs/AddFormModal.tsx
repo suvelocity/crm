@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function AddFormModal({getForms, id}:{getForms:any, id:number}) {
+function AddFormModal({ getForms, id }: { getForms: any; id: number }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
@@ -63,14 +63,12 @@ function AddFormModal({getForms, id}:{getForms:any, id:number}) {
     handleClose();
     data.programId = id;
     try {
-      console.log(data);
       await network.post(`/api/V1/M/form/`, data);
-      getForms()
+      getForms();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
-
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -92,15 +90,15 @@ function AddFormModal({getForms, id}:{getForms:any, id:number}) {
               })}
               label="Form Title"
             />
-              {!empty ? (
-                errors.title ? (
-                  <ErrorBtn tooltipTitle={errors.title.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
-            <br/>
-            <br/>
+            {!empty ? (
+              errors.title ? (
+                <ErrorBtn tooltipTitle={errors.title.message} />
+              ) : (
+                <ActionBtn />
+              )
+            ) : null}
+            <br />
+            <br />
             <TextField
               id="URL"
               name="url"
@@ -146,8 +144,15 @@ function AddFormModal({getForms, id}:{getForms:any, id:number}) {
 
   return (
     <>
-      <a style={{color:"black", textDecoration: "none"}} href="https://docs.google.com/forms" target="_blank">
-        <Button style={{ backgroundColor: "#fa8c84", margin: 5 }} onClick={handleOpen}>
+      <a
+        style={{ color: "black", textDecoration: "none" }}
+        href="https://docs.google.com/forms"
+        target="_blank"
+      >
+        <Button
+          style={{ backgroundColor: "#fa8c84", margin: 5 }}
+          onClick={handleOpen}
+        >
           Add Form
         </Button>
       </a>

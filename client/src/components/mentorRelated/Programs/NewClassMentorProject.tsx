@@ -104,7 +104,9 @@ function NewClassMentorProject() {
     const relevant =
       available === "all"
         ? mentors
-        : mentors.filter((mentor) => mentor.available === available);
+        : mentors.filter(
+            (mentor) => mentor.available === available
+          );
     if (searchValue !== "") {
       setFilteredMentors(
         relevant.filter(
@@ -155,7 +157,7 @@ function NewClassMentorProject() {
     if (!destination) return;
     if (source.droppableId === destination.droppableId) {
       const itemsMentor: IMentor[] = Array.from(mentors || []);
-      
+
       const [reorderedMentor] = itemsMentor.splice(result.source.index, 1);
       itemsMentor.splice(result.destination.index, 0, reorderedMentor);
       setMentors(itemsMentor);
@@ -185,9 +187,11 @@ function NewClassMentorProject() {
           : itemsMentor.push(prevMentor);
       }
       itemsStudents[parseInt(destination.droppableId)].mentor = reorderedMentor;
-      const newMentors = Array.from(mentors)
-      const mentorIndex = newMentors.findIndex(mentor => mentor.id === itemsMentor[result.source.index].id)
-      newMentors[mentorIndex] = itemsMentor[result.source.index]
+      const newMentors = Array.from(mentors);
+      const mentorIndex = newMentors.findIndex(
+        (mentor) => mentor.id === itemsMentor[result.source.index].id
+      );
+      newMentors[mentorIndex] = itemsMentor[result.source.index];
       setFilteredCls(itemsStudents);
       setMentors(newMentors);
       // setSearchValue("");
@@ -205,8 +209,10 @@ function NewClassMentorProject() {
     } else newMentors.push(mentor);
     setMentors(newMentors);
     const newCls: Omit<IStudent, "Class">[] = Array.from(students);
-    const studentIndex = newCls.findIndex(old => old.id === filteredCls[i].id)
-    newCls[studentIndex].mentor = null
+    const studentIndex = newCls.findIndex(
+      (old) => old.id === filteredCls[i].id
+    );
+    newCls[studentIndex].mentor = null;
     setStudents(newCls);
   };
 
@@ -237,7 +243,6 @@ function NewClassMentorProject() {
             `/api/v1/M/classes/${student.MentorStudents![0].id}`
           );
         }
-        console.log("chandge");
       } else if (student.mentor) {
         await network.post(`/api/v1/M/classes`, {
           mentorProgramId: id,
@@ -327,8 +332,10 @@ function NewClassMentorProject() {
         const pairs = await fixedPairing(emptyStudents, emptyMentors);
         pairs &&
           pairs.forEach((student) => {
-            const studentIndex = newStudents.findIndex(old => old.id === student.id)
-            newStudents[studentIndex] = student
+            const studentIndex = newStudents.findIndex(
+              (old) => old.id === student.id
+            );
+            newStudents[studentIndex] = student;
             const currMentor = student.mentor;
             const mentorIndex = newMentors.findIndex(
               (mentor: IMentor) => mentor.id === currMentor?.id
@@ -436,7 +443,13 @@ function NewClassMentorProject() {
                   value={searchValueStudent}
                 />
 
-                <div style={{ display: "flex",flexDirection: "column", justifyContent: "space-between" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <StyledSpan>sort</StyledSpan>
                   <ExpandMoreIcon
                     style={{ cursor: "pointer" }}

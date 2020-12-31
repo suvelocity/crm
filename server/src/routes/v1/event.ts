@@ -5,16 +5,19 @@ import {
   fetchFCC,
   parseFilters,
 } from "../../helper";
-const router = Router();
 //@ts-ignore
-import { Event, Student, Job, Company, Class, sequelize } from "../../models";
+import { Event, Student, Job, Company, Class } from "../../models";
+//@ts-ignore
+import { Task, TaskofStudent, sequelize } from "../../models";
+import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
-import { validateAdmin, validateTeacher } from "../../middlewares";
+import { checkToken, validateAdmin, validateTeacher } from "../../middlewares";
 import transporter from "../../mail";
 //@ts-ignore
 import { Op, Sequelize, query, QueryTypes } from "sequelize";
 
+const router = Router();
 const mailOptions = (
   to: string,
   job: string,
@@ -30,8 +33,57 @@ Your resume was sent to the company "${company}", for the position of "${job}".
 Please keep me posted.
   
 Good luck!
-Hadar.`,
+Scale-Up Velocity.`,
 });
+
+router.post("/challengeMe", async (req, res) => {
+  //todo add validate chllengeme!
+  try {
+    interface CM {
+      eventName: "Submitted Challenge" | "Started Challenge";
+      userName: string;
+      challengeId: number;
+      challengeName: string;
+      submissionState?: "FAIL" | "SUCCESS";
+      team: string;
+    }
+    const body: CM = req.body;
+    const student = await Student.findOne({
+      where: {
+        cmUser: body.userName,
+      },
+      attributes: ["id"],
+    });
+    if (!student) {
+      return res.send("no such student");
+    }
+    const eventName =
+      "CM_" +
+      body.eventName
+        .toUpperCase()
+        .replace(" ", "_")
+        .concat(body.submissionState ? "_" + body.submissionState : "");
+    const event: IEvent = {
+      date: new Date(),
+      eventName,
+      relatedId: String(body.challengeId),
+      type: "challengeMe",
+      userId: student.id,
+    };
+    const { error } = eventsSchema.validate(event);
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+    const createdEvent = await Event.create(event);
+    console.log('LOGGED EVENT',event,createdEvent)
+    return res.status(200).send("noice");
+  } catch (error) {
+    console.trace(error)
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.use(checkToken)
 
 router.get("/all/job", validateAdmin, async (req: Request, res: Response) => {
   try {
@@ -139,7 +191,6 @@ router.get(
                   process.Student.id === event.Student.id &&
                   process.Job.id === event.Job!.id
               );
-              // console.log(event.eventName, i, found.date);
               if (index !== -1 && event.date.getTime() > found.date.getTime()) {
                 processesData.splice(index, 1, event);
                 JobOfStudentWevePast.splice(index, 1, event);
@@ -266,13 +317,26 @@ router.get(
 );
 
 router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
-  const result = await fetchFCC();
-  res.json(result);
+  try{
+    const result = await fetchFCC();
+    res.status(200).json(result);
+  }
+  catch(e){
+    res.status(500).json(e)
+  }
 });
+
 
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
-    const { relatedId, eventName, userId, entry, date, type } = req.body;
+    const {
+      relatedId,
+      eventName,
+      userId,
+      entry,
+      date,
+      type,
+    }: IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
       eventName,
@@ -293,7 +357,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       // const jobMsg: string = `${student.firstName} ${student.lastName} was hired for this job `;
 
       cancelAllJobsOfStudent(
-        parseInt(userId),
+        Number(userId),
         parseInt(relatedId),
         studentMsg,
         date

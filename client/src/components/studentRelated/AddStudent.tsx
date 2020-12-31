@@ -232,7 +232,9 @@ function AddStudent(props: Props) {
                   name="languages"
                   control={control}
                   defaultValue={
-                    props.student ? props.student.languages?.split(", ") : []
+                    props.student?.languages
+                      ? props.student.languages?.split(", ")
+                      : []
                   }
                 />
               </FormControl>
@@ -340,6 +342,7 @@ function AddStudent(props: Props) {
                 name="maritalStatus"
                 defaultValue={props.student ? props.student.maritalStatus : ""}
                 inputRef={register({
+                  required: "Marital Status is required",
                   maxLength: {
                     value: 20,
                     message: "Marital status max length is 20 letters",

@@ -24,6 +24,7 @@ export interface ITeacher {
   Task?: ITask;
   Lesson?: ILesson;
   Notice?: INotice;
+  cmUser?:string;
 }
 
 export interface IStudent {
@@ -46,6 +47,7 @@ export interface IStudent {
   citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
+  cmUser?:string;
 }
 
 export interface IClass {
@@ -57,12 +59,13 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
+  cmId?:string;
 }
 
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: string | number;
+  relatedId: string ;
   eventName: string;
   entry?: any;
   type: string;

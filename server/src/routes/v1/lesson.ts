@@ -4,8 +4,9 @@ const router = Router();
 import { Lesson, Class, Task, Teacher } from "../../models";
 import { ILesson, IClass, ITask } from "../../types";
 import { lessonSchema, lessonSchemaToPut } from "../../validations";
+import { validateTeacher } from "../../middlewares";
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateTeacher, async (req: Request, res: Response) => {
   try {
     const { classId, title, body, resource, zoomLink, createdBy } = req.body;
     const { error } = lessonSchema.validate({
@@ -99,7 +100,7 @@ router.get("/byid/:id", async (req: Request, res: Response) => {
 });
 
 //find all lessons of class
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", validateTeacher, async (req: Request, res: Response) => {
   const { error } = lessonSchemaToPut.validate(req.body);
   if (error) return res.status(400).json({ error: error.message });
   try {

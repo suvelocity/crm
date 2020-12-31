@@ -4,7 +4,6 @@ import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
 import TeacherDashboard from "../components/classroomRelated/dashboard/TeacherDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
-import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import TaskBoard from "../components/classroomRelated/tasks/TaskBoard";
 import TeacherContainer from "../components/classroomRelated/teacher/TeacherContainer";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
@@ -72,9 +71,6 @@ export default function TeacherRoutes() {
           </Route>
           <Route path='/lessons'>
             <Lessons />
-          </Route>
-          <Route path='/schedhule'>
-            <Schedhule />
           </Route>
           <Route path='/tasks'>
             <TeacherContainer />
