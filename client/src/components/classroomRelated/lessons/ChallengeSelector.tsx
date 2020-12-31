@@ -17,7 +17,7 @@ export type ChallengeSelectorProps = {
 
 const generateURL: { [key: string]: (id: string) => string } = {
   challengeMe(id: string) {
-    return "http://34.123.35.48:8080/challenges/" + id;
+    return "http://35.239.15.221/challenges/" + id;
   },
   fcc(link: string) {
     return "https://www.freecodecamp.org/" + link;

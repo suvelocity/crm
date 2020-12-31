@@ -43,6 +43,21 @@ module.exports = {
         updated_at: new Date(),
         company_id: 2,
       },
+      {
+        id: 4,
+        position: "dev ops",
+        description:
+          "Your team is co-located in Herzliya, but works closely with a number of globally distributed teams and individuals. The team is responsible for developing and deploying highly scalable and always-available services as well as tools to maintain and monitor these services. The team practices iterative, continuous software development following the DevOps philosophy and agile methodologies. ",
+        contact: "Amir Debbie, 050-8899889",
+        location: "Tel Mond, Israel",
+        requirements:
+          "7+ years hands-on code development in a collaborative team with excellent software engineering skills. Strong knowledge of coding in Node.js and of Angular(JS) Knowledge of SQL and relational databases (PostgreSQL, MySQL) Experience with Kubernetes and Docker technologies Strong design principals, and strives to write clean, reusable code Hands on experience architecting and designing medium to large-scale web-based systems Experience with either AWS or Microsoft Azure Cloud Services Strong",
+        additional_details:
+          "Zach Beja automated a CI/CD workflow for this project. Each time we PR the staging branch all of our tests (written by Amir Debbie, Zach Beja, Shahar Eliyahu & Nitzan Listman) run and and the code redeploys when we merge. SAAS. Ms Single threaded, child process, event loop, heap. ",
+        created_at: new Date(),
+        updated_at: new Date(),
+        company_id: 2,
+      },
     ]);
   },
 

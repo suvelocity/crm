@@ -44,9 +44,8 @@ function ClassRoomNavBar() {
   };
   //@ts-ignore
   const { user } = useContext(AuthContext);
-  console.log(user);
   //@ts-ignore
-  const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
+  // const { currentTheme, setCurrentTheme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -73,16 +72,16 @@ function ClassRoomNavBar() {
     getMentors();
   }, []);
 
-  const handleChangeTheme = () => {
-    const isDark = currentTheme === "dark";
-    if (isDark) {
-      setCurrentTheme("light");
-      localStorage.setItem("theme", "light");
-    } else {
-      setCurrentTheme("dark");
-      localStorage.setItem("theme", "dark");
-    }
-  };
+  // const handleChangeTheme = () => {
+  //   const isDark = currentTheme === "dark";
+  //   if (isDark) {
+  //     setCurrentTheme("light");
+  //     localStorage.setItem("theme", "light");
+  //   } else {
+  //     setCurrentTheme("dark");
+  //     localStorage.setItem("theme", "dark");
+  //   }
+  // };
 
   return (
     <div>
