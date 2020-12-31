@@ -285,7 +285,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
       where: {
         studentId: studentId,
         type: !"manual",
-        status: "pending",
+        status: !"done",
       },
       include: [Task],
     });
