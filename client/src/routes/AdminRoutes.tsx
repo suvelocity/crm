@@ -18,6 +18,11 @@ export function AdminRoutes() {
       <ErrorBoundary>
         <Switch>
           <Route exact path="/">
+            <h1
+              style={{ position: "absolute", fontSize: "0.0005px", opacity: 0 }}
+            >
+              Welcome to CRM
+            </h1>
             <Landing />
           </Route>
           <Route path="/company">
