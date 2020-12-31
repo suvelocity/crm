@@ -248,7 +248,7 @@ router.post('/form', async (req: Request, res: Response) => {
     })).id;
     // find task where externalId === formId
 
-    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: ""}, {
+    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: `http://localhost:3000/quizme/form/${formId}`}, {
       where: {
         studentId: body[0].studentId,
         taskId: taskId
@@ -325,7 +325,7 @@ router.post('/quiz', async (req: Request, res: Response) => {
     })).id;
     // find task where externalId === formId
 
-    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: ""}, {
+    const taskOfStudent = await TaskOfStudent.update({status: "done", submitLink: `http://localhost:3000/quizme/form/${formId}`}, {
       where: {
         studentId: studentId,
         taskId: taskId
