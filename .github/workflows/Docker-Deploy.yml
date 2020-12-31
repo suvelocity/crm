@@ -20,6 +20,8 @@ env:
   SERVER_PORT: 8080
   CMDTORUN: npm run spinup:staging # staging start script
   CMDTORUN_PRODUCTION: npm run spinup:prod # production start script
+  INSTANCE_URL: http://35.226.223.57:8080/
+  INSTANCE_URL_PRODUCTION: http://34.69.190.91:8080/
 
 jobs:
   setup-build-publish-deploy:
@@ -35,6 +37,7 @@ jobs:
           echo "GCE_INSTANCE=$GCE_INSTANCE_PRODUCTION" >> $GITHUB_ENV
           echo "CMDTORUN=$CMDTORUN_PRODUCTION" >> $GITHUB_ENV
           echo "DB_NAME=$DB_NAME_PRODUCTION" >> $GITHUB_ENV
+          echo "INSTANCE_URL=$INSTANCE_URL_PRODUCTION" >> $GITHUB_ENV
           echo "switched to production variables"
 
       - name: Set up Cloud SDK
