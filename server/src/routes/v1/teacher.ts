@@ -36,10 +36,13 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
   try {
     const body: ITeacher = req.body;
-    const teacherExists = await Teacher.findOne({
+    const teacherExistsInTeachers = await Teacher.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
-    if (teacherExists)
+    const teacherExistsInUsers = await User.findOne({
+      where: { email: body.email },
+    });
+    if (teacherExistsInTeachers || teacherExistsInUsers)
       return res.status(409).json({ error: "Teacher already exists" });
     const newTeacher: ITeacher = {
       idNumber: body.idNumber,
