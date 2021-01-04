@@ -1,6 +1,8 @@
 import e, { Router, Request, Response, RequestHandler } from "express";
 //@ts-ignore
-import { FieldSubmission, Task, Field, SelectedOption, Option, Student, TaskOfStudent, sequelize } from "../../models";
+import { FieldSubmission, Form, Field } from "../../models";
+//@ts-ignore
+import { SelectedOption, Option, Student, Task, TaskOfStudent } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import {Op, QueryInterface} from 'sequelize'
@@ -30,7 +32,7 @@ router.get("/all", async (req: Request, res: Response) => {
       },
     ],
     attributes: ["studentId", [db.Sequelize.col("fields.form_id"), "formId"]],
-    group: ['studentId', 'formId']
+    group: ["studentId", "formId"],
   });
   return res.json(submissions);
 });
@@ -49,8 +51,8 @@ router.get("/bystudent/:id", async (req: Request, res: Response) => {
       },
     ],
     where: {
-      studentId: req.params.id
-    }
+      studentId: req.params.id,
+    },
   });
   return res.json(submissions);
 });
@@ -70,17 +72,17 @@ router.get("/:id/full", async (req: Request, res: Response) => {
         attributes: [],
         include: [
           {
-            model: Option, 
-            attributes: ['id', 'title']
-          }
-        ]    
-      }
+            model: Option,
+            attributes: ["id", "title"],
+          },
+        ],
+      },
     ],
-    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
-    group: ['formId'],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], "studentId"],
+    group: ["formId"],
     where: {
-      studentId: req.params.id
-    }
+      studentId: req.params.id,
+    },
   });
   return res.json(submissions);
 });
@@ -99,14 +101,16 @@ router.get("/bystudent/:id/full", async (req: Request, res: Response) => {
       {
         model: SelectedOption,
         attributes: [],
-        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
-      }
+        include: [
+          { model: Option, attributes: ["id", "title"], required: true },
+        ],
+      },
     ],
-    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], "studentId"],
     // group: ['formId'],
     where: {
-      studentId: req.params.id
-    }
+      studentId: req.params.id,
+    },
   });
   return res.json(submissions);
 });
@@ -125,16 +129,21 @@ router.get("/byform/:id/full", async (req: Request, res: Response) => {
       {
         model: SelectedOption,
         attributes: [],
-        include: [{model: Option, attributes: ['id', 'title'], required: true}]    
-      }, 
+        include: [
+          { model: Option, attributes: ["id", "title"], required: true },
+        ],
+      },
       {
-        model: Student, 
-        attributes: ['firstName','lastName' ]
-      }
+        model: Student,
+        attributes: ["firstName", "lastName"],
+      },
     ],
-    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], 'studentId'],
+    attributes: [[db.Sequelize.col("fields.form_id"), "formId"], "studentId"],
     // group: ['formId'],
-    where: db.Sequelize.where(db.Sequelize.col("fields.form_id"), req.params.id)
+    where: db.Sequelize.where(
+      db.Sequelize.col("fields.form_id"),
+      req.params.id
+    ),
   });
   return res.json(submissions);
 });
@@ -283,12 +292,12 @@ router.post('/quiz', async (req: Request, res: Response) => {
   try {
     const body = req.body;
     const answers = body.answersArray; /// validate
-    const { studentId } = body; 
+    const { studentId } = body;
     let fieldSubs: any = [];
     answers.forEach((answer: any) => {
       fieldSubs.push({
         studentId,
-        fieldId: answer.fieldId
+        fieldId: answer.fieldId,
       });
     }); 
     const createdFieldSubmissions = await FieldSubmission.bulkCreate(fieldSubs);
@@ -304,7 +313,8 @@ router.post('/quiz', async (req: Request, res: Response) => {
     createdFieldSubmissionsWithId.forEach((fieldSub: any) => {
       const fieldSubmissionId = fieldSub.id;
       const fieldId = fieldSub.fieldId;
-      const optionId = answers.find((answer: any) => answer.fieldId === fieldId).optionId;
+      const optionId = answers.find((answer: any) => answer.fieldId === fieldId)
+        .optionId;
       optionSubs.push({
         fieldSubmissionId,
         optionId
@@ -340,18 +350,17 @@ router.post('/quiz', async (req: Request, res: Response) => {
   }
 });
 
-
 // POST A NEW SUBMISSION
 // router.post("/", async (req: Request, res: Response) => {
 //   let body = req.body;
 //   if (!body.answersSelected) {
 //     return res
-//       .status(403)
+//       .status(401)
 //       .json({message: "Failed to submit quiz, property 'answersSelected' is missing!"});
 //   } else if(!body.userId) {
-//     return res.status(403).json({message: "Failed to submit quiz, property 'userId' is missing!"});
+//     return res.status(401).json({message: "Failed to submit quiz, property 'userId' is missing!"});
 //   } else if(!body.quizId) {
-//     return res.status(403).json({message: "Failed to submit quiz, property 'quizId' is missing!"});
+//     return res.status(401).json({message: "Failed to submit quiz, property 'quizId' is missing!"});
 //   } else {
 //     const submissionByThisUser = await FieldSubmission.findOne({
 //       where: {
@@ -361,7 +370,7 @@ router.post('/quiz', async (req: Request, res: Response) => {
 //     });
 //     // "This user already submitted this quiz!"
 //     if (submissionByThisUser) {
-//       res.status(403).json({message: "Failed to submit quiz, user already submitted this quiz!"});
+//       res.status(401).json({message: "Failed to submit quiz, user already submitted this quiz!"});
 //     } else {
 //       const answersSelected = body.answersSelected;
 //       const quizId = body.quizId;

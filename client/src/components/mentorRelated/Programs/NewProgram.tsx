@@ -8,7 +8,7 @@ import {
   Center,
   GridDiv,
 } from "../../../styles/styledComponents";
-import { capitalize} from "../../../helpers/general";
+import { capitalize } from "../../../helpers/general";
 import { IClass, IMentorProgram } from "../../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -48,7 +48,6 @@ const NewProgram: React.FC = () => {
       data.open = true;
       data.startDate = startDate!.toString();
       data.endDate = endDate!.toString();
-      console.log(data);
       const res = await network.post("/api/v1/M/program/", data);
       Swal.fire("Success!", "", "success");
       history.push(`/mentor/new/${res.data.id}?class=${data.classId}`);
@@ -93,16 +92,16 @@ const NewProgram: React.FC = () => {
                               <MenuItem
                                 key={i}
                                 value={cls.id}
-                                onClick={()=>setProgramName(`${capitalize(
-                                  cls.name
-                                 )} (${capitalize(cls.course)} - ${
-                                   cls.cycleNumber
-                                 })- M Program`)}
-                              >{`${capitalize(
-                               cls.name
-                              )} (${capitalize(cls.course)} - ${
-                                cls.cycleNumber
-                              })`}</MenuItem>
+                                onClick={() =>
+                                  setProgramName(
+                                    `${capitalize(cls.name)} (${capitalize(
+                                      cls.course
+                                    )} - ${cls.cycleNumber})- M Program`
+                                  )
+                                }
+                              >{`${capitalize(cls.name)} (${capitalize(
+                                cls.course
+                              )} - ${cls.cycleNumber})`}</MenuItem>
                             );
                           })}
                       </Select>
@@ -141,6 +140,9 @@ const NewProgram: React.FC = () => {
                     },
                   })}
                   label="Program Name"
+                  onChange={(e) => {
+                    setProgramName(e.target.value)
+                  }}
                 />
                 {!empty ? (
                   errors.name ? (

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
       open: DataTypes.BOOLEAN,
+      email: DataTypes.BOOLEAN
     },
     {
       sequelize,

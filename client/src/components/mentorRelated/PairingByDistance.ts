@@ -4,12 +4,12 @@ import axios from "axios";
 async function GeoCoding(obj: any) {
   try {
     const { data } = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${obj.address}&key=${process.env.REACT_APP_API_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(obj.address)}&key=${process.env.REACT_APP_API_KEY}`
     );
     obj.geo = data.results[0].geometry.location;
     return obj;
   } catch (error) {
-    return error;
+    return (obj.address, " is not valid address");
   }
 }
 
@@ -83,9 +83,8 @@ export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
       });
       mentorsArr.splice(index, 1);
     });
-    console.log(pairedArr);
     return [pairedArr, []];
-  };
+  }
   // in case of less mentors then students
   if (mentorsArr.length < studentsArr.length) {
     mentorsArr.forEach((mentor) => {
@@ -105,9 +104,8 @@ export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
       });
       studentsArr.splice(index, 1);
     });
-    console.log(pairedArr);
     return [pairedArr, studentsArr];
-  };
+  }
   // simple case - equal mentors and students
   for (let i = 0; i < studentsArr.length; i++) {
     pairedArr.push({
@@ -115,10 +113,9 @@ export async function firstPairing(studentsArr: any[], mentorsArr: any[]) {
       mentor: mentorsArr[i],
       distance: 0,
     });
-  };
-  console.log(pairedArr);
+  }
   return [pairedArr, []];
-};
+}
 
 // fixed pairing by distance
 export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
@@ -126,7 +123,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
   let firstPairingRes = await firstPairing(studentsArr, mentorsArr);
   const initial = firstPairingRes[0];
   const final: any[] = [];
-  console.log(initial);
   initial.forEach((obj: any, index: number) => {
     obj.distance = getDistance(
       obj.student.geo.lat,
@@ -135,7 +131,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
       obj.mentor.geo.lng
     );
     final.push(obj);
-    console.log(`${index} started`);
     for (let i = index - 1; i >= 0; i--) {
       const currentOriginalDistance = obj.distance;
       const rivalOriginalDistance = final[i].distance;
@@ -143,7 +138,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
         Math.abs(final[index].mentor.geo.lat - final[i].student.geo.lat) <
         Math.abs(final[index].student.geo.lng - final[i].student.geo.lng)
       ) {
-        console.log(` ${i} pass filter 1'`);
         const currentDemoDistance = getDistance(
           final[index].student.geo.lat,
           final[index].student.geo.lng,
@@ -161,7 +155,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
         const demoSum = currentDemoDistance + rivalDemolDistance;
 
         if (demoSum < originalSum) {
-          console.log(`change student ${index} with ${i}`);
           const temp = final[index];
           final[index] = {
             student: final[index].student,
@@ -179,8 +172,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
   });
   const sumI = initial.reduce((x: any, y: any) => x + y.distance, 0);
   const sumF = final.reduce((x, y) => x + y.distance, 0);
-  console.log(sumI - sumF, "KM less");
-  console.log(final);
   const response = final.map((obj) => {
     delete obj.mentor.geo;
     obj.student.mentor = obj.mentor;
@@ -188,7 +179,6 @@ export async function fixedPairing(studentsArr: any[], mentorsArr: any[]) {
     delete obj.geo;
     return obj;
   });
-  console.log("res", [...response, ...firstPairingRes[1]]);
   return [...response, ...firstPairingRes[1]];
 }
 

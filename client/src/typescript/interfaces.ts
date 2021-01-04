@@ -94,6 +94,7 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
+  cmId?:string;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -115,6 +116,7 @@ export interface IStudent {
   Class: IClass;
   address: string;
   age: number;
+  cmUser?: string;
   maritalStatus: string;
   children: number;
   academicBackground: string;
@@ -234,6 +236,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
+  email: boolean
 }
 
 export interface filterMentorObject {
@@ -250,6 +253,7 @@ export interface IMentorForm {
   answerUrl: string;
   title: string;
   createdAt: string;
+  sent: boolean;
 }
 
 export interface IMentorProgramForms {

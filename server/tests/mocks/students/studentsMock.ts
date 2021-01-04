@@ -10,7 +10,7 @@ export const studentsMock = [
     address: "kibbutz shefayim",
     maritalStatus: "singel",
     children: 0,
-    academicBackground: null,
+    academicBackground: "something",
     militaryService: "p-7",
     workExperience: null,
     languages: "hebrew",
@@ -275,4 +275,4 @@ export const newStudent = {
   createdAt: "2020-12-18T01:00:12.000Z",
   updatedAt: "2020-12-18T01:00:12.000Z",
   deletedAt: null,
-}
+};

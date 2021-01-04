@@ -15,14 +15,13 @@ router.post("/token", async (req: Request, res: Response) => {
   const { refreshToken, remembered } = req.body;
   if (!refreshToken) return res.status(400).json({ error: "No refresh token" });
   try {
-    const { token } = await RefreshToken.findOne({
+    const data = await RefreshToken.findOne({
       where: { token: refreshToken },
     });
-    if (!token)
-    return res.status(404).json({ error: "Refresh token not found" });
-    const bich = jwt.decode(token)
+    if (!data.token)
+      return res.status(404).json({ error: "Refresh token not found" });
     jwt.verify(
-      token,
+      data.token,
       process.env.REFRESH_TOKEN_SECRET!,
       async (err: Error | null, decoded: any) => {
         if (err) {
@@ -50,7 +49,6 @@ router.post("/token", async (req: Request, res: Response) => {
       }
     );
   } catch (err) {
-    console.trace(err)
     res.status(500).json({ error: err.message });
   }
 });
@@ -100,7 +98,6 @@ router.post("/signin", async (req: Request, res: Response) => {
         return res.status(400).json({ error: "Unknown user type" });
     }
   } catch (err) {
-    console.trace(err)
     res.status(500).json({ error: err.message });
   }
 });

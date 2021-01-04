@@ -10,7 +10,7 @@ import {
   TitleWrapper,
   Center,
   GridDiv,
-  EditDiv
+  EditDiv,
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -22,8 +22,8 @@ import "react-loading-wrapper/dist/index.css";
 import { IMentor } from "../../../typescript/interfaces";
 import BusinessIcon from "@material-ui/icons/Business";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
-import HourglassEmptyOutlinedIcon from '@material-ui/icons/HourglassEmptyOutlined';
+import WorkOutlineIcon from "@material-ui/icons/WorkOutline";
+import HourglassEmptyOutlinedIcon from "@material-ui/icons/HourglassEmptyOutlined";
 import WcIcon from "@material-ui/icons/Wc";
 import WorkIcon from "@material-ui/icons/Work";
 import EditIcon from "@material-ui/icons/Edit";
@@ -42,8 +42,7 @@ const SingleMentor: React.FC = () => {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/${id}`
     );
-    console.log(data);
-    
+
     setMentor(data);
     setLoading(false);
   }, [id, setMentor, setLoading]);
@@ -72,149 +71,169 @@ const SingleMentor: React.FC = () => {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-        <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           {mentor && mentor[0] && (
             <>
-            <GridDiv repeatFormula="1fr 1fr 1fr">
-              <List>
-                {/* {Name} */}
-                <ListItem>
-                  <ListItemIcon>
-                    <PersonIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Name"
-                    secondary={capitalize(mentor[0]?.name)}
-                  />
-                </ListItem>
-                {/* Email */}
-                <ListItem>
-                  <ListItemIcon>
-                    <EmailIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Email" secondary={mentor[0]?.email} />
-                </ListItem>
-                {/* Phone number */}
-                <ListItem>
-                  <ListItemIcon>
-                    <PhoneIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Phone Number"
-                    secondary={formatPhone(mentor[0]?.phone)}
-                  />
-                </ListItem>
-                {/* Id number */}
-                <ListItem>
-                  <ListItemIcon>
-                    <DialpadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="ID Number" secondary={mentor[0]?.id} />
-                </ListItem>
-              </List>
-              <List>
-                {/* Address */}
-                <ListItem>
-                  <ListItemIcon>
-                    <BusinessIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Address"
-                    secondary={capitalize(mentor[0]?.address)}
-                  />
-                </ListItem>
-                {/* company */}
-                <ListItem>
-                  <ListItemIcon>
-                    <WorkIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Company"
-                    secondary={capitalize(mentor[0]?.company)}
-                  />
-                </ListItem>
-                {/* role */}
-                <ListItem>
-                  <ListItemIcon>
-                    <WorkOutlineIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Role"
-                    secondary={capitalize(mentor[0]?.role)}
-                  />
-                </ListItem>
-                {/* experience */}
-                <ListItem>
-                  <ListItemIcon>
-                    <HourglassEmptyOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Experience"
-                    secondary={mentor[0]?.experience}
-                  />
-                </ListItem>
-              </List>
-              <List>
-                {/* gender */}
-                <ListItem>
-                  <ListItemIcon>
-                    <WcIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Gender"
-                    secondary={capitalize(mentor[0]?.gender)}
-                  />
-                </ListItem>
-                {/* programs */}
-                {mentor[0]?.MentorStudents![0] && (
-                  <>
+              <GridDiv repeatFormula="1fr 1fr 1fr">
+                <List>
+                  {/* {Name} */}
                   <ListItem>
                     <ListItemIcon>
-                      <AssignmentIndIcon />
+                      <PersonIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary="programs"
-                      secondary={mentor[0]?.MentorStudents.map((program) => {
-                        return <div>{capitalize(program.MentorProgram!.name)}</div>
-                      })}
+                      primary="Name"
+                      secondary={capitalize(mentor[0]?.name)}
                     />
                   </ListItem>
+                  {/* Email */}
                   <ListItem>
                     <ListItemIcon>
-                      <AssignmentIndIcon />
+                      <EmailIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary="students"
-                      secondary={mentor[0]?.MentorStudents.map((program) => {
-                        return <div>{`${capitalize(program.Student!.firstName)} ${capitalize(program.Student!.lastName)}`}</div>
-                      })}
+                      primary="Email"
+                      secondary={mentor[0]?.email}
                     />
                   </ListItem>
-                  </>
+                  {/* Phone number */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <PhoneIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Phone Number"
+                      secondary={formatPhone(mentor[0]?.phone)}
+                    />
+                  </ListItem>
+                  {/* Id number */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <DialpadIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ID Number"
+                      secondary={mentor[0]?.id}
+                    />
+                  </ListItem>
+                </List>
+                <List>
+                  {/* Address */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <BusinessIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Address"
+                      secondary={capitalize(mentor[0]?.address)}
+                    />
+                  </ListItem>
+                  {/* company */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <WorkIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Company"
+                      secondary={capitalize(mentor[0]?.company)}
+                    />
+                  </ListItem>
+                  {/* role */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <WorkOutlineIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Role"
+                      secondary={capitalize(mentor[0]?.role)}
+                    />
+                  </ListItem>
+                  {/* experience */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <HourglassEmptyOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Experience"
+                      secondary={mentor[0]?.experience}
+                    />
+                  </ListItem>
+                </List>
+                <List>
+                  {/* gender */}
+                  <ListItem>
+                    <ListItemIcon>
+                      <WcIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Gender"
+                      secondary={capitalize(mentor[0]?.gender)}
+                    />
+                  </ListItem>
+                  {/* programs */}
+                  {mentor[0]?.MentorStudents![0] && (
+                    <>
+                      <ListItem>
+                        <ListItemIcon>
+                          <AssignmentIndIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="programs"
+                          secondary={mentor[0]?.MentorStudents.map(
+                            (program) => {
+                              return (
+                                <div>
+                                  {capitalize(program.MentorProgram!.name)}
+                                </div>
+                              );
+                            }
+                          )}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <AssignmentIndIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="students"
+                          secondary={mentor[0]?.MentorStudents.map(
+                            (program) => {
+                              return (
+                                <div>{`${capitalize(
+                                  program.Student!.firstName
+                                )} ${capitalize(
+                                  program.Student!.lastName
+                                )}`}</div>
+                              );
+                            }
+                          )}
+                        />
+                      </ListItem>
+                    </>
+                  )}
+                </List>
+              </GridDiv>
+              <Modal
+                open={ModalState}
+                onClose={() => setModalState(false)}
+                style={{ overflow: "scroll" }}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+              >
+                {!mentor ? (
+                  <div>oops</div>
+                ) : (
+                  <AddMentor
+                    handleClose={handleClose}
+                    update={true}
+                    mentor={mentor[0]}
+                    header="Edit Mentor"
+                  />
                 )}
-              </List>
-            </GridDiv>
-            <Modal
-            open={ModalState}
-            onClose={() => setModalState(false)}
-            style={{ overflow: "scroll" }}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {!mentor ? (
-              <div>oops</div>
-            ) : (
-              <AddMentor
-                handleClose={handleClose}
-                update={true}
-                mentor={mentor[0]}
-                header="Edit Mentor"
-              />
-            )}
               </Modal>
-              </>
+            </>
           )}
         </Loading>
       </Wrapper>

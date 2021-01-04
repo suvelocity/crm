@@ -95,7 +95,7 @@ function SingleTeacher() {
       <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color="#e2e600">Teacher Info</H1>
+            <H1 color="#2fbd76">Teacher Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
@@ -159,7 +159,7 @@ function SingleTeacher() {
           <AllClasses
             teacherClasses={classes}
             header="Assigned Classes"
-            headerColor="#e2e600"
+            headerColor="#2fbd76"
             // removeClass={removeClass}
             applyModal={
               <AssignTeacherModal

@@ -16,13 +16,16 @@ export const classSchemaToPut = Joi.object({
   startingDate: Joi.string(),
   endingDate: Joi.string(),
   cycleNumber: Joi.number(),
-  zoomLink: Joi.string(),
+  zoomLink: Joi.string().allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const eventsSchema = Joi.object({
   userId: Joi.number().required(),
-  relatedId: Joi.number().required(),
+  relatedId: Joi.alternatives([
+    Joi.string(),
+    Joi.number()
+  ]).required(),
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
@@ -52,23 +55,23 @@ export const jobSchemaToPut = Joi.object({
 });
 
 export const teacherOfClassSchema = Joi.array().items({
-  teacherId: Joi.string(), 
-  classId: Joi.string()
-})
+  teacherId: Joi.string(),
+  classId: Joi.string(),
+});
 
 export const studentSchema = Joi.object({
   email: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
-  phone: Joi.string().required(),
+  phone: Joi.string().allow(null, ""),
   idNumber: Joi.string().required(),
   additionalDetails: Joi.string().max(500).allow(null, ""),
   classId: Joi.number().required(),
-  age: Joi.number().required(),
-  address: Joi.string().allow(null, ""),
-  maritalStatus: Joi.string().allow(null, ""),
-  children: Joi.number().required(),
-  academicBackground: Joi.string().allow(null, ""),
+  age: Joi.number().allow(null, ""),
+  address: Joi.string().required(),
+  maritalStatus: Joi.string().required(),
+  children: Joi.number().allow(null),
+  academicBackground: Joi.string().required(),
   militaryService: Joi.string().max(500).allow(null, ""),
   workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().allow(null, ""),
@@ -82,7 +85,7 @@ export const teacherSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   idNumber: Joi.string().required(),
-  phone: Joi.string().allow(null, "")
+  phone: Joi.string().allow(null, ""),
 });
 
 export const studentSchemaToPut = Joi.object({
@@ -187,7 +190,7 @@ export const meetingSchemaToPut = Joi.object({
   mentorEmail: Joi.string().email(),
   mentorName: Joi.string(),
   studentEmail: Joi.string().email(),
-  studentName: Joi.string()
+  studentName: Joi.string(),
 });
 
 export const mentorSchema = Joi.object({

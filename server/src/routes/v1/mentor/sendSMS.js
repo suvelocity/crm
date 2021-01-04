@@ -9,8 +9,7 @@ const nexmo = new Nexmo({
 const from = "YOUR-MENTOR";
 
 setInterval(async () => {
-  // Sorry it is really annoying :(
-  //console.log("start")
+  console.log("start");
   const meeting = await Meeting.findAll({
     where: {
       date: {
@@ -85,4 +84,4 @@ setInterval(async () => {
     });
     process.send(Aftermeeting[0].MentorStudent.Student.phone);
   }
-}, [10000]);
+}, [1000 * 60 * 30]);

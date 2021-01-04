@@ -3,6 +3,7 @@
 import React, {useState} from "react";
 import { MenuItem, Select, InputLabel, FormControl } from "@material-ui/core";
 import { filterStudentObject, SelectInputs } from "../typescript/interfaces";
+import { useLocation } from 'react-router-dom'
 
 interface Props {
   array: SelectInputs[];
@@ -16,8 +17,8 @@ export const FiltersComponents = ({
   callbackFunction,
   widthPercent,
 }: Props) => {
+  const location = useLocation();
   const determineWhatToSet = (by: string, value: any) => {
-    console.log(by, value)
     if(by === 'Job Status'){
       return callbackFunction({...filterObject, JobStatus: value})
     }
@@ -33,9 +34,9 @@ export const FiltersComponents = ({
             width: `${100 / array.length}%`,
           }}
         >
-          <InputLabel
+          {/* <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy}`}</InputLabel>
+          >{`${item.filterBy}`}</InputLabel> */}
           <Select multiple
             labelId={`demo-simple-select-label${item.filterBy}`}
             style={{ height: "100%", width: "60%" }} 
@@ -51,7 +52,8 @@ export const FiltersComponents = ({
               return determineWhatToSet(item.filterBy, [""])
             }}
           >
-            {item.filterBy === "Job Status" && (
+            <MenuItem value="" disabled>{item.filterBy}</MenuItem>
+            {(item.filterBy === "Job Status" && location.pathname !== "/process/all") &&  (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}
             {item.possibleValues.map((value: string) => (

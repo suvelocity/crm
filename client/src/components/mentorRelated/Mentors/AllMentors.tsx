@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import network from '../../../helpers/network';
+import React, { useCallback, useEffect, useState } from "react";
+import network from "../../../helpers/network";
 import {
   H1,
   Wrapper,
@@ -10,29 +10,29 @@ import {
   TableHeader,
   StyledUl,
   StyledDiv,
-} from '../../../styles/styledComponents';
-import PersonIcon from '@material-ui/icons/Person';
-import Switch from '@material-ui/core/Switch';
-import { InputLabel, Select, MenuItem, TextField } from '@material-ui/core';
+} from "../../../styles/styledComponents";
+import PersonIcon from "@material-ui/icons/Person";
+import Switch from "@material-ui/core/Switch";
+import { InputLabel, Select, MenuItem, TextField } from "@material-ui/core";
 import {
   IMentor,
   SelectInputs,
   filterMentorObject,
-} from '../../../typescript/interfaces';
-import { Loading } from 'react-loading-wrapper';
-import 'react-loading-wrapper/dist/index.css';
-import { formatPhone, capitalize } from '../../../helpers/general';
+} from "../../../typescript/interfaces";
+import { Loading } from "react-loading-wrapper";
+import "react-loading-wrapper/dist/index.css";
+import { formatPhone, capitalize } from "../../../helpers/general";
 
 function AllMentors() {
   const [mentors, setMentors] = useState<IMentor[]>([]);
   const [allMentors, setAllMentors] = useState<IMentor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filterAttributes, setFilterAttributes] = useState<filterMentorObject>({
-    Company: '',
-    Gender: '',
-    Address: '',
-    Available: '',
-    Search: '',
+    Company: "",
+    Gender: "",
+    Address: "",
+    Available: "",
+    Search: "",
   });
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
@@ -40,7 +40,7 @@ function AllMentors() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await network.get('/api/v1/M/mentor');
+      const { data } = await network.get("/api/v1/M/mentor");
       // data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
       setMentors(data);
       setLoading(false);
@@ -54,22 +54,22 @@ function AllMentors() {
       const addressFilters: string[] = Array.from(
         new Set(data.map((mentor: IMentor) => mentor.address))
       );
-      const availableFilters: string[] = ['Available', 'Not Available'];
+      const availableFilters: string[] = ["Available", "Not Available"];
       setFilterOptionsArray([
         {
-          filterBy: 'Company',
+          filterBy: "Company",
           possibleValues: companyFilters,
         },
         {
-          filterBy: 'Gender',
+          filterBy: "Gender",
           possibleValues: genderFilters,
         },
         {
-          filterBy: 'Address',
+          filterBy: "Address",
           possibleValues: addressFilters,
         },
         {
-          filterBy: 'Available',
+          filterBy: "Available",
           possibleValues: availableFilters,
         },
       ]);
@@ -78,50 +78,49 @@ function AllMentors() {
 
   const filterFunc = (category: string, filterField: string): void => {
     let newAttributes: filterMentorObject = filterAttributes;
-    if (category === 'Company') {
+    if (category === "Company") {
       newAttributes = { ...newAttributes, Company: filterField };
     }
-    if (category === 'Gender') {
+    if (category === "Gender") {
       newAttributes = { ...newAttributes, Gender: filterField };
     }
-    if (category === 'Address') {
+    if (category === "Address") {
       newAttributes = { ...newAttributes, Address: filterField };
     }
-    if (category === 'Available') {
+    if (category === "Available") {
       newAttributes = { ...newAttributes, Available: filterField };
     }
-    if (category === 'Search') {
+    if (category === "Search") {
       newAttributes = { ...newAttributes, Search: filterField };
     }
     setFilterAttributes(newAttributes);
-    console.log(newAttributes);
   };
 
   useEffect(() => {
     let newFilteredMentors = allMentors;
-    if (filterAttributes.Address !== '') {
+    if (filterAttributes.Address !== "") {
       newFilteredMentors = newFilteredMentors.filter(
         (mentor) => mentor.address === filterAttributes.Address
       );
     }
-    if (filterAttributes.Company !== '') {
+    if (filterAttributes.Company !== "") {
       newFilteredMentors = newFilteredMentors.filter(
         (mentor) => mentor.company === filterAttributes.Company
       );
     }
-    if (filterAttributes.Gender !== '') {
+    if (filterAttributes.Gender !== "") {
       newFilteredMentors = newFilteredMentors.filter(
         (mentor) => mentor.gender === filterAttributes.Gender
       );
     }
-    if (filterAttributes.Available !== '') {
+    if (filterAttributes.Available !== "") {
       newFilteredMentors = newFilteredMentors.filter((mentor) =>
-        filterAttributes.Available === 'Available'
+        filterAttributes.Available === "Available"
           ? mentor.available === true
           : mentor.available === false
       );
     }
-    if (filterAttributes.Search !== '') {
+    if (filterAttributes.Search !== "") {
       newFilteredMentors = newFilteredMentors.filter(
         (mentor) =>
           mentor.name
@@ -155,24 +154,24 @@ function AllMentors() {
       await network.put(`/api/v1/M/mentor/${id}`, {
         available: !currentAvailability,
       });
-      const { data } = await network.get('/api/v1/M/mentor');
+      const { data } = await network.get("/api/v1/M/mentor");
       setMentors(data);
       setAllMentors(data);
     }
   };
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color='#c47dfa'>All Mentors</H1>
+          <H1 color="#c47dfa">All Mentors</H1>
         </TitleWrapper>
         <br />
         <div
           style={{
-            display: 'flex',
-            width: '50%',
-            justifyContent: 'space-around',
+            display: "flex",
+            width: "50%",
+            justifyContent: "space-around",
           }}
         >
           {filterOptionsArray.map((arr) => (
@@ -183,7 +182,7 @@ function AllMentors() {
                   filterFunc(arr.filterBy, e.target.value as string);
                 }}
               >
-                <MenuItem value={''}>All</MenuItem>
+                <MenuItem value={""}>All</MenuItem>
                 {arr.possibleValues.map((field) => (
                   <MenuItem value={field}>{field}</MenuItem>
                 ))}
@@ -192,9 +191,9 @@ function AllMentors() {
           ))}
           <div>
             <TextField
-              label='Search'
+              label="Search"
               onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                filterFunc('Search', e.target.value as string);
+                filterFunc("Search", e.target.value as string);
               }}
             />
           </div>
@@ -205,51 +204,57 @@ function AllMentors() {
         <StyledUl>
           {mentors && (
             <li>
-              <TableHeader repeatFormula='0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr'>
+              <TableHeader repeatFormula="0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr">
                 <PersonIcon />
-                <StyledSpan weight='bold'>Name</StyledSpan>
-                <StyledSpan weight='bold'>Company</StyledSpan>
-                <StyledSpan weight='bold'>Email</StyledSpan>
+                <StyledSpan weight="bold">Name</StyledSpan>
+                <StyledSpan weight="bold">Company</StyledSpan>
+                <StyledSpan weight="bold">Email</StyledSpan>
                 {/* <StyledSpan weight='bold'>Phone</StyledSpan> */}
-                <StyledSpan weight='bold'>Address</StyledSpan>
-                <StyledSpan weight='bold'>Role</StyledSpan>
-                <StyledSpan weight='bold'>Experience</StyledSpan>
-                <StyledSpan weight='bold'>Gender</StyledSpan>
-                <StyledSpan weight='bold'>Available</StyledSpan>
+                <StyledSpan weight="bold">Address</StyledSpan>
+                <StyledSpan weight="bold">Role</StyledSpan>
+                <StyledSpan weight="bold">Experience</StyledSpan>
+                <StyledSpan weight="bold">Gender</StyledSpan>
+                <StyledSpan weight="bold">Available</StyledSpan>
               </TableHeader>
             </li>
           )}
-          {mentors &&
-            mentors.map((mentor) => (
-              <li>
-                <StyledDiv repeatFormula='0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr'>
-                  <PersonIcon />
-                  <StyledLink color='black' to={`/mentor/${mentor?.id}`}>
-                    <StyledSpan weight='bold'>
-                      {capitalize(mentor.name)}
+          {mentors && (
+            <div style={{ overflow: "scroll", maxHeight: 500 }}>
+              {mentors.map((mentor) => (
+                <li>
+                  <StyledDiv repeatFormula="0.2fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr">
+                    <PersonIcon />
+                    <StyledLink color="black" to={`/mentor/${mentor?.id}`}>
+                      <StyledSpan weight="bold">
+                        {capitalize(mentor.name)}
+                      </StyledSpan>
+                    </StyledLink>
+                    <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
+                    <StyledSpan>{mentor.email}</StyledSpan>
+                    {/* <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan> */}
+                    <StyledSpan>{mentor.address}</StyledSpan>
+                    <StyledSpan>{mentor.role}</StyledSpan>
+                    <StyledSpan>{mentor.experience}</StyledSpan>
+                    <StyledSpan>{mentor.gender}</StyledSpan>
+                    <StyledSpan>
+                      <Switch
+                        checked={mentor.available}
+                        onChange={() =>
+                          changeAvailabilityOfMentor(
+                            mentor?.id,
+                            mentor.available
+                          )
+                        }
+                        color="primary"
+                        name="checkedB"
+                        inputProps={{ "aria-label": "primary checkbox" }}
+                      />
                     </StyledSpan>
-                  </StyledLink>
-                  <StyledSpan>{capitalize(mentor.company)}</StyledSpan>
-                  <StyledSpan>{mentor.email}</StyledSpan>
-                  {/* <StyledSpan>{formatPhone(mentor.phone)}</StyledSpan> */}
-                  <StyledSpan>{mentor.address}</StyledSpan>
-                  <StyledSpan>{mentor.role}</StyledSpan>
-                  <StyledSpan>{mentor.experience}</StyledSpan>
-                  <StyledSpan>{mentor.gender}</StyledSpan>
-                  <StyledSpan>
-                    <Switch
-                      checked={mentor.available}
-                      onChange={() =>
-                        changeAvailabilityOfMentor(mentor?.id, mentor.available)
-                      }
-                      color='primary'
-                      name='checkedB'
-                      inputProps={{ 'aria-label': 'primary checkbox' }}
-                    />
-                  </StyledSpan>
-                </StyledDiv>
-              </li>
-            ))}
+                  </StyledDiv>
+                </li>
+              ))}
+            </div>
+          )}
         </StyledUl>
       </Loading>
     </Wrapper>

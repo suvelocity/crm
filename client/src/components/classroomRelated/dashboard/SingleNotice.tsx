@@ -13,7 +13,6 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 export default function SingleNotice(props: any) {
   const { notice, deleteNotice, userType } = props;
   const [open, setOpen] = React.useState(true);
-  console.log(notice);
 
   return (
     <div
@@ -23,11 +22,10 @@ export default function SingleNotice(props: any) {
         flexDirection: "column",
         width: "100%",
         marginTop: "2%",
-        // padding: "20px",
-        // backgroundColor: "#2C3034",
         font: "25px",
         boxShadow: " 0 10px 10px rgba(0, 0, 0, 0.055)",
-      }}>
+      }}
+    >
       <Collapse in={open}>
         <Alert
           style={{ display: "flex" }}
@@ -35,12 +33,13 @@ export default function SingleNotice(props: any) {
           action={
             <div>
               <IconButton
-                aria-label='hide'
-                color='inherit'
-                size='small'
+                aria-label="hide"
+                color="inherit"
+                size="small"
                 onClick={() => {
                   setOpen(false);
-                }}>
+                }}
+              >
                 {/* <CloseIcon fontSize='inherit' /> */}
                 <p style={{ fontSize: "14px" }}>
                   <u>Hide</u>
@@ -49,14 +48,16 @@ export default function SingleNotice(props: any) {
               <IconButton>
                 {userType === "teacher" && (
                   <DeleteForeverIcon
-                    style={{ color: "red" }}
+                    // style={{ color: "red" }}
                     onClick={() => {
                       deleteNotice(notice.id);
-                    }}></DeleteForeverIcon>
+                    }}
+                  ></DeleteForeverIcon>
                 )}
               </IconButton>
             </div>
-          }>
+          }
+        >
           <AlertTitle>
             <b>
               <u>
@@ -74,10 +75,11 @@ export default function SingleNotice(props: any) {
       </Collapse>
       {!open && (
         <Button
-          color='primary'
+          color="primary"
           onClick={() => {
             setOpen(true);
-          }}>
+          }}
+        >
           Re-open
         </Button>
       )}

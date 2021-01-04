@@ -49,7 +49,6 @@ export default function Teacher() {
       handleClose(true);
       //@ts-ignore
     } catch (e) {
-      console.log(e);
       Swal.fire("Error", e.message, "error");
     }
   };
@@ -166,7 +165,7 @@ export default function Teacher() {
       <div
         style={{
           minHeight: "50vh",
-          marginTop: "10vh",
+          marginTop: "5vh",
           marginLeft: "auto",
           marginRight: "auto",
           width: "70%",
@@ -218,7 +217,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const StyledButton = styled.div`
   /* position: absolute; */
-  background-color: rgb(22, 121, 35);
+  background-color: rgb(22, 121, 30);
   display: flex;
   justify-content: center;
   align-items: center;

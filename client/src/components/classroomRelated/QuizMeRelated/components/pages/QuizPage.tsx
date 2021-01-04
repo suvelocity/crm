@@ -80,7 +80,6 @@ export default function QuizPage(props: IProps) {
   useEffect(() => {
     const fetchQuiz = async () => {
       const quiz = (await network.get(`/api/v1/form/${form.id}`)).data;
-      // console.log(quiz);
 
       setQuiz(quiz);
     };
@@ -90,7 +89,6 @@ export default function QuizPage(props: IProps) {
   useEffect(() => {
     const countdown = setInterval(() => {
       if (seconds > 0) {
-        // console.log(seconds);
         setSeconds((seconds) => seconds - 1);
       } else if (seconds === 0) {
         if (minutes > 0) {
@@ -118,7 +116,6 @@ export default function QuizPage(props: IProps) {
   };
   const onAnswerSelect = (selectedAnswerId: number, interval?: any): void => {
     if (!quizIsOver) {
-      console.log(selectedAnswerId);
       const newAnswer = {
         //@ts-ignore
         fieldId: quiz.Fields[currentQuestionIndex].id,

@@ -4,7 +4,6 @@ import "react-loading-wrapper/dist/index.css";
 import ErrorBoundary from "../helpers/ErrorBoundary";
 import StudentDashboard from "../components/classroomRelated/dashboard/StudentDashBoard";
 import Lessons from "../components/classroomRelated/lessons/Lessons";
-import Schedhule from "../components/classroomRelated/schedhule/Schedhule";
 import Tasks from "../components/classroomRelated/tasks/TaskBoard";
 import ClassRoomNavBar from "../components/ClassRoomNavBar";
 import QuizMe from "../components/classroomRelated/QuizMeRelated/QuizMe";
@@ -44,21 +43,10 @@ export function StudentRoutes() {
             <Route path="/lessons">
               <Lessons />
             </Route>
-            <Route path="/schedhule">
-              <Schedhule />
-            </Route>
+            <Route path="/quizme/form/:id" component={FormRouter} />
             <Route path="/tasks">
               <Tasks />
             </Route>
-            <Route path="/quizme/form/:id" component={FormRouter} />
-            <Route
-              exact
-              path="/quizme/fieldsubmission/byform/:id"
-              component={QuizSubmissionsRouter}
-            />
-            {/* {user.userType === "teacher" && (
-              <Route exact path="/quizme/create" component={FormCreator} />
-            )} */}
             <Route exact path="/quizme" component={Home} />
             <Route path="/mentor/:id">
               <PairMeetings />

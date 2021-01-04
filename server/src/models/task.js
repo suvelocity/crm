@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Lesson, {
         foreignKey: "lessonId",
       });
-      this.hasMany(models.TaskOfStudent, {
+      this.hasMany(models.TaskofStudent, {
         foreignKey: "taskId",
       });
     }
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       endDate: DataTypes.DATE,
       type: DataTypes.STRING,
       title: DataTypes.STRING,
-      body: DataTypes.STRING,
+      body: DataTypes.TEXT,
       status: DataTypes.STRING,
     },
     {

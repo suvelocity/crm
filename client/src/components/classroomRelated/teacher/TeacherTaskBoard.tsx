@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import network from "../../../helpers/network";
-import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
@@ -8,6 +7,8 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
+import TableFooter from "@material-ui/core/TableFooter";
+import TablePagination from "@material-ui/core/TablePagination";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
@@ -17,11 +18,20 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
-import { set } from "lodash";
 import { MenuItem, Select } from "@material-ui/core";
-import { ITask } from "../../../typescript/interfaces";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
-import styled from "styled-components";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import {
+  makeStyles,
+  createStyles,
+  withStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LastPageIcon from "@material-ui/icons/LastPage";
 
 const useRowStyles = makeStyles({
   root: {
@@ -89,6 +99,55 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     return convertDateToString(row.endDate);
   }, []);
 
+  const GreenBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#6ae21b",
+      },
+    })
+  )(LinearProgress);
+  const RedBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#e2321b",
+      },
+    })
+  )(LinearProgress);
+  const YellowBorderLinearProgress = withStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        height: 10,
+        borderRadius: 5,
+      },
+      colorPrimary: {
+        backgroundColor:
+          theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+      },
+      bar: {
+        borderRadius: 5,
+        backgroundColor: "#e4e719",
+      },
+    })
+  )(LinearProgress);
+
   return (
     <>
       <TableRow className={classes.root}>
@@ -110,10 +169,26 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell align="center">{row.lesson}</TableCell>
         <TableCell align="center">{convertedDate}</TableCell>
         <TableCell align="center">
-          {Math.floor(calculatedSubmissionRate)}%
+          <p> {Math.floor(calculatedSubmissionRate)}%</p>
+          {calculatedSubmissionRate < 30 ? (
+            <RedBorderLinearProgress
+              variant="determinate"
+              value={calculatedSubmissionRate}
+            />
+          ) : calculatedSubmissionRate < 70 ? (
+            <YellowBorderLinearProgress
+              variant="determinate"
+              value={calculatedSubmissionRate}
+            />
+          ) : (
+            <GreenBorderLinearProgress
+              variant="determinate"
+              value={calculatedSubmissionRate}
+            />
+          )}
         </TableCell>
         <TableCell align="center">
-          <StyledAtavLink href={row.externalLink}>
+          <StyledAtavLink href={row.externalLink} target="_blank">
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
@@ -151,6 +226,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                     <TableRow key={studentRow.studentId}>
                       <TableCell component="th" scope="row">
                         {studentRow?.Student?.firstName +
+                          " " +
                           studentRow?.Student?.lastName}
                       </TableCell>
                       <TableCell>{studentRow?.Student?.Class.name}</TableCell>
@@ -175,6 +251,94 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   );
 }
 
+interface TablePaginationActionsProps {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onChangePage: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    newPage: number
+  ) => void;
+}
+const useStyles1 = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexShrink: 0,
+      marginLeft: theme.spacing(2.5),
+    },
+  })
+);
+
+function TablePaginationActions(props: TablePaginationActionsProps) {
+  const classes = useStyles1();
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onChangePage } = props;
+
+  const handleFirstPageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onChangePage(event, 0);
+  };
+
+  const handleBackButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onChangePage(event, page - 1);
+  };
+
+  const handleNextButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onChangePage(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <div className={classes.root}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </div>
+  );
+}
 //needs to be array of tasks given
 
 export default function TeacherTaskBoard(props: any) {
@@ -183,6 +347,22 @@ export default function TeacherTaskBoard(props: any) {
   const [filterOptions, setFilterOptions] = useState<any>();
   const [classFilter, setClassFilter] = useState<string>(".");
   const [typeFilter, setTypeFilter] = useState<string>(".");
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const fetchTeacherTasks = async () => {
     const filter = makeFilter();
@@ -220,20 +400,21 @@ export default function TeacherTaskBoard(props: any) {
     getFilterOptins();
   }, []);
 
-  // console.log(teacherTasks);
+  const taskArray =
+    teacherTasks?.map((task: any) => {
+      return createTask(
+        task.title,
+        task.type,
+        task.Lesson?.title,
+        task.endDate,
+        task.externalLink,
+        task.TaskofStudents
+      );
+    }) || [];
 
-  const taskArray = teacherTasks?.map((task: any) => {
-    return createTask(
-      task.title,
-      task.type,
-      task.Lesson?.title,
-      task.endDate,
-      task.externalLink,
-      task.TaskOfStudents
-    );
-  });
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, taskArray.length - page * rowsPerPage);
 
-  console.log(teacherTasks);
   return (
     <>
       <TableContainer component={Paper}>
@@ -288,14 +469,49 @@ export default function TeacherTaskBoard(props: any) {
               </TableCell>
             </TableRow>
           </TableHead>
+          {/* <TableBody>
+            {Array.isArray(taskArray)
+              ? 
+              taskArray?.map((row: any) => <Row key={row.title} row={row} />)
+              : null}
+          </TableBody> */}
+
           <TableBody>
             {Array.isArray(taskArray)
-              ? taskArray?.map((row: any) => <Row key={row.title} row={row} />)
+              ? taskArray
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: any) => (
+                    <Row key={row.title + row.endDate} row={row} />
+                  ))
               : null}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 91 * emptyRows }}>
+                <TableCell colSpan={8} />
+              </TableRow>
+            )}
           </TableBody>
+
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                colSpan={8}
+                count={taskArray ? taskArray.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { "aria-label": "rows per page" },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
-      {Array.isArray(taskArray) && taskArray.length === 0 && (
+      {Array.isArray(teacherTasks) && taskArray.length === 0 && (
         <Center>
           <h1>No results Found</h1>
           <SentimentVeryDissatisfiedIcon style={{ fontSize: "10em" }} />

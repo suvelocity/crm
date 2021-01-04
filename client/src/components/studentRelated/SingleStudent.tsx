@@ -142,7 +142,9 @@ function SingleStudent() {
               </SingleListItem>
               <SingleListItem
                 primary="Phone Number"
-                secondary={formatPhone(student?.phone)}
+                secondary={
+                  student?.phone ? formatPhone(student?.phone) : "לא ידוע"
+                }
               >
                 <PhoneIcon />
               </SingleListItem>
@@ -157,20 +159,25 @@ function SingleStudent() {
                   <PostAddIcon />
                 </SingleListItem>
               )}
-              {student?.militaryService && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <TrackChangesIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Military Service"
-                    secondary={capitalize(student?.militaryService)}
-                  />
-                </MultilineListItem>
-              )}
+              <MultilineListItem>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Military Service"
+                  secondary={
+                    student?.militaryService
+                      ? capitalize(student?.militaryService)
+                      : "לא ידוע"
+                  }
+                />
+              </MultilineListItem>
             </List>
             <List>
-              <SingleListItem primary="Age" secondary={student?.age}>
+              <SingleListItem
+                primary="Age"
+                secondary={student?.age ? student.age : "לא ידוע"}
+              >
                 <DateRangeIcon />
               </SingleListItem>
               <SingleListItem
@@ -185,7 +192,10 @@ function SingleStudent() {
               >
                 <FavoriteIcon />
               </SingleListItem>
-              <SingleListItem primary="Children" secondary={student?.children}>
+              <SingleListItem
+                primary="Children"
+                secondary={student?.children ? student.children : "אין"}
+              >
                 <ChildFriendlyIcon />
               </SingleListItem>
               <SingleListItem
@@ -193,7 +203,7 @@ function SingleStudent() {
                 secondary={
                   student?.workExperience
                     ? capitalize(student?.workExperience)
-                    : "None"
+                    : "לא ידוע"
                 }
               >
                 <WorkIcon />
@@ -202,13 +212,21 @@ function SingleStudent() {
             <List>
               <SingleListItem
                 primary="Citizenships"
-                secondary={capitalize(student?.citizenship)}
+                secondary={
+                  student?.citizenship
+                    ? capitalize(student?.citizenship)
+                    : "לא ידוע"
+                }
               >
                 <LanguageIcon />
               </SingleListItem>
               <SingleListItem
                 primary="Languages"
-                secondary={capitalize(student?.languages)}
+                secondary={
+                  student?.languages
+                    ? capitalize(student?.languages)
+                    : "לא ידוע"
+                }
               >
                 <TranslateIcon />
               </SingleListItem>

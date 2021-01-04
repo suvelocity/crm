@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
-      this.hasMany(models.TaskOfStudent, {
+      this.hasMany(models.TaskofStudent, {
         foreignKey: "studentId",
       });
       this.hasMany(models.MentorStudent, {
@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       mentorId: DataTypes.INTEGER,
       fccAccount: DataTypes.STRING,
       resumeLink: DataTypes.STRING,
+      cmUser: DataTypes.STRING,
     },
     {
       sequelize,

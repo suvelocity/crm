@@ -47,7 +47,7 @@ function SingleJob() {
 
   const getJob = useCallback(async () => {
     const { data }: { data: IJob } = await network.get(
-      `/api/v1/job/byId/${id}`
+      `/api/v1/job/byId/${id}?only=jobs`
     );
     const uniqueStudents: IEvent[] = [];
     const sortedEvents = data.Events.sort(

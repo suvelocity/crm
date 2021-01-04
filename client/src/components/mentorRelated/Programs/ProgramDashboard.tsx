@@ -17,34 +17,29 @@ import {
   IMentorProgramDashboard,
   IMentorProgram,
   IMentorProgramForms,
-  ITask
+  ITask,
 } from "../../../typescript/interfaces";
-import EditIcon from "@material-ui/icons/Edit";
 import { Loading } from "react-loading-wrapper";
 import { AuthContext } from "../../../helpers";
 import "react-loading-wrapper/dist/index.css";
 import ClassIcon from "@material-ui/icons/Class";
 import { capitalize } from "../../../helpers/general";
-import SimpleModal from "../Modal";
 import AddFormModal from "./AddFormModal";
 import { formatToIsraeliDate } from "../../../helpers/general";
 import Swal from "sweetalert2";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SendMailModal from "./SendMailsModal";
+import PickMentorModal from "./PickMentorModal";
 
 const ProgramDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [tabelsData, setTabelData] = useState<IMentorProgramDashboard[]>([]);
   const [programdetails, setProgramDetails] = useState<IMentorProgram>();
   const [forms, setForms] = useState<IMentorProgramForms>();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [modalBody, setModalBody] = useState<any>();
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
   const id = Number(useParams<{id:string}>().id);
   const history = useHistory();
-  const {user} = useContext<any>(AuthContext);
-  console.log(user);
-  
+  const { user } = useContext<any>(AuthContext);
 
   const getTableData = useCallback(async () => {
     const program = await network.get(`/api/v1/M/program/${id}`);
@@ -54,7 +49,7 @@ const ProgramDashboard: React.FC = () => {
     );
     setTabelData(dashboardData.data);
     setLoading(false);
-  }, []);
+  }, [id]);
 
   const getAvailableMentors = useCallback(async () => {
     const { data } = await network.get(`/api/v1/M/mentor/available`);
@@ -65,7 +60,7 @@ const ProgramDashboard: React.FC = () => {
     const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
     console.log(formsData.data);
     setForms(formsData.data);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     getTableData();
@@ -73,6 +68,7 @@ const ProgramDashboard: React.FC = () => {
     getForms();
   }, [getTableData, getAvailableMentors, getForms]);
 
+  console.log(programdetails);
   const endProgram = async () => {
     try {
       await network.put(`/api/v1/M/program/end/${id}`);
@@ -102,29 +98,31 @@ const ProgramDashboard: React.FC = () => {
     if (!res) return;
     try {
       await network.patch("/api/v1/M/form/delete", { formId: id });
-      getForms()
+      getForms();
     } catch (err) {
       Swal.fire("Error Occurred", err.message, "error");
     }
   };
 
-  const postTask = async (title:string, url:string, ) => {
+  const postTask = async (title: string, url: string, id: number) => {
     try {
-      const task:ITask = {
+      const task: ITask = {
         title: `mentor program form -${title}`,
         externalLink: url,
-        createdBy: 1, /*user.id*/
-        endDate: new Date(Date.now()+(3*24*60*60*1000)),
-        type:"manual",
-        status: "active"
-    };
-    const studentsToTask = tabelsData.map(student => student.id)
+        createdBy: 1 /*user.id*/,
+        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        type: "manual",
+        status: "active",
+      };
+      const studentsToTask = tabelsData.map((student) => student.id);
       await network.post("/api/v1/task/tostudents", {
         ...task,
         idArr: studentsToTask,
       });
+      await network.put(`/api/v1/M/program/editForm/${id}`);
+      getForms();
       Swal.fire("Success", "task added successfully", "success");
-    } catch(err){
+    } catch (err) {
       Swal.fire("Error Occurred", err.message, "error");
     }
   };
@@ -142,33 +140,50 @@ const ProgramDashboard: React.FC = () => {
           </TitleWrapper>
         </Center>
         <br />
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-        <Button
-          style={{ backgroundColor: "#fa8c84" }}
-          onClick={() => endProgram()}
-        >
-          End Program
-        </Button>
-        <Button
-          onClick={() =>
-            history.push(`/mentor/new/${id}?class=${programdetails?.classId}`)
-          }
-          style={{ backgroundColor: "#fa8c84", margin: 10 }}
-        >
+            <Button
+              style={{ backgroundColor: "#fa8c84" }}
+              onClick={() => endProgram()}
+            >
+              End Program
+            </Button>
+            <Button
+              onClick={() =>
+                history.push(
+                  `/mentor/new/${id}?class=${programdetails?.classId}`
+                )
+              }
+              style={{ backgroundColor: "#fa8c84", margin: 10 }}
+            >
               Edit Program
-        </Button>
+            </Button>
           </div>
           <div>
-        <AddFormModal getForms={getForms} id={id} />
-            <SendMailModal id={id} />
+            <AddFormModal getForms={getForms} id={id} />
+            <SendMailModal
+              id={id}
+              forms={forms}
+              startMail={programdetails?.email}
+              getProgram={getTableData}
+            />
+            <Button
+              disabled={programdetails?.email ? true : false}
+              style={{
+                textAlign: "center",
+                margin: 10,
+                backgroundColor: "#c47dfa",
+              }}
+              variant="contained"
+              onClick={async () => {
+                await network.post(`/api/V1/M/program/startmails/${id}`);
+                await getTableData();
+              }}
+            >
+              Start Program Mail
+            </Button>
           </div>
         </div>
-        <SimpleModal
-          open={modalOpen}
-          setOpen={setModalOpen}
-          modalBody={modalBody}
-        />
         <Loading loading={loading} size={30}>
           <StyledUl>
             {tabelsData && (
@@ -228,66 +243,13 @@ const ProgramDashboard: React.FC = () => {
                       </>
                     )}
                     <StyledSpan>
-                      <Button
-                        onClick={async () => {
-                          setModalBody(
-                            <Wrapper width="80%">
-                              <Center>
-                                <TitleWrapper>
-                                  <H1 color="#c47dfa">Pick Mentor</H1>
-                                </TitleWrapper>
-                              </Center>
-                              <br />
-                              <StyledUl>
-                                {availableMentors.map((mentor) => (
-                                  <li>
-                                    <StyledDiv
-                                      repeatFormula="0.5fr 1fr 1fr 1fr 1fr "
-                                      onClick={async () => {
-                                        row.MentorStudents &&
-                                        row.MentorStudents[0] &&
-                                        row.MentorStudents[0].Mentor
-                                          ? await network.put(
-                                              `/api/v1/M/classes/${row.MentorStudents[0].id}`,
-                                              {
-                                                mentorProgramId: id,
-                                                mentorId: mentor.id,
-                                                studentId: row.id,
-                                              }
-                                            )
-                                          : await network.post(
-                                              "/api/v1/M/classes",
-                                              {
-                                                mentorProgramId: id,
-                                                mentorId: mentor.id,
-                                                studentId: row.id,
-                                              }
-                                            );
-                                        getTableData();
-                                        getAvailableMentors();
-                                        setModalOpen(false);
-                                      }}
-                                    >
-                                      <StyledSpan weight="bold">
-                                        {mentor.MentorStudents.length || 0}
-                                      </StyledSpan>
-                                      <StyledSpan weight="bold">
-                                        {capitalize(mentor.name)}
-                                      </StyledSpan>
-                                      <StyledSpan>{mentor.address}</StyledSpan>
-                                      <StyledSpan>{mentor.company}</StyledSpan>
-                                      <StyledSpan>{mentor.job}</StyledSpan>
-                                    </StyledDiv>
-                                  </li>
-                                ))}
-                              </StyledUl>
-                            </Wrapper>
-                          );
-                          setModalOpen(true);
-                        }}
-                      >
-                        <EditIcon />
-                      </Button>
+                      <PickMentorModal
+                        getTableData={getTableData}
+                        getAvailableMentors={getAvailableMentors}
+                        availableMentors={availableMentors}
+                        row={row}
+                        id={id}
+                      />
                     </StyledSpan>
                   </StyledDiv>
                 </li>
@@ -320,6 +282,7 @@ const ProgramDashboard: React.FC = () => {
                     href={form.url}
                     color="black"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     <StyledSpan>{form.title}</StyledSpan>
                   </a>
@@ -328,16 +291,27 @@ const ProgramDashboard: React.FC = () => {
                     href={form.url}
                     color="black"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     <StyledSpan>
                       {formatToIsraeliDate(form.createdAt)}
                     </StyledSpan>
                   </a>
                   <StyledSpan>
-                    <Button onClick={()=>postTask(form.title, form.answerUrl)}>send to the students</Button>
+                    <Button
+                      onClick={() =>
+                        postTask(form.title, form.answerUrl, form.id!)
+                      }
+                      disabled={form.sent ? true : false}
+                    >
+                      {!form.sent ? "send to the students" : "Sent!"}
+                    </Button>
                   </StyledSpan>
                   <StyledSpan>
-                    <DeleteIcon style={{cursor:"pointer"}} onClick={() => deleteForm(form.id!)} />
+                    <DeleteIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => deleteForm(form.id!)}
+                    />
                   </StyledSpan>
                 </StyledDiv>
               </li>

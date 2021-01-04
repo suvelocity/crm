@@ -16,11 +16,14 @@ module.exports = {
       {
         id: 1,
         position: "full stack dev",
-        description: "ddsf",
+        description:
+          "As developer you will: Take full responsibility for features throughout the whole stack - Server, DB, Client, HTML, CSS. Plan both day-to-day and strategic features with the product team. Have both business and technical perspectives. Ship your work constantly by practicing continuous delivery. ",
         contact: "Nisim - 054545454",
         location: "Tokyo, Japan",
-        requirements: "dsfsdfdsf",
-        additional_details: "koko",
+        requirements:
+          "2+ years working experience as a web developer with the following: A modern JS framework ( React / Redux - advantage ) HTML & CSS Backend development ( Ruby on Rails - advantage ) SQL Passion for software craftsmanship Mature software design skills Coding standards in place Ability to plan and lead complex features end to end Strong analytical skills Fast learner Doer Team player ",
+        additional_details:
+          "I built Favicon.io because creating a favicon should be a simple process. No other favicon generator or favicon creator can make a well designed favicon from text. If you like favicon.io or have a suggestion feel free to say hello. Feedback is much appreciated!",
         created_at: new Date(),
         updated_at: new Date(),
         company_id: 1,

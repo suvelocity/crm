@@ -1,6 +1,6 @@
 import { Router, Request, Response,RequestHandler } from 'express';
 //@ts-ignore
-import { Form, Field, Option, Teacher,TaskOfStudent,Task, FieldSubmission,SelectedOption } from "../../models";
+import { Form, Field, Option, Teacher,TaskofStudent,Task, FieldSubmission,SelectedOption } from "../../models";
 //@ts-ignore
 import db from "../../models/index";
 import { formSchema, formSchemaToPut } from "../../validations";
@@ -16,7 +16,7 @@ const router = Router();
   try{
     const {id} = req.user;
     if (!id){throw { message:'no ID!'}}
-    const studentTasks = await TaskOfStudent.findAll({
+    const studentTasks = await TaskofStudent.findAll({
       where:{
         [Op.and]:{
           studentId:id,
@@ -32,8 +32,8 @@ const router = Router();
             }
           }}]
         });
-        const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId))
-        req.formIds=formIds
+        const formIds = studentTasks.map(({Task}:{Task:ITask})=>Number(Task.externalId));
+        req.formIds=formIds;
         next()
   }catch(e){
     console.error(e)
@@ -46,17 +46,21 @@ router.use(validateFormAccess)
 // GET ALL FORMS
 router.get("/all", async (req: any, res: Response) => {
   const {formIds} = req;
-  const forms = await Form.findAll({
-    where:{
-      id:{
-        [Op.in]:formIds
-      }
-    },
-    attributes: ["id", "name", "isQuiz"],
-  });
-  console.log("forms: ", forms);
-  
-  return res.json(forms);
+  try {
+    const forms = await Form.findAll({
+      where:{
+        id:{
+          [Op.in]:formIds
+        }
+      },
+      attributes: ["id", "name", "isQuiz"],
+    });
+    console.log("forms: ", forms);
+    return res.json(forms);
+  }
+  catch(error) {
+    res.send(error.message);
+  }
 });
 
 // GET SUBMISSIONS OF QUIZ
