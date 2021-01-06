@@ -36,10 +36,13 @@ router.get("/all", async (req: Request, res: Response) => {
 router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
+    const only = req.query.only;
     const job: IJob | null = await Job.findByPk(id, {
       include: [
         {
           model: Event,
+          where: only ? { type: only } : {},
+          required: false,
           include: [
             {
               model: Student,
@@ -102,7 +105,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
     const updated = await Job.update(req.body, {
       where: { id: req.params.id },
     });
-    if (updated[0] === 1) return res.json({ msg: "Job updated" });
+    if (updated[0] === 1) return res.json({ message: "Job updated" });
     res.status(404).json({ error: "Job not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -116,7 +119,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
       where: { id },
     });
     if (deleted === 0) return res.status(404).json({ error: "Job not found" });
-    await Event.destroy({ where: { jobId: id } });
+    await Event.destroy({ where: { id: id } });
     res.json({ message: "Job deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });

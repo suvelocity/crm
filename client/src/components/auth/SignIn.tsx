@@ -66,7 +66,7 @@ export function SignIn() {
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            style={{ minWidth: 270 }}
+            style={{ minWidth: 280 }}
             id="email"
             label="Email"
             type="email"
@@ -151,7 +151,7 @@ export function SignIn() {
             </div>
           )}
           {!loginError && generateBrs(2)}
-          <Button color="primary" variant="contained" type="submit">
+          <Button id="login" color="primary" variant="contained" type="submit">
             Login
           </Button>
         </form>

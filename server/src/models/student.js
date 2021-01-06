@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       this.hasMany(models.TaskofStudent, {
-        foreignKey: "userId",
+        foreignKey: "studentId",
       });
       this.hasMany(models.MentorStudent, {
         foreignKey: "studentId",
@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Class, {
         foreignKey: "classId",
       });
+      this.hasMany(models.FieldSubmission, {
+        foreignKey: 'studentId'
+      });
+      this.belongsToMany(models.Field, {
+        through: models.FieldSubmission,
+        foreignKey: 'studentId',
+        otherKey: 'fieldId'
+      })
     }
   }
   Student.init(
@@ -53,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       mentorId: DataTypes.INTEGER,
       fccAccount: DataTypes.STRING,
       resumeLink: DataTypes.STRING,
+      cmUser: DataTypes.STRING,
     },
     {
       sequelize,

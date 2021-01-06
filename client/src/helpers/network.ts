@@ -1,7 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { getRefreshToken } from "../helpers";
-
 const network = axios.create();
 
 const getAccessToken = () => Cookies.get("accessToken");

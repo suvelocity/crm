@@ -64,6 +64,7 @@ function ApplyStudentModal({
             relatedId: jobId,
             eventName: "Started application process",
             date: new Date().setHours(0, 0, 0, 0),
+            type: "jobs",
           });
         });
         setTimeout(() => {
@@ -90,7 +91,7 @@ function ApplyStudentModal({
   if (jobs) {
     body = (
       <div style={modalStyle} className={classes.paper}>
-        <div className={classes.root}>
+        <div className={classes.accordionContainer}>
           <h1>Choose Jobs To Apply To</h1>
           {jobs.length > 0 ? (
             <>
@@ -132,21 +133,6 @@ function ApplyStudentModal({
                         primary="Location"
                         secondary={job.location}
                       />
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Students"
-                          secondary={
-                            <>
-                              {job.Events.map((event: IEvent) => (
-                                <p key={event?.Student?.id}>
-                                  {event?.Student?.firstName}{" "}
-                                  {event?.Student?.lastName}
-                                </p>
-                              ))}
-                            </>
-                          }
-                        />
-                      </ListItem>
                     </List>
                   </AccordionDetails>
                 </Accordion>
@@ -156,6 +142,7 @@ function ApplyStudentModal({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
+                id="apply"
               >
                 Apply
               </Button>
@@ -170,7 +157,12 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button
+        id="applyForJob"
+        variant="contained"
+        color="primary"
+        onClick={handleOpen}
+      >
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
@@ -182,24 +174,35 @@ function ApplyStudentModal({
 
 export default ApplyStudentModal;
 
-function getModalStyle() {
+function getModalStyle(): {
+  top: string;
+  left: string;
+  transform: string;
+  overflowY: "auto";
+} {
   return {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+    overflowY: "auto",
   };
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    accordionContainer: {
+      position: "relative",
       width: "100%",
+      height: "90%",
+      overflowY: "auto",
     },
     paper: {
       position: "absolute",
       width: "50%",
       maxWidth: 700,
       minWidth: 300,
+      maxHeight: "80%",
+      overflow: "scroll",
       backgroundColor: theme.palette.background.paper,
       borderRadius: 7,
       boxShadow: theme.shadows[5],

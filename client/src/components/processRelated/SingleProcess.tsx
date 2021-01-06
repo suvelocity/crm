@@ -36,11 +36,11 @@ function SingleProcess() {
     (async () => {
       try {
         const { data: studentData } = await network.get(
-          `/api/v1/student/byId/${studentId}`
+          `/api/v1/student/byId/${studentId}?only=jobs`
         );
         setStudent(studentData);
         const { data: jobData } = await network.get(
-          `/api/v1/job/byId/${jobId}`
+          `/api/v1/job/byId/${jobId}?only=jobs`
         );
         setJob(jobData);
         const filteredEvents = studentData?.Events.filter(
@@ -63,7 +63,7 @@ function SingleProcess() {
     const index: number | undefined = events?.findIndex(
       (event: IEvent) => event.id === eventId
     );
-    if (!index) {
+    if (index === -1 || index === undefined) {
       Swal.fire("Error occurred", " event not found", "error");
       return;
     }
@@ -78,7 +78,6 @@ function SingleProcess() {
   const classesTypeRequirements = {
     primary: classes.primaryReq,
   };
-
   return (
     <Wrapper width="90%">
       <Center>
@@ -180,7 +179,12 @@ function SingleProcess() {
         </GridDiv>
       </Loading>
       {job?.id && student?.id && events && (
-      <NewEventModal events={events} studentId={studentId} jobId={jobId} add={addEventToLog} />
+        <NewEventModal
+          events={events}
+          studentId={studentId}
+          jobId={jobId}
+          add={addEventToLog}
+        />
       )}
     </Wrapper>
   );

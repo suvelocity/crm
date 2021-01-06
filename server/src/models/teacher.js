@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.hasMany(models.TeacherofClass, {
         foreignKey: "teacherId",
+        as: 'Classes'
+      });
+      this.hasMany(models.Form, {
+        foreignKey: 'creatorId'
       });
     }
   }
@@ -27,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       email: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      idNumber: DataTypes.STRING,
+      cmUser: DataTypes.STRING,
     },
     {
       sequelize,

@@ -1,4 +1,5 @@
 import { Model } from "sequelize/types";
+import { Request } from "express";
 
 export interface IJob {
   Company?: ICompany;
@@ -12,26 +13,41 @@ export interface IJob {
   additionalDetails: string;
 }
 
+export interface ITeacher {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  idNumber: string;
+  Class?: IClass;
+  Task?: ITask;
+  Lesson?: ILesson;
+  Notice?: INotice;
+  cmUser?:string;
+}
+
 export interface IStudent {
   id?: number;
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
-  idNumber: string;
-  additionalDetails: string;
+  phone?: string;
+  idNumber: string | null;
+  additionalDetails?: string;
   classId: number;
-  age: number;
+  age?: number | string | null;
   address: string;
   maritalStatus: string;
-  children: number;
+  children?: number;
   academicBackground: string;
-  militaryService: string;
-  workExperience: string;
-  languages: string;
-  citizenship: string;
+  militaryService?: string;
+  workExperience?: string;
+  languages?: string;
+  citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
+  cmUser?:string;
 }
 
 export interface IClass {
@@ -43,18 +59,21 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
+  cmId?:string;
 }
 
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: number;
+  relatedId: string ;
   eventName: string;
-  entry?: string;
+  entry?: any;
   type: string;
   date: Date;
 }
-
+export interface RequestWithUser extends Request {
+  user?: IUser;
+}
 export interface ICompany {
   id?: number;
   name: string;
@@ -93,36 +112,41 @@ export interface INotice {
 
 export interface ITask {
   id?: number;
-  lessonId: number;
-  externalId?: number;
+  lessonId?: number;
+  externalId?: string | number;
   externalLink?: string;
   createdBy: number;
   endDate: Date;
-  type: string;
-  status: string;
-  body: string;
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
+  status: "active" | "disabled";
+  title: string;
+  body?: string;
 }
 
 export interface ITaskofStudent {
   id?: number;
-  userId: number;
+  studentId: number;
   taskId: number;
   type: string;
   status: string;
+  submitLink?: string;
+  description?: string;
 }
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
+  required?: boolean;
   where?: {};
 }
 
-export type PublicFields = "firstname" | "lastname" | "fcc";
+export type PublicFields = "firstname" | "lastname" | "fcc" | "id";
 
 export enum PublicFieldsEnum {
   firstname = "first_name",
   lastname = "last_name",
   fcc = "fcc_account",
+  id = "id",
 }
 export interface IMentor {
   id?: number;
@@ -135,29 +159,52 @@ export interface IMentor {
   available: boolean;
   gender: string;
 }
+export interface IForm {
+  id?: number;
+  name: string;
+  createdBy: number;
+}
+export interface IFormSubmission {
+  id?: number;
+  quizId: number;
+  studentId: number;
+  rank: number;
+}
 
 type meeting = { date: string };
-// type class = {name: string, cycleNumber: number}
 
 export interface IDashboard {
   id?: number;
   firstName: string;
   lastName: string;
-  // Class: class;
   Mentor: IMentor;
   Meetings: meeting[];
 }
+
 export interface IMeeting {
   id?: number;
   mentorId: number;
   studentId: number;
   place: string;
 }
-export interface IMentorProgram{
+export interface IMentorForm {
+  id?: number;
+  programId: number;
+  url: string;
+  title: string;
+}
+
+export interface IFccEvent {}
+export interface IMentorProgram {
   id?: number;
   classId: number;
   name: string;
   open: boolean;
   endDate: string;
   startDate: string;
+}
+
+export interface ITaskFilter {
+  class: string;
+  type: "manual" | "challengeMe" | "fcc" | "quiz";
 }

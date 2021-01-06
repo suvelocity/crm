@@ -8,6 +8,8 @@ import AdminClassesRoutes from "./adminRoutes/AdminClassesRoutes";
 import AdminJobsRoutes from "./adminRoutes/AdminJobsRoutes";
 import AdminStudentsRoutes from "./adminRoutes/AdminStudentsRoutes";
 import AdminMentorRoutes from "./adminRoutes/AdminMentorRoutes";
+import AdminTeacherRoutes from "./adminRoutes/AdminTeacherRoutes";
+import Landing from "../components/Landing";
 
 export function AdminRoutes() {
   return (
@@ -16,7 +18,12 @@ export function AdminRoutes() {
       <ErrorBoundary>
         <Switch>
           <Route exact path="/">
-            <h1 style={{ textAlign: "center" }}>Welcome to CRM</h1>
+            <h1
+              style={{ position: "absolute", fontSize: "0.0005px", opacity: 0 }}
+            >
+              Welcome to CRM
+            </h1>
+            <Landing />
           </Route>
           <Route path="/company">
             <AdminCompanyRoutes />
@@ -27,15 +34,18 @@ export function AdminRoutes() {
           <Route path="/class">
             <AdminClassesRoutes />
           </Route>
+          <Route path="/teacher">
+            <AdminTeacherRoutes />
+          </Route>
           <Route path="/job">
             <AdminJobsRoutes />
           </Route>
           <Route path="/student">
             <AdminStudentsRoutes />
           </Route>
-          {/* <Route path="/mentor">
+          <Route path="/mentor">
             <AdminMentorRoutes />
-          </Route> */}
+          </Route>
           <Route path="*">
             <div>404 Not Found</div>
           </Route>

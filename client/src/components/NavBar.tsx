@@ -14,10 +14,13 @@ import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
 import { useHistory } from "react-router-dom";
 import ClassIcon from "@material-ui/icons/Class";
+import MentorIcon from "@material-ui/icons/SupervisedUserCircle";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import network from "../helpers/network";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { getRefreshToken, AuthContext } from "../helpers";
+import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
+import suvelocityLogo from "../assets/scale-up-logo.png";
 import Cookies from "js-cookie";
 
 function NavAppBar() {
@@ -49,11 +52,21 @@ function NavAppBar() {
             color="inherit"
             edge="start"
             aria-label="menu"
+            id="menuButton"
           >
             <Menu />
           </IconButton>
           <StyledLink to="/student/all">
-            <Typography variant="h4">CRM</Typography>
+            <img
+              src={suvelocityLogo}
+              width="80"
+              height="50"
+              style={{
+                marginLeft: "10px",
+                marginBottom: "10px",
+                userSelect: "none",
+              }}
+            />{" "}
           </StyledLink>
         </Toolbar>
       </AppBar>
@@ -83,12 +96,18 @@ function NavAppBar() {
               <ClassIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          {/* <StyledLink to="/mentor">
+          <StyledLink to="/teacher/all">
+            <DrawerItem onClick={() => setOpen(false)}>
+              Teachers
+              <PersonOutlineIcon style={{ position: "absolute", right: 10 }} />
+            </DrawerItem>
+          </StyledLink>
+          <StyledLink to="/mentor">
             <DrawerItem onClick={() => setOpen(false)}>
               Mentors
-              <ClassIcon style={{ position: "absolute", right: 10 }} />
+              <MentorIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
-          </StyledLink> */}
+          </StyledLink>
           <StyledLink to="/company/all">
             <DrawerItem onClick={() => setOpen(false)}>
               Companies
@@ -101,7 +120,7 @@ function NavAppBar() {
               <TimelineIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <DrawerItem onClick={signOut}>
+          <DrawerItem id="signOut" onClick={signOut}>
             Sign Out
             <ExitToAppIcon style={{ position: "absolute", right: 10 }} />
           </DrawerItem>
@@ -130,6 +149,7 @@ const StyledDrawer = styled.div`
   height: 100%;
   width: 220px;
   overflow: hidden;
+  user-select: none;
 `;
 
 export default NavAppBar;

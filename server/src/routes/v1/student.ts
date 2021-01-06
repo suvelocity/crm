@@ -1,13 +1,26 @@
 import { Router, Response, Request } from "express";
-//@ts-ignore
-import { Student, Company, Job, Event, Class, User } from "../../models";
-import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
+import {
+  //TODO fix
+  //@ts-ignore
+  Student,
+  //@ts-ignore
+  Event,
+  //@ts-ignore
+  Class,
+  //@ts-ignore
+  User,
+  //@ts-ignore
+  TeacherofClass,
+  //@ts-ignore
+} from "../../models";
+import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
 import { Op } from "sequelize";
+import { validateTeacher, validateAdmin } from "../../middlewares";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -15,13 +28,37 @@ const publicFields: string[] = Object.keys(PublicFieldsEnum);
 const mailOptions = (to: string, password: string) => ({
   from: process.env.EMAIL_USER,
   to: to,
-  subject: "Welcome to CRM",
+  subject: "Welcome to Scale-Up Velocity CRM",
   text: `You can login with:\nUsername: ${to}\nPassword: ${password}`,
 });
 
 const router = Router();
 
-router.get("/all", async (req: Request, res: Response) => {
+router.get(
+  "/byTeacher/:teacherId",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const teacherId: string = req.params.teacherId;
+      const teacherClasses: any | null = await TeacherofClass.findAll({
+        include: [
+          { model: Class, attributes: ["id", "name"], include: [Student] },
+        ],
+        where: { teacherId },
+      });
+
+      if (teacherClasses) {
+        return res.json(teacherClasses);
+      } else {
+        return res.status(404).json({ error: "Teacher don`t have classes" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   //@ts-ignore
   const fields: string[] = req.query.fields?.split(",");
   const onlyActive: boolean = Boolean(req.query.onlyactive);
@@ -41,28 +78,36 @@ router.get("/all", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byId/:id", async (req: Request, res: Response) => {
+router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const student: IStudent | null = await Student.findByPk(id, getQuery());
+    const only = req.query.only;
+
+    const student: any | null = await Student.findByPk(
+      id,
+      getQuery(undefined, false, false, only as string | undefined)
+    );
 
     if (student) {
+      // student.Events = student.Events.filter((event: any, i:number) =>event.dataValues.type ==='job');
       return res.json(student);
     } else {
-      return res.status(404).send("student does not exist");
+      return res.status(404).json({ error: "student does not exist" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
-    const body: IStudent = req.body;
+    const body = req.body;
     const studentExists = await Student.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
-    if (studentExists) return res.status(409).send("Student already exists");
+    if (studentExists)
+      return res.status(409).json({ error: "Student already exists" });
+
     const newStudent: IStudent = {
       email: body.email,
       firstName: body.firstName,
@@ -72,9 +117,9 @@ router.post("/", async (req: Request, res: Response) => {
       additionalDetails: body.additionalDetails,
       classId: body.classId,
       address: body.address,
-      age: body.age,
+      age: body.age === "" ? null : body.age,
       maritalStatus: body.maritalStatus,
-      children: body.children,
+      children: body.children ? null : body.children,
       academicBackground: body.academicBackground,
       militaryService: body.militaryService,
       workExperience: body.workExperience,
@@ -97,7 +142,8 @@ router.post("/", async (req: Request, res: Response) => {
       type: "student",
     };
     const user = await User.create(userToCreate);
-    if (user) {
+    if (user && process.env.NODE_ENV !== "test") {
+      console.log("SENDING MAIL");
       transporter.sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
@@ -114,7 +160,9 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
+  req.body.age = req.body.age === "" ? null : req.body.age;
+  req.body.children = req.body.children === "" ? null : req.body.children;
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
@@ -128,7 +176,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await Student.destroy({
@@ -136,7 +184,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     });
     if (deleted === 0)
       return res.status(404).json({ message: "Student not found" });
-    await Event.destroy({ where: { studentId: id } });
+    await Event.destroy({ where: { userId: id, type: "student" } });
     res.json({ message: "Student deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });

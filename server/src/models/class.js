@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       zoomLink: DataTypes.STRING,
       additionalDetails: DataTypes.STRING,
       mentorProject: DataTypes.BOOLEAN,
+      cmId: DataTypes.STRING,
     },
     {
       sequelize,

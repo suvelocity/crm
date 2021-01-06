@@ -104,7 +104,7 @@ function ApplyForJobModal({
   if (students) {
     body = (
       <div style={modalStyle} className={classes.paper}>
-        <div className={classes.root}>
+        <div className={classes.accordionContainer}>
           <h1>Choose Students To Apply</h1>
           {students.length > 0 ? (
             <>
@@ -157,19 +157,23 @@ function ApplyForJobModal({
                   </AccordionDetails>
                 </Accordion>
               ))}
-              <Button
-                style={{ backgroundColor: "#bb4040", color: "white" }}
-                className={classes.button}
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Apply
-              </Button>
             </>
           ) : (
             <h2>No students available</h2>
           )}
         </div>
+        <Button
+          style={{
+            backgroundColor: "#bb4040",
+            color: "white",
+          }}
+          className={classes.button}
+          color="primary"
+          onClick={handleSubmit}
+          id="apply"
+        >
+          Apply
+        </Button>
       </div>
     );
   }
@@ -177,13 +181,14 @@ function ApplyForJobModal({
   return (
     <>
       <Button
+        id="assignStudent"
         style={{ backgroundColor: "#bb4040", color: "white" }}
         variant="contained"
         onClick={handleOpen}
       >
         Assign a Student
       </Button>
-      <Modal style={{ overflow: "scroll" }}  open={open} onClose={handleClose}>
+      <Modal style={{ overflow: "scroll" }} open={open} onClose={handleClose}>
         <Loading loading={loading}>{body}</Loading>
       </Modal>
     </>
@@ -202,19 +207,23 @@ function getModalStyle() {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    accordionContainer: {
       width: "100%",
+      maxHeight: "82vh",
+      overflow: "scroll",
     },
     paper: {
       position: "absolute",
       width: "50%",
       maxWidth: 700,
       minWidth: 300,
+      maxHeight: "80%",
       backgroundColor: theme.palette.background.paper,
       borderRadius: 7,
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
       outline: "none",
+      paddingBottom: 80,
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),
@@ -224,8 +233,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 11,
     },
     button: {
-      textAlign: "center",
-      margin: 10,
+      // textAlign: "center",
+      // // margin: "10 auto",
+      margin: "20px 0",
     },
   })
 );
