@@ -56,7 +56,7 @@ interface ICMTeamResponse{
 
 router.post('/team/forClass/:id',async (req,res)=>{
   const {MY_URL:url,CM_ACCESS:cmAccess} = process.env
-  
+  console.log('team-creation',cmAccess)
   function generateUsername(firstName:string,lastName:string,idNumber:string): string {
     // const regex = /[\n\w\.]*@[\n\w]*/
     // const match = email.match(regex)  

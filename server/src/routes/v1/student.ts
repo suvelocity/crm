@@ -102,10 +102,13 @@ router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
     const body = req.body;
-    const studentExists = await Student.findOne({
+    const studentExistsInStudents = await Student.findOne({
       where: { [Op.or]: [{ idNumber: body.idNumber }, { email: body.email }] },
     });
-    if (studentExists)
+    const studentExistsInUsers = await User.findOne({
+      where: { email: body.email },
+    });
+    if (studentExistsInStudents || studentExistsInUsers)
       return res.status(409).json({ error: "Student already exists" });
 
     const newStudent: IStudent = {
