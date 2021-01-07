@@ -66,7 +66,6 @@ function NewClassMentorProject() {
   }, [query, setLoading, setStudents, id]);
 
   const getMentors = useCallback(async () => {
-    console.log(students);
     const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
     const mentorList = data.map((mentor) => {
       let count = 0;
@@ -104,9 +103,7 @@ function NewClassMentorProject() {
     const relevant =
       available === "all"
         ? mentors
-        : mentors.filter(
-            (mentor) => mentor.available === available
-          );
+        : mentors.filter((mentor) => mentor.available === available);
     if (searchValue !== "") {
       setFilteredMentors(
         relevant.filter(
@@ -132,7 +129,6 @@ function NewClassMentorProject() {
 
   useEffect(() => {
     if (searchValueStudent !== "" && students) {
-      console.log(searchValueStudent);
       setFilteredCls(
         students!.filter(
           (student) =>
@@ -222,7 +218,6 @@ function NewClassMentorProject() {
     newCls.sort((a, b) => {
       return a.mentor ? 1 : -1;
     });
-    console.log(newCls);
     setStudents(newCls);
   };
 

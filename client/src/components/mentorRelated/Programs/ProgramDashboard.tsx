@@ -58,7 +58,6 @@ const ProgramDashboard: React.FC = () => {
 
   const getForms = useCallback(async () => {
     const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
-    console.log(formsData.data);
     setForms(formsData.data);
   }, [id]);
 
@@ -68,7 +67,6 @@ const ProgramDashboard: React.FC = () => {
     getForms();
   }, [getTableData, getAvailableMentors, getForms]);
 
-  console.log(programdetails);
   const endProgram = async () => {
     try {
       await network.put(`/api/v1/M/program/end/${id}`);
