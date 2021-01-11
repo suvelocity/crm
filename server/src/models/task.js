@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.TaskofStudent, {
         foreignKey: "taskId",
       });
+      this.hasMany(models.TaskLabel, {
+        foreignKey: "taskId",
+      });
+      this.hasMany(models.Criterion, {
+        foreignKey: "criterionId",
+      });
     }
   }
   Task.init(

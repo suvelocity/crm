@@ -5,9 +5,11 @@ import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event, TeacherofClass } from "../../models";
 //@ts-ignore
-import { TaskLabel } from "../../models";
+import { TaskLabel, Criterion, Grade } from "../../models";
 import {
   IClass,
+  ICriterion,
+  IGrade,
   ITask,
   ITaskFilter,
   ITaskLabel,
@@ -230,13 +232,55 @@ router.post(
   }
 );
 
+//labels
+
 router.post("/label", async (req: Request, res: Response) => {
   //TODO check taskId exists
   const data: ITaskLabel[] = req.body;
   console.log(data);
+  if (!Array.isArray(data))
+    res
+      .status(400)
+      .json({ error: `Expected an array but got ${typeof data} instead` });
   try {
     const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(data);
     res.json(newTaskLabels);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.post("/criterion", async (req: Request, res: Response) => {
+  //TODO check taskId exists
+  //TODO check labelId exists
+
+  const data: ICriterion[] = req.body;
+  console.log(data);
+  if (!Array.isArray(data))
+    res
+      .status(400)
+      .json({ error: `Expected an array but got ${typeof data} instead` });
+  try {
+    const newCriterion: ICriterion[] = await Criterion.bulkCreate(data);
+    res.json(newCriterion);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.post("/grade", async (req: Request, res: Response) => {
+  //TODO check taskId exists
+  //TODO check labelId exists
+
+  const data: IGrade[] = req.body;
+  console.log(data);
+  if (!Array.isArray(data))
+    res
+      .status(400)
+      .json({ error: `Expected an array but got ${typeof data} instead` });
+  try {
+    const newGrade: IGrade[] = await Grade.bulkCreate(data);
+    res.json(newGrade);
   } catch (e) {
     res.status(400).json({ error: e.message });
   }

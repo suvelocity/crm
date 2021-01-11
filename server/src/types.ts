@@ -138,6 +138,20 @@ export interface ITaskLabel {
   taskId: number;
   label: string;
 }
+
+export interface ICriterion {
+  id?: number;
+  taskId: number;
+  labelId: number;
+  name: string;
+}
+
+export interface IGrade {
+  id?: number;
+  criterionId: number;
+  grade: number;
+  freeText: string;
+}
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
