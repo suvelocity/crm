@@ -4,7 +4,15 @@ const router = Router();
 import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event, TeacherofClass } from "../../models";
-import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
+//@ts-ignore
+import { TaskLabel } from "../../models";
+import {
+  IClass,
+  ITask,
+  ITaskFilter,
+  ITaskLabel,
+  ITaskofStudent,
+} from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
@@ -222,6 +230,17 @@ router.post(
   }
 );
 
+router.post("/label", async (req: Request, res: Response) => {
+  //TODO check taskId exists
+  const data: ITaskLabel[] = req.body;
+  console.log(data);
+  try {
+    const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(data);
+    res.json(newTaskLabels);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 //todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
@@ -331,8 +350,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
                 { where: { id: task.id } }
               );
               updated.push(updatedTask);
-            }
-            else{
+            } else {
               const event: any = await Event.findOne({
                 where: {
                   userId: studentId,
