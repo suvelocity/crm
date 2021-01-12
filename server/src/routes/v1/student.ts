@@ -1,18 +1,8 @@
 import { Router, Response, Request } from "express";
-import {
-  //TODO fix
-  //@ts-ignore
-  Student,
-  //@ts-ignore
-  Event,
-  //@ts-ignore
-  Class,
-  //@ts-ignore
-  User,
-  //@ts-ignore
-  TeacherofClass,
-  //@ts-ignore
-} from "../../models";
+//@ts-ignore
+import { Student, Event, AcademicBackground } from "../../models";
+//@ts-ignore
+import { Class, User, TeacherofClass } from "../../models";
 import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import transporter from "../../mail";
@@ -78,11 +68,10 @@ router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
+router.get("/byId/:id", async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
     const only = req.query.only;
-
     const student: any | null = await Student.findByPk(
       id,
       getQuery(undefined, false, false, only as string | undefined)

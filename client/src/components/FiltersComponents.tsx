@@ -19,8 +19,13 @@ export const FiltersComponents = ({
 }: Props) => {
   const location = useLocation();
   const determineWhatToSet = (by: string, value: any) => {
-    if(by === 'Job Status'){
-      return callbackFunction({...filterObject, JobStatus: value})
+    // if(by === 'Job Status'){
+    //   return callbackFunction({...filterObject, JobStatus: value})
+    // }
+    console.log(by, by.split(" ").length);
+    if(by.split(" ").length === 2){
+      console.log('inCallback', by.replace(" ", ""))
+      return callbackFunction( {...filterObject, [by.replace(" ", "")]: value});
     }
     return callbackFunction( {...filterObject, [by]: value});
   };

@@ -131,6 +131,7 @@ export interface filterStudentObject {
   Company?: string[];
   JobStatus?: string[];
   Name?: string[];
+  ReligionLevels?: string[];
 }
 export interface Name {
   firstName: string;
@@ -146,12 +147,16 @@ export interface IMentor {
   id?: number;
   name: string;
   company: string;
+  age: string;
   email: string;
   phone: string;
   address: string;
   role: string;
   experience: number;
   available: boolean;
+  education:string;
+  preference:string;
+  religionLevel:string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];

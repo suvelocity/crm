@@ -25,8 +25,15 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     role: DataTypes.STRING,
     experience: DataTypes.INTEGER,
-    available: DataTypes.BOOLEAN,
+    age: DataTypes.INTEGER,
+    preference: DataTypes.STRING,
+    available: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: 0
+    },
     gender: DataTypes.STRING,
+    religionLevel: DataTypes.STRING,
+    education: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Mentor',

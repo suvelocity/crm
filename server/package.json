@@ -15,6 +15,7 @@
     "spinup:staging": "npm run migrate:prod && npm run seed:prod && npm run start",
     "spinup:prod": "npm run migrate:prod && npm run start",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
+    "mentorSeed": "NODE_ENV=development cd src && npx sequelize db:seed 20201208095752-mentors.js",
     "seed": "cd src && npx sequelize db:seed:undo:all && npx sequelize db:seed:all && cd ..",
     "seed:undo": "cd src && npx sequelize db:seed:undo:all",
     "undoseed": "cd src && npx sequelize db:seed:undo:all && cd ..",

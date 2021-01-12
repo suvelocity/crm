@@ -8,6 +8,7 @@ import { IClass } from "./types";
 import axios from "axios";
 import { urlencoded } from "express";
 const token = process.env.CM_ACCESS;
+console.log(process.env.NODE_ENV);
 if (token) {
   if (token.startsWith("'") && token.endsWith("'")) {
     process.env.CM_ACCESS = token.slice(1, token.length - 1);

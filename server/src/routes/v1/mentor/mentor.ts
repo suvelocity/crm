@@ -1,20 +1,24 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router } from "express";
 //@ts-ignore
-import { Student,Mentor,Meeting,Class,MentorProgram,MentorStudent, } from '../../../models';
-import { mentorSchema, mentorSchemaToPut } from '../../../validations';
-import { IMentor } from '../../../types';
+import { Student, Mentor, Meeting } from "../../../models";
+//@ts-ignore
+import { Class, MentorProgram, MentorStudent } from "../../../models";
+import { mentorSchema, mentorSchemaToPut } from "../../../validations";
+import { IMentor } from "../../../types";
 
 const router = Router();
 
-router.get('/available', async (req: Request, res: Response) => {
+router.get("/available", async (req: Request, res: Response) => {
   try {
     const allMentors: any[] = await Mentor.findAll({
       where: {
-        available: true
+        available: true,
       },
-      include: [{
-        model: MentorStudent,
-      }]
+      include: [
+        {
+          model: MentorStudent,
+        },
+      ],
     });
     res.json(allMentors);
   } catch (err) {
@@ -23,7 +27,7 @@ router.get('/available', async (req: Request, res: Response) => {
 });
 
 // Get all mentors
-router.get('/', async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const allMentors: any[] = await Mentor.findAll({
       // order:[["available","DESC"]],
@@ -35,9 +39,8 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-
 // Get all information about specific mentor
-router.get('/:id', async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const mentor: any[] = await Mentor.findAll({
       where: { id: req.params.id },
@@ -46,14 +49,14 @@ router.get('/:id', async (req: Request, res: Response) => {
           model: MentorStudent,
           include: [
             {
-              model:MentorProgram,
-              attributes: ["name"]
+              model: MentorProgram,
+              attributes: ["name"],
             },
             {
-              model:Student,
-              attributes: ["firstName", "lastName"]
-            }
-          ]
+              model: Student,
+              attributes: ["firstName", "lastName"],
+            },
+          ],
         },
       ],
     });
@@ -65,32 +68,11 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 // Post new mentor
-router.post('/', async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const { error } = mentorSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
-    const {
-      name,
-      company,
-      email,
-      phone,
-      address,
-      role,
-      experience,
-      available,
-      gender,
-    } = req.body;
-    const newMentor: IMentor = await Mentor.create({
-      name,
-      company,
-      email,
-      phone,
-      address,
-      role,
-      experience,
-      available,
-      gender,
-    });
+    const newMentor: IMentor = await Mentor.create(req.body);
     res.json(newMentor);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -98,29 +80,30 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // Edit exist mentor
-router.put('/:id', async (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { error } = mentorSchemaToPut.validate(req.body);
+    console.log(error);
     if (error) return res.status(400).json({ error: error.message });
     const updated = await Mentor.update(req.body, {
       where: { id: req.params.id },
     });
-    if (updated[0] === 1) return res.json({ message: 'Mentor updated' });
-    res.status(404).json({ error: 'Mentor not found' });
+    if (updated[0] === 1) return res.json({ message: "Mentor updated" });
+    res.status(404).json({ error: "Mentor not found" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // delete mentor
-router.patch('/delete', async (req, res) => {
+router.patch("/delete", async (req, res) => {
   try {
     const { mentorId } = req.body;
     const deleted: any = await Mentor.destroy({
       where: { id: mentorId },
     });
-    if (deleted) return res.json({ message: 'Mentor deleted' });
-    return res.status(404).json({ error: 'Mentor not found' });
+    if (deleted) return res.json({ message: "Mentor deleted" });
+    return res.status(404).json({ error: "Mentor not found" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
