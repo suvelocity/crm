@@ -22,6 +22,7 @@ import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
 import { formatDiagnostic } from "typescript";
 import ClassAccordion from "./ClassAccordion";
+import LabelButton from "../tasks/LabelView";
 interface addTaskProps {
   task: ITask;
   index?: number;
@@ -266,7 +267,7 @@ export default function AddTask({
         <Button onClick={handleLabelAdd}>Add</Button>
       </FormControl>
       {task.labels?.map((l: string) => (
-        <li onClick={() => handleLabelRemove(l)}>{l}</li>
+        <LabelButton label={l} />
       ))}
       {students && teacherClasses !== undefined ? (
         <ClassAccordion classes={classList!} updatePicks={changer} />
