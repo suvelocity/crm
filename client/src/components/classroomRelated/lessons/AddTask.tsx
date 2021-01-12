@@ -17,7 +17,11 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { IClassOfTeacher, IStudent } from "../../../typescript/interfaces";
+import {
+  IClassOfTeacher,
+  IStudent,
+  ITaskLabel,
+} from "../../../typescript/interfaces";
 import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
 import { formatDiagnostic } from "typescript";
@@ -92,10 +96,10 @@ export default function AddTask({
       labelField.current.focus();
       return;
     }
-    if (task.labels?.find((label: string) => label === newLabel))
+    if (task.labels?.find((label: ITaskLabel) => label.label === newLabel))
       alert("label exists");
     else {
-      task.labels?.push(newLabel);
+      task.labels?.push({ label: newLabel, criteria: [] });
       changer(task.labels, "labels");
       //@ts-ignore
       labelField.current.value = "";
@@ -104,11 +108,11 @@ export default function AddTask({
     labelField.current.focus();
   };
 
-  const handleLabelRemove: (labelToRemove: string) => void = (
-    labelToRemove: string
+  const handleLabelRemove: (labelToRemove: ITaskLabel) => void = (
+    labelToRemove: ITaskLabel
   ) => {
     const indexToRemove: number = task.labels!.findIndex(
-      (label: string) => label === labelToRemove
+      (label: ITaskLabel) => label === labelToRemove
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
@@ -266,7 +270,7 @@ export default function AddTask({
         <TextField variant="outlined" label="Add Label" inputRef={labelField} />
         <Button onClick={handleLabelAdd}>Add</Button>
       </FormControl>
-      {task.labels?.map((l: string) => (
+      {task.labels?.map((l: ITaskLabel) => (
         <LabelButton label={l} />
       ))}
       {students && teacherClasses !== undefined ? (

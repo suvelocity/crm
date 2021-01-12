@@ -19,6 +19,8 @@ import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
 import { validateTeacher } from "../../middlewares";
+import tasklabel from "../../models/tasklabel";
+import { parse } from "dotenv/types";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -67,29 +69,65 @@ const createTask = async (req: Request, res: Response) => {
 };
 
 const createLabels: (
-  labels: string[],
+  labels: ITaskLabel[],
   taskId: number
-) => Promise<void> | Error = async (labels: string[], taskId: number) => {
+) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
+  console.log("******************LABELS***************");
   console.log(labels);
+  console.log("*****************************************");
+
   if (!Array.isArray(labels))
     throw new Error(`Expected an array but got ${typeof labels} instead`);
 
   try {
     const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(
-      labels.map((label: string) => {
-        return { taskId, label };
+      labels.map((label: ITaskLabel) => {
+        // return { taskId, criteria: label.criteria, label: label.name };
+        label.taskId = taskId;
+        return label;
+      })
+    );
+
+    await Promise.all(
+      newTaskLabels.map((taskLabel: any, i: number) => {
+        const parsed: ITaskLabel = taskLabel.toJSON();
+        console.log(parsed);
+        return createCriteria(labels[i].criteria, parsed.taskId, parsed.id!);
       })
     );
     // return newTaskLabels;
   } catch (e) {
+    console.log(e);
     throw new Error(e.message);
   }
 };
 
-// const createCriteria
+const createCriteria: (
+  criteria: ICriterion[],
+  taskId: number,
+  labelId: number
+) => Promise<void> = async (
+  criteria: ICriterion[],
+  taskId: number,
+  labelId: number
+) => {
+  console.log("******************CRITERIA***************");
+  console.log(criteria);
+  console.log("*****************************************");
 
-// const createGrades
+  if (!Array.isArray(criteria))
+    return Promise.reject(
+      `Expected an array but got ${typeof criteria} instead`
+    );
 
+  return Criterion.bulkCreate(
+    criteria.map((criterion: ICriterion) => {
+      criterion.taskId = taskId;
+      criterion.labelId = labelId;
+      return criterion;
+    })
+  );
+};
 router.use("/challenges", challenges);
 
 router.get(

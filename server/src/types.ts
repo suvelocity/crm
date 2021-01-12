@@ -137,6 +137,7 @@ export interface ITaskLabel {
   id?: number;
   taskId: number;
   label: string;
+  criteria: ICriterion[];
 }
 
 export interface ICriterion {

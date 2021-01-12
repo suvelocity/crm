@@ -280,7 +280,7 @@ export interface ITask {
   type: taskType;
   status: "active" | "disabled";
   body?: string;
-  labels?: string[];
+  labels?: ITaskLabel[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -290,6 +290,20 @@ export interface ITaskofStudent {
   status: string;
   submitLink?: string;
   description?: string;
+}
+
+export interface ITaskLabel {
+  id?: number;
+  taskId?: number;
+  label: string;
+  criteria: ITaskCriteria[];
+}
+
+export interface ITaskCriteria {
+  id?: number;
+  taskId?: number;
+  labelId?: number;
+  name: string;
 }
 
 export type ThemeType = "dark" | "light";

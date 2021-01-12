@@ -6,10 +6,10 @@ import {
   TextField,
   Theme,
 } from "@material-ui/core";
-import { Height } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
+import { ITaskCriteria, ITaskLabel } from "../../../typescript/interfaces";
 
-export default function LabelButton({ label }: { label: string }) {
+export default function LabelButton({ label }: { label: ITaskLabel }) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleOpen: () => void = () => {
@@ -22,7 +22,7 @@ export default function LabelButton({ label }: { label: string }) {
   return (
     <>
       <LabelView open={modalOpen} handleClose={handleClose} label={label} />
-      <button onClick={handleOpen}>{label}</button>
+      <span onClick={handleOpen}>{label.label}</span>
     </>
   );
 }
@@ -32,12 +32,12 @@ function LabelView({
   open,
   handleClose,
 }: {
-  label: string;
+  label: ITaskLabel;
   open: boolean;
   handleClose: () => void;
 }) {
   const [criterionModalOpen, setCriterionModalOpen] = useState<boolean>(false);
-  const [criteria, setCriteria] = useState<string[]>([]);
+  const [criteria, setCriteria] = useState<ITaskCriteria[]>([]);
   const classes = useStyles();
 
   const criterionField = useRef(null);
@@ -57,9 +57,11 @@ function LabelView({
       alert("Can't add empty criterion");
       return;
     }
-    if (criteria.find((c) => c === newCriterion)) alert("Criterion exists");
+    if (label.criteria.find((c: ITaskCriteria) => c.name === newCriterion))
+      alert("Criterion exists");
     else {
-      setCriteria((prev: string[]) => prev.concat(newCriterion));
+      label.criteria.push({ name: newCriterion });
+      setCriteria(label?.criteria.slice());
       //@ts-ignore
       criterionField.current.value = "";
     }
@@ -67,12 +69,14 @@ function LabelView({
     criterionField.current.focus();
   };
 
-  const removeCriterion: (criterionToRemove: string) => void = (
-    criterionToRemove: string
+  const removeCriterion: (criterionToRemove: ITaskCriteria) => void = (
+    criterionToRemove: ITaskCriteria
   ) => {
-    setCriteria((prev: string[]) =>
-      prev.filter((c: string) => c !== criterionToRemove)
-    );
+    const indexToRemove: number = label.criteria.findIndex(
+      (c: ITaskCriteria) => c === criterionToRemove
+    )!;
+    label.criteria.splice(indexToRemove, 1);
+    setCriteria(label?.criteria.slice());
   };
 
   return (
@@ -80,7 +84,7 @@ function LabelView({
       <>
         {/*@ts-ignore */}
         <div style={modalStyle} className={classes.paper}>
-          <h1>{label}</h1>
+          <h1>{label.label}</h1>
           <FormControl
             id="criteria"
             variant="outlined"
@@ -100,12 +104,12 @@ function LabelView({
             handleClose={handleCriterionClose}
           /> */}
           {criteria[0]
-            ? criteria.map((criterion: string, i: number) => (
+            ? criteria.map((criterion: ITaskCriteria, i: number) => (
                 <li
                   key={`criteria${i}`}
                   onClick={() => removeCriterion(criterion)}
                 >
-                  {criterion}
+                  {criterion.name}
                 </li>
               ))
             : "No criteria added"}
