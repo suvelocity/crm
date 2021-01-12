@@ -32,6 +32,8 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
+import GradeButton from "../tasks/GradeView";
+import { ITaskLabel } from "../../../typescript/interfaces";
 
 const useRowStyles = makeStyles({
   root: {
@@ -56,7 +58,8 @@ const createTask = (
   lesson: string,
   endDate: Date,
   externalLink: string,
-  TaskofStudents: []
+  TaskofStudents: [],
+  TaskLabels: ITaskLabel[]
 ) => {
   return {
     title,
@@ -65,6 +68,7 @@ const createTask = (
     endDate,
     externalLink,
     TaskofStudents,
+    TaskLabels,
   };
 };
 
@@ -218,6 +222,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                     <TableCell align="left">
                       <b>Submission Link</b>
                     </TableCell>
+                    <TableCell align="left">
+                      <b>Grade</b>
+                    </TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
@@ -238,6 +245,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                       </TableCell>
                       <TableCell align="left">
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
+                      </TableCell>
+                      <TableCell align="left">
+                        <GradeButton taskLabels={row.TaskLabels} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -408,7 +418,8 @@ export default function TeacherTaskBoard(props: any) {
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
-        task.TaskofStudents
+        task.TaskofStudents,
+        task.TaskLabels
       );
     }) || [];
 

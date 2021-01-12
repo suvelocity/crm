@@ -57,11 +57,11 @@ function LabelView({
       alert("Can't add empty criterion");
       return;
     }
-    if (label.criteria.find((c: ITaskCriteria) => c.name === newCriterion))
+    if (label.Criteria.find((c: ITaskCriteria) => c.name === newCriterion))
       alert("Criterion exists");
     else {
-      label.criteria.push({ name: newCriterion });
-      setCriteria(label?.criteria.slice());
+      label.Criteria.push({ name: newCriterion });
+      setCriteria(label?.Criteria.slice());
       //@ts-ignore
       criterionField.current.value = "";
     }
@@ -72,11 +72,11 @@ function LabelView({
   const removeCriterion: (criterionToRemove: ITaskCriteria) => void = (
     criterionToRemove: ITaskCriteria
   ) => {
-    const indexToRemove: number = label.criteria.findIndex(
+    const indexToRemove: number = label.Criteria.findIndex(
       (c: ITaskCriteria) => c === criterionToRemove
     )!;
-    label.criteria.splice(indexToRemove, 1);
-    setCriteria(label?.criteria.slice());
+    label.Criteria.splice(indexToRemove, 1);
+    setCriteria(label?.Criteria.slice());
   };
 
   return (

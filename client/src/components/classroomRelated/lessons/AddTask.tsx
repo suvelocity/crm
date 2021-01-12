@@ -99,7 +99,7 @@ export default function AddTask({
     if (task.labels?.find((label: ITaskLabel) => label.label === newLabel))
       alert("label exists");
     else {
-      task.labels?.push({ label: newLabel, criteria: [] });
+      task.labels?.push({ label: newLabel, Criteria: [] });
       changer(task.labels, "labels");
       //@ts-ignore
       labelField.current.value = "";

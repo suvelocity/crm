@@ -296,7 +296,7 @@ export interface ITaskLabel {
   id?: number;
   taskId?: number;
   label: string;
-  criteria: ITaskCriteria[];
+  Criteria: ITaskCriteria[];
 }
 
 export interface ITaskCriteria {

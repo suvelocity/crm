@@ -171,6 +171,7 @@ router.get(
             model: Lesson,
             attributes: ["title"],
           },
+          { model: TaskLabel, include: [{ model: Criterion }] },
         ],
         order: [["createdAt", "DESC"]],
       });
