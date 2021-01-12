@@ -27,6 +27,14 @@ export interface ITeacher {
   cmUser?: string;
 }
 
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number | undefined;
+}
+
 export interface IStudent {
   id?: number;
   email: string;
@@ -40,7 +48,7 @@ export interface IStudent {
   address: string;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  academicBackground?: IAcademicBackground;
   militaryService?: string;
   workExperience?: string;
   languages?: string;

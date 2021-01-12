@@ -10,7 +10,7 @@ export interface IStudent {
   age?: number;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  AcademicBackgrounds?: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -72,6 +72,14 @@ export interface IClass {
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
   cmId?:string;
+}
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number | undefined;
 }
 export interface IClassOfTeacher {
   id: number;

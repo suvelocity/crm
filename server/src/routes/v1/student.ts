@@ -3,8 +3,10 @@ import { Router, Response, Request } from "express";
 import { Student, Event, AcademicBackground } from "../../models";
 //@ts-ignore
 import { Class, User, TeacherofClass } from "../../models";
-import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
+import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
+import { IEvent, IAcademicBackground } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
+import { academicBackgroundSchema } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
@@ -68,10 +70,11 @@ router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.get("/byId/:id", async (req: Request, res: Response) => {
+router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
     const only = req.query.only;
+
     const student: any | null = await Student.findByPk(
       id,
       getQuery(undefined, false, false, only as string | undefined)
@@ -99,6 +102,9 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     });
     if (studentExistsInStudents || studentExistsInUsers)
       return res.status(409).json({ error: "Student already exists" });
+    const academicBackground = req.body.academicBackground as
+      | IAcademicBackground[]
+      | undefined;
 
     const newStudent: IStudent = {
       email: body.email,
@@ -112,18 +118,28 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       age: body.age === "" ? null : body.age,
       maritalStatus: body.maritalStatus,
       children: body.children ? null : body.children,
-      academicBackground: body.academicBackground,
       militaryService: body.militaryService,
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
       resumeLink: body.resumeLink,
-      // fccAccount: body.fccAccount,
+      fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
 
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
+    if (academicBackground && student.id) {
+      const { value, error } = academicBackgroundSchema.validate(
+        academicBackground
+      );
+      if (error) return res.status(400).json(error);
+      const academicBackgroundToCreate = academicBackground.map(
+        (background) => ({ ...background, studentId: student.id })
+      );
+      await AcademicBackground.bulkCreate(academicBackgroundToCreate);
+    }
+
     const password = generatePassword(12, false);
 
     const hash = bcrypt.hashSync(password, 10);

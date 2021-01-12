@@ -8,6 +8,8 @@ import {
   onlyNumbersRegex,
 } from "../../helpers";
 import TextField from "@material-ui/core/TextField";
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -21,7 +23,7 @@ import {
   H1,
   Center,
 } from "../../styles/styledComponents";
-import { IStudent, IClass } from "../../typescript/interfaces";
+import { IStudent, IClass, IAcademicBackground } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
@@ -32,11 +34,47 @@ interface Props {
   update?: boolean;
   handleClose?: Function;
 }
+export const academicKeys = ['institution','studyTopic', 'degree', 'averageScore']
+export const camelCaseToWords = (word: string): string =>{
+  const regex = /[A-Z]/g;
+  let result = word[0].toUpperCase();
+  for(let i = 1; i < word.length; i++){
+    const letter = word[i];
+    if(letter.match(regex)){
+      result += " ";
+    }
+    result += letter;
+  }
+  return result;
+}
 function AddStudent(props: Props) {
-  const { register, handleSubmit, errors, control } = useForm();
+  const { register, handleSubmit, errors, control, getValues, setValue } = useForm();
   const [classes, setClasses] = useState<IClass[]>([]);
+  const [academicBackgrounds, setAcademicBackgrounds] = useState<IAcademicBackground[]>((props.student && props.student.AcademicBackgrounds) ? props.student.AcademicBackgrounds: [])
   const history = useHistory();
-
+  const lists ={
+    institution:[
+      "אוניברסיטה עברית",
+      "אוניברסיטת תל אביב",
+     " אוניברסיטת בן גוריון",
+     " אוניברסיטת בר אילן",
+     " האוניברסיטה הפתוחה",
+     " אוניברסיטת חיפה",
+     " טכניון",
+     " מכללת סמי שמעון",
+     " מכללת עזריאלי",
+     " מכון טל",
+     " מכון תבונה",
+     " מכון הדסה",
+     " אורט בראודה",
+     " מכללת אריאל",
+     " לוסטיג",
+     " סמינר ישן",
+     " סמינר חדש",
+     " סמינר וולף"
+    ],
+    degree: ['תואר שני', 'תואר ראשון']
+  }
   useEffect(() => {
     (async () => {
       try {
@@ -44,14 +82,23 @@ function AddStudent(props: Props) {
           "/api/v1/class/all"
         );
         setClasses(data);
-      } catch (error) {
+      } catch (error)  {
         Swal.fire("Error Occurred", error.message, "error");
       }
     })();
   }, [setClasses]);
 
   const empty = Object.keys(errors).length === 0;
-
+  const errorComponent = (name:string, customBoolean:boolean | undefined) => {
+    if(empty) return null
+    let check = errors[name]
+    if(customBoolean !== undefined){
+      check = customBoolean;
+    }
+    return check ?
+    <ErrorBtn tooltipTitle={errors[name].message} />
+    :<ActionBtn />
+  }
   const onSubmit = async (data: IStudent) => {
     //@ts-ignore
     data.languages = data.languages.join(", ");
@@ -61,6 +108,7 @@ function AddStudent(props: Props) {
         props.handleClose && props.handleClose();
         // history.push(`/company/${props.company.id}`);
       } else {
+        // console.log(data, '-----------------')
         await network.post("/api/v1/student", data);
         history.push("/student/all");
       }
@@ -75,6 +123,54 @@ function AddStudent(props: Props) {
       }
     }
   };
+  const addAcademicBackground = () => {
+    const values = getValues()
+    let newArr = returnAcademicFieldValues();
+    if(newArr.length < 1){
+      newArr = [{
+        // id: 0,
+        institution: "",
+        studyTopic: "",
+        degree: "",
+        averageScore: undefined
+        }];
+    }else{
+      newArr.push({
+        //@ts-ignore
+        // id: newArr[newArr.length - 1].id + 1,
+        institution: "",
+        studyTopic: "",
+        degree: "",
+        averageScore: undefined
+        });
+    }
+    console.log(newArr, 'newArr')
+    // values['academicBackground'] = newArr.slice()
+    setAcademicBackgrounds(newArr.slice());
+    // values['academicBackground'] = newArr.slice()
+  }
+  const removeAcademicBackground = (index: number) => {
+    const values = getValues()
+    const academic = values['academicBackground'];
+    const newArr = returnAcademicFieldValues();
+    console.log(index, newArr[index])
+    newArr.splice(index, 1);
+    console.log(newArr);
+    setValue('academicBackground', newArr.slice())
+    setAcademicBackgrounds(newArr.slice());
+  }
+  const returnAcademicFieldValues = () => {
+    const values = getValues()
+    const academic = values['academicBackground'];
+    if(!academic || academic.length === 0){
+      return [];
+    }
+    return academicBackgrounds.map( (academic2: IAcademicBackground, index: number) => {
+      const {institution, degree, averageScore, studyTopic} = academic[index];
+      //...academic2,
+      return { institution, degree, averageScore, studyTopic}
+    }) || [];
+  }
   return (
     <Wrapper>
       <Center>
@@ -413,37 +509,112 @@ function AddStudent(props: Props) {
             </div>
           </GridDiv>
           {generateBrs(2)}
-
           {/* Make it a dropdaown? */}
           {/* <FormControl
                 style={{ width: "90%" }}
                 error={Boolean(errors.classId)}
               > */}
-          <TextField
-            id="academicBackground"
-            multiline
-            fullWidth
-            defaultValue={props.student ? props.student.academicBackground : ""}
-            rows={4}
-            variant="outlined"
-            name="academicBackground"
-            inputRef={register({
-              required: "Academic background is required",
-              maxLength: {
-                value: 500,
-                message: "Military Service is too long",
-              },
-            })}
-            label="Academic Background"
-          />
-          {!empty ? (
-            errors.academicBackground ? (
-              <ErrorBtn tooltipTitle={errors.academicBackground.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
-          {/* </FormControl> */}
+          {
+            <div style ={{margin:"auto", width: "90%", display:'flex', justifyContent: 'flex-start'}}>
+              {`Academic Backgrounds: (${academicBackgrounds.length === 0? "?" : academicBackgrounds.length}):`}
+              <AddIcon 
+              onClick={addAcademicBackground}
+              style={{marginLeft:'3%'}}
+              />
+            </div>
+          }
+          {generateBrs(1)}
+          {
+            academicBackgrounds.map((background: IAcademicBackground, index:number) => <>
+                <div style ={{margin:"auto", width: "80%", display:'flex', justifyContent: 'space-between'}}>
+                  {`Background ${index+1} :`}
+                  {<DeleteIcon 
+                    onClick={() => removeAcademicBackground(index)}
+                    style={{marginRight:'14%'}}
+                  />}
+                </div>
+                <br />
+                <GridDiv style= {{margin:"auto", width: "80%"}}>
+                {
+                academicKeys.map((key: string) =>{
+                  //@ts-ignore
+                return (key === 'averageScore' || key === 'studyTopic') ?<div>
+                    <TextField style={{width:"70%"}}
+                      id={`academicBackground[${index}][${key}]${index}`}
+                      name={`academicBackground[${index}][${key}]`}
+                      //@ts-ignore
+                      defaultValue={() => background[key] ? background[key] : ""}
+                      //@ts-ignore
+                      value={background[key] || ""}
+                      onChange={(e:any) => {
+                        const value = e.target.value;
+                        const newArr = academicBackgrounds.slice();
+                      //@ts-ignore
+                        newArr[index][key] = value;
+                        setAcademicBackgrounds(newArr)
+                      }}
+                      inputRef={register({
+                      //@ts-ignore
+                        required: `${key} is required`,
+                        valueAsNumber: key === 'averageScore'? true : false,
+                        pattern: {
+                          value: key === 'averageScore'? onlyNumbersRegex : true,
+                          message: "Average Score can have only numbers",
+                        },
+                      })}
+                      label={camelCaseToWords(key)}
+                    />
+                    {!empty ? (
+                      (errors.academicBackground && 
+                       errors.academicBackground[index]&&
+                       errors.academicBackground[index][key]) ? (
+                        <ErrorBtn tooltipTitle={errors.academicBackground[index][key].message} />
+                      ) : (
+                        <ActionBtn />
+                      )
+                    ) : null}
+                  </div>
+                :<div>
+                <FormControl
+                style={{ minWidth: 195 }}
+                error={Boolean(errors.classId)}
+              >
+                <InputLabel>{`Select a ${camelCaseToWords(key)}`}</InputLabel>
+                <Controller
+                  as={
+                    <Select>
+                      {//@ts-ignore
+                      lists[key].map((value: string) => (
+                        <MenuItem key={value} value={value} id={value}>
+                          {value}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  id={`academicBackground[${index}][${key}]${Math.random()}`}
+                  name={`academicBackground[${index}][${key}]`}
+                  rules={{ required: `${key} is required` }}
+                  control={control}
+                  //@ts-ignore
+                  defaultValue={academicBackgrounds[index][key] || ""}
+                />
+              </FormControl>
+              {!empty ? (
+                (errors.academicBackground && 
+                errors.academicBackground[index]&&
+                errors.academicBackground[index][key]) ? (
+                  <ErrorBtn tooltipTitle={errors.academicBackground[index][key].message} />
+                ) : (
+                  <ActionBtn />
+                )
+              ) : null}
+              </div>  
+                })
+                }
+                </GridDiv>
+                {generateBrs(2)}
+              </>)
+          }
           {generateBrs(2)}
           <TextField
             id="militaryService"

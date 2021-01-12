@@ -68,7 +68,6 @@ export const studentSchema = Joi.object({
   address: Joi.string().required(),
   maritalStatus: Joi.string().required(),
   children: Joi.number().allow(null),
-  academicBackground: Joi.string().required(),
   militaryService: Joi.string().max(500).allow(null, ""),
   workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().allow(null, ""),
@@ -76,7 +75,12 @@ export const studentSchema = Joi.object({
   fccAccount: Joi.string().max(30).allow(null, ""),
   resumeLink: Joi.string().max(500).allow(null, ""),
 });
-
+export const academicBackgroundSchema = Joi.array().items({
+  institution: Joi.string().required(),
+  studyTopic: Joi.string().required(),
+  degree: Joi.string().required(),
+  averageScore: Joi.number().required(),
+});
 export const teacherSchema = Joi.object({
   email: Joi.string().required(),
   firstName: Joi.string().required(),

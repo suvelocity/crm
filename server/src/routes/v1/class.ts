@@ -16,6 +16,7 @@ router.get("/all", async (req: Request, res: Response) => {
     });
     res.json(classes);
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({ error: error.message });
   }
 });
