@@ -197,7 +197,6 @@ export const fetchFCC: () => void = async () => {
       ).toJSON().createdAt
     ).getTime();
   } catch (e) {
-    console.log(e);
     date = new Date("2020-07-01").getTime();
   }
 
@@ -323,9 +322,7 @@ export const fetchFCC: () => void = async () => {
       newBulks: parsedBulkEvents.length,
     };
   } catch (err) {
-    const message = err.isAxiosError 
-    ? err.response.data
-    : err
+    const message = err.isAxiosError ? err.response.data : err;
     console.log(message);
     throw { success: false, message };
   }

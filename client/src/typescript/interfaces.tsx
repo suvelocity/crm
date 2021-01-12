@@ -71,7 +71,7 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
-  cmId?:string;
+  cmId?: string;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -201,7 +201,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
-  email: boolean
+  email: boolean;
 }
 
 export interface IMentorForm {
@@ -280,6 +280,7 @@ export interface ITask {
   type: taskType;
   status: "active" | "disabled";
   body?: string;
+  labels?: string[];
 }
 export interface ITaskofStudent {
   id?: number;

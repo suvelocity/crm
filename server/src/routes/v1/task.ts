@@ -31,6 +31,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
+    labels,
   } = req.body;
   const { error } = taskSchema.validate({
     lessonId,
@@ -44,19 +45,50 @@ const createTask = async (req: Request, res: Response) => {
     body,
   });
   if (error) return res.status(400).json({ error: error.message });
-  const task: ITask = await Task.create({
-    lessonId,
-    externalId,
-    externalLink,
-    createdBy,
-    endDate,
-    type,
-    status,
-    title,
-    body,
-  });
-  return task;
+  try {
+    const task: ITask = await Task.create({
+      lessonId,
+      externalId,
+      externalLink,
+      createdBy,
+      endDate,
+      type,
+      status,
+      title,
+      body,
+    });
+
+    await createLabels(labels, task.id!);
+    return task;
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ error: "Malformed Data" });
+  }
 };
+
+const createLabels: (
+  labels: string[],
+  taskId: number
+) => Promise<void> | Error = async (labels: string[], taskId: number) => {
+  console.log(labels);
+  if (!Array.isArray(labels))
+    throw new Error(`Expected an array but got ${typeof labels} instead`);
+
+  try {
+    const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(
+      labels.map((label: string) => {
+        return { taskId, label };
+      })
+    );
+    // return newTaskLabels;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+// const createCriteria
+
+// const createGrades
 
 router.use("/challenges", challenges);
 
@@ -107,6 +139,7 @@ router.get(
 
       return res.json(myTasks);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error.message });
     }
   }
@@ -184,9 +217,7 @@ router.post(
           }
         );
 
-        const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
-          taskArr
-        );
+        await TaskofStudent.bulkCreate(taskArr);
       }
 
       return res.status(200).json(task);
