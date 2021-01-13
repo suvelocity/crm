@@ -48,7 +48,7 @@ export const camelCaseToWords = (word: string): string =>{
   return result;
 }
 function AddStudent(props: Props) {
-  const { register, handleSubmit, errors, control, getValues, setValue } = useForm();
+  const { register, handleSubmit, errors, control, getValues, setValue, reset } = useForm();
   const [classes, setClasses] = useState<IClass[]>([]);
   const [academicBackgrounds, setAcademicBackgrounds] = useState<IAcademicBackground[]>((props.student && props.student.AcademicBackgrounds) ? props.student.AcademicBackgrounds: [])
   const history = useHistory();
@@ -75,6 +75,7 @@ function AddStudent(props: Props) {
     ],
     degree: ['תואר שני', 'תואר ראשון']
   }
+  console.log(academicBackgrounds);
   useEffect(() => {
     (async () => {
       try {
@@ -89,7 +90,7 @@ function AddStudent(props: Props) {
   }, [setClasses]);
 
   const empty = Object.keys(errors).length === 0;
-  const errorComponent = (name:string, customBoolean:boolean | undefined) => {
+  const errorComponent = (name:string, customBoolean?:boolean) => {
     if(empty) return null
     let check = errors[name]
     if(customBoolean !== undefined){
@@ -104,11 +105,13 @@ function AddStudent(props: Props) {
     data.languages = data.languages.join(", ");
     try {
       if (props.update && props.student) {
+        if(data.AcademicBackgrounds){
+          data.AcademicBackgrounds = returnAcademicFieldValues()
+        }
+        console.log(data)
         await network.patch(`/api/v1/student/${props.student.id}`, data);
         props.handleClose && props.handleClose();
-        // history.push(`/company/${props.company.id}`);
       } else {
-        // console.log(data, '-----------------')
         await network.post("/api/v1/student", data);
         history.push("/student/all");
       }
@@ -128,7 +131,7 @@ function AddStudent(props: Props) {
     let newArr = returnAcademicFieldValues();
     if(newArr.length < 1){
       newArr = [{
-        // id: 0,
+        id:undefined,
         institution: "",
         studyTopic: "",
         degree: "",
@@ -138,6 +141,7 @@ function AddStudent(props: Props) {
       newArr.push({
         //@ts-ignore
         // id: newArr[newArr.length - 1].id + 1,
+        id:undefined,
         institution: "",
         studyTopic: "",
         degree: "",
@@ -151,24 +155,27 @@ function AddStudent(props: Props) {
   }
   const removeAcademicBackground = (index: number) => {
     const values = getValues()
-    const academic = values['academicBackground'];
+    const academic = values['AcademicBackgrounds'];
     const newArr = returnAcademicFieldValues();
-    console.log(index, newArr[index])
     newArr.splice(index, 1);
-    console.log(newArr);
-    setValue('academicBackground', newArr.slice())
+    // setValue('AcademicBackgrounds', newArr.slice())
+    reset({...values, AcademicBackgrounds: newArr.slice()});
+    // setValue('AcademicBackgrounds', newArr.slice(), { shouldDirty: true })
+    const values2 = getValues()
+    console.log(values2, '------------values after')
     setAcademicBackgrounds(newArr.slice());
   }
   const returnAcademicFieldValues = () => {
     const values = getValues()
-    const academic = values['academicBackground'];
+    const academic = values['AcademicBackgrounds'];
     if(!academic || academic.length === 0){
       return [];
     }
     return academicBackgrounds.map( (academic2: IAcademicBackground, index: number) => {
       const {institution, degree, averageScore, studyTopic} = academic[index];
+      const {id} = academic2;
       //...academic2,
-      return { institution, degree, averageScore, studyTopic}
+      return { id, institution, degree, averageScore, studyTopic}
     }) || [];
   }
   return (
@@ -197,13 +204,7 @@ function AddStudent(props: Props) {
                 })}
                 label="First Name"
               />
-              {!empty ? (
-                errors.firstName ? (
-                  <ErrorBtn tooltipTitle={errors.firstName.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('firstName')}
               <br />
               <TextField
                 id="lastName"
@@ -222,13 +223,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Last Name"
               />
-              {!empty ? (
-                errors.lastName ? (
-                  <ErrorBtn tooltipTitle={errors.lastName.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('lastName')}
               <br />
               <TextField
                 id="idNumber"
@@ -251,13 +246,7 @@ function AddStudent(props: Props) {
                 })}
                 label="ID Number"
               />
-              {!empty ? (
-                errors.idNumber ? (
-                  <ErrorBtn tooltipTitle={errors.idNumber.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('idNumber')}
               <br />
               <TextField
                 id="email"
@@ -272,13 +261,7 @@ function AddStudent(props: Props) {
                   },
                 })}
               />
-              {!empty ? (
-                errors.email ? (
-                  <ErrorBtn tooltipTitle={errors.email.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('email')}
               <br />
               <TextField
                 id="phone"
@@ -293,13 +276,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Phone Number"
               />
-              {!empty ? (
-                errors.phone ? (
-                  <ErrorBtn tooltipTitle={errors.phone.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('phone')}
               <br />
               <FormControl
                 style={{ width: 195 }}
@@ -334,13 +311,7 @@ function AddStudent(props: Props) {
                   }
                 />
               </FormControl>
-              {!empty ? (
-                errors.languages ? (
-                  <ErrorBtn tooltipTitle={errors.languages.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('languages')}
               <br />
               <TextField
                 id="resumeLink"
@@ -354,13 +325,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Resume Link"
               />
-              {!empty ? (
-                errors.resumeLink ? (
-                  <ErrorBtn tooltipTitle={errors.resumeLink.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('resumeLink')}
               {generateBrs(2)}
             </div>
             <div>
@@ -386,13 +351,7 @@ function AddStudent(props: Props) {
                   defaultValue={props.student ? props.student.Class.id : ""}
                 />
               </FormControl>
-              {!empty ? (
-                errors.classId ? (
-                  <ErrorBtn tooltipTitle={errors.classId.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('classId')}
               <br />
               <FormControl
                 style={{ minWidth: 195 }}
@@ -406,13 +365,7 @@ function AddStudent(props: Props) {
                   label="Address"
                 />
               </FormControl>
-              {!empty ? (
-                errors.address ? (
-                  <ErrorBtn tooltipTitle={errors.address.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('address')}
               <TextField
                 id="age"
                 name="age"
@@ -425,13 +378,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Age"
               />
-              {!empty ? (
-                errors.age ? (
-                  <ErrorBtn tooltipTitle={errors.age.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('age')}
               <br />
               <TextField
                 id="maritalStatus"
@@ -446,13 +393,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Marital Status"
               />
-              {!empty ? (
-                errors.maritalStatus ? (
-                  <ErrorBtn tooltipTitle={errors.maritalStatus.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('maritalStatus')}
               <br />
               <TextField
                 id="children"
@@ -469,13 +410,7 @@ function AddStudent(props: Props) {
                   max: { value: 25, message: "Sorry, no more than 25 kids" },
                 })}
               />
-              {!empty ? (
-                errors.children ? (
-                  <ErrorBtn tooltipTitle={errors.children.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('children')}
               <br />
               <TextField
                 id="citizenship"
@@ -484,13 +419,7 @@ function AddStudent(props: Props) {
                 inputRef={register()}
                 label="Citizenship"
               />
-              {!empty ? (
-                errors.citizenship ? (
-                  <ErrorBtn tooltipTitle={errors.citizenship.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('citizenship')}
               <br />
               <TextField
                 id="fcc_account"
@@ -499,13 +428,7 @@ function AddStudent(props: Props) {
                 inputRef={register()}
                 label="FreeCodeCamp Account"
               />
-              {!empty ? (
-                errors.fccAccount ? (
-                  <ErrorBtn tooltipTitle={errors.fccAccount.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('fccAccount')}
             </div>
           </GridDiv>
           {generateBrs(2)}
@@ -529,7 +452,14 @@ function AddStudent(props: Props) {
                 <div style ={{margin:"auto", width: "80%", display:'flex', justifyContent: 'space-between'}}>
                   {`Background ${index+1} :`}
                   {<DeleteIcon 
-                    onClick={() => removeAcademicBackground(index)}
+                    onClick={async() => {
+                      if(background.id !== undefined && props.student){
+                        const {data} = await network.delete(`/api/v1/student/academicBackground/${background.id}?studentId=${props.student.id}`)
+                        console.log(data)
+                        setAcademicBackgrounds(data)
+                      }else{
+                        removeAcademicBackground(index)
+                      }}}
                     style={{marginRight:'14%'}}
                   />}
                 </div>
@@ -540,19 +470,10 @@ function AddStudent(props: Props) {
                   //@ts-ignore
                 return (key === 'averageScore' || key === 'studyTopic') ?<div>
                     <TextField style={{width:"70%"}}
-                      id={`academicBackground[${index}][${key}]${index}`}
-                      name={`academicBackground[${index}][${key}]`}
+                      id={`AcademicBackgrounds[${index}][${key}]${index}`}
+                      name={`AcademicBackgrounds[${index}][${key}]`}
                       //@ts-ignore
-                      defaultValue={() => background[key] ? background[key] : ""}
-                      //@ts-ignore
-                      value={background[key] || ""}
-                      onChange={(e:any) => {
-                        const value = e.target.value;
-                        const newArr = academicBackgrounds.slice();
-                      //@ts-ignore
-                        newArr[index][key] = value;
-                        setAcademicBackgrounds(newArr)
-                      }}
+                      defaultValue={ background[key] || ""}
                       inputRef={register({
                       //@ts-ignore
                         required: `${key} is required`,
@@ -591,8 +512,8 @@ function AddStudent(props: Props) {
                       ))}
                     </Select>
                   }
-                  id={`academicBackground[${index}][${key}]${Math.random()}`}
-                  name={`academicBackground[${index}][${key}]`}
+                  id={`AcademicBackgrounds[${index}][${key}]${Math.random()}`}
+                  name={`AcademicBackgrounds[${index}][${key}]`}
                   rules={{ required: `${key} is required` }}
                   control={control}
                   //@ts-ignore
@@ -632,13 +553,7 @@ function AddStudent(props: Props) {
             })}
             label="Military Service"
           />
-          {!empty ? (
-            errors.militaryService ? (
-              <ErrorBtn tooltipTitle={errors.militaryService.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('militaryService')}
           {generateBrs(2)}
 
           <TextField
@@ -657,13 +572,7 @@ function AddStudent(props: Props) {
             })}
             label="Work Experience"
           />
-          {!empty ? (
-            errors.workExperience ? (
-              <ErrorBtn tooltipTitle={errors.workExperience.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('workExperience')}
           {generateBrs(2)}
           <TextField
             id="additionalDetails"
@@ -681,13 +590,7 @@ function AddStudent(props: Props) {
             })}
             label="Additional Details"
           />
-          {!empty ? (
-            errors.additionalDetails ? (
-              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('additionalDetails')}
           {generateBrs(2)}
           <Button
             id="submitButton"

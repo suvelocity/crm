@@ -200,6 +200,17 @@ function SingleStudent() {
               >
                 <ChildFriendlyIcon />
               </SingleListItem>
+              {student?.additionalDetails && (
+                <MultilineListItem>
+                  <ListItemIcon>
+                    <ContactSupportIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Additional Details"
+                    secondary={capitalize(student?.additionalDetails)}
+                  />
+                </MultilineListItem>
+              )}
             </List>
             <List>
               <SingleListItem
@@ -240,36 +251,15 @@ function SingleStudent() {
               >
                 <WorkIcon />
               </SingleListItem>
-              {/* {student?.academicBackground &&(
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <AccountBalanceIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Academic Background"
-                    secondary={capitalize(student?.academicBackground)}
-                  />
-                </MultilineListItem>
-              )} */}
-              {student?.additionalDetails && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <ContactSupportIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Additional Details"
-                    secondary={capitalize(student?.additionalDetails)}
-                  />
-                </MultilineListItem>
-              )}
+
             </List>
           </GridDiv>
           {
-          student?.AcademicBackgrounds &&<div style={{display:"flex", width: '70%',margin:'auto', alignItems: "center", flexDirection:'column'}}>
+          student?.AcademicBackgrounds && student?.AcademicBackgrounds.length > 0 &&<div style={{display:"flex", width: '70%',margin:'auto', alignItems: "center", flexDirection:'column'}}>
             <h2>Academic Background</h2>
             {
               student?.AcademicBackgrounds.map((background: IAcademicBackground, index: number) => {
-                return <div style={{backgroundColor:'#bebbbb' , borderRadius: '5px', display:"flex", width: '100%',alignItems: 'center', justifyContent:'space-between'}}>
+                return <div style={{backgroundColor:'#bebbbb' , marginBottom: '10px', borderRadius: '5px', display:"flex", width: '100%',alignItems: 'center', justifyContent:'space-between'}}>
                   <div style={{fontSize:'30px', fontWeight:'bold',textAlign:'center', width: '20%'}}>{index + 1}</div>
                   {
                   academicKeys.map((key: string) => {

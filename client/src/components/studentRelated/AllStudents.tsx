@@ -16,6 +16,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import {
   IStudent,
   IEvent,
+  IAcademicBackground,
   filterStudentObject,
   SelectInputs,
 } from "../../typescript/interfaces";
@@ -25,6 +26,17 @@ import { formatPhone } from "../../helpers/general";
 import { FiltersComponents } from "../FiltersComponents";
 import { capitalize, onTheSameDay } from "../../helpers/general";
 
+
+const getGradeAverage = (academicBackgrounds:IAcademicBackground[]): string | number => {
+  let gradeSum = 0;
+  let length = 0;
+  academicBackgrounds.forEach((academicBackground: IAcademicBackground) => {
+    gradeSum += academicBackground.averageScore;
+    length++;
+  });
+  if(length === 0) return "none";
+  return Math.round(gradeSum / length)
+}
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -197,12 +209,13 @@ function AllStudents() {
         <StyledUl>
           {students && (
             <li>
-              <TableHeader>
-                <PersonIcon />
+              <TableHeader repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 0.5fr">
                 <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Address</StyledSpan>
                 <StyledSpan weight="bold">Email</StyledSpan>
                 <StyledSpan weight="bold">Phone</StyledSpan>
+                <StyledSpan weight="bold">Grade Avg.</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -210,8 +223,7 @@ function AllStudents() {
             filteredStudents.map((student) => (
               <li>
                 <StyledLink color="black" to={`/student/${student?.id}`}>
-                  <StyledDiv>
-                    <PersonIcon />
+                  <StyledDiv repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 0.5fr">
                     <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
@@ -221,8 +233,10 @@ function AllStudents() {
                     )} (${capitalize(student?.Class.course)} - ${
                       student?.Class.cycleNumber
                     })`}</StyledSpan>
+                    <StyledSpan>{student.address}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
+                  <StyledSpan>{getGradeAverage(student.AcademicBackgrounds || [])}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>

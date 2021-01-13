@@ -147,7 +147,7 @@ export const getQuery: (
     },
     {
       model: AcademicBackground,
-      attributes: ["institution", "studyTopic", "degree", "averageScore"],
+      attributes: ["id", "institution", "studyTopic", "degree", "averageScore"],
     },
   ];
 

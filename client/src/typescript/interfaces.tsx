@@ -79,7 +79,7 @@ export interface IAcademicBackground {
   institution: string;
   studyTopic: string;
   degree: string;
-  averageScore: number | undefined;
+  averageScore: number ;
 }
 export interface IClassOfTeacher {
   id: number;

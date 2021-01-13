@@ -102,7 +102,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     });
     if (studentExistsInStudents || studentExistsInUsers)
       return res.status(409).json({ error: "Student already exists" });
-    const academicBackground = req.body.academicBackground as
+    const AcademicBackgrounds = req.body.AcademicBackgrounds as
       | IAcademicBackground[]
       | undefined;
 
@@ -129,12 +129,12 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
 
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
-    if (academicBackground && student.id) {
+    if (AcademicBackgrounds && student.id) {
       const { value, error } = academicBackgroundSchema.validate(
-        academicBackground
+        AcademicBackgrounds
       );
       if (error) return res.status(400).json(error);
-      const academicBackgroundToCreate = academicBackground.map(
+      const academicBackgroundToCreate = AcademicBackgrounds.map(
         (background) => ({ ...background, studentId: student.id })
       );
       await AcademicBackground.bulkCreate(academicBackgroundToCreate);
@@ -171,6 +171,24 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
 router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   req.body.age = req.body.age === "" ? null : req.body.age;
   req.body.children = req.body.children === "" ? null : req.body.children;
+  if (req.body.AcademicBackgrounds) {
+    const academicBackgrounds = [...req.body.AcademicBackgrounds];
+    for (let i = 0; i < academicBackgrounds.length; i++) {
+      const academic = academicBackgrounds[i];
+      if (academic.id === undefined) {
+        delete academic.id;
+        await AcademicBackground.create({
+          ...academic,
+          studentId: req.params.id,
+        });
+      } else {
+        await AcademicBackground.update(academic, {
+          where: { id: academic.id },
+        });
+      }
+    }
+    delete req.body.AcademicBackgrounds;
+  }
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
@@ -182,6 +200,18 @@ router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+router.delete("/academicBackground/:id", async (req, res) => {
+  const { id } = req.params;
+  const { studentId } = req.query;
+  if (!id || !studentId)
+    return res.status(404).json({ error: "no id or studentId in params" });
+  await AcademicBackground.destroy({ where: { id } });
+  const studentsAcademicBackgrounds = await AcademicBackground.findAll({
+    where: { studentId: studentId },
+  });
+  return res.json(studentsAcademicBackgrounds);
 });
 
 router.delete("/:id", validateAdmin, async (req: Request, res: Response) => {
