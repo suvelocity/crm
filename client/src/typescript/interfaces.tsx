@@ -10,7 +10,7 @@ export interface IStudent {
   age?: number;
   maritalStatus: string;
   children?: number;
-  AcademicBackgrounds?: IAcademicBackground[];
+  AcademicBackgrounds: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -138,6 +138,8 @@ export interface filterStudentObject {
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];
+  Languages?: string[];
+  AverageScore?: string;
   Name?: string[];
   ReligionLevels?: string[];
 }
@@ -148,6 +150,7 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  singleOption?: boolean;
   possibleValues: string[];
 }
 

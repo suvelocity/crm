@@ -175,7 +175,7 @@ router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
     const academicBackgrounds = [...req.body.AcademicBackgrounds];
     for (let i = 0; i < academicBackgrounds.length; i++) {
       const academic = academicBackgrounds[i];
-      if (academic.id === undefined) {
+      if (typeof academic.id === "string") {
         delete academic.id;
         await AcademicBackground.create({
           ...academic,

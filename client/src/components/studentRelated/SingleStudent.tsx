@@ -278,7 +278,7 @@ function SingleStudent() {
           }
           <Modal
             open={modalState}
-            onClose={() => setModalState(false)}
+            onClose={handleClose}
             style={{ overflow: "scroll" }}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"

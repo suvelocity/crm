@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import { MenuItem, Select, InputLabel, FormControl } from "@material-ui/core";
 import { filterStudentObject, SelectInputs } from "../typescript/interfaces";
 import { useLocation } from 'react-router-dom'
+import {camelCaseToWords} from './studentRelated/AddStudent';
 
 interface Props {
   array: SelectInputs[];
@@ -22,11 +23,6 @@ export const FiltersComponents = ({
     // if(by === 'Job Status'){
     //   return callbackFunction({...filterObject, JobStatus: value})
     // }
-    console.log(by, by.split(" ").length);
-    if(by.split(" ").length === 2){
-      console.log('inCallback', by.replace(" ", ""))
-      return callbackFunction( {...filterObject, [by.replace(" ", "")]: value});
-    }
     return callbackFunction( {...filterObject, [by]: value});
   };
   return (
@@ -39,16 +35,20 @@ export const FiltersComponents = ({
             width: `${100 / array.length}%`,
           }}
         >
-          {/* <InputLabel
+          {item.singleOption && <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy}`}</InputLabel> */}
-          <Select multiple
+          >{`${item.filterBy}`}</InputLabel>}
+          <Select 
+            multiple={!item.singleOption}
             labelId={`demo-simple-select-label${item.filterBy}`}
             style={{ height: "100%", width: "60%" }} 
-            defaultValue={[""]}
+            defaultValue={item.singleOption ? "" : [""]}
             onChange={(e) => {
-              const value = e.target.value as string[] | undefined;
-              if(value){
+              if(item.singleOption){
+                return determineWhatToSet(item.filterBy, e.target.value)
+              }
+              const value = e.target.value as string | string[] | undefined;
+              if(value && typeof value === "object"){
                 if(value.filter(val => val != "").length === 0){
                   return determineWhatToSet(item.filterBy, [""])
                 }
@@ -57,7 +57,14 @@ export const FiltersComponents = ({
               return determineWhatToSet(item.filterBy, [""])
             }}
           >
-            <MenuItem value="" disabled>{item.filterBy}</MenuItem>
+            {
+              !item.singleOption ?
+              <MenuItem value="" disabled>{camelCaseToWords(item.filterBy)}</MenuItem>
+              :
+              <MenuItem value="רגיל" >{
+                "רגיל"
+              }</MenuItem>
+            }
             {(item.filterBy === "Job Status" && location.pathname !== "/process/all") &&  (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}
