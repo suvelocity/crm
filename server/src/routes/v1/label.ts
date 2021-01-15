@@ -27,10 +27,12 @@ router.post("/", async (req: Request, res: Response) => {
   const data: Partial<ILabel>[] = req.body;
   //TODO add validation
   try {
-    const newLabel: ILabel = await Label.createBulk(data);
+    const newLabel: ILabel = await Label.bulkCreate(data);
     res.json(newLabel);
   } catch (err) {
     console.log(err);
     res.json({ error: err });
   }
 });
+
+module.exports = router;

@@ -292,10 +292,17 @@ export interface ITaskofStudent {
   description?: string;
 }
 
+export interface ILabel {
+  id?: number;
+  name: string;
+}
+
 export interface ITaskLabel {
   id?: number;
   taskId?: number;
-  label: string;
+  labelId: number;
+  name?: string;
+  Label?: ILabel;
   Criteria: ITaskCriteria[];
 }
 

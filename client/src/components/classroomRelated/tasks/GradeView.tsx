@@ -49,7 +49,7 @@ function GradeView({
           {taskLabels[0]
             ? taskLabels.map((label: ITaskLabel, i: number) => (
                 <>
-                  <h1>{label.label}</h1>
+                  <h1>{label.Label?.name}</h1>
                   {label.Criteria[0] ? (
                     label.Criteria.map(
                       (criterion: ITaskCriteria, j: number) => (

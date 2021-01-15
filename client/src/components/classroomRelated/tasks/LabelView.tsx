@@ -22,7 +22,7 @@ export default function LabelButton({ label }: { label: ITaskLabel }) {
   return (
     <>
       <LabelView open={modalOpen} handleClose={handleClose} label={label} />
-      <span onClick={handleOpen}>{label.label}</span>
+      <span onClick={handleOpen}>{label.name}</span>
     </>
   );
 }
@@ -84,7 +84,7 @@ function LabelView({
       <>
         {/*@ts-ignore */}
         <div style={modalStyle} className={classes.paper}>
-          <h1>{label.label}</h1>
+          <h1>{label.name}</h1>
           <FormControl
             id="criteria"
             variant="outlined"

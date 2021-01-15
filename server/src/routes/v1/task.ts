@@ -5,7 +5,7 @@ import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event, TeacherofClass } from "../../models";
 //@ts-ignore
-import { TaskLabel, Criterion, Grade } from "../../models";
+import { TaskLabel, Criterion, Grade, Label } from "../../models";
 import {
   IClass,
   ICriterion,
@@ -21,6 +21,7 @@ import challenges from "./challenges";
 import { validateTeacher } from "../../middlewares";
 import tasklabel from "../../models/tasklabel";
 import { parse } from "dotenv/types";
+import label from "../../models/label";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -171,7 +172,10 @@ router.get(
             model: Lesson,
             attributes: ["title"],
           },
-          { model: TaskLabel, include: [{ model: Criterion }] },
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
         ],
         order: [["createdAt", "DESC"]],
       });

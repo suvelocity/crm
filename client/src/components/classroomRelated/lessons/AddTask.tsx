@@ -9,6 +9,7 @@ import {
   makeStyles,
   Button,
 } from "@material-ui/core";
+import SearchCreateSelect from "react-select/async-creatable";
 import styled from "styled-components";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CloseIcon from "@material-ui/icons/Close";
@@ -19,6 +20,7 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import {
   IClassOfTeacher,
+  ILabel,
   IStudent,
   ITaskLabel,
 } from "../../../typescript/interfaces";
@@ -27,6 +29,7 @@ import { ITask } from "../../../typescript/interfaces";
 import { formatDiagnostic } from "typescript";
 import ClassAccordion from "./ClassAccordion";
 import LabelButton from "../tasks/LabelView";
+import { network } from "../../../helpers";
 interface addTaskProps {
   task: ITask;
   index?: number;
@@ -85,39 +88,64 @@ export default function AddTask({
     handleRemove(index, "task");
   };
 
-  const labelField = useRef(null);
-
-  const handleLabelAdd: () => void = () => {
-    //@ts-ignore
-    const newLabel: string = labelField.current?.value;
-    if (!newLabel) {
-      alert("Can't add an empty label");
-      //@ts-ignore
-      labelField.current.focus();
-      return;
-    }
-    if (task.labels?.find((label: ITaskLabel) => label.label === newLabel))
-      alert("label exists");
-    else {
-      task.labels?.push({ label: newLabel, Criteria: [] });
-      changer(task.labels, "labels");
-      //@ts-ignore
-      labelField.current.value = "";
-    }
-    //@ts-ignore
-    labelField.current.focus();
+  const addLabel: (id: number, labelName: string) => void = (
+    id: number,
+    labelName: string
+  ) => {
+    task.labels?.push({ labelId: id, name: labelName, Criteria: [] });
+    changer(task.labels, "labels");
   };
 
-  const handleLabelRemove: (labelToRemove: ITaskLabel) => void = (
-    labelToRemove: ITaskLabel
+  const removeLabel: (labelIdToRemove: number) => void = (
+    labelIdToRemove: number
   ) => {
     const indexToRemove: number = task.labels!.findIndex(
-      (label: ITaskLabel) => label === labelToRemove
+      (label: ITaskLabel) => label.labelId === labelIdToRemove
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
       task.labels?.splice(indexToRemove, 1);
       changer(task.labels, "labels");
+    }
+  };
+
+  const getLabels: (searchQuery: string) => Promise<any[] | undefined> = async (
+    searchQuery: string
+  ) => {
+    try {
+      const labels: ILabel[] = (
+        await network.get(`/api/v1/label/all?searchQuery=${searchQuery}`)
+      ).data;
+      console.log(labels);
+      return labels.map((label: ILabel) => {
+        return { label: label.name, value: label.id };
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSCSChange: (data: any, actionMeta: any) => Promise<void> = async (
+    data: any,
+    actionMeta: any
+  ) => {
+    if (actionMeta.action === "create-option") {
+      const newLabel: string = data[data.length - 1].label;
+      console.log(newLabel);
+      const responseLabel: ILabel[] = (
+        await network.post("/api/v1/label", [{ name: newLabel }])
+      ).data;
+      addLabel(responseLabel[0].id!, newLabel);
+    } else {
+      if (actionMeta.action === "select-option") {
+        console.log(actionMeta);
+        addLabel(actionMeta.option.value!, actionMeta.option.label);
+      } else {
+        alert("need to remove label");
+        console.log(data);
+        console.log(actionMeta);
+        removeLabel(actionMeta.removedValue.value);
+      }
     }
   };
 
@@ -266,9 +294,14 @@ export default function AddTask({
         variant="outlined"
         className={classes.formControl}
       >
-        {" "}
-        <TextField variant="outlined" label="Add Label" inputRef={labelField} />
-        <Button onClick={handleLabelAdd}>Add</Button>
+        <SearchCreateSelect
+          isMulti
+          loadOptions={getLabels}
+          onChange={handleSCSChange}
+        />
+
+        {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
+        <Button onClick={handleLabelAdd}>Add</Button> */}
       </FormControl>
       {task.labels?.map((l: ITaskLabel) => (
         <LabelButton label={l} />

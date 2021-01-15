@@ -140,7 +140,7 @@ export interface ILabel {
 export interface ITaskLabel {
   id?: number;
   taskId: number;
-  label: number;
+  labelId: number;
   Criteria: ICriterion[];
 }
 
