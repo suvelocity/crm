@@ -22,10 +22,7 @@ export const classSchemaToPut = Joi.object({
 
 export const eventsSchema = Joi.object({
   userId: Joi.number().required(),
-  relatedId: Joi.alternatives([
-    Joi.string(),
-    Joi.number()
-  ]).required(),
+  relatedId: Joi.alternatives([Joi.string(), Joi.number()]).required(),
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
@@ -167,6 +164,7 @@ export const taskSchema = Joi.object({
   status: Joi.string().required(),
   body: Joi.string().allow(null, ""),
   title: Joi.string().required(),
+  labels: Joi.array(),
 });
 export const meetingSchema = Joi.object({
   pairId: Joi.number().required(),

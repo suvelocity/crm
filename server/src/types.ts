@@ -133,11 +133,15 @@ export interface ITaskofStudent {
   description?: string;
 }
 
+export interface ILabel {
+  id?: number;
+  name: string;
+}
 export interface ITaskLabel {
   id?: number;
   taskId: number;
-  label: string;
-  criteria: ICriterion[];
+  label: number;
+  Criteria: ICriterion[];
 }
 
 export interface ICriterion {

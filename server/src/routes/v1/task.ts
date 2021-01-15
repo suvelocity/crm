@@ -45,6 +45,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
+    labels,
   });
   if (error) return res.status(400).json({ error: error.message });
   try {
@@ -60,7 +61,7 @@ const createTask = async (req: Request, res: Response) => {
       body,
     });
 
-    await createLabels(labels, task.id!);
+    await createTaskLabels(labels, task.id!);
     return task;
   } catch (e) {
     console.log(e);
@@ -68,7 +69,7 @@ const createTask = async (req: Request, res: Response) => {
   }
 };
 
-const createLabels: (
+const createTaskLabels: (
   labels: ITaskLabel[],
   taskId: number
 ) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
@@ -82,7 +83,6 @@ const createLabels: (
   try {
     const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(
       labels.map((label: ITaskLabel) => {
-        // return { taskId, criteria: label.criteria, label: label.name };
         label.taskId = taskId;
         return label;
       })
@@ -92,7 +92,7 @@ const createLabels: (
       newTaskLabels.map((taskLabel: any, i: number) => {
         const parsed: ITaskLabel = taskLabel.toJSON();
         console.log(parsed);
-        return createCriteria(labels[i].criteria, parsed.taskId, parsed.id!);
+        return createCriteria(labels[i].Criteria, parsed.taskId, parsed.id!);
       })
     );
     // return newTaskLabels;
