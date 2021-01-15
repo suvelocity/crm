@@ -96,11 +96,11 @@ export default function AddTask({
     changer(task.labels, "labels");
   };
 
-  const removeLabel: (labelIdToRemove: number) => void = (
-    labelIdToRemove: number
+  const removeLabel: (labelToRemove: string) => void = (
+    labelToRemove: string
   ) => {
     const indexToRemove: number = task.labels!.findIndex(
-      (label: ITaskLabel) => label.labelId === labelIdToRemove
+      (label: ITaskLabel) => label.name === labelToRemove
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
@@ -114,7 +114,7 @@ export default function AddTask({
   ) => {
     try {
       const labels: ILabel[] = (
-        await network.get(`/api/v1/label/all?searchQuery=${searchQuery}`)
+        await network.get(`/api/v1/label/all?search=${searchQuery}`)
       ).data;
       console.log(labels);
       return labels.map((label: ILabel) => {
@@ -131,24 +131,23 @@ export default function AddTask({
   ) => {
     if (actionMeta.action === "create-option") {
       const newLabel: string = data[data.length - 1].label;
-      console.log(newLabel);
       const responseLabel: ILabel[] = (
         await network.post("/api/v1/label", [{ name: newLabel }])
       ).data;
+      console.log(responseLabel);
       addLabel(responseLabel[0].id!, newLabel);
     } else {
       if (actionMeta.action === "select-option") {
         console.log(actionMeta);
         addLabel(actionMeta.option.value!, actionMeta.option.label);
       } else {
-        alert("need to remove label");
-        console.log(data);
-        console.log(actionMeta);
-        removeLabel(actionMeta.removedValue.value);
+        if (!actionMeta.removedValue) return;
+        removeLabel(actionMeta.removedValue.label);
       }
     }
   };
 
+  console.log("current task labels");
   console.log(task.labels);
   return (
     <Form
@@ -298,6 +297,7 @@ export default function AddTask({
           isMulti
           loadOptions={getLabels}
           onChange={handleSCSChange}
+          defaultInputValues
         />
 
         {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />

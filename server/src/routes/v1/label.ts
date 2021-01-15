@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { Op } from "sequelize";
 //@ts-ignore
 import { Label } from "../../models";
 import { ILabel } from "../../types";
@@ -6,10 +7,10 @@ const router = Router();
 
 router.get("/all", async (req: Request, res: Response) => {
   const searchQuery: string = req.query.search as string;
-  const whereClause: Partial<ILabel> = {};
+  const whereClause: any = {};
 
   if (searchQuery) {
-    whereClause.name = searchQuery;
+    whereClause.name = { [Op.like]: `%${searchQuery}%` };
   }
 
   try {
