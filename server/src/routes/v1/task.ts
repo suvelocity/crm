@@ -19,9 +19,6 @@ import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
 import { validateTeacher } from "../../middlewares";
-import tasklabel from "../../models/tasklabel";
-import { parse } from "dotenv/types";
-import label from "../../models/label";
 
 const createTask = async (req: Request, res: Response) => {
   const {
