@@ -4,7 +4,17 @@ const router = Router();
 import { Class, Task, TaskofStudent } from "../../models";
 //@ts-ignore
 import { Student, Lesson, Event, TeacherofClass } from "../../models";
-import { IClass, ITask, ITaskFilter, ITaskofStudent } from "../../types";
+//@ts-ignore
+import { TaskLabel, Criterion, Grade, Label } from "../../models";
+import {
+  IClass,
+  ICriterion,
+  IGrade,
+  ITask,
+  ITaskFilter,
+  ITaskLabel,
+  ITaskofStudent,
+} from "../../types";
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
@@ -21,6 +31,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
+    labels,
   } = req.body;
   const { error } = taskSchema.validate({
     lessonId,
@@ -32,22 +43,89 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
+    labels,
   });
   if (error) return res.status(400).json({ error: error.message });
-  const task: ITask = await Task.create({
-    lessonId,
-    externalId,
-    externalLink,
-    createdBy,
-    endDate,
-    type,
-    status,
-    title,
-    body,
-  });
-  return task;
+  try {
+    const task: ITask = await Task.create({
+      lessonId,
+      externalId,
+      externalLink,
+      createdBy,
+      endDate,
+      type,
+      status,
+      title,
+      body,
+    });
+
+    await createTaskLabels(labels, task.id!);
+    return task;
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ error: "Malformed Data" });
+  }
 };
 
+const createTaskLabels: (
+  labels: ITaskLabel[],
+  taskId: number
+) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
+  console.log("******************LABELS***************");
+  console.log(labels);
+  console.log("*****************************************");
+
+  if (!Array.isArray(labels))
+    throw new Error(`Expected an array but got ${typeof labels} instead`);
+
+  try {
+    const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(
+      labels.map((label: ITaskLabel) => {
+        label.taskId = taskId;
+        return label;
+      })
+    );
+
+    await Promise.all(
+      newTaskLabels.map((taskLabel: any, i: number) => {
+        const parsed: ITaskLabel = taskLabel.toJSON();
+        console.log(parsed);
+        return createCriteria(labels[i].Criteria, parsed.taskId, parsed.id!);
+      })
+    );
+    // return newTaskLabels;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+};
+
+const createCriteria: (
+  criteria: ICriterion[],
+  taskId: number,
+  labelId: number
+) => Promise<void> = async (
+  criteria: ICriterion[],
+  taskId: number,
+  labelId: number
+) => {
+  console.log("******************CRITERIA***************");
+  console.log(criteria);
+  console.log("*****************************************");
+
+  if (!Array.isArray(criteria))
+    return Promise.reject(
+      `Expected an array but got ${typeof criteria} instead`
+    );
+
+  return Criterion.bulkCreate(
+    criteria.map((criterion: ICriterion) => {
+      criterion.taskId = taskId;
+      criterion.labelId = labelId;
+      return criterion;
+    })
+  );
+};
 router.use("/challenges", challenges);
 
 router.get(
@@ -85,18 +163,76 @@ router.get(
                   },
                 ],
               },
+              //#region Get grades per student - works bad
+              // {
+              //   model: Task,
+              //   attributes: ["id"],
+              //   // attributes: ["TaskLabels"],
+              //   include: [
+              //     {
+              //       model: TaskLabel,
+              //       attributes: ["id"],
+              //       // attributes: ["Criteria", "Labels"],
+              //       include: [
+              //         {
+              //           model: Criterion,
+              //           attributes: ["id"],
+              //           include: [
+              //             {
+              //               model: Grade,
+              //               foreignKey: ["studentId", "belongsToId"],
+              //               attributes: ["grade"],
+              //             },
+              //           ],
+              //         },
+              //         {
+              //           model: Label,
+              //           attributes: ["id"],
+              //           include: [
+              //             {
+              //               model: Grade,
+              //               foreignKey: ["studentId", "belongsToId"],
+              //               attributes: ["grade"],
+              //             },
+              //           ],
+              //         },
+              //       ],
+              //     },
+              //     {
+              //       model: Grade,
+              //       foreignKey: ["studentId", "belongsToId"],
+              //     },
+              //   ],
+              // },
+              //#endregion
             ],
           },
           {
             model: Lesson,
             attributes: ["title"],
           },
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
+          //Option B - bring grades per task
+          // {
+          //   model: TaskLabel,
+          //   include: [
+          //     { model: Criterion, include: [{ model: Grade }] },
+          //     { model: Label, include: [{ model: Grade }] },
+          //   ],
+          // },
+          // {
+          //   model: Grade,
+          // },
         ],
         order: [["createdAt", "DESC"]],
       });
 
       return res.json(myTasks);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error.message });
     }
   }
@@ -174,9 +310,7 @@ router.post(
           }
         );
 
-        const tasksofstudents: ITaskofStudent[] = await TaskofStudent.bulkCreate(
-          taskArr
-        );
+        await TaskofStudent.bulkCreate(taskArr);
       }
 
       return res.status(200).json(task);
@@ -222,6 +356,59 @@ router.post(
   }
 );
 
+//labels
+
+router.post("/label", async (req: Request, res: Response) => {
+  //TODO check taskId exists
+  const data: ITaskLabel[] = req.body;
+  console.log(data);
+  if (!Array.isArray(data))
+    res
+      .status(400)
+      .json({ error: `Expected an array but got ${typeof data} instead` });
+  try {
+    const newTaskLabels: ITaskLabel[] = await TaskLabel.bulkCreate(data);
+    res.json(newTaskLabels);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.post("/criterion", async (req: Request, res: Response) => {
+  //TODO check taskId exists
+  //TODO check labelId exists
+
+  const data: ICriterion[] = req.body;
+  console.log(data);
+  if (!Array.isArray(data))
+    res
+      .status(400)
+      .json({ error: `Expected an array but got ${typeof data} instead` });
+  try {
+    const newCriterion: ICriterion[] = await Criterion.bulkCreate(data);
+    res.json(newCriterion);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// router.post("/grade", async (req: Request, res: Response) => {
+//   //TODO check taskId exists
+//   //TODO check labelId exists
+
+//   const data: IGrade[] = req.body;
+//   console.log(data);
+//   if (!Array.isArray(data))
+//     res
+//       .status(400)
+//       .json({ error: `Expected an array but got ${typeof data} instead` });
+//   try {
+//     const newGrade: IGrade[] = await Grade.bulkCreate(data);
+//     res.json(newGrade);
+//   } catch (e) {
+//     res.status(400).json({ error: e.message });
+//   }
+// });
 //todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
@@ -331,8 +518,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
                 { where: { id: task.id } }
               );
               updated.push(updatedTask);
-            }
-            else{
+            } else {
               const event: any = await Event.findOne({
                 where: {
                   userId: studentId,

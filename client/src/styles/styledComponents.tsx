@@ -12,7 +12,7 @@ export const repeatFormula = "1fr 2.5fr 2.5fr 1fr";
 export const H1 = styled.h1`
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 27px;
+  font-size: 20px;
   color: white;
   /* position: relative; */
   /* left: -50%;
@@ -33,7 +33,7 @@ export const TitleWrapper = styled.div`
   /* top: 50%; */
   /* width: 50%; */
   height: 0px;
-  transform: translate(0, -60px);
+  transform: translate(0, -52px);
 `;
 
 export const Wrapper = styled.div`

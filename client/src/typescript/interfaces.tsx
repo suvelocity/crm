@@ -10,7 +10,7 @@ export interface IStudent {
   age?: number;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  AcademicBackgrounds: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -71,7 +71,15 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
-  cmId?:string;
+  cmId?: string;
+}
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number ;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -130,7 +138,10 @@ export interface filterStudentObject {
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];
+  Languages?: string[];
+  AverageScore?: string;
   Name?: string[];
+  ReligionLevels?: string[];
 }
 export interface Name {
   firstName: string;
@@ -139,6 +150,7 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  singleOption?: boolean;
   possibleValues: string[];
 }
 
@@ -146,12 +158,16 @@ export interface IMentor {
   id?: number;
   name: string;
   company: string;
+  age: string;
   email: string;
   phone: string;
   address: string;
   role: string;
   experience: number;
   available: boolean;
+  education:string;
+  preference:string;
+  religionLevel:string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
@@ -201,7 +217,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
-  email: boolean
+  email: boolean;
 }
 
 export interface IMentorForm {
@@ -280,6 +296,9 @@ export interface ITask {
   type: taskType;
   status: "active" | "disabled";
   body?: string;
+  labels?: ITaskLabel[];
+  TaskLabels?: Partial<ITaskLabel>[];
+  Grades?: Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -289,6 +308,34 @@ export interface ITaskofStudent {
   status: string;
   submitLink?: string;
   description?: string;
+}
+
+export interface ILabel {
+  id?: number;
+  name: string;
+  Grades?: Partial<IGrade>[];
+}
+
+export interface ITaskLabel {
+  id?: number;
+  taskId?: number;
+  labelId: number;
+  name?: string;
+  Label?: ILabel;
+  Criteria: ITaskCriteria[];
+}
+
+export interface ITaskCriteria {
+  id?: number;
+  taskId?: number;
+  labelId?: number;
+  name: string;
+  Grades?: Partial<IGrade>[];
+}
+
+export interface IGrade {
+  id?: number;
+  grade?: number;
 }
 
 export type ThemeType = "dark" | "light";

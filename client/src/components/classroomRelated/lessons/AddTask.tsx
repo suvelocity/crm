@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Select,
   TextField,
@@ -7,20 +7,27 @@ import {
   MenuItem,
   FormControl,
   makeStyles,
+  Button,
 } from "@material-ui/core";
+import SearchCreateSelect from "react-select/async-creatable";
 import styled from "styled-components";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CloseIcon from "@material-ui/icons/Close";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { IClassOfTeacher, IStudent } from "../../../typescript/interfaces";
+import {
+  IClassOfTeacher,
+  ILabel,
+  IStudent,
+  ITaskLabel,
+} from "../../../typescript/interfaces";
 import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
-import { formatDiagnostic } from "typescript";
 import ClassAccordion from "./ClassAccordion";
+import { LabelView } from "../tasks/LabelView";
+import { network } from "../../../helpers";
 interface addTaskProps {
   task: ITask;
   index?: number;
@@ -58,6 +65,7 @@ export default function AddTask({
   teacherClasses,
 }: addTaskProps) {
   const classes = useStyles();
+  const [defaultTaskLabels, setDefaultTaskLabels] = useState<any[]>([]); // TODO: add type
 
   //@ts-ignore
   const classList: classList[] | undefined = teacherClasses?.map(
@@ -78,53 +86,125 @@ export default function AddTask({
     handleRemove(index, "task");
   };
 
+  const addLabel: (id: number, labelName: string) => void = (
+    id: number,
+    labelName: string
+  ) => {
+    task.labels?.push({ labelId: id, name: labelName, Criteria: [] });
+    changer(task.labels, "labels");
+  };
+
+  const removeLabel: (labelToRemove: string) => void = (
+    labelToRemove: string
+  ) => {
+    const indexToRemove: number = task.labels!.findIndex(
+      (label: ITaskLabel) => label.name === labelToRemove
+    );
+    if (indexToRemove === -1) alert("label does not exist");
+    else {
+      task.labels?.splice(indexToRemove, 1);
+      changer(task.labels, "labels");
+    }
+  };
+
+  const getLabels: (searchQuery: string | undefined) => Promise<any[] | undefined> = async (
+    searchQuery: string | undefined
+  ) => {
+    try {
+      const labels: ILabel[] = (
+        await network.get(`/api/v1/label/all${searchQuery ? `?search=${searchQuery}` : ''}`)
+      ).data;
+      console.log(labels);
+      return labels.map((label: ILabel) => {
+        return { label: label.name, value: label.id };
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSCSChange: (data: any, actionMeta: any) => Promise<void> = async (
+    data: any,
+    actionMeta: any
+  ) => {
+    if (actionMeta.action === "create-option") {
+      const newLabel: string = data[data.length - 1].label;
+      const responseLabel: ILabel[] = (
+        await network.post("/api/v1/label", [{ name: newLabel }])
+      ).data;
+      console.log(responseLabel);
+      addLabel(responseLabel[0].id!, newLabel);
+    } else {
+      if (actionMeta.action === "select-option") {
+        console.log(actionMeta);
+        addLabel(actionMeta.option.value!, actionMeta.option.label);
+      } else {
+        if (!actionMeta.removedValue) return;
+        removeLabel(actionMeta.removedValue.label);
+      }
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const labels = await getLabels(undefined);
+      if (labels) {
+        setDefaultTaskLabels(labels)
+      }
+    })()
+  }, [])
+
   return (
     <Form
       key={index}
-      className='create-task'
+      className="create-task"
       style={{
         maxWidth: students ? "70vw" : "20vw",
-      }}>
-      <Tooltip title='Remove task' style={{ alignSelf: "flex-end" }}>
+      }}
+    >
+      <Tooltip title="Remove task" style={{ alignSelf: "flex-end" }}>
         <CloseIcon onClick={removeTask} />
       </Tooltip>
 
       {/* <InputLabel id='task-type-label' shrink={true} htmlFor='task-type-label' >Task Type</InputLabel> */}
 
       <FormControl
-        id='task-type'
-        variant='outlined'
-        className={classes.formControl}>
-        <InputLabel id='task-type-label'>Task Type</InputLabel>
+        id="task-type"
+        variant="outlined"
+        className={classes.formControl}
+      >
+        <InputLabel id="task-type-label">Task Type</InputLabel>
         <Select
           // id='task-type'
-          labelId='task-type-label'
-          id='task-type'
-          label='task-type'
+          labelId="task-type-label"
+          id="task-type"
+          label="task-type"
           required={true}
           style={selectStyle}
           value={task.type}
-          variant='outlined'
+          variant="outlined"
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "type");
             changer(null, "externalId");
             changer(null, "externalLink");
-          }}>
-          <MenuItem value='manual'>manual</MenuItem>
-          <MenuItem value='challengeMe'>challengeMe</MenuItem>
-          <MenuItem value='fcc'>fcc</MenuItem>
-          <MenuItem value='quiz'>quiz</MenuItem>
+          }}
+        >
+          <MenuItem value="manual">manual</MenuItem>
+          <MenuItem value="challengeMe">challengeMe</MenuItem>
+          <MenuItem value="fcc">fcc</MenuItem>
+          <MenuItem value="quiz">quiz</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl
-        id='external'
-        variant='outlined'
-        className={classes.formControl}>
+        id="external"
+        variant="outlined"
+        className={classes.formControl}
+      >
         {task.type === "manual" ? (
           <Input
-            label='Link to task'
-            variant='outlined'
+            label="Link to task"
+            variant="outlined"
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               changer(e.target.value, "externalLink");
             }}
@@ -140,13 +220,14 @@ export default function AddTask({
       </FormControl>
 
       <FormControl
-        id='task-title'
-        variant='outlined'
-        className={classes.formControl}>
+        id="task-title"
+        variant="outlined"
+        className={classes.formControl}
+      >
         <Input
-          label='Task title'
+          label="Task title"
           // disabled={task.type === "manual" ? false : true}
-          variant='outlined'
+          variant="outlined"
           value={task.title}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "title");
@@ -156,12 +237,13 @@ export default function AddTask({
       </FormControl>
 
       <FormControl
-        id='task-description'
-        variant='outlined'
-        className={classes.formControl}>
+        id="task-description"
+        variant="outlined"
+        className={classes.formControl}
+      >
         <TextField
-          label='Task Description'
-          variant='outlined'
+          label="Task Description"
+          variant="outlined"
           multiline
           value={task.body}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -173,14 +255,14 @@ export default function AddTask({
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           className={classes.formControl}
-          label='Deadline'
+          label="Due Date"
           // disableToolbar
           minDate={new Date()}
-          variant='inline'
-          format='dd/MM/yyyy'
-          margin='normal'
-          id='date-picker-inline'
-          inputVariant='outlined'
+          variant="inline"
+          format="dd/MM/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          inputVariant="outlined"
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{
@@ -190,32 +272,63 @@ export default function AddTask({
       </MuiPickersUtilsProvider>
 
       <FormControl
-        id='status'
-        variant='outlined'
-        className={classes.formControl}>
-        <InputLabel id='task-status-label'>Status</InputLabel>
+        id="status"
+        variant="outlined"
+        className={classes.formControl}
+      >
+        <InputLabel id="task-status-label">Status</InputLabel>
         <Select
-          defaultValue='Pick a Status'
-          labelId='task-status-label'
-          id='task-status'
-          label='status'
+          defaultValue="Pick a Status"
+          labelId="task-status-label"
+          id="task-status"
+          label="status"
           style={selectStyle}
           value={task.status}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "status");
           }}
-          variant='outlined'>
+          variant="outlined"
+        >
           <MenuItem value={"active"}>active</MenuItem>
           <MenuItem value={"disabled"}>disabled</MenuItem>
         </Select>
       </FormControl>
+      <LabelsContainer style={{ borderTop: '1px olid black' }}>
+        <h4>Set labels</h4>
+        <FormControl
+          id="task-labels"
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: '100%', margin: 0 }}
+        >
+          <SearchCreateSelect
+            isMulti
+            loadOptions={getLabels}
+            onChange={handleSCSChange}
+            defaultOptions={defaultTaskLabels}
+          />
 
-      {students && teacherClasses !== undefined && (
+          {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
+          <Button onClick={handleLabelAdd}>Add</Button> */}
+        </FormControl>
+        {task.labels?.map((l: ITaskLabel) => (
+          <LabelView label={l} />
+        ))}
+      </LabelsContainer>
+      {students && teacherClasses !== undefined ? (
         <ClassAccordion classes={classList!} updatePicks={changer} />
+      ) : (
+        "No Students To Pick From"
       )}
     </Form>
   );
 }
+
+const LabelsContainer = styled.div`
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 14px;
+`;
 
 const Input = styled(TextField)`
   margin-top: 5px;

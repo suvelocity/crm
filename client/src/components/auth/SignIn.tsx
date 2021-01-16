@@ -19,6 +19,11 @@ import { Button, TextField, IconButton } from "@material-ui/core";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import { validEmailRegex, getRefreshToken } from "../../helpers";
 import jwt from "jsonwebtoken";
+import styled from 'styled-components';
+
+const SignInInput = styled(TextField)`
+  width: 330px;
+`;
 
 export function SignIn() {
   //@ts-ignore
@@ -65,8 +70,7 @@ export function SignIn() {
           <H1>Scale-Up Velocity CRM</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            style={{ minWidth: 280 }}
+          <SignInInput
             id="email"
             label="Email"
             type="email"
@@ -94,7 +98,7 @@ export function SignIn() {
             )
           ) : null}
           {generateBrs(2)}
-          <TextField
+          <SignInInput
             id="password"
             type={showPassword ? "text" : "password"}
             label="Password"

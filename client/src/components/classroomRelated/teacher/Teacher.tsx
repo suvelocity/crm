@@ -31,6 +31,7 @@ export default function Teacher() {
     externalLink: "",
     type: "manual",
     status: "active",
+    labels: [],
   });
 
   const postTask = async () => {
@@ -102,6 +103,9 @@ export default function Teacher() {
             clsArr.slice(1).filter((cell) => !!cell)
           )
         );
+        break;
+      case "labels":
+        setTask((prev) => ({ ...prev, labels: change }));
     }
   };
 
@@ -136,7 +140,7 @@ export default function Teacher() {
         // studentsToTask={studentsToTask}
         teacherClasses={classesToTeacher}
       />
-      <Button variant='contained' onClick={postTask}>
+      <Button variant="contained" onClick={postTask}>
         add task
       </Button>
     </div>
@@ -145,18 +149,20 @@ export default function Teacher() {
   return (
     <Loading loading={!loaded}>
       <Typography
-        variant='h2'
+        variant="h2"
         style={{
           marginRight: 15,
           marginTop: "2%",
           marginBottom: "auto",
           marginLeft: "15%",
-        }}>
+        }}
+      >
         Tasks
       </Typography>
       <StyledButton
         onClick={handleOpen}
-        style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}>
+        style={{ marginLeft: "auto", marginRight: "15%", height: "auto" }}
+      >
         New Task
         <AddCircleIcon
           style={{ fontSize: "1.3em", marginLeft: "0.5vw" }}
@@ -169,7 +175,8 @@ export default function Teacher() {
           marginLeft: "auto",
           marginRight: "auto",
           width: "70%",
-        }}>
+        }}
+      >
         <TeacherTaskBoard user={user} />
 
         <GlobalStyle />
@@ -177,8 +184,9 @@ export default function Teacher() {
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'>
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
           {body}
         </Modal>
       </div>
@@ -200,7 +208,8 @@ const modalStyle = {
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
-  overflowY: "scroll",
+  height: 'calc(100vh - 80px)',
+  overflow: 'auto'
 };
 
 const useStyles = makeStyles((theme: Theme) =>

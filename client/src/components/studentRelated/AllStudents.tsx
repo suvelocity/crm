@@ -12,10 +12,12 @@ import {
   StyledDiv,
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 import PersonIcon from "@material-ui/icons/Person";
 import {
   IStudent,
   IEvent,
+  IAcademicBackground,
   filterStudentObject,
   SelectInputs,
 } from "../../typescript/interfaces";
@@ -25,10 +27,24 @@ import { formatPhone } from "../../helpers/general";
 import { FiltersComponents } from "../FiltersComponents";
 import { capitalize, onTheSameDay } from "../../helpers/general";
 
+
+const getGradeAverage = (academicBackgrounds:IAcademicBackground[]): string | number => {
+  let gradeSum = 0;
+  let length = 0;
+  academicBackgrounds.forEach((academicBackground: IAcademicBackground) => {
+    gradeSum += academicBackground.averageScore;
+    length++;
+  });
+  if(length === 0) return "none";
+  return Math.round(gradeSum / length)
+}
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [addressName, setAddressName] = useState<string>();
+  let timer:any;
   const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
+  const [unsortedStudents, setUnsortedStudents] = useState<IStudent[]>([]);
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
   );
@@ -38,6 +54,8 @@ function AllStudents() {
       Course: [""],
       JobStatus: [""],
       Name: [""],
+      Languages: [""],
+      AverageScore: "רגיל"
     }
   );
   const getRecentJobsStatus = (events: IEvent[]): string[] => {
@@ -100,14 +118,24 @@ function AllStudents() {
           possibleValues: newClassNames,
         },
         {
-          filterBy: "Job Status",
+          filterBy: "JobStatus",
           possibleValues: newJobStatuses,
         },
         {
           filterBy: "Name",
           possibleValues: newFullNames,
         },
+        {
+          filterBy: "Languages",
+          possibleValues: ["עברית","אנגלית","ספרדית","רוסית","ערבית"],
+        },
+        {
+          filterBy: "AverageScore",
+          singleOption: true,
+          possibleValues: ["עולה", "יורד"],
+        }
       ]);
+      setUnsortedStudents(data.slice());
       setStudents(data);
       setLoading(false);
     })();
@@ -119,7 +147,35 @@ function AllStudents() {
   }, [students]);
 
   const filterFunc = useCallback(() => {
-    return students.filter((student) => {
+    const ScoreSort = filterAttributes.AverageScore;
+    let studentsToFilter;
+    if(ScoreSort){
+      if(ScoreSort === "רגיל") {
+        studentsToFilter = unsortedStudents;
+      }else{
+        studentsToFilter = students.sort((a:IStudent,b:IStudent) => {
+          if(a.AcademicBackgrounds.length === 0){
+            return 1
+          }else if(b.AcademicBackgrounds.length === 0){
+            return -1
+          }else{
+            if(ScoreSort === "עולה"){
+              return  Number(getGradeAverage(b.AcademicBackgrounds)) - Number(getGradeAverage(a.AcademicBackgrounds))
+            }
+            return  Number(getGradeAverage(a.AcademicBackgrounds)) - Number(getGradeAverage(b.AcademicBackgrounds))
+          }
+        })
+      }
+    }else{
+      studentsToFilter = unsortedStudents;
+    }
+    return studentsToFilter.filter((student) => {
+      const addressCondition = addressName ? student.address.toLowerCase().includes(addressName) : true;
+      const languageCondition = 
+      filterAttributes.Languages ? 
+      student.languages ? 
+      filterAttributes.Languages.every((lang:string) =>!student.languages? false :student.languages.includes(lang))
+      : false : false;
       const classCondition =
         filterAttributes.Class!.length === 1 &&
         filterAttributes.Class![0] === ""
@@ -163,13 +219,15 @@ function AllStudents() {
         classCondition &&
         courseCondition &&
         firstAndLastNamesMatch &&
-        jobStatusCondition
+        jobStatusCondition &&
+        addressCondition &&
+        languageCondition
       );
     });
-  }, [filterAttributes]);
+  }, [filterAttributes, addressName]);
   useEffect(() => {
     setFilteredStudents(filterFunc());
-  }, [filterAttributes]);
+  }, [filterAttributes, addressName]);
 
   return (
     <Wrapper width="80%">
@@ -178,14 +236,27 @@ function AllStudents() {
           <H1>All Students</H1>
         </TitleWrapper>
         <br />
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", marginBottom: "40px"}}>
           <FiltersComponents
             array={filterOptionsArray}
             filterObject={filterAttributes}
             callbackFunction={setFilterAttributes}
-            widthPercent={75}
+            widthPercent={88}
           />
-          <StyledLink to="/student/add">
+          <div style={{width:"10%"}}>
+            <TextField
+            onKeyDown={(e) => {
+              clearTimeout(timer);
+              }}
+            onKeyUp={(e) => {
+                const t = e.target as any;
+                timer = setTimeout(() =>setAddressName(t.value ? t.value.toLowerCase() : ""),100)
+                }}
+            label="עיר מגורים"/>
+          </div>
+        </div>
+        <div style={{ marginTop: "40px"}}>
+        <StyledLink to="/student/add">
             <Button variant="contained" color="primary">
               Add Student
             </Button>
@@ -197,12 +268,14 @@ function AllStudents() {
         <StyledUl>
           {students && (
             <li>
-              <TableHeader>
-                <PersonIcon />
+              <TableHeader repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
                 <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
+                <StyledSpan weight="bold">Address</StyledSpan>
                 <StyledSpan weight="bold">Email</StyledSpan>
                 <StyledSpan weight="bold">Phone</StyledSpan>
+                <StyledSpan weight="bold">Language</StyledSpan>
+                <StyledSpan weight="bold">Grade Avg.</StyledSpan>
               </TableHeader>
             </li>
           )}
@@ -210,8 +283,7 @@ function AllStudents() {
             filteredStudents.map((student) => (
               <li>
                 <StyledLink color="black" to={`/student/${student?.id}`}>
-                  <StyledDiv>
-                    <PersonIcon />
+                  <StyledDiv repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
                     <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
@@ -221,8 +293,11 @@ function AllStudents() {
                     )} (${capitalize(student?.Class.course)} - ${
                       student?.Class.cycleNumber
                     })`}</StyledSpan>
+                    <StyledSpan>{student.address}</StyledSpan>
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
+                    <StyledSpan>{student.languages}</StyledSpan>
+                  <StyledSpan>{getGradeAverage(student.AcademicBackgrounds || [])}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>

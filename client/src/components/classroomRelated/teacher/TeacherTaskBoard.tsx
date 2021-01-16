@@ -32,6 +32,8 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
+import GradeButton from "../tasks/GradeView";
+import { ITaskLabel } from "../../../typescript/interfaces";
 
 const useRowStyles = makeStyles({
   root: {
@@ -51,20 +53,24 @@ export function convertDateToString(date: Date) {
 }
 
 const createTask = (
+  id: number,
   title: string,
   type: string,
   lesson: string,
   endDate: Date,
   externalLink: string,
-  TaskofStudents: []
+  TaskofStudents: [],
+  TaskLabels: ITaskLabel[]
 ) => {
   return {
+    id,
     title,
     type,
     lesson,
     endDate,
     externalLink,
     TaskofStudents,
+    TaskLabels,
   };
 };
 
@@ -218,6 +224,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                     <TableCell align="left">
                       <b>Submission Link</b>
                     </TableCell>
+                    <TableCell align="left">
+                      <b>Grade</b>
+                    </TableCell>
                     {/*  //todo maybe adding descrtiption to submition */}
                   </TableRow>
                 </TableHead>
@@ -238,6 +247,15 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                       </TableCell>
                       <TableCell align="left">
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
+                      </TableCell>
+                      <TableCell align="left">
+                        <GradeButton
+                          taskLabels={row.TaskLabels}
+                          grades={studentRow.Task}
+                          key={row.title}
+                          taskId={row.id}
+                          studentId={studentRow.studentId}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -403,12 +421,14 @@ export default function TeacherTaskBoard(props: any) {
   const taskArray =
     teacherTasks?.map((task: any) => {
       return createTask(
+        task.id,
         task.title,
         task.type,
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
-        task.TaskofStudents
+        task.TaskofStudents,
+        task.TaskLabels
       );
     }) || [];
 

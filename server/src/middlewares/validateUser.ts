@@ -7,8 +7,10 @@ export function validateAdmin(
   next: NextFunction
 ) {
   if (!req.user) {
-    console.error('no user')
-    return res.status(500).json({ error: "server error" });
+    console.error("no user");
+    console.log("USER");
+    console.log(req.user);
+    return res.status(500).json({ error: "validation error" });
   }
   if (req.user && req.user.type !== "admin")
     return res.status(401).json({ error: "Not Authorized" });
@@ -21,8 +23,10 @@ export function validateTeacher(
   next: NextFunction
 ) {
   if (!req.user) {
-    console.error('no user')  
-    return res.status(500).json({ error: "server error" });
+    console.error("no user");
+    console.log("USER");
+    console.log(req.user);
+    return res.status(500).json({ error: "validation error" });
   }
   if (req.user && req.user.type !== "admin" && req.user.type !== "teacher")
     return res.status(401).json({ error: "Not Authorized" });

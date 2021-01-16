@@ -24,7 +24,15 @@ export interface ITeacher {
   Task?: ITask;
   Lesson?: ILesson;
   Notice?: INotice;
-  cmUser?:string;
+  cmUser?: string;
+}
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number | undefined;
 }
 
 export interface IStudent {
@@ -40,14 +48,14 @@ export interface IStudent {
   address: string;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  academicBackground?: IAcademicBackground;
   militaryService?: string;
   workExperience?: string;
   languages?: string;
   citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
-  cmUser?:string;
+  cmUser?: string;
 }
 
 export interface IClass {
@@ -59,13 +67,13 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
-  cmId?:string;
+  cmId?: string;
 }
 
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: string ;
+  relatedId: string;
   eventName: string;
   entry?: any;
   type: string;
@@ -131,6 +139,33 @@ export interface ITaskofStudent {
   status: string;
   submitLink?: string;
   description?: string;
+}
+
+export interface ILabel {
+  id?: number;
+  name: string;
+}
+export interface ITaskLabel {
+  id?: number;
+  taskId: number;
+  labelId: number;
+  Criteria: ICriterion[];
+}
+
+export interface ICriterion {
+  id?: number;
+  taskId: number;
+  labelId: number;
+  name: string;
+}
+
+export interface IGrade {
+  id?: number;
+  belongsToId: number;
+  belongsTo: string;
+  studentId: number;
+  grade: number;
+  freeText: string;
 }
 export interface SeqInclude {
   model: Model;

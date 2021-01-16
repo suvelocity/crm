@@ -22,10 +22,7 @@ export const classSchemaToPut = Joi.object({
 
 export const eventsSchema = Joi.object({
   userId: Joi.number().required(),
-  relatedId: Joi.alternatives([
-    Joi.string(),
-    Joi.number()
-  ]).required(),
+  relatedId: Joi.alternatives([Joi.string(), Joi.number()]).required(),
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
@@ -71,7 +68,6 @@ export const studentSchema = Joi.object({
   address: Joi.string().required(),
   maritalStatus: Joi.string().required(),
   children: Joi.number().allow(null),
-  academicBackground: Joi.string().required(),
   militaryService: Joi.string().max(500).allow(null, ""),
   workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().allow(null, ""),
@@ -79,7 +75,12 @@ export const studentSchema = Joi.object({
   fccAccount: Joi.string().max(30).allow(null, ""),
   resumeLink: Joi.string().max(500).allow(null, ""),
 });
-
+export const academicBackgroundSchema = Joi.array().items({
+  institution: Joi.string().required(),
+  studyTopic: Joi.string().required(),
+  degree: Joi.string().required(),
+  averageScore: Joi.number().required(),
+});
 export const teacherSchema = Joi.object({
   email: Joi.string().required(),
   firstName: Joi.string().required(),
@@ -167,6 +168,7 @@ export const taskSchema = Joi.object({
   status: Joi.string().required(),
   body: Joi.string().allow(null, ""),
   title: Joi.string().required(),
+  labels: Joi.array(),
 });
 export const meetingSchema = Joi.object({
   pairId: Joi.number().required(),
@@ -200,6 +202,10 @@ export const mentorSchema = Joi.object({
   phone: Joi.string().required(),
   address: Joi.string().required(),
   role: Joi.string().allow(null, ""),
+  age: Joi.number().allow(null, ""),
+  education: Joi.string().allow(null, ""),
+  religionLevel: Joi.string().allow(null, ""),
+  preference: Joi.string().allow(null, ""), //Joi.string().allow(null, ""),
   experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().required().allow(null, ""),
@@ -211,10 +217,14 @@ export const mentorSchemaToPut = Joi.object({
   email: Joi.string().allow(null, ""),
   phone: Joi.string().allow(null, ""),
   address: Joi.string().allow(null, ""),
+  education: Joi.string().allow(null, ""),
+  religionLevel: Joi.string().allow(null, ""),
+  preference: Joi.string().allow(null, ""),
   role: Joi.string().allow(null, ""),
   experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().allow(null, ""),
+  age: Joi.number().allow(null, ""),
 });
 
 export const mentorProgramSchema = Joi.object({

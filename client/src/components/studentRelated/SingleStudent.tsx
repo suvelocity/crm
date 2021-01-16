@@ -20,6 +20,7 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import BusinessIcon from "@material-ui/icons/Business";
 import PhoneIcon from "@material-ui/icons/Phone";
+import {camelCaseToWords, academicKeys} from './AddStudent';
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
@@ -27,7 +28,7 @@ import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IEvent } from "../../typescript/interfaces";
+import { IStudent, IEvent, IAcademicBackground } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -76,6 +77,7 @@ function SingleStudent() {
     setLoading(true);
     getStudent();
   };
+  console.log(student);
 
   const removeJob = useCallback(
     async (
@@ -198,16 +200,17 @@ function SingleStudent() {
               >
                 <ChildFriendlyIcon />
               </SingleListItem>
-              <SingleListItem
-                primary="Work Experience"
-                secondary={
-                  student?.workExperience
-                    ? capitalize(student?.workExperience)
-                    : "לא ידוע"
-                }
-              >
-                <WorkIcon />
-              </SingleListItem>
+              {student?.additionalDetails && (
+                <MultilineListItem>
+                  <ListItemIcon>
+                    <ContactSupportIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Additional Details"
+                    secondary={capitalize(student?.additionalDetails)}
+                  />
+                </MultilineListItem>
+              )}
             </List>
             <List>
               <SingleListItem
@@ -238,33 +241,44 @@ function SingleStudent() {
               >
                 <ClassIcon />
               </SingleListItem>
-              {student?.academicBackground && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <AccountBalanceIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Academic Background"
-                    secondary={capitalize(student?.academicBackground)}
-                  />
-                </MultilineListItem>
-              )}
-              {student?.additionalDetails && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <ContactSupportIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Additional Details"
-                    secondary={capitalize(student?.additionalDetails)}
-                  />
-                </MultilineListItem>
-              )}
+              <SingleListItem
+                primary="Work Experience"
+                secondary={
+                  student?.workExperience
+                    ? capitalize(student?.workExperience)
+                    : "לא ידוע"
+                }
+              >
+                <WorkIcon />
+              </SingleListItem>
+
             </List>
           </GridDiv>
+          {
+          student?.AcademicBackgrounds && student?.AcademicBackgrounds.length > 0 &&<div style={{display:"flex", width: '70%',margin:'auto', alignItems: "center", flexDirection:'column'}}>
+            <h2>Academic Background</h2>
+            {
+              student?.AcademicBackgrounds.map((background: IAcademicBackground, index: number) => {
+                return <div style={{backgroundColor:'#bebbbb' , marginBottom: '10px', borderRadius: '5px', display:"flex", width: '100%',alignItems: 'center', justifyContent:'space-between'}}>
+                  <div style={{fontSize:'30px', fontWeight:'bold',textAlign:'center', width: '20%'}}>{index + 1}</div>
+                  {
+                  academicKeys.map((key: string) => {
+                    return <SingleListItem
+                    primary={camelCaseToWords(key)}
+                    //@ts-ignore
+                    secondary={background[key]}
+                    >
+                    </SingleListItem>
+                  })
+                  }
+                </div>
+              })
+            }
+          </div>
+          }
           <Modal
             open={modalState}
-            onClose={() => setModalState(false)}
+            onClose={handleClose}
             style={{ overflow: "scroll" }}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
