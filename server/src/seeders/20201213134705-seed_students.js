@@ -429,7 +429,6 @@ module.exports = {
         fcc_account: "Leet1337",
         military_service: "**********",
         work_experience: "Fishermen in Ireland ",
-          "5_dnitsof coursing.\n5 units of sex appeal.\n5 units of home staying",
         additional_details: "admin' OR 1 = 1 -- -",
         class_id: 6,
         created_at: new Date(),
@@ -495,7 +494,6 @@ module.exports = {
         fcc_account: "zachbeja",
         military_service: "Paratroopers 890 brigade",
         work_experience: "Supermarket Cashier (◍•ᴗ•◍)",
-          "Highschool_diploma 5 units in Math , English, Physics, Computer Science, Java project.",
         additional_details: "",
         class_id: 6,
         created_at: new Date(),
@@ -1136,7 +1134,6 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-          "סמינר בנות אלישבע-תואר הנדסאי סיים עם ממוצע 98 בתאריך 2017",
       },
       {
         first_name: "אביטל",
@@ -1150,7 +1147,6 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-          "הדסה - קמפוס שטראוס סיים עם ממוצע 95 בתאריך 9.202",
       },
       {
         first_name: "אורפז",
@@ -1255,7 +1251,6 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-          "מכללת עזריאלי - תמורה. סיים בעם ממוצע 70 בתאריך .2021",
       },
       {
         first_name: "יעל",
@@ -1373,7 +1368,6 @@ module.exports = {
         marital_status: "רווק",
         created_at: new Date(),
         updated_at: new Date(),
-          "מכללת עזריאלי - תמורה. סיים בעם ממוצע 93 בתאריך 2019",
       },
       {
         first_name: "שרון",
