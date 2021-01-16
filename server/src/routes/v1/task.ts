@@ -163,6 +163,48 @@ router.get(
                   },
                 ],
               },
+              //#region Get grades per student - works bad
+              // {
+              //   model: Task,
+              //   attributes: ["id"],
+              //   // attributes: ["TaskLabels"],
+              //   include: [
+              //     {
+              //       model: TaskLabel,
+              //       attributes: ["id"],
+              //       // attributes: ["Criteria", "Labels"],
+              //       include: [
+              //         {
+              //           model: Criterion,
+              //           attributes: ["id"],
+              //           include: [
+              //             {
+              //               model: Grade,
+              //               foreignKey: ["studentId", "belongsToId"],
+              //               attributes: ["grade"],
+              //             },
+              //           ],
+              //         },
+              //         {
+              //           model: Label,
+              //           attributes: ["id"],
+              //           include: [
+              //             {
+              //               model: Grade,
+              //               foreignKey: ["studentId", "belongsToId"],
+              //               attributes: ["grade"],
+              //             },
+              //           ],
+              //         },
+              //       ],
+              //     },
+              //     {
+              //       model: Grade,
+              //       foreignKey: ["studentId", "belongsToId"],
+              //     },
+              //   ],
+              // },
+              //#endregion
             ],
           },
           {
@@ -173,6 +215,17 @@ router.get(
             model: TaskLabel,
             include: [{ model: Criterion }, { model: Label }],
           },
+          //Option B - bring grades per task
+          // {
+          //   model: TaskLabel,
+          //   include: [
+          //     { model: Criterion, include: [{ model: Grade }] },
+          //     { model: Label, include: [{ model: Grade }] },
+          //   ],
+          // },
+          // {
+          //   model: Grade,
+          // },
         ],
         order: [["createdAt", "DESC"]],
       });
@@ -339,23 +392,23 @@ router.post("/criterion", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/grade", async (req: Request, res: Response) => {
-  //TODO check taskId exists
-  //TODO check labelId exists
+// router.post("/grade", async (req: Request, res: Response) => {
+//   //TODO check taskId exists
+//   //TODO check labelId exists
 
-  const data: IGrade[] = req.body;
-  console.log(data);
-  if (!Array.isArray(data))
-    res
-      .status(400)
-      .json({ error: `Expected an array but got ${typeof data} instead` });
-  try {
-    const newGrade: IGrade[] = await Grade.bulkCreate(data);
-    res.json(newGrade);
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-});
+//   const data: IGrade[] = req.body;
+//   console.log(data);
+//   if (!Array.isArray(data))
+//     res
+//       .status(400)
+//       .json({ error: `Expected an array but got ${typeof data} instead` });
+//   try {
+//     const newGrade: IGrade[] = await Grade.bulkCreate(data);
+//     res.json(newGrade);
+//   } catch (e) {
+//     res.status(400).json({ error: e.message });
+//   }
+// });
 //todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {

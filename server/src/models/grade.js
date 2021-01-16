@@ -10,14 +10,25 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Criterion, {
-        foreignKey: "criterionId",
+        foreignKey: "belongsToId",
+      });
+      this.belongsTo(models.Task, {
+        foreignKey: "belongsToId",
+      });
+      this.belongsTo(models.Label, {
+        foreignKey: "belongsToId",
+      });
+      this.belongsTo(models.Student, {
+        foreignKey: "studentId",
       });
     }
   }
   grade.init(
     {
-      criterionId: DataTypes.INTEGER,
       grade: DataTypes.INTEGER,
+      belongsToId: DataTypes.INTEGER,
+      belongsTo: DataTypes.STRING,
+      studentId: DataTypes.INTEGER,
       freeText: DataTypes.STRING,
     },
     {

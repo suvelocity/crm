@@ -53,6 +53,7 @@ export function convertDateToString(date: Date) {
 }
 
 const createTask = (
+  id: number,
   title: string,
   type: string,
   lesson: string,
@@ -62,6 +63,7 @@ const createTask = (
   TaskLabels: ITaskLabel[]
 ) => {
   return {
+    id,
     title,
     type,
     lesson,
@@ -247,7 +249,13 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                         {studentRow.submitLink ? studentRow.submitLink : "none"}
                       </TableCell>
                       <TableCell align="left">
-                        <GradeButton taskLabels={row.TaskLabels} />
+                        <GradeButton
+                          taskLabels={row.TaskLabels}
+                          grades={studentRow.Task}
+                          key={row.title}
+                          taskId={row.id}
+                          studentId={studentRow.studentId}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -413,6 +421,7 @@ export default function TeacherTaskBoard(props: any) {
   const taskArray =
     teacherTasks?.map((task: any) => {
       return createTask(
+        task.id,
         task.title,
         task.type,
         task.Lesson?.title,

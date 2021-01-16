@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Criterion, {
         foreignKey: "taskId",
       });
+      this.hasMany(models.Grade, {
+        foreignKey: "belongsToId",
+      });
     }
   }
   Task.init(

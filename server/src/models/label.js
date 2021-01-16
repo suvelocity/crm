@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.TaskLabel, {
         foreignKey: "labelId",
       });
+      this.hasMany(models.Grade, {
+        foreignKey: "belongsToId",
+      });
     }
   }
   label.init(

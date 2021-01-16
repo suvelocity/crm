@@ -153,7 +153,9 @@ export interface ICriterion {
 
 export interface IGrade {
   id?: number;
-  criterionId: number;
+  belongsToId: number;
+  belongsTo: string;
+  studentId: number;
   grade: number;
   freeText: string;
 }

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "labelId",
       });
       this.hasMany(models.Grade, {
-        foreignKey: "criterionId",
+        foreignKey: "belongsToId",
       });
     }
   }

@@ -31,13 +31,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "classId",
       });
       this.hasMany(models.FieldSubmission, {
-        foreignKey: 'studentId'
+        foreignKey: "studentId",
       });
       this.belongsToMany(models.Field, {
         through: models.FieldSubmission,
-        foreignKey: 'studentId',
-        otherKey: 'fieldId'
-      })
+        foreignKey: "studentId",
+        otherKey: "fieldId",
+      });
+      this.hasMany(models.Grade, {
+        foreignKey: "studentId",
+      });
     }
   }
   Student.init(

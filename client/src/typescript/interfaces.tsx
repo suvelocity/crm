@@ -281,6 +281,8 @@ export interface ITask {
   status: "active" | "disabled";
   body?: string;
   labels?: ITaskLabel[];
+  TaskLabels?: Partial<ITaskLabel>[];
+  Grades?: Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -295,6 +297,7 @@ export interface ITaskofStudent {
 export interface ILabel {
   id?: number;
   name: string;
+  Grades?: Partial<IGrade>[];
 }
 
 export interface ITaskLabel {
@@ -311,6 +314,12 @@ export interface ITaskCriteria {
   taskId?: number;
   labelId?: number;
   name: string;
+  Grades?: Partial<IGrade>[];
+}
+
+export interface IGrade {
+  id?: number;
+  grade?: number;
 }
 
 export type ThemeType = "dark" | "light";
