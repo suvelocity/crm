@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import network from "../../helpers/network";
 import {
   validEmailRegex,
@@ -8,11 +8,14 @@ import {
   onlyNumbersRegex,
 } from "../../helpers";
 import TextField from "@material-ui/core/TextField";
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import Swal from "sweetalert2";
+import {execSwalConfirmation} from '../../helpers';
 import InputLabel from "@material-ui/core/InputLabel";
 import {
   GridDiv,
@@ -21,7 +24,7 @@ import {
   H1,
   Center,
 } from "../../styles/styledComponents";
-import { IStudent, IClass } from "../../typescript/interfaces";
+import { IStudent, IClass, IAcademicBackground } from "../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 import GoogleMaps from "../GeoSearch";
@@ -32,11 +35,71 @@ interface Props {
   update?: boolean;
   handleClose?: Function;
 }
+export const academicKeys = ['institution','studyTopic', 'degree', 'averageScore']
+export const camelCaseToWords = (word: string): string =>{
+  const regex = /[A-Z]/g;
+  let result = word[0].toUpperCase();
+  for(let i = 1; i < word.length; i++){
+    const letter = word[i];
+    if(letter.match(regex)){
+      result += " ";
+    }
+    result += letter;
+  }
+  return result;
+}
+
+
+let arr = [];
+const lists: {institution:string[], degree:string[], averageScore:number[]} ={
+  institution:[
+    "אוניברסיטה עברית",
+    "אוניברסיטת תל אביב",
+   " אוניברסיטת בן גוריון",
+   " אוניברסיטת בר אילן",
+   " האוניברסיטה הפתוחה",
+   " אוניברסיטת חיפה",
+   " טכניון",
+   " מכללת סמי שמעון",
+   " מכללת עזריאלי",
+   " מכון טל",
+   " מכון תבונה",
+   " מכון הדסה",
+   " אורט בראודה",
+   " מכללת אריאל",
+   " לוסטיג",
+   " סמינר ישן",
+   " סמינר חדש",
+   " סמינר וולף"
+  ],
+  degree: ['תואר שני', 'תואר ראשון'],
+  averageScore:[]
+}
+for(let i = 100; i >=56; i--){
+  lists.averageScore.push(i)
+}
+
 function AddStudent(props: Props) {
-  const { register, handleSubmit, errors, control } = useForm();
+  const { register, handleSubmit, errors, control, getValues, setValue, reset } = useForm();
+  const { fields : AcademicBackgrounds, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control,
+    name: "AcademicBackgrounds"
+  });
   const [classes, setClasses] = useState<IClass[]>([]);
+  // const [academicBackgrounds, setAcademicBackgrounds] = useState<IAcademicBackground[]>((props.student && props.student.AcademicBackgrounds) ? props.student.AcademicBackgrounds: [])
   const history = useHistory();
 
+  const academicBackgroundError = (index: number, key: string) => {
+    return !empty ? (
+      (errors.AcademicBackgrounds && 
+       errors.AcademicBackgrounds[index]&&
+       errors.AcademicBackgrounds[index][key]) ? (
+        <ErrorBtn tooltipTitle={errors.AcademicBackgrounds[index][key].message} />
+      ) : (
+        <ActionBtn />
+      )
+    ) : null
+  }
   useEffect(() => {
     (async () => {
       try {
@@ -44,22 +107,38 @@ function AddStudent(props: Props) {
           "/api/v1/class/all"
         );
         setClasses(data);
-      } catch (error) {
+      } catch (error)  {
         Swal.fire("Error Occurred", error.message, "error");
       }
     })();
   }, [setClasses]);
+  useEffect(() => {
+    if(props.student && props.student.AcademicBackgrounds){
+      append(props.student.AcademicBackgrounds)
+    }
+  },[])
 
   const empty = Object.keys(errors).length === 0;
-
+  const errorComponent = (name:string, customBoolean?:boolean) => {
+    if(empty) return null
+    let check = errors[name]
+    if(customBoolean !== undefined){
+      check = customBoolean;
+    }
+    return check ?
+    <ErrorBtn tooltipTitle={errors[name].message} />
+    :<ActionBtn />
+  }
   const onSubmit = async (data: IStudent) => {
     //@ts-ignore
     data.languages = data.languages.join(", ");
     try {
       if (props.update && props.student) {
+        data.AcademicBackgrounds = data.AcademicBackgrounds.map((academic:IAcademicBackground, index:number) => {
+          return {...academic, id: AcademicBackgrounds[index].id}
+        })
         await network.patch(`/api/v1/student/${props.student.id}`, data);
         props.handleClose && props.handleClose();
-        // history.push(`/company/${props.company.id}`);
       } else {
         await network.post("/api/v1/student", data);
         history.push("/student/all");
@@ -75,6 +154,14 @@ function AddStudent(props: Props) {
       }
     }
   };
+  const addAcademicBackground = () => {
+    append({
+      institution: "",
+      studyTopic: "",
+      degree: "",
+      averageScore: undefined
+      })
+  }
   return (
     <Wrapper>
       <Center>
@@ -101,13 +188,7 @@ function AddStudent(props: Props) {
                 })}
                 label="First Name"
               />
-              {!empty ? (
-                errors.firstName ? (
-                  <ErrorBtn tooltipTitle={errors.firstName.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('firstName')}
               <br />
               <TextField
                 id="lastName"
@@ -126,13 +207,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Last Name"
               />
-              {!empty ? (
-                errors.lastName ? (
-                  <ErrorBtn tooltipTitle={errors.lastName.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('lastName')}
               <br />
               <TextField
                 id="idNumber"
@@ -155,13 +230,7 @@ function AddStudent(props: Props) {
                 })}
                 label="ID Number"
               />
-              {!empty ? (
-                errors.idNumber ? (
-                  <ErrorBtn tooltipTitle={errors.idNumber.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('idNumber')}
               <br />
               <TextField
                 id="email"
@@ -176,13 +245,7 @@ function AddStudent(props: Props) {
                   },
                 })}
               />
-              {!empty ? (
-                errors.email ? (
-                  <ErrorBtn tooltipTitle={errors.email.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('email')}
               <br />
               <TextField
                 id="phone"
@@ -197,13 +260,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Phone Number"
               />
-              {!empty ? (
-                errors.phone ? (
-                  <ErrorBtn tooltipTitle={errors.phone.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('phone')}
               <br />
               <FormControl
                 style={{ width: 195 }}
@@ -238,13 +295,7 @@ function AddStudent(props: Props) {
                   }
                 />
               </FormControl>
-              {!empty ? (
-                errors.languages ? (
-                  <ErrorBtn tooltipTitle={errors.languages.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('languages')}
               <br />
               <TextField
                 id="resumeLink"
@@ -258,13 +309,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Resume Link"
               />
-              {!empty ? (
-                errors.resumeLink ? (
-                  <ErrorBtn tooltipTitle={errors.resumeLink.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('resumeLink')}
               {generateBrs(2)}
             </div>
             <div>
@@ -290,13 +335,7 @@ function AddStudent(props: Props) {
                   defaultValue={props.student ? props.student.Class.id : ""}
                 />
               </FormControl>
-              {!empty ? (
-                errors.classId ? (
-                  <ErrorBtn tooltipTitle={errors.classId.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('classId')}
               <br />
               <FormControl
                 style={{ minWidth: 195 }}
@@ -310,17 +349,11 @@ function AddStudent(props: Props) {
                   label="Address"
                 />
               </FormControl>
-              {!empty ? (
-                errors.address ? (
-                  <ErrorBtn tooltipTitle={errors.address.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('address')}
               <TextField
                 id="age"
                 name="age"
-                defaultValue={props.student ? props.student.age : 0}
+                defaultValue={props.student ? props.student.age : null}
                 inputRef={register({
                   pattern: {
                     value: onlyNumbersRegex,
@@ -329,13 +362,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Age"
               />
-              {!empty ? (
-                errors.age ? (
-                  <ErrorBtn tooltipTitle={errors.age.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('age')}
               <br />
               <TextField
                 id="maritalStatus"
@@ -350,13 +377,7 @@ function AddStudent(props: Props) {
                 })}
                 label="Marital Status"
               />
-              {!empty ? (
-                errors.maritalStatus ? (
-                  <ErrorBtn tooltipTitle={errors.maritalStatus.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('maritalStatus')}
               <br />
               <TextField
                 id="children"
@@ -373,13 +394,7 @@ function AddStudent(props: Props) {
                   max: { value: 25, message: "Sorry, no more than 25 kids" },
                 })}
               />
-              {!empty ? (
-                errors.children ? (
-                  <ErrorBtn tooltipTitle={errors.children.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('children')}
               <br />
               <TextField
                 id="citizenship"
@@ -388,13 +403,7 @@ function AddStudent(props: Props) {
                 inputRef={register()}
                 label="Citizenship"
               />
-              {!empty ? (
-                errors.citizenship ? (
-                  <ErrorBtn tooltipTitle={errors.citizenship.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('citizenship')}
               <br />
               <TextField
                 id="fcc_account"
@@ -403,47 +412,135 @@ function AddStudent(props: Props) {
                 inputRef={register()}
                 label="FreeCodeCamp Account"
               />
-              {!empty ? (
-                errors.fccAccount ? (
-                  <ErrorBtn tooltipTitle={errors.fccAccount.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
+              {errorComponent('fccAccount')}
             </div>
           </GridDiv>
           {generateBrs(2)}
-
           {/* Make it a dropdaown? */}
           {/* <FormControl
                 style={{ width: "90%" }}
                 error={Boolean(errors.classId)}
               > */}
-          <TextField
-            id="academicBackground"
-            multiline
-            fullWidth
-            defaultValue={props.student ? props.student.academicBackground : ""}
-            rows={4}
-            variant="outlined"
-            name="academicBackground"
-            inputRef={register({
-              required: "Academic background is required",
-              maxLength: {
-                value: 500,
-                message: "Military Service is too long",
-              },
-            })}
-            label="Academic Background"
-          />
-          {!empty ? (
-            errors.academicBackground ? (
-              <ErrorBtn tooltipTitle={errors.academicBackground.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
-          {/* </FormControl> */}
+          {
+            <div style ={{margin:"auto", width: "90%", display:'flex', justifyContent: 'flex-start'}}>
+              {`Academic Backgrounds: (${AcademicBackgrounds.length === 0? "?" : AcademicBackgrounds.length}):`}
+              <AddIcon 
+              onClick={addAcademicBackground}
+              style={{marginLeft:'3%'}}
+              />
+            </div>
+          }
+          {generateBrs(1)}
+
+          {
+            AcademicBackgrounds.map((background: IAcademicBackground, index:number) => <div key={background.id}>
+                <div style ={{margin:"auto", width: "80%", display:'flex', justifyContent: 'space-between'}}>
+                  {`Background ${index+1} :`}
+                  {<DeleteIcon
+                    onClick={async() => {
+                      if(typeof background.id === "number" && props.student){
+                        // execSwalConfirmation()
+                        // .then(async (result: { isConfirmed: boolean }) => {
+                        //   if (result.isConfirmed && props.student) {
+                        await network.delete(`/api/v1/student/academicBackground/${background.id}?studentId=${props.student.id}`)
+                        remove(index)
+                          // }
+                        // });
+                      }else{
+                        remove(index)
+                      }}}
+                    style={{marginRight:'8%'}}
+                  />}
+                </div>
+                <br />
+                <GridDiv style= {{margin:"auto", width: "80%"}}>
+                  <div>
+                  <FormControl
+                        style={{ minWidth: 195 }}
+                      >
+                      <InputLabel>{`Institution`}</InputLabel>
+                      <Controller
+                        as={
+                          <Select>
+                            {//@ts-ignore
+                            lists.institution.map((value: string) => (
+                              <MenuItem key={value} value={value} id={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        }
+                        name={`AcademicBackgrounds[${index}].institution`}
+                        rules={{ required: `Institution is required`}}
+                        control={control}
+                        //@ts-ignore
+                        defaultValue={background.institution || ""}
+                      />
+                    </FormControl>
+                    {academicBackgroundError(index, 'institution')}
+                    <FormControl
+                        style={{ minWidth: 195 }}
+                      >
+                      <InputLabel>{`Degree`}</InputLabel>
+                      <Controller
+                        as={
+                          <Select>
+                            {//@ts-ignore
+                            lists.degree.map((value: string) => (
+                              <MenuItem key={value} value={value} id={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        }
+                        name={`AcademicBackgrounds[${index}].degree`}
+                        rules={{ required: `Degree is required`}}
+                        control={control}
+                        //@ts-ignore
+                        defaultValue={background.degree || ""}
+                      />
+                    </FormControl>
+                    {academicBackgroundError(index, 'degree')}
+                  </div>
+                    <div>
+                    <Controller
+                      as={<TextField style={{width:"70%"}}/>}
+                      name={`AcademicBackgrounds[${index}].studyTopic`}
+                      //@ts-ignore
+                      defaultValue={ background.studyTopic || ""}
+                      control={control}
+                      rules={{ required: `Study Topic is required`}}
+                      label='Study Topic'
+                    />
+                    {academicBackgroundError(index, 'studyTopic')}
+                      <FormControl
+                        style={{ minWidth: 195 }}
+                      >
+                      <InputLabel>{`Average Score`}</InputLabel>
+                      <Controller
+                        as={
+                          <Select>
+                            {//@ts-ignore
+                            lists.averageScore.map((value: string) => (
+                              <MenuItem key={value} value={Number(value)} id={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        }
+                        name={`AcademicBackgrounds[${index}].averageScore`}
+                        rules={{ required: `Average Score is required`}}
+                        control={control}
+                        //@ts-ignore
+                        defaultValue={background.averageScore || ""}
+                      />
+                    </FormControl>
+                    {academicBackgroundError(index, 'averageScore')}
+                  </div>
+                </GridDiv>
+                {generateBrs(2)}
+              </div>)
+          }
           {generateBrs(2)}
           <TextField
             id="militaryService"
@@ -461,13 +558,7 @@ function AddStudent(props: Props) {
             })}
             label="Military Service"
           />
-          {!empty ? (
-            errors.militaryService ? (
-              <ErrorBtn tooltipTitle={errors.militaryService.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('militaryService')}
           {generateBrs(2)}
 
           <TextField
@@ -486,13 +577,7 @@ function AddStudent(props: Props) {
             })}
             label="Work Experience"
           />
-          {!empty ? (
-            errors.workExperience ? (
-              <ErrorBtn tooltipTitle={errors.workExperience.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('workExperience')}
           {generateBrs(2)}
           <TextField
             id="additionalDetails"
@@ -510,13 +595,7 @@ function AddStudent(props: Props) {
             })}
             label="Additional Details"
           />
-          {!empty ? (
-            errors.additionalDetails ? (
-              <ErrorBtn tooltipTitle={errors.additionalDetails.message} />
-            ) : (
-              <ActionBtn />
-            )
-          ) : null}
+          {errorComponent('additionalDetails')}
           {generateBrs(2)}
           <Button
             id="submitButton"

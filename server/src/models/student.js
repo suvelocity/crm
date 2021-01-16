@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.FieldSubmission, {
         foreignKey: "studentId",
       });
+      this.hasMany(models.AcademicBackground, {
+        foreignKey: 'studentId'
+      });
       this.belongsToMany(models.Field, {
         through: models.FieldSubmission,
         foreignKey: "studentId",
@@ -54,7 +57,6 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       maritalStatus: DataTypes.STRING,
       children: DataTypes.INTEGER,
-      academicBackground: DataTypes.STRING,
       militaryService: DataTypes.STRING,
       workExperience: DataTypes.STRING,
       languages: DataTypes.STRING,

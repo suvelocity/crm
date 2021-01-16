@@ -16,7 +16,7 @@ import {
 //@ts-ignore
 import { Student, Company, Job, Event } from "./models";
 //@ts-ignore
-import { Class, TaskofStudent, Task } from "./models";
+import { Class, TaskofStudent, Task, AcademicBackground } from "./models";
 import { Op } from "sequelize";
 import { flatMap, flatten, orderBy, reduce } from "lodash";
 import { parse } from "dotenv/types";
@@ -144,6 +144,10 @@ export const getQuery: (
   const include: SeqInclude[] = [
     {
       model: Class,
+    },
+    {
+      model: AcademicBackground,
+      attributes: ["id", "institution", "studyTopic", "degree", "averageScore"],
     },
   ];
 

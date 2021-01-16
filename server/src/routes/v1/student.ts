@@ -1,20 +1,12 @@
 import { Router, Response, Request } from "express";
-import {
-  //TODO fix
-  //@ts-ignore
-  Student,
-  //@ts-ignore
-  Event,
-  //@ts-ignore
-  Class,
-  //@ts-ignore
-  User,
-  //@ts-ignore
-  TeacherofClass,
-  //@ts-ignore
-} from "../../models";
-import { IStudent, PublicFields, PublicFieldsEnum, IEvent } from "../../types";
+//@ts-ignore
+import { Student, Event, AcademicBackground } from "../../models";
+//@ts-ignore
+import { Class, User, TeacherofClass } from "../../models";
+import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
+import { IEvent, IAcademicBackground } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
+import { academicBackgroundSchema } from "../../validations";
 import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
@@ -111,6 +103,9 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     });
     if (studentExistsInStudents || studentExistsInUsers)
       return res.status(409).json({ error: "Student already exists" });
+    const AcademicBackgrounds = req.body.AcademicBackgrounds as
+      | IAcademicBackground[]
+      | undefined;
 
     const newStudent: IStudent = {
       email: body.email,
@@ -124,18 +119,28 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       age: body.age === "" ? null : body.age,
       maritalStatus: body.maritalStatus,
       children: body.children ? null : body.children,
-      academicBackground: body.academicBackground,
       militaryService: body.militaryService,
       workExperience: body.workExperience,
       languages: body.languages,
       citizenship: body.citizenship,
       resumeLink: body.resumeLink,
-      // fccAccount: body.fccAccount,
+      fccAccount: body.fccAccount,
     };
     const { value, error } = studentSchema.validate(newStudent);
 
     if (error) return res.status(400).json(error);
     const student: IStudent = await Student.create(newStudent);
+    if (AcademicBackgrounds && student.id) {
+      const { value, error } = academicBackgroundSchema.validate(
+        AcademicBackgrounds
+      );
+      if (error) return res.status(400).json(error);
+      const academicBackgroundToCreate = AcademicBackgrounds.map(
+        (background) => ({ ...background, studentId: student.id })
+      );
+      await AcademicBackground.bulkCreate(academicBackgroundToCreate);
+    }
+
     const password = generatePassword(12, false);
 
     const hash = bcrypt.hashSync(password, 10);
@@ -167,6 +172,24 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
 router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   req.body.age = req.body.age === "" ? null : req.body.age;
   req.body.children = req.body.children === "" ? null : req.body.children;
+  if (req.body.AcademicBackgrounds) {
+    const academicBackgrounds = [...req.body.AcademicBackgrounds];
+    for (let i = 0; i < academicBackgrounds.length; i++) {
+      const academic = academicBackgrounds[i];
+      if (typeof academic.id === "string") {
+        delete academic.id;
+        await AcademicBackground.create({
+          ...academic,
+          studentId: req.params.id,
+        });
+      } else {
+        await AcademicBackground.update(academic, {
+          where: { id: academic.id },
+        });
+      }
+    }
+    delete req.body.AcademicBackgrounds;
+  }
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
@@ -178,6 +201,18 @@ router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+router.delete("/academicBackground/:id", async (req, res) => {
+  const { id } = req.params;
+  const { studentId } = req.query;
+  if (!id || !studentId)
+    return res.status(404).json({ error: "no id or studentId in params" });
+  await AcademicBackground.destroy({ where: { id } });
+  const studentsAcademicBackgrounds = await AcademicBackground.findAll({
+    where: { studentId: studentId },
+  });
+  return res.json(studentsAcademicBackgrounds);
 });
 
 router.delete("/:id", validateAdmin, async (req: Request, res: Response) => {

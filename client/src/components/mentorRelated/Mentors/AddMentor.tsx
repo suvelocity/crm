@@ -7,6 +7,8 @@ import {
   validPhoneNumberRegex,
   validCompanyRegex,
 } from "../../../helpers/patterns";
+import { ActionBtn, ErrorBtn } from "../../formRelated";
+import { onlyNumbersRegex} from "../../../helpers";
 import DoneIcon from "@material-ui/icons/Done";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import TextField from "@material-ui/core/TextField";
@@ -42,9 +44,17 @@ const AddMentor: React.FC<Props> = ({
   handleClose,
 }) => {
   const { register, handleSubmit, errors, control } = useForm();
+
   const history = useHistory();
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
+
+  const errorComponent = (name:string) => {
+    if(empty) return null
+    return errors[name] ?
+    <ErrorBtn tooltipTitle={errors[name].message} />
+    :<ActionBtn />
+  }
 
   const onSubmit = async (data: IMentor) => {
     try {
@@ -61,7 +71,7 @@ const AddMentor: React.FC<Props> = ({
       Swal.fire("Error Occurred", error.message, "error");
     }
   };
-
+  const religions = ['חילוני/ת','חרדי/ת','דתי/ה','ערבי/ה','אחר']
   return (
     <Wrapper>
       <Center>
@@ -88,22 +98,7 @@ const AddMentor: React.FC<Props> = ({
                 })}
                 label="Full Name"
               />
-              {!empty ? (
-                errors.name ? (
-                  <Tooltip title={errors.name.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('name')}
               <br />
               <TextField
                 id="company"
@@ -122,23 +117,32 @@ const AddMentor: React.FC<Props> = ({
                 })}
                 label="Company"
               />
-              {!empty ? (
-                errors.company ? (
-                  <Tooltip title={errors.company.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('company')}
               <br />
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.classId)}
+              >
+                <InputLabel>Religion Level</InputLabel>
+                <Controller
+                  as={
+                    <Select>
+                      {
+                        religions.map((religion:string) =>{
+                        return <MenuItem key={religion} value={religion}>
+                        {religion}
+                        </MenuItem>
+                      })
+                      }
+                    </Select>
+                  }
+                  name="religionLevel"
+                  defaultValue={mentor ? mentor.religionLevel : "אחר"}
+                  control={control}
+                />
+              </FormControl>
+              {!empty && <ActionBtn />}
+            <br />
               <TextField
                 id="email"
                 label="Email"
@@ -152,22 +156,7 @@ const AddMentor: React.FC<Props> = ({
                   },
                 })}
               />
-              {!empty ? (
-                errors.email ? (
-                  <Tooltip title={errors.email.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('email')}
               <br />
               <TextField
                 id="phone"
@@ -182,22 +171,7 @@ const AddMentor: React.FC<Props> = ({
                 })}
                 label="Phone Number"
               />
-              {!empty ? (
-                errors.phone ? (
-                  <Tooltip title={errors.phone.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('phone')}
               <br />
             </div>
             <div>
@@ -210,22 +184,7 @@ const AddMentor: React.FC<Props> = ({
                 })}
                 label="Role"
               />
-              {!empty ? (
-                errors.role ? (
-                  <Tooltip title={errors.role.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('role')}
               <br />
               <TextField
                 id="experience"
@@ -238,23 +197,12 @@ const AddMentor: React.FC<Props> = ({
                 })}
                 label="Experience"
               />
-              {!empty ? (
-                errors.experience ? (
-                  <Tooltip title={errors.experience.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+            {errorComponent('experience')}
               <br />
+              <FormControl
+                style={{ minWidth: 200 }}
+                error={Boolean(errors.classId)}
+              >
               <GoogleMaps
                 id="address"
                 name="address"
@@ -262,23 +210,23 @@ const AddMentor: React.FC<Props> = ({
                 inputRef={register({ required: "Address is required" })}
                 label="Address"
               />
-              {!empty ? (
-                errors.address ? (
-                  <Tooltip title={errors.address.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
-              <br />
+              </ FormControl>
+            {errorComponent('address')}
+              <TextField
+                id="age"
+                name="age"
+                type="number"
+                defaultValue={mentor ? mentor.age : 0}
+                inputRef={register({
+                  valueAsNumber: true,
+                  pattern: {
+                    value: onlyNumbersRegex,
+                    message: "Age needs to be a number",
+                  },
+                })}
+                label="Age"
+              />
+            {errorComponent('education')}
               <br />
               <FormControl
                 style={{ minWidth: 200 }}
@@ -288,11 +236,11 @@ const AddMentor: React.FC<Props> = ({
                 <Controller
                   as={
                     <Select>
-                      <MenuItem key={"Male"} value={"male"}>
-                        {"Male"}
+                      <MenuItem key={"גבר"} value={"גבר"}>
+                        {"גבר"}
                       </MenuItem>
-                      <MenuItem key={"Female"} value={"female"}>
-                        {"Female"}
+                      <MenuItem key={"אישה"} value={"אישה"}>
+                        {"אישה"}
                       </MenuItem>
                     </Select>
                   }
@@ -301,25 +249,48 @@ const AddMentor: React.FC<Props> = ({
                   control={control}
                 />
               </FormControl>
-              {!empty ? (
-                errors.classId ? (
-                  <Tooltip title={errors.classId.message}>
-                    <IconButton style={{ cursor: "default" }}>
-                      <ErrorOutlineIcon
-                        style={{ width: "30px", height: "30px" }}
-                        color="error"
-                      />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <IconButton style={{ cursor: "default" }}>
-                    <DoneIcon color="action" />
-                  </IconButton>
-                )
-              ) : null}
+              {errorComponent('gender')}
               <br />
             </div>
           </GridDiv>
+          <br />
+          <TextField
+            id="education"
+            multiline
+            fullWidth
+            defaultValue={mentor ? mentor.education : ""}
+            rows={4}
+            variant="outlined"
+            name="education"
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Education is too long",
+              },
+            })}
+            label="Education"
+          />
+          {errorComponent('education')}
+          <br />
+          <br />
+          <TextField
+            id="preference"
+            multiline
+            fullWidth
+            defaultValue={mentor ? mentor.preference : ""}
+            rows={4}
+            variant="outlined"
+            name="preference"
+            inputRef={register({
+              maxLength: {
+                value: 100,
+                message: "Preference is too long",
+              },
+            })}
+            label="Preference"
+          />
+          {errorComponent('preference')}
+          <br />
           <br />
           <Button
             id="submitButton"

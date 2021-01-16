@@ -10,7 +10,7 @@ export interface IStudent {
   age?: number;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  AcademicBackgrounds: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -73,6 +73,14 @@ export interface IClass {
   Students: Omit<IStudent, "Class">[];
   cmId?: string;
 }
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number ;
+}
 export interface IClassOfTeacher {
   id: number;
   Class: Pick<IClass, "id" | "name" | "Students">;
@@ -130,7 +138,10 @@ export interface filterStudentObject {
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];
+  Languages?: string[];
+  AverageScore?: string;
   Name?: string[];
+  ReligionLevels?: string[];
 }
 export interface Name {
   firstName: string;
@@ -139,6 +150,7 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  singleOption?: boolean;
   possibleValues: string[];
 }
 
@@ -146,12 +158,16 @@ export interface IMentor {
   id?: number;
   name: string;
   company: string;
+  age: string;
   email: string;
   phone: string;
   address: string;
   role: string;
   experience: number;
   available: boolean;
+  education:string;
+  preference:string;
+  religionLevel:string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
