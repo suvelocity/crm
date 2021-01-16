@@ -6,49 +6,38 @@ import {
   TextField,
   Theme,
 } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import DeleteIcon from "@material-ui/icons/Delete";
+import React, { CSSProperties, useRef, useState } from "react";
+import styled from 'styled-components';
 import { ITaskCriteria, ITaskLabel } from "../../../typescript/interfaces";
 
-export default function LabelButton({ label }: { label: ITaskLabel }) {
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+// export default function LabelButton({ label }: { label: ITaskLabel }) {
+//   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const handleOpen: () => void = () => {
-    setModalOpen(true);
-  };
-  const handleClose: () => void = () => {
-    setModalOpen(false);
-  };
+//   const handleOpen: () => void = () => {
+//     setModalOpen(true);
+//   };
+//   const handleClose: () => void = () => {
+//     setModalOpen(false);
+//   };
 
-  return (
-    <>
-      <LabelView open={modalOpen} handleClose={handleClose} label={label} />
-      <span onClick={handleOpen}>{label.name}</span>
-    </>
-  );
-}
+//   return (
+//     <>
+//       <LabelView open={modalOpen} handleClose={handleClose} label={label} />
+//       <span onClick={handleOpen}>{label.name}</span>
+//     </>
+//   );
+// }
 
-function LabelView({
+export function LabelView({
   label,
-  open,
-  handleClose,
 }: {
   label: ITaskLabel;
-  open: boolean;
-  handleClose: () => void;
 }) {
-  const [criterionModalOpen, setCriterionModalOpen] = useState<boolean>(false);
   const [criteria, setCriteria] = useState<ITaskCriteria[]>([]);
   const classes = useStyles();
 
   const criterionField = useRef(null);
-  const handleCriterionClose: () => void = () => {
-    setCriterionModalOpen(false);
-  };
-
-  const handleCriterionOpen: () => void = () => {
-    setCriterionModalOpen(true);
-  };
-
   const addCriterion: () => void = () => {
     //@ts-ignore
     const newCriterion: string = criterionField.current.value;
@@ -80,72 +69,56 @@ function LabelView({
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <>
-        {/*@ts-ignore */}
-        <div style={modalStyle} className={classes.paper}>
-          <h1>{label.name}</h1>
-          <FormControl
-            id="criteria"
-            variant="outlined"
-            // className={classes.formControl}
-          >
-            {" "}
-            <TextField
-              variant="outlined"
-              label="Add Criterion"
-              inputRef={criterionField}
-            />
-            <button onClick={addCriterion}>Add</button>
-          </FormControl>
-          {/* <button onClick={handleCriterionOpen}>Add Criterion</button>
-          <CriterionModal
-            open={criterionModalOpen}
-            handleClose={handleCriterionClose}
-          /> */}
-          {criteria[0]
-            ? criteria.map((criterion: ITaskCriteria, i: number) => (
-                <li
-                  key={`criteria${i}`}
-                  onClick={() => removeCriterion(criterion)}
-                >
-                  {criterion.name}
-                </li>
-              ))
-            : "No criteria added"}
-        </div>
-      </>
-    </Modal>
+    <Container>
+      <span className="header">{label.name}</span>
+
+        <input
+          placeholder="Add Criterion"
+          ref={criterionField}
+        />
+        <button type="button" onClick={addCriterion}>Add</button>
+
+      {criteria[0]
+        ? (
+        <ul>
+          {criteria.map((criterion: ITaskCriteria, i: number) => (
+            <li
+              key={`criteria${i}`}
+              
+            >
+              {criterion.name}
+              <DeleteIcon onClick={() => removeCriterion(criterion)} />
+            </li>
+          ))}
+        </ul>)
+        : undefined}
+    </Container>
   );
 }
 
-function CriterionModal({
-  open,
-  handleClose,
-}: {
-  open: boolean;
-  handleClose: () => void;
-}) {
-  const classes = useStyles();
+const Container = styled.div`
+    margin-top: 10px;
+    margin-bottom: 10px;
+  .header {
+    font-size: 20px;
+    margin-right: 10px;
 
-  return (
-    <Modal open={open} onClose={handleClose}>
-      <>
-        {/*@ts-ignore */}
-        <div style={modalStyle} className={classes.paper}>
-          <span>"I am edit modal"</span>
-        </div>
-      </>
-    </Modal>
-  );
-}
+  }
+  .MuiOutlinedInput-input {
+    height: 31px;
+    display: inline-block;
+    padding: 5px 10px;
+  }
+  li {
+    height: 30px;
+    .MuiSvgIcon-root{
+      font-size: 19px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+  }
+`;
 
-const modalStyle = {
-  top: `50%`,
-  left: `50%`,
-  transform: `translate(-${50}%, -${50}%)`,
-  overflowY: "scroll",
-};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

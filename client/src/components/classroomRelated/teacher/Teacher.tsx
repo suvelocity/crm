@@ -208,7 +208,8 @@ const modalStyle = {
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
-  overflowY: "scroll",
+  height: 'calc(100vh - 80px)',
+  overflow: 'auto'
 };
 
 const useStyles = makeStyles((theme: Theme) =>
