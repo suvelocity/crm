@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Select,
   TextField,
@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import SearchCreateSelect from "react-select/async-creatable";
 import styled from "styled-components";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CloseIcon from "@material-ui/icons/Close";
 import {
   KeyboardDatePicker,
@@ -26,9 +25,8 @@ import {
 } from "../../../typescript/interfaces";
 import ChallengeSelector from "./ChallengeSelector";
 import { ITask } from "../../../typescript/interfaces";
-import { formatDiagnostic } from "typescript";
 import ClassAccordion from "./ClassAccordion";
-import LabelButton from "../tasks/LabelView";
+import { LabelView } from "../tasks/LabelView";
 import { network } from "../../../helpers";
 interface addTaskProps {
   task: ITask;
@@ -67,7 +65,7 @@ export default function AddTask({
   teacherClasses,
 }: addTaskProps) {
   const classes = useStyles();
-  const [labels, setLabels] = useState<string[]>([]);
+  const [defaultTaskLabels, setDefaultTaskLabels] = useState<any[]>([]); // TODO: add type
 
   //@ts-ignore
   const classList: classList[] | undefined = teacherClasses?.map(
@@ -109,12 +107,12 @@ export default function AddTask({
     }
   };
 
-  const getLabels: (searchQuery: string) => Promise<any[] | undefined> = async (
-    searchQuery: string
+  const getLabels: (searchQuery: string | undefined) => Promise<any[] | undefined> = async (
+    searchQuery: string | undefined
   ) => {
     try {
       const labels: ILabel[] = (
-        await network.get(`/api/v1/label/all?search=${searchQuery}`)
+        await network.get(`/api/v1/label/all${searchQuery ? `?search=${searchQuery}` : ''}`)
       ).data;
       console.log(labels);
       return labels.map((label: ILabel) => {
@@ -147,8 +145,15 @@ export default function AddTask({
     }
   };
 
-  console.log("current task labels");
-  console.log(task.labels);
+  useEffect(() => {
+    (async () => {
+      const labels = await getLabels(undefined);
+      if (labels) {
+        setDefaultTaskLabels(labels)
+      }
+    })()
+  }, [])
+
   return (
     <Form
       key={index}
@@ -288,24 +293,28 @@ export default function AddTask({
           <MenuItem value={"disabled"}>disabled</MenuItem>
         </Select>
       </FormControl>
-      <FormControl
-        id="task-labels"
-        variant="outlined"
-        className={classes.formControl}
-      >
-        <SearchCreateSelect
-          isMulti
-          loadOptions={getLabels}
-          onChange={handleSCSChange}
-          defaultInputValues
-        />
+      <LabelsContainer style={{ borderTop: '1px olid black' }}>
+        <h4>Set labels</h4>
+        <FormControl
+          id="task-labels"
+          variant="outlined"
+          className={classes.formControl}
+          style={{ width: '100%', margin: 0 }}
+        >
+          <SearchCreateSelect
+            isMulti
+            loadOptions={getLabels}
+            onChange={handleSCSChange}
+            defaultOptions={defaultTaskLabels}
+          />
 
-        {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
-        <Button onClick={handleLabelAdd}>Add</Button> */}
-      </FormControl>
-      {task.labels?.map((l: ITaskLabel) => (
-        <LabelButton label={l} />
-      ))}
+          {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
+          <Button onClick={handleLabelAdd}>Add</Button> */}
+        </FormControl>
+        {task.labels?.map((l: ITaskLabel) => (
+          <LabelView label={l} />
+        ))}
+      </LabelsContainer>
       {students && teacherClasses !== undefined ? (
         <ClassAccordion classes={classList!} updatePicks={changer} />
       ) : (
@@ -314,6 +323,12 @@ export default function AddTask({
     </Form>
   );
 }
+
+const LabelsContainer = styled.div`
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 14px;
+`;
 
 const Input = styled(TextField)`
   margin-top: 5px;
