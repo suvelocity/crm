@@ -150,6 +150,7 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  label?: string;
   singleOption?: boolean;
   possibleValues: string[];
 }

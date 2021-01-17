@@ -37,7 +37,7 @@ export const FiltersComponents = ({
         >
           {item.singleOption && <InputLabel
             id={`demo-simple-select-label${item.filterBy}`}
-          >{`${item.filterBy}`}</InputLabel>}
+          >{item.label || camelCaseToWords(item.filterBy)}</InputLabel>}
           <Select 
             multiple={!item.singleOption}
             labelId={`demo-simple-select-label${item.filterBy}`}
@@ -59,7 +59,7 @@ export const FiltersComponents = ({
           >
             {
               !item.singleOption ?
-              <MenuItem value="" disabled>{camelCaseToWords(item.filterBy)}</MenuItem>
+              <MenuItem value="" disabled>{item.label || camelCaseToWords(item.filterBy)}</MenuItem>
               :
               <MenuItem value="רגיל" >{
                 "רגיל"

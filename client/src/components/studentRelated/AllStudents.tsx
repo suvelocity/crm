@@ -111,27 +111,33 @@ function AllStudents() {
       setFilterOptionsArray([
         {
           filterBy: "Course",
+          label: "קורס",
           possibleValues: newCourseNames,
         },
         {
           filterBy: "Class",
+          label: "כיתה",
           possibleValues: newClassNames,
         },
         {
           filterBy: "JobStatus",
+          label: "סטטוס השמה",
           possibleValues: newJobStatuses,
         },
         {
           filterBy: "Name",
+          label: "שם",
           possibleValues: newFullNames,
         },
         {
           filterBy: "Languages",
+          label: "שפות",
           possibleValues: ["עברית","אנגלית","ספרדית","רוסית","ערבית"],
         },
         {
           filterBy: "AverageScore",
           singleOption: true,
+          label: "ממוצע ציונים",
           possibleValues: ["עולה", "יורד"],
         }
       ]);
