@@ -22,7 +22,7 @@ async function establishConnection() {
   process.env.MY_URL = url;
   console.log("MY_URL", process.env.MY_URL);
 }
-if (env === "development") {
+if (env === "development2") {
   establishConnection()
     .then(async () => {
       const { CM_ACCESS: cmAccess, MY_URL: url } = process.env;
