@@ -63,7 +63,7 @@ function AddFormModal({ getForms, id }: { getForms: any; id: number }) {
     handleClose();
     data.programId = id;
     try {
-      await network.post(`/api/V1/M/form/`, data);
+      await network.post(`/api/v1/M/form/`, data);
       getForms();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");

@@ -81,7 +81,7 @@ function EditMeetingModal({
     handleClose();
     try {
       !data.date ? (data.date = meeting.date) : (data.date = data.date);
-      await network.put(`/api/V1/M/meeting/${meeting.id}`, data);
+      await network.put(`/api/v1/M/meeting/${meeting.id}`, data);
       getMeetings();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -92,7 +92,7 @@ function EditMeetingModal({
     handleClose();
     const proceed: boolean = await promptAreYouSure();
     if (!proceed) return;
-    await network.patch(`/api/V1/M/meeting/delete`, {meetingtId:meeting.id});
+    await network.patch(`/api/v1/M/meeting/delete`, {meetingtId:meeting.id});
     getMeetings();
   };
 

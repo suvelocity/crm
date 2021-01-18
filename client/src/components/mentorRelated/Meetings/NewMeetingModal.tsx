@@ -89,7 +89,7 @@ function NewMeetingModal({
       data.mentorName = meetings.Mentor.name;
       data.studentName =
         meetings.Student.firstName + " " + meetings.Student.lastName;
-      await network.post(`/api/V1/M/meeting`, data);
+      await network.post(`/api/v1/M/meeting`, data);
       getMeetings();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");

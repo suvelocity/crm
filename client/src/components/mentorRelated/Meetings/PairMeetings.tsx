@@ -31,7 +31,7 @@ function PairMeetings() {
   const getMeetings = useCallback(async () => {
     try {
       const { data }: { data: IPairMeetings } = await network.get(
-        `/api/V1/M/meeting/${id}`
+        `/api/v1/M/meeting/${id}`
       );    
       setMeetings(data);
       setLoading(false);

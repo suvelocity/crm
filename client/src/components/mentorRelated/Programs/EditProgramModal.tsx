@@ -79,7 +79,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
     data.endDate = endDate;
     !data.name? data.name=program.name:data.name=data.name;
     try {
-        await network.put(`/api/V1/M/program/${program.id}`,data);
+        await network.put(`/api/v1/M/program/${program.id}`,data);
         getPrograms();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -105,7 +105,7 @@ function EditProgramModal({ program, getPrograms }: { program: IMentorProgram, g
       handleClose();
       const proceed: boolean = await promptAreYouSure();
       if (!proceed) return;
-    await network.patch('/api/V1/M/program/delete',{programId:program.id});
+    await network.patch('/api/v1/M/program/delete',{programId:program.id});
     getPrograms()
   }
 

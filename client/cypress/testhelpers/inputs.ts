@@ -172,13 +172,6 @@ export const studentInputs = [
     updatedValue: "Broncks",
   },
   {
-    field: "academicBackground",
-    type: "textfield",
-    errors: [],
-    trueValue: "High school diploma.",
-    updatedValue: "Banana Juggling Expert",
-  },
-  {
     field: "militaryService",
     type: "textfield",
     errors: [],
