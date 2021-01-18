@@ -1,14 +1,51 @@
 import React, { useState } from "react";
 import { createStyles, makeStyles, Modal, Theme } from "@material-ui/core";
 import {
+  Criteria,
   IGrade,
   ITask,
   ITaskCriteria,
   ITaskLabel,
 } from "../../../typescript/interfaces";
-import { Label } from "@material-ui/icons";
+import { Grades } from "../../../typescript/interfaces"
+import { Grade, Label } from "@material-ui/icons";
 import { network } from "../../../helpers";
 
+const calculateGrades =(grades: Grades[]) => {
+  const arrayOfAverageScores: number[] = [];
+  for(let i = 0; i < grades.length; i++) {
+    const grade:Grades = grades[i];
+    let sum = 0;
+    let length = 0;
+    if(grade.Criteria.length === 0 && grade.Label == null){
+      return "--"
+    }
+    for(let j = 0; j <grade.Criteria.length; j++) {
+      const val:Criteria = grade.Criteria[j];
+      if(val == null){
+        return "--"
+      }
+        sum += val.grade;
+        length++;
+    }
+    if(grade.Label){
+      sum += grade.Label.grade;
+      length++;
+    }
+    if(length !== 0){
+      arrayOfAverageScores.push(Math.round(sum / length));
+    }
+  }
+  console.log(grades)
+  if(arrayOfAverageScores.length !== 0){
+    console.log(arrayOfAverageScores);
+    let sum = 0;
+    arrayOfAverageScores.forEach((val: number) => sum += val)
+    return Math.round(sum / arrayOfAverageScores.length)
+  }else {
+    return "--"
+  }
+}
 export default function GradeButton({
   taskLabels,
   grades,
@@ -17,28 +54,31 @@ export default function GradeButton({
   studentId,
 }: {
   taskLabels: ITaskLabel[];
-  grades: Partial<ITask>;
+  grades: Grades[];
   key: string;
   taskId: number;
   studentId: number;
 }) {
   const [openGrades, setOpenGrades] = useState<boolean>(false);
-
+  const [activeGrades, setActiveGrades] = useState<Grades[]>(grades);
   const handleOpen: () => void = () => {
     setOpenGrades(true);
   };
   const handleClose: () => void = () => {
+
     setOpenGrades(false);
   };
-
+  const calculatedScore = calculateGrades(activeGrades)
+  console.log(taskLabels)
   return (
     <>
-      <span onClick={handleOpen}>----</span>
+      <span onClick={handleOpen}>{calculatedScore}</span>
       <GradeView
         open={openGrades}
         handleClose={handleClose}
         taskLabels={taskLabels}
-        grades={grades}
+        grades={activeGrades}
+        setActiveGrades={setActiveGrades}
         key={key}
         taskId={taskId}
         studentId={studentId}
@@ -52,6 +92,7 @@ function GradeView({
   handleClose,
   taskLabels,
   grades,
+  setActiveGrades,
   key,
   taskId,
   studentId,
@@ -59,8 +100,9 @@ function GradeView({
   open: boolean;
   handleClose: () => void;
   taskLabels: ITaskLabel[];
-  grades: IGrade | Partial<ITaskLabel>;
+  grades: Grades[] //| Partial<ITaskLabel>;
   key: string;
+  setActiveGrades: Function;
   taskId: number;
   studentId: number;
 }) {
@@ -70,12 +112,16 @@ function GradeView({
     grade: string,
     belongsTo: string,
     belongsToId: number,
-    studentId: number
+    studentId: number,
+    i: number,
+    j?: number
   ) => Promise<void> = async (
     grade: string,
     belongsTo: string,
     belongsToId: number,
-    studentId: number
+    studentId: number,
+    i: number,
+    j?: number
   ) => {
     try {
       console.log(grade, belongsTo, belongsToId, studentId);
@@ -87,6 +133,13 @@ function GradeView({
         belongsToId,
         studentId,
       });
+      const newGrades = grades.slice();
+      if(typeof i === "number" && typeof j === "number"){
+          newGrades[i].Criteria[j] = {grade: Number(grade)}
+      }else if(typeof i === "number"){
+          newGrades[i].Label = {grade: Number(grade)}
+      }
+      setActiveGrades(newGrades)
       alert("success");
     } catch (e) {
       console.log(e);
@@ -112,6 +165,7 @@ function GradeView({
                         key={`input-${key}-label${i}-crit${j}`}
                         type="number"
                         placeholder="Grade"
+                          //@ts-ignore
                         defaultValue={
                           //@ts-ignore
                           grades[i]
@@ -127,7 +181,7 @@ function GradeView({
                             e.target.value,
                             "criterion",
                             criterion.id!,
-                            studentId
+                            studentId,i, j
                           )
                         }
                       />
@@ -162,7 +216,8 @@ function GradeView({
                           e.target.value,
                           "label",
                           label.id!,
-                          studentId
+                          studentId,
+                          i
                         )
                       }
                     />
@@ -194,7 +249,7 @@ function GradeView({
                   grades?.grade ? grades.grade : ""
                 }
                 onBlur={(e) =>
-                  changeGrade(e.target.value, "task", taskId, studentId)
+                  changeGrade(e.target.value, "task", taskId, studentId, 0)
                 }
               />
               <span key={`grade-${key}`}>
