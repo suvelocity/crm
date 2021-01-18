@@ -59,7 +59,7 @@ function ClassRoomNavBar() {
     try {
       if (user.userType === "student") {
         const { data }: { data: IStudent } = await network.get(
-          `/api/V1/M/student/${user.id}`
+          `/api/v1/M/student/${user.id}`
         );
         setMentorProgram(data);
       }

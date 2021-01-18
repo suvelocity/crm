@@ -14,7 +14,6 @@ export const studentFormErrorTitles = [
   "Email is required",
   "Address is required",
   "Class is required",
-  "Academic background is required",
 ];
 
 export const companyFormErrorTitles = [

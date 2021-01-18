@@ -96,10 +96,9 @@ function NewClassMentorProject() {
         )
       )
     ).filter(level => level !== null)
-    console.log(ReligionLevels, 'religion Levels')
     setFilterOptionsArray([
       {
-        filterBy: "Religion Levels",
+        filterBy: "ReligionLevels",
         possibleValues: ReligionLevels,
       }]);
     setMentors(mentorList);
@@ -131,7 +130,6 @@ function NewClassMentorProject() {
         : mentors.filter(
             (mentor) => mentor.available === available
           );
-
     const mentorSelectFilter =  relevant.filter((mentor) => {
         const religionLevelCondition =
           filterAttributes.ReligionLevels!.length === 1 &&
@@ -575,6 +573,7 @@ function NewClassMentorProject() {
             <Loading loading={loading} size={30}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <TextField
+                  style = {{marginRight: '10%'}}
                   label="Search"
                   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                     changeSearchValue(e.target.value as string);
@@ -587,7 +586,7 @@ function NewClassMentorProject() {
                   callbackFunction={setFilterAttributes}
                   widthPercent={50}
                 />
-                <FormControl style={{ minWidth: 200, marginRight: 20 }}>
+                <FormControl style={{ minWidth: 130, marginRight: 20 }}>
                   <InputLabel>Availability</InputLabel>
                   <Select
                     onChange={(e: React.ChangeEvent<{ value: unknown }>) =>

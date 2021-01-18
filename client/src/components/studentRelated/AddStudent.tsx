@@ -63,6 +63,7 @@ const lists: {institution:string[], degree:string[], averageScore:number[]} ={
    " מכללת סמי שמעון",
    " מכללת עזריאלי",
    " מכון טל",
+   " מכון לב",
    " מכון תבונה",
    " מכון הדסה",
    " אורט בראודה",
@@ -134,9 +135,11 @@ function AddStudent(props: Props) {
     data.languages = data.languages.join(", ");
     try {
       if (props.update && props.student) {
-        data.AcademicBackgrounds = data.AcademicBackgrounds.map((academic:IAcademicBackground, index:number) => {
-          return {...academic, id: AcademicBackgrounds[index].id}
-        })
+        if(data.AcademicBackgrounds){
+          data.AcademicBackgrounds = data.AcademicBackgrounds.map((academic:IAcademicBackground, index:number) => {
+            return {...academic, id: AcademicBackgrounds[index].id}
+          })
+        }
         await network.patch(`/api/v1/student/${props.student.id}`, data);
         props.handleClose && props.handleClose();
       } else {
@@ -144,7 +147,7 @@ function AddStudent(props: Props) {
         history.push("/student/all");
       }
     } catch (error) {
-      if (error.response.status === 409) {
+      if (error.response && error.response.status === 409) {
         Swal.fire({
           title: "User with the same id or email already exists",
           icon: "error",

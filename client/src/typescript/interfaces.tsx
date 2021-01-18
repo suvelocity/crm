@@ -150,6 +150,7 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  label?: string;
   singleOption?: boolean;
   possibleValues: string[];
 }
@@ -298,7 +299,7 @@ export interface ITask {
   body?: string;
   labels?: ITaskLabel[];
   TaskLabels?: Partial<ITaskLabel>[];
-  Grades?: Partial<IGrade>[];
+  Grades?: Grades[]// Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -330,12 +331,18 @@ export interface ITaskCriteria {
   taskId?: number;
   labelId?: number;
   name: string;
-  Grades?: Partial<IGrade>[];
+  Grades?: Grades[]
+  // Grades?: Partial<IGrade>[];
 }
 
 export interface IGrade {
   id?: number;
   grade?: number;
+}
+export type Criteria = null | {grade: number};
+export interface Grades {
+  Criteria: Criteria[]
+  Label: null | {grade: number}
 }
 
 export type ThemeType = "dark" | "light";

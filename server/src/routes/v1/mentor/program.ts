@@ -11,7 +11,7 @@ import { IMentorProgram, IDashboard } from "../../../types";
 import transporter from "../../../mail";
 
 const mailProps = (to: string, subject: string, text: string) => ({
-  from: process.env.EMAIL_USER,
+  from: "lea.soshnik@suvelocity.org", //sender || process.env.EMAIL_USER,
   to,
   subject,
   text,
@@ -173,15 +173,31 @@ router.post("/startmails/:id", async (req, res) => {
         mailProps(
           pair.Student.email,
           pair.MentorProgram.name,
-          `Welcome to ${pair.MentorProgram.name} \n \n
-         In the next few weeks you gonna have someone to talk, consult and learn about what you need to know for your next job. \n
-         We hope you will grow from this opportunity and wish you the best. \n
-         Please do not forget to help us keep treack your meeting and feedbacks via http://35.226.223.57:8080/mentor/meeting/${pair.id} \n
-         Your mentor: \n
-          -  ${pair.Mentor.name} \n
-          -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
-          -  company: ${pair.Mentor.company} \n
-          -  role: ${pair.Mentor.role}`
+          `
+          Welcome to ${pair.MentorProgram.name} - Mentoring Program
+          
+                   In the next few weeks you you will have a Mentor- a person to consult with and to learn from, in order to raise your chances in finding your next job.
+          
+                   We hope you will grow from this experience and fulfill this wonderful opportunity.
+          
+                   Please do not forget to help us keep track of your meetings and feedbacks via http://35.226.223.57:8080/mentor/meeting/48
+          
+                   Your mentor is: \n
+                   -  ${pair.Mentor.name} \n
+                   -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
+                   -  company: ${pair.Mentor.company} \n
+                   -  role: ${pair.Mentor.role}
+          
+           
+          
+          Please contact your mentor and schedule your first meeting.
+          
+           
+          
+          For more questions please contact: Lea.soshnik@suvelocity.org
+          
+           
+          `
         ),
         (error: any) => res.status(500).json({ error: error.message })
       );

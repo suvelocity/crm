@@ -176,7 +176,7 @@ const ProgramDashboard: React.FC = () => {
               }}
               variant="contained"
               onClick={async () => {
-                await network.post(`/api/V1/M/program/startmails/${id}`);
+                await network.post(`/api/v1/M/program/startmails/${id}`);
                 await getTableData();
               }}
             >

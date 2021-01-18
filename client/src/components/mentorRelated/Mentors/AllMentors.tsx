@@ -170,12 +170,12 @@ function AllMentors() {
         <div
           style={{
             display: "flex",
-            width: "50%",
+            width: "100%",
             justifyContent: "space-around",
           }}
         >
           {filterOptionsArray.map((arr) => (
-            <div>
+            <div style={{width:`${100 / filterOptionsArray.length}`}}>
               <InputLabel>{arr.filterBy}</InputLabel>
               <Select
                 onChange={(e: React.ChangeEvent<{ value: unknown }>) => {

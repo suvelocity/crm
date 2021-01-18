@@ -111,27 +111,33 @@ function AllStudents() {
       setFilterOptionsArray([
         {
           filterBy: "Course",
+          label: "קורס",
           possibleValues: newCourseNames,
         },
         {
           filterBy: "Class",
+          label: "כיתה",
           possibleValues: newClassNames,
         },
         {
           filterBy: "JobStatus",
+          label: "סטטוס השמה",
           possibleValues: newJobStatuses,
         },
         {
           filterBy: "Name",
+          label: "שם",
           possibleValues: newFullNames,
         },
         {
           filterBy: "Languages",
+          label: "שפות",
           possibleValues: ["עברית","אנגלית","ספרדית","רוסית","ערבית"],
         },
         {
           filterBy: "AverageScore",
           singleOption: true,
+          label: "ממוצע ציונים",
           possibleValues: ["עולה", "יורד"],
         }
       ]);
@@ -172,10 +178,12 @@ function AllStudents() {
     return studentsToFilter.filter((student) => {
       const addressCondition = addressName ? student.address.toLowerCase().includes(addressName) : true;
       const languageCondition = 
-      filterAttributes.Languages ? 
-      student.languages ? 
-      filterAttributes.Languages.every((lang:string) =>!student.languages? false :student.languages.includes(lang))
-      : false : false;
+      filterAttributes.Languages!.length === 1 &&
+      filterAttributes.Languages![0] === ""
+        ? true :
+      filterAttributes.Languages!.every((lang:string) =>!student.languages? false :student.languages.includes(lang));
+
+      console.log(student.languages, filterAttributes.Languages, languageCondition)
       const classCondition =
         filterAttributes.Class!.length === 1 &&
         filterAttributes.Class![0] === ""
@@ -214,7 +222,6 @@ function AllStudents() {
             : student.lastName.trim() === lastName;
         return firstNameCondition && lastNameCondition;
       });
-
       return (
         classCondition &&
         courseCondition &&

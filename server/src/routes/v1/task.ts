@@ -126,6 +126,51 @@ const createCriteria: (
     })
   );
 };
+
+const getGradesOfTaskForStudent: (
+  studentId: number,
+  labelsAndCriteria: ITaskLabel[],
+  taskId: number
+) => Promise<void> = async (
+  studentId: number,
+  labelsAndCriteria: ITaskLabel[],
+  taskId: number
+) => {
+  return labelsAndCriteria[0]
+    ? Promise.all(
+        labelsAndCriteria.map(async (lac: ITaskLabel) => {
+          console.log(lac);
+          return {
+            Criteria: await Promise.all(
+              lac.Criteria.map((criterion: ICriterion) =>
+                Grade.findOne({
+                  where: {
+                    studentId: studentId,
+                    belongsTo: "criterion",
+                    belongsToId: criterion.id,
+                  },
+                })
+              )
+            ),
+            Label: await Grade.findOne({
+              where: {
+                studentId: studentId,
+                belongsTo: "label",
+                belongsToId: lac.id,
+              },
+            }),
+          };
+        })
+      )
+    : Grade.findOne({
+        where: {
+          studentId: studentId,
+          belongsTo: "task",
+          belongsToId: taskId,
+        },
+      });
+};
+
 router.use("/challenges", challenges);
 
 router.get(
@@ -142,122 +187,69 @@ router.get(
       const studentWhereClause: any = parsedFilters.student;
       Object.assign(tosWhereCLause, parsedFilters.task);
 
-      const myTasks: any[] = await Task.findAll({
-        where: tosWhereCLause,
-        include: [
-          {
-            model: TaskofStudent,
-            attributes: ["studentId", "status", "submitLink", "updatedAt"],
-            required: true,
+      const myTasks: any[] = await Promise.all(
+        (
+          await Task.findAll({
+            where: tosWhereCLause,
             include: [
               {
-                model: Student,
-                attributes: ["firstName", "lastName"],
+                model: TaskofStudent,
+                attributes: ["studentId", "status", "submitLink", "updatedAt"],
                 required: true,
                 include: [
                   {
-                    model: Class,
+                    model: Student,
+                    attributes: ["firstName", "lastName"],
                     required: true,
-                    attributes: ["id", "name", "endingDate"],
-                    where: studentWhereClause,
+                    include: [
+                      {
+                        model: Class,
+                        required: true,
+                        attributes: ["id", "name", "endingDate"],
+                        where: studentWhereClause,
+                      },
+                    ],
                   },
                 ],
               },
-              //#region Get grades per student - works bad
-              // {
-              //   model: Task,
-              //   attributes: ["id"],
-              //   // attributes: ["TaskLabels"],
-              //   include: [
-              //     {
-              //       model: TaskLabel,
-              //       attributes: ["id"],
-              //       // attributes: ["Criteria", "Labels"],
-              //       include: [
-              //         {
-              //           model: Criterion,
-              //           attributes: ["id"],
-              //           include: [
-              //             {
-              //               model: Grade,
-              //               foreignKey: ["studentId", "belongsToId"],
-              //               attributes: ["grade"],
-              //             },
-              //           ],
-              //         },
-              //         {
-              //           model: Label,
-              //           attributes: ["id"],
-              //           include: [
-              //             {
-              //               model: Grade,
-              //               foreignKey: ["studentId", "belongsToId"],
-              //               attributes: ["grade"],
-              //             },
-              //           ],
-              //         },
-              //       ],
-              //     },
-              //     {
-              //       model: Grade,
-              //       foreignKey: ["studentId", "belongsToId"],
-              //     },
-              //   ],
-              // },
-              //#endregion
+              {
+                model: Lesson,
+                attributes: ["title"],
+              },
+              {
+                model: TaskLabel,
+                include: [{ model: Criterion }, { model: Label }],
+              },
             ],
-          },
-          {
-            model: Lesson,
-            attributes: ["title"],
-          },
-          {
-            model: TaskLabel,
-            include: [{ model: Criterion }, { model: Label }],
-          },
-          //Option B - bring grades per task
-          // {
-          //   model: TaskLabel,
-          //   include: [
-          //     { model: Criterion, include: [{ model: Grade }] },
-          //     { model: Label, include: [{ model: Grade }] },
-          //   ],
-          // },
-          // {
-          //   model: Grade,
-          // },
-        ],
-        order: [["createdAt", "DESC"]],
-      });
+            order: [["createdAt", "DESC"]],
+          })
+        ).map(async (task: any) => {
+          task = task.toJSON();
+          const getGrades = async () => {
+            const allStudentGrades: any = await Promise
+              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
+                return { result, studentId: tos.studentId }
+              }))
+            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
+              ({
+                ...gradesMap,
+                [tos.studentId]: tos.result
+              })
+            , {})
+          }
+          task.Grades = await getGrades();
+          return task;
+        })
+      );
 
       return res.json(myTasks);
-    } catch (error) {
+    }catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  }
-);
+  });
 
-router.get("/options/:id", async (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  if (!id) res.status(400).json({ error: "Malformed data" });
-  const options: any = {};
-
-  try {
-    const classes: any[] = await TeacherofClass.findAll({
-      where: { teacher_id: id },
-      attributes: ["id"],
-      include: [{ model: Class, attributes: ["name"] }],
-    });
-
-    options.classes = classes.map((cls: any) => cls.Class.name);
-    options.taskTypes = ["fcc", "Manual", "challengeMe", "quiz"];
-
-    res.json(options);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
