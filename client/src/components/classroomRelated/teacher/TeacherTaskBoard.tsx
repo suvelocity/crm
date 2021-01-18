@@ -254,7 +254,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                         <GradeButton
                           taskLabels={row.TaskLabels}
                           //@ts-ignore
-                          grades={row?.Grades[i]}
+                          grades={row?.Grades && row?.Grades[studentRow.studentId]}
                           key={row.title}
                           taskId={row.id}
                           studentId={studentRow.studentId}

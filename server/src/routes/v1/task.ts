@@ -210,48 +210,6 @@ router.get(
                       },
                     ],
                   },
-                  //#region Get grades per student - works bad
-                  // {
-                  //   model: Task,
-                  //   attributes: ["id"],
-                  //   // attributes: ["TaskLabels"],
-                  //   include: [
-                  //     {
-                  //       model: TaskLabel,
-                  //       attributes: ["id"],
-                  //       // attributes: ["Criteria", "Labels"],
-                  //       include: [
-                  //         {
-                  //           model: Criterion,
-                  //           attributes: ["id"],
-                  //           include: [
-                  //             {
-                  //               model: Grade,
-                  //               foreignKey: ["studentId", "belongsToId"],
-                  //               attributes: ["grade"],
-                  //             },
-                  //           ],
-                  //         },
-                  //         {
-                  //           model: Label,
-                  //           attributes: ["id"],
-                  //           include: [
-                  //             {
-                  //               model: Grade,
-                  //               foreignKey: ["studentId", "belongsToId"],
-                  //               attributes: ["grade"],
-                  //             },
-                  //           ],
-                  //         },
-                  //       ],
-                  //     },
-                  //     {
-                  //       model: Grade,
-                  //       foreignKey: ["studentId", "belongsToId"],
-                  //     },
-                  //   ],
-                  // },
-                  //#endregion
                 ],
               },
               {
@@ -267,43 +225,31 @@ router.get(
           })
         ).map(async (task: any) => {
           task = task.toJSON();
-          task.Grades = await Promise.all(
-            task.TaskofStudents.map((tos: ITaskofStudent) =>
-              getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id)
-            )
-          );
+          const getGrades = async () => {
+            const allStudentGrades: any = await Promise
+              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
+                return { result, studentId: tos.studentId }
+              }))
+            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
+              ({
+                ...gradesMap,
+                [tos.studentId]: tos.result
+              })
+            , {})
+          }
+          task.Grades = await getGrades();
           return task;
         })
       );
 
       return res.json(myTasks);
-    } catch (error) {
+    }catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  }
-);
+  });
 
-router.get("/options/:id", async (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  if (!id) res.status(400).json({ error: "Malformed data" });
-  const options: any = {};
-
-  try {
-    const classes: any[] = await TeacherofClass.findAll({
-      where: { teacher_id: id },
-      attributes: ["id"],
-      include: [{ model: Class, attributes: ["name"] }],
-    });
-
-    options.classes = classes.map((cls: any) => cls.Class.name);
-    options.taskTypes = ["fcc", "Manual", "challengeMe", "quiz"];
-
-    res.json(options);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
