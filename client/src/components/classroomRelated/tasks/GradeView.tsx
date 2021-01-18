@@ -11,29 +11,38 @@ import { Grades } from "../../../typescript/interfaces"
 import { Grade, Label } from "@material-ui/icons";
 import { network } from "../../../helpers";
 
-const calculateGrades =(grades: Grades[]) => {
+const calculateGrades =(grades: Grades[], grades2 : {grade: number} | null) => {
   const arrayOfAverageScores: number[] = [];
-  for(let i = 0; i < grades.length; i++) {
-    const grade:Grades = grades[i];
-    let sum = 0;
-    let length = 0;
-    if(grade.Criteria.length === 0 && grade.Label == null){
-      return "--"
+  console.log('grades', grades)
+  if(grades){
+    if(grades2 === null){
+      return '--';
     }
-    for(let j = 0; j <grade.Criteria.length; j++) {
-      const val:Criteria = grade.Criteria[j];
-      if(val == null){
+    if(grades2 !== null && grades2.hasOwnProperty('grade')){
+      return grades2.grade;
+    }
+    for(let i = 0; i < grades.length; i++) {
+      const grade:Grades = grades[i];
+      let sum = 0;
+      let length = 0;
+      if(grade.Criteria.length === 0 && grade.Label == null){
         return "--"
       }
-        sum += val.grade;
+      for(let j = 0; j <grade.Criteria.length; j++) {
+        const val:Criteria = grade.Criteria[j];
+        if(val == null){
+          return "--"
+        }
+          sum += val.grade;
+          length++;
+      }
+      if(grade.Label){
+        sum += grade.Label.grade;
         length++;
-    }
-    if(grade.Label){
-      sum += grade.Label.grade;
-      length++;
-    }
-    if(length !== 0){
-      arrayOfAverageScores.push(Math.round(sum / length));
+      }
+      if(length !== 0){
+        arrayOfAverageScores.push(Math.round(sum / length));
+      }
     }
   }
   console.log(grades)
@@ -68,7 +77,8 @@ export default function GradeButton({
 
     setOpenGrades(false);
   };
-  const calculatedScore = calculateGrades(activeGrades)
+  //@ts-ignore
+  const calculatedScore = calculateGrades(activeGrades, activeGrades)
   console.log(taskLabels)
   return (
     <>
@@ -133,6 +143,10 @@ function GradeView({
         belongsToId,
         studentId,
       });
+      console.log(i, j)
+      if(grades.hasOwnProperty('grade') || grades === null){
+        return setActiveGrades({grade: Number(grade)});
+      }
       const newGrades = grades.slice();
       if(typeof i === "number" && typeof j === "number"){
           newGrades[i].Criteria[j] = {grade: Number(grade)}
