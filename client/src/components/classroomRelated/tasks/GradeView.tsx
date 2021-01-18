@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createStyles, makeStyles, Modal, Theme } from "@material-ui/core";
 import {
+  IGrade,
   ITask,
   ITaskCriteria,
   ITaskLabel,
@@ -58,7 +59,7 @@ function GradeView({
   open: boolean;
   handleClose: () => void;
   taskLabels: ITaskLabel[];
-  grades: Partial<ITask>;
+  grades: IGrade | Partial<ITaskLabel>;
   key: string;
   taskId: number;
   studentId: number;
@@ -77,7 +78,7 @@ function GradeView({
     studentId: number
   ) => {
     try {
-      // console.log(grade, belongsTo, belongsToId, studentId);
+      console.log(grade, belongsTo, belongsToId, studentId);
       //@ts-ignore
       if (isNaN(grade)) return;
       await network.post("/api/v1/grade", {
@@ -111,6 +112,16 @@ function GradeView({
                         key={`input-${key}-label${i}-crit${j}`}
                         type="number"
                         placeholder="Grade"
+                        defaultValue={
+                          //@ts-ignore
+                          grades[i]
+                            ? //@ts-ignore
+                              grades[i].Criteria[j]
+                              ? //@ts-ignore
+                                grades[i].Criteria[j].grade
+                              : false
+                            : "--"
+                        }
                         onBlur={(e) =>
                           changeGrade(
                             e.target.value,
@@ -120,12 +131,12 @@ function GradeView({
                           )
                         }
                       />
-                      <span key={`grade-${key}-label${i}-crit${j}`}>
+                      {/* <span key={`grade-${key}-label${i}-crit${j}`}>
                         {grades?.TaskLabels![i]?.Criteria![j].Grades![0]?.grade
                           ? grades?.TaskLabels![i]?.Criteria![j].Grades![0]
                               ?.grade
                           : "--"}
-                      </span>
+                      </span> */}
                       {/* <button
                         key={`button-${key}-label${i}-crit${j}`}
                         onClick={() =>
@@ -142,6 +153,10 @@ function GradeView({
                       key={`input-${key}-label${i}`}
                       type="number"
                       placeholder="Grade"
+                      defaultValue={
+                        //@ts-ignore
+                        grades[i] ? grades[i]?.Label?.grade : "--"
+                      }
                       onBlur={(e) =>
                         changeGrade(
                           e.target.value,
@@ -151,11 +166,11 @@ function GradeView({
                         )
                       }
                     />
-                    <span key={`grade-${key}-label${i}`}>
+                    {/* <span key={`grade-${key}-label${i}`}>
                       {grades?.TaskLabels![i]?.Label!.Grades![0]?.grade
                         ? grades?.TaskLabels![i]?.Label!.Grades![0]?.grade
                         : "--"}
-                    </span>
+                    </span> */}
                     {/* <button
                       key={`button-${key}-label${i}`}
                       onClick={() =>
@@ -173,13 +188,20 @@ function GradeView({
               <input
                 key={`input-${key}`}
                 type="number"
-                placeholder="Grade"
+                placeholder="Grade..."
+                defaultValue={
+                  //@ts-ignore
+                  grades?.grade ? grades.grade : ""
+                }
                 onBlur={(e) =>
                   changeGrade(e.target.value, "task", taskId, studentId)
                 }
               />
               <span key={`grade-${key}`}>
-                {grades.Grades![0]?.grade ? grades.Grades![0]?.grade : "--"}
+                {
+                  //@ts-ignore
+                  grades?.grade ? grades?.grade : "--"
+                }
               </span>
               {/* <button
                 key={`button-${key}`}
