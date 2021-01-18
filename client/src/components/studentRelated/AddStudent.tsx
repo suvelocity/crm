@@ -63,6 +63,7 @@ const lists: {institution:string[], degree:string[], averageScore:number[]} ={
    " מכללת סמי שמעון",
    " מכללת עזריאלי",
    " מכון טל",
+   " מכון לב",
    " מכון תבונה",
    " מכון הדסה",
    " אורט בראודה",
