@@ -7,54 +7,57 @@ import {
   ITaskCriteria,
   ITaskLabel,
 } from "../../../typescript/interfaces";
-import { Grades } from "../../../typescript/interfaces"
+import { Grades } from "../../../typescript/interfaces";
 import { Grade, Label } from "@material-ui/icons";
 import { network } from "../../../helpers";
 
-const calculateGrades =(grades: Grades[], grades2 : {grade: number} | null) => {
+const calculateGrades = (
+  grades: Grades[],
+  grades2: { grade: number } | null
+) => {
   const arrayOfAverageScores: number[] = [];
-  console.log('grades', grades)
-  if(grades){
-    if(grades2 === null){
-      return '--';
+  console.log("grades", grades);
+  if (grades) {
+    if (grades2 === null) {
+      return "--";
     }
-    if(grades2 !== null && grades2.hasOwnProperty('grade')){
+    if (grades2 !== null && grades2.hasOwnProperty("grade")) {
       return grades2.grade;
     }
-    for(let i = 0; i < grades.length; i++) {
-      const grade:Grades = grades[i];
+    for (let i = 0; i < grades.length; i++) {
+      const grade: Grades = grades[i];
       let sum = 0;
       let length = 0;
-      if(grade.Criteria.length === 0 && grade.Label == null){
-        return "--"
+      if (grade.Criteria.length === 0 && grade.Label == null) {
+        return "--";
       }
-      for(let j = 0; j <grade.Criteria.length; j++) {
-        const val:Criteria = grade.Criteria[j];
-        if(val == null){
-          return "--"
+      for (let j = 0; j < grade.Criteria.length; j++) {
+        const val: Criteria = grade.Criteria[j];
+        if (val == null) {
+          return "--";
         }
-          sum += val.grade;
-          length++;
+        sum += val.grade;
+        length++;
       }
-      if(grade.Label){
+      if (grade.Label) {
         sum += grade.Label.grade;
         length++;
       }
-      if(length !== 0){
+      if (length !== 0) {
         arrayOfAverageScores.push(Math.round(sum / length));
       }
     }
   }
-  console.log(grades)
-  if(arrayOfAverageScores.length !== 0){
+  console.log(grades);
+  if (arrayOfAverageScores.length !== 0) {
     console.log(arrayOfAverageScores);
     let sum = 0;
-    arrayOfAverageScores.forEach((val: number) => sum += val)
-    return Math.round(sum / arrayOfAverageScores.length)
-  }else {
-    return "--"
+    arrayOfAverageScores.forEach((val: number) => (sum += val));
+    return Math.round(sum / arrayOfAverageScores.length);
+  } else {
+    return "--";
   }
-}
+};
 export default function GradeButton({
   taskLabels,
   grades,
@@ -74,12 +77,11 @@ export default function GradeButton({
     setOpenGrades(true);
   };
   const handleClose: () => void = () => {
-
     setOpenGrades(false);
   };
   //@ts-ignore
-  const calculatedScore = calculateGrades(activeGrades, activeGrades)
-  console.log(taskLabels)
+  const calculatedScore = calculateGrades(activeGrades, activeGrades);
+  console.log(taskLabels);
   return (
     <>
       <span onClick={handleOpen}>{calculatedScore}</span>
@@ -110,7 +112,7 @@ function GradeView({
   open: boolean;
   handleClose: () => void;
   taskLabels: ITaskLabel[];
-  grades: Grades[] //| Partial<ITaskLabel>;
+  grades: Grades[]; //| Partial<ITaskLabel>;
   key: string;
   setActiveGrades: Function;
   taskId: number;
@@ -143,21 +145,19 @@ function GradeView({
         belongsToId,
         studentId,
       });
-      console.log(i, j)
-      if(grades.hasOwnProperty('grade') || grades === null){
-        return setActiveGrades({grade: Number(grade)});
+      console.log(i, j);
+      if (grades.hasOwnProperty("grade") || grades === null) {
+        return setActiveGrades({ grade: Number(grade) });
       }
       const newGrades = grades.slice();
-      if(typeof i === "number" && typeof j === "number"){
-          newGrades[i].Criteria[j] = {grade: Number(grade)}
-      }else if(typeof i === "number"){
-          newGrades[i].Label = {grade: Number(grade)}
+      if (typeof i === "number" && typeof j === "number") {
+        newGrades[i].Criteria[j] = { grade: Number(grade) };
+      } else if (typeof i === "number") {
+        newGrades[i].Label = { grade: Number(grade) };
       }
-      setActiveGrades(newGrades)
-      alert("success");
+      setActiveGrades(newGrades);
     } catch (e) {
       console.log(e);
-      alert("Error");
     }
   };
   return (
@@ -179,7 +179,7 @@ function GradeView({
                         key={`input-${key}-label${i}-crit${j}`}
                         type="number"
                         placeholder="Grade"
-                          //@ts-ignore
+                        //@ts-ignore
                         defaultValue={
                           //@ts-ignore
                           grades[i]
@@ -195,7 +195,9 @@ function GradeView({
                             e.target.value,
                             "criterion",
                             criterion.id!,
-                            studentId,i, j
+                            studentId,
+                            i,
+                            j
                           )
                         }
                       />
