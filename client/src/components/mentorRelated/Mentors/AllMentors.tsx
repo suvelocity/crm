@@ -12,6 +12,7 @@ import {
   StyledDiv,
 } from "../../../styles/styledComponents";
 import PersonIcon from "@material-ui/icons/Person";
+import Swal from "sweetalert2";
 import Switch from "@material-ui/core/Switch";
 import { InputLabel, Select, MenuItem, TextField } from "@material-ui/core";
 import {
@@ -37,43 +38,44 @@ function AllMentors() {
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
   );
+  const fetchMentors = useCallback(async() => {
+    const { data } = await network.get("/api/v1/M/mentor");
+    // data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
+    setMentors(data);
+    setLoading(false);
+    setAllMentors(data);
+    const companyFilters: string[] = Array.from(
+      new Set(data.map((mentor: IMentor) => mentor.company))
+    );
+    const genderFilters: string[] = Array.from(
+      new Set(data.map((mentor: IMentor) => mentor.gender))
+    );
+    const addressFilters: string[] = Array.from(
+      new Set(data.map((mentor: IMentor) => mentor.address))
+    );
+    const availableFilters: string[] = ["Available", "Not Available"];
+    setFilterOptionsArray([
+      {
+        filterBy: "Company",
+        possibleValues: companyFilters,
+      },
+      {
+        filterBy: "Gender",
+        possibleValues: genderFilters,
+      },
+      {
+        filterBy: "Address",
+        possibleValues: addressFilters,
+      },
+      {
+        filterBy: "Available",
+        possibleValues: availableFilters,
+      },
+    ]);
+  },[loading])
 
   useEffect(() => {
-    (async () => {
-      const { data } = await network.get("/api/v1/M/mentor");
-      // data.sort((a: IMentor, b: IMentor) => a.available  === b.available ? 0 : a.available ? -1 : 1 );
-      setMentors(data);
-      setLoading(false);
-      setAllMentors(data);
-      const companyFilters: string[] = Array.from(
-        new Set(data.map((mentor: IMentor) => mentor.company))
-      );
-      const genderFilters: string[] = Array.from(
-        new Set(data.map((mentor: IMentor) => mentor.gender))
-      );
-      const addressFilters: string[] = Array.from(
-        new Set(data.map((mentor: IMentor) => mentor.address))
-      );
-      const availableFilters: string[] = ["Available", "Not Available"];
-      setFilterOptionsArray([
-        {
-          filterBy: "Company",
-          possibleValues: companyFilters,
-        },
-        {
-          filterBy: "Gender",
-          possibleValues: genderFilters,
-        },
-        {
-          filterBy: "Address",
-          possibleValues: addressFilters,
-        },
-        {
-          filterBy: "Available",
-          possibleValues: availableFilters,
-        },
-      ]);
-    })();
+    fetchMentors();
   }, []);
 
   const filterFunc = (category: string, filterField: string): void => {
@@ -159,6 +161,34 @@ function AllMentors() {
       setAllMentors(data);
     }
   };
+  async function uploadFile(files:any) {
+    let formData = new FormData();       
+    if(!files || !files[0]) return console.log('files', files);    
+    try{
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+          try{
+            const body = {csvString: reader.result}
+            const {data} = await network.post('/api/v1/fileupload/?model=student', body);
+            await Swal.fire("Success", data.message, "success");
+            setLoading(true);
+            fetchMentors();
+          }catch(e){
+            console.log(e)
+            await Swal.fire("Error", e.message ,"error");
+          }
+      }
+      reader.readAsText(files[0]);
+    }catch(e){
+      console.log(e.message);
+    }
+
+    // await fetch('/upload.php', {
+    //   method: "POST", 
+    //   body: formData
+    // });    
+    // alert('The file has been uploaded successfully.');
+  }
 
   return (
     <Wrapper width="80%">
@@ -197,6 +227,10 @@ function AllMentors() {
               }}
             />
           </div>
+        </div>
+        <div>
+        <input id="fileupload" onChange={(e) => uploadFile(e.target.files)} accept={'.csv,.xlsx,xls'} type="file" name="fileupload" />
+        {/* <button id="upload-button" onClick={uploadFile}> Upload </button> */}
         </div>
       </Center>
       <br />
