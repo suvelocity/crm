@@ -171,6 +171,52 @@ const getGradesOfTaskForStudent: (
       });
 };
 
+// get task details: student list + grades
+const getTaskDetails: (taskId: number) => Promise<any[]> = async (
+  taskId: number
+) => {
+  const taskLabels: ITaskLabel[] = (
+    await Task.findAll({
+      where: { id: taskId },
+      include: [
+        {
+          model: TaskLabel,
+          include: [{ model: Criterion }, { model: Label }],
+        },
+      ],
+    })
+  ).toJSON().TaskLabels;
+
+  console.log(taskLabels);
+
+  return (
+    await TaskofStudent.findAll({
+      where: { taskId: taskId },
+      attributes: ["id"],
+      include: [
+        {
+          model: Student,
+          attributes: ["firstName", "lastName"],
+          include: [
+            {
+              model: Class,
+              attributes: ["id", "name", "endingDate"],
+            },
+          ],
+        },
+      ],
+    })
+  ).map((taskOfStudent: ITaskofStudent) => {
+    //TODO solve this typescript way
+    //@ts-ignore
+    taskOfStudent.grades = getGradesOfTaskForStudent(
+      taskOfStudent.studentId,
+      taskLabels,
+      taskOfStudent.taskId
+    );
+  });
+};
+
 router.use("/challenges", challenges);
 
 router.get(
@@ -187,69 +233,122 @@ router.get(
       const studentWhereClause: any = parsedFilters.student;
       Object.assign(tosWhereCLause, parsedFilters.task);
 
-      const myTasks: any[] = await Promise.all(
-        (
-          await Task.findAll({
-            where: tosWhereCLause,
+      //#region
+      // const myTasks: any[] = await Promise.all(
+      //   (
+      //     await Task.findAll({
+      //       where: tosWhereCLause,
+      //       include: [
+      //         {
+      //           model: TaskofStudent,
+      //           attributes: ["studentId", "status", "submitLink", "updatedAt"],
+      //           required: true,
+      //           include: [
+      //             {
+      //               model: Student,
+      //               attributes: ["firstName", "lastName"],
+      //               required: true,
+      //               include: [
+      //                 {
+      //                   model: Class,
+      //                   required: true,
+      //                   attributes: ["id", "name", "endingDate"],
+      //                   where: studentWhereClause,
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         },
+      //         {
+      //           model: Lesson,
+      //           attributes: ["title"],
+      //         },
+      //         {
+      //           model: TaskLabel,
+      //           include: [{ model: Criterion }, { model: Label }],
+      //         },
+      //       ],
+      //       order: [["createdAt", "DESC"]],
+      //     })
+      //   ).map(async (task: any) => {
+      //     task = task.toJSON();
+      //     const getGrades = async () => {
+      //       const allStudentGrades: any = await Promise
+      //         .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+      //           const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
+      //           return { result, studentId: tos.studentId }
+      //         }))
+      //       return allStudentGrades.reduce((gradesMap: any, tos: any) =>
+      //         ({
+      //           ...gradesMap,
+      //           [tos.studentId]: tos.result
+      //         })
+      //       , {})
+      //     }
+      //     task.Grades = await getGrades();
+      //     return task;
+      //   })
+      // );
+      //#endregion
+
+      const myTasks: any[] = await Task.findAll({
+        where: tosWhereCLause,
+        include: [
+          {
+            model: TaskofStudent,
+            attributes: ["studentId", "status", "submitLink", "updatedAt"],
+            required: true,
             include: [
               {
-                model: TaskofStudent,
-                attributes: ["studentId", "status", "submitLink", "updatedAt"],
+                model: Student,
+                attributes: ["id"],
                 required: true,
                 include: [
                   {
-                    model: Student,
-                    attributes: ["firstName", "lastName"],
+                    model: Class,
                     required: true,
-                    include: [
-                      {
-                        model: Class,
-                        required: true,
-                        attributes: ["id", "name", "endingDate"],
-                        where: studentWhereClause,
-                      },
-                    ],
+                    attributes: ["id"],
+                    where: studentWhereClause,
                   },
                 ],
               },
-              {
-                model: Lesson,
-                attributes: ["title"],
-              },
-              {
-                model: TaskLabel,
-                include: [{ model: Criterion }, { model: Label }],
-              },
             ],
-            order: [["createdAt", "DESC"]],
-          })
-        ).map(async (task: any) => {
-          task = task.toJSON();
-          const getGrades = async () => {
-            const allStudentGrades: any = await Promise
-              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
-                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
-                return { result, studentId: tos.studentId }
-              }))
-            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
-              ({
-                ...gradesMap,
-                [tos.studentId]: tos.result
-              })
-            , {})
-          }
-          task.Grades = await getGrades();
-          return task;
-        })
-      );
+          },
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
+          {
+            model: Lesson,
+            attributes: ["title"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
 
       return res.json(myTasks);
-    }catch (error) {
+    } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  });
+  }
+);
 
+router.get(
+  "/details/:taskid",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const taskId: number = Number(req.params.taskid);
+      const details = await getTaskDetails(taskId);
+
+      return res.json(details);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ error: e });
+    }
+  }
+);
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {

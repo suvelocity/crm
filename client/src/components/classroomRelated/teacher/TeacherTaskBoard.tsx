@@ -79,6 +79,7 @@ const createTask = (
 function Row(props: { row: ReturnType<typeof createTask> }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const [taskDetails, setTaskDetails] = useState<any[]>([]);
   const classes = useRowStyles();
 
   row.TaskofStudents = useMemo(() => {
@@ -106,6 +107,31 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const convertedDate = useMemo(() => {
     return convertDateToString(row.endDate);
   }, []);
+
+  const fetchTaskDetails = async (taskId: number) => {
+    try {
+      const { data } = await network.get(`/api/v1/task/details/${taskId}`);
+      console.log(data);
+      setTaskDetails(data);
+    } catch (error) {
+      console.log(error);
+      return Swal.fire("Error", error, "error");
+    }
+  };
+
+  const handleToggle = async () => {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    try {
+      await fetchTaskDetails(row.id);
+      setOpen(true);
+    } catch (error) {
+      console.log(error);
+      alert("Error in handleToggle");
+    }
+  };
 
   const GreenBorderLinearProgress = withStyles((theme: Theme) =>
     createStyles({
@@ -163,7 +189,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={handleToggle}
             style={{ width: "2vw" }}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -254,7 +280,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                         <GradeButton
                           taskLabels={row.TaskLabels}
                           //@ts-ignore
-                          grades={row?.Grades && row?.Grades[studentRow.studentId]}
+                          grades={
+                            row?.Grades && row?.Grades[studentRow.studentId]
+                          }
                           key={row.title}
                           taskId={row.id}
                           studentId={studentRow.studentId}
@@ -392,7 +420,7 @@ export default function TeacherTaskBoard(props: any) {
         `/api/v1/task/byteacherid/${user.id}`,
         { params: { filters: filter } }
       );
-      console.log(data)
+      console.log(data);
       setTeacherTasks(data);
     } catch (error) {
       return Swal.fire("Error", error, "error");
