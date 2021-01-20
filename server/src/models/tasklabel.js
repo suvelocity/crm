@@ -13,11 +13,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "taskId",
       });
       this.belongsTo(models.Label, {
-        foreignKey: "labelId",
+        foreignKey: "labelId"
       });
       this.hasMany(models.Criterion, {
-        foreignKey: "labelId",
-      });
+        foreignKey: "labelId"
+      })
+      this.hasMany(models.Grade, {
+        foreignKey: "belongsToId"
+      })
     }
   }
   tasklabel.init(

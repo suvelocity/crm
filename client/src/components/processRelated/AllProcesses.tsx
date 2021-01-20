@@ -92,7 +92,7 @@ function AllProcesses() {
           .map((cls: { name: string; id: string }) => cls.name),
       },
       {
-        filterBy: "Job Status",
+        filterBy: "JobStatus",
         possibleValues: filterOptions.statuses,
       },
       {

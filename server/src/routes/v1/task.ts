@@ -18,6 +18,7 @@ import {
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
+import sequelize from "sequelize";
 import { validateTeacher } from "../../middlewares";
 
 const createTask = async (req: Request, res: Response) => {
@@ -226,30 +227,36 @@ router.get(
         ).map(async (task: any) => {
           task = task.toJSON();
           const getGrades = async () => {
-            const allStudentGrades: any = await Promise
-              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
-                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
-                return { result, studentId: tos.studentId }
-              }))
-            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
-              ({
-                ...gradesMap,
-                [tos.studentId]: tos.result
+            const allStudentGrades: any = await Promise.all(
+              task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+                const result = await getGradesOfTaskForStudent(
+                  tos.studentId,
+                  task.TaskLabels,
+                  task.id
+                );
+                return { result, studentId: tos.studentId };
               })
-            , {})
-          }
+            );
+            return allStudentGrades.reduce(
+              (gradesMap: any, tos: any) => ({
+                ...gradesMap,
+                [tos.studentId]: tos.result,
+              }),
+              {}
+            );
+          };
           task.Grades = await getGrades();
           return task;
         })
       );
 
       return res.json(myTasks);
-    }catch (error) {
+    } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  });
-
+  }
+);
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
@@ -371,7 +378,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
   //TODO check labelId exists
 
   const data: ICriterion[] = req.body;
-  console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)

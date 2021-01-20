@@ -81,7 +81,6 @@ export default function GradeButton({
   };
   //@ts-ignore
   const calculatedScore = calculateGrades(activeGrades, activeGrades);
-  console.log(taskLabels);
   return (
     <>
       <span onClick={handleOpen}>{calculatedScore}</span>
@@ -136,7 +135,6 @@ function GradeView({
     j?: number
   ) => {
     try {
-      console.log(grade, belongsTo, belongsToId, studentId);
       //@ts-ignore
       if (isNaN(grade)) return;
       await network.post("/api/v1/grade", {
@@ -145,7 +143,6 @@ function GradeView({
         belongsToId,
         studentId,
       });
-      console.log(i, j);
       if (grades.hasOwnProperty("grade") || grades === null) {
         return setActiveGrades({ grade: Number(grade) });
       }

@@ -74,18 +74,16 @@ const findPkByRelatedIdInTable: (
     studentId,
   }: { belongsTo: string; belongsToId: number; studentId: number } = req.body;
   try {
-    const grade: IGrade = (
-      await Grade.findOne({
-        where: {
-          belongsTo: belongsTo,
-          belongsToId: belongsToId,
-          studentId: studentId,
-        },
-      })
-    ).toJSON();
-    if (!grade.id) return { found: false };
+    const grade: { toJSON: () => IGrade } | null = await Grade.findOne({
+      where: {
+        belongsTo: belongsTo,
+        belongsToId: belongsToId,
+        studentId: studentId,
+      },
+    });
+    if (grade === null || !grade.toJSON().id) return { found: false };
 
-    return { found: true, item: grade };
+    return { found: true, item: grade.toJSON() };
   } catch (err) {
     console.log(err);
     return { found: false };

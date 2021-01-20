@@ -2,8 +2,12 @@ import { Router, Response, Request } from "express";
 //@ts-ignore
 import { Student, Event, AcademicBackground } from "../../models";
 //@ts-ignore
-import { Class, User, TeacherofClass } from "../../models";
+import { TeacherofClass, Grade, Label, Criterion } from "../../models";
+//@ts-ignore
+import { Class, User, TaskLabel } from "../../models";
 import { IStudent, PublicFields, PublicFieldsEnum } from "../../types";
+import { LabelIdsWithGradesPerStudent, gradeObj } from "../../types";
+import { LabelIdsWithGrades, studentGrades } from "../../types";
 import { IEvent, IAcademicBackground } from "../../types";
 import { studentSchema, studentSchemaToPut } from "../../validations";
 import { academicBackgroundSchema } from "../../validations";
@@ -13,6 +17,8 @@ import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
 import { Op } from "sequelize";
 import { validateTeacher, validateAdmin } from "../../middlewares";
+import grade from "../../models/grade";
+import { number } from "joi";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -68,6 +74,103 @@ router.get("/all", validateAdmin, async (req: Request, res: Response) => {
     res.json(students);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/labelIdsWithGrades", async (req: Request, res: Response) => {
+  try {
+    const labelIds = JSON.parse(
+      req.query.labelIds ? String(req.query.labelIds) : "{}"
+    );
+    const studentIds = JSON.parse(
+      req.query.studentIds ? String(req.query.studentIds) : "{}"
+    );
+    const labelGradeArr: {
+      toJSON: () => LabelIdsWithGrades;
+    }[] = await TaskLabel.findAll({
+      where: { labelId: { [Op.or]: labelIds } },
+      attributes: ["labelId"],
+      include: [
+        {
+          model: Grade,
+          where: { belongsTo: "label", studentId: { [Op.or]: studentIds } },
+          attributes: ["grade", "studentId"],
+          required: false,
+        },
+        {
+          model: Criterion,
+          attributes: ["id"],
+          include: [
+            {
+              model: Grade,
+              where: {
+                belongsTo: "criterion",
+                studentId: { [Op.or]: studentIds },
+              },
+              attributes: ["grade", "studentId"],
+            },
+          ],
+        },
+      ],
+    });
+    console.log("-----------------------------------------");
+    const labelGradesPerStudent: LabelIdsWithGradesPerStudent = {};
+    labelGradeArr.map((gradeObj: { toJSON: () => LabelIdsWithGrades }) => {
+      console.log(gradeObj.toJSON());
+      const jsonObj = gradeObj.toJSON();
+      let labelInObj = labelGradesPerStudent[jsonObj.labelId];
+      if (!labelInObj) {
+        labelGradesPerStudent[jsonObj.labelId] = {};
+        labelInObj = labelGradesPerStudent[jsonObj.labelId];
+      }
+      jsonObj.Grades.forEach((grade: gradeObj) => {
+        let studentGrades = labelInObj[grade.studentId];
+        if (!studentGrades) {
+          labelInObj[grade.studentId] = {
+            sum: grade.grade,
+            count: 1,
+          };
+        } else {
+          studentGrades.count++;
+          studentGrades.sum += grade.grade;
+        }
+      });
+      const criteriaGradesToAdd: { [studentId: string]: studentGrades } = {};
+      jsonObj.Criteria.forEach((Criteria: { Grades: gradeObj[] }) => {
+        Criteria.Grades.forEach((grade: gradeObj) => {
+          let student = criteriaGradesToAdd[grade.studentId];
+          if (!student) {
+            criteriaGradesToAdd[grade.studentId] = {
+              sum: grade.grade,
+              count: 1,
+            };
+          } else {
+            student.sum += grade.grade;
+            student.count++;
+          }
+        });
+      });
+      for (const key in criteriaGradesToAdd) {
+        const gradeToAdd =
+          criteriaGradesToAdd[key].sum / criteriaGradesToAdd[key].count;
+        let studentInLabel = labelInObj[key];
+        if (!studentInLabel) {
+          labelInObj[key] = {
+            sum: gradeToAdd,
+            count: 1,
+          };
+        } else {
+          studentInLabel.sum += gradeToAdd;
+          studentInLabel.count++;
+        }
+      }
+    });
+    console.log("-----------------------------------------");
+    res.json(labelGradesPerStudent);
+    // res.json(labelGradesPerStudent);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ error: error.message });
   }
 });
 
