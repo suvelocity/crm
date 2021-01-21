@@ -113,10 +113,8 @@ router.get("/labelIdsWithGrades", async (req: Request, res: Response) => {
         },
       ],
     });
-    console.log("-----------------------------------------");
     const labelGradesPerStudent: LabelIdsWithGradesPerStudent = {};
     labelGradeArr.map((gradeObj: { toJSON: () => LabelIdsWithGrades }) => {
-      console.log(gradeObj.toJSON());
       const jsonObj = gradeObj.toJSON();
       let labelInObj = labelGradesPerStudent[jsonObj.labelId];
       if (!labelInObj) {
@@ -165,9 +163,7 @@ router.get("/labelIdsWithGrades", async (req: Request, res: Response) => {
         }
       }
     });
-    console.log("-----------------------------------------");
     res.json(labelGradesPerStudent);
-    // res.json(labelGradesPerStudent);
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ error: error.message });

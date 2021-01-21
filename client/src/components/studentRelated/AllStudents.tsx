@@ -13,6 +13,8 @@ import {
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import PersonIcon from "@material-ui/icons/Person";
 import {
   IStudent,
@@ -20,6 +22,7 @@ import {
   IAcademicBackground,
   filterStudentObject,
   SelectInputs,
+  LabelIdsWithGradesPerStudent
 } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -44,6 +47,11 @@ function AllStudents() {
   const [addressName, setAddressName] = useState<string>();
   let timer:any;
   const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
+  const [gradesByLabel, setGradesByLabel] = useState<LabelIdsWithGradesPerStudent>({});
+  const [gradeParams, setGradeParams] = useState<{[param:string]: string[]}>({
+    labelIds: ['1','2','3','4']
+  });
+  const [labelOptions, setLabelOptions] = useState<{id:string, name:string}[]>([]);
   const [unsortedStudents, setUnsortedStudents] = useState<IStudent[]>([]);
   const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
     []
@@ -87,8 +95,25 @@ function AllStudents() {
     }
     return Object.keys(JobStatuses);
   };
+  const getGrades = async () => {
+    let query = gradeParams.labelIds.length > 0 ? `?labelIds=[${gradeParams.labelIds}]` : '';
+    console.log(query);
+    const {data : grades}: {data : LabelIdsWithGradesPerStudent} = await network.get(`/api/v1/student/labelIdsWithGrades/${query}`);
+    console.log('grades', grades)
+    setGradesByLabel(grades);
+  }
+  useEffect(() => {
+    if(gradeParams.labelIds.length > 0){
+      getGrades();
+    }
+  },[gradeParams])
+  const fetchLabels = async() => {
+    const {data} = await network.get('/api/v1/label/all');
+    setLabelOptions(data)
+  }
   useEffect(() => {
     (async () => {
+      fetchLabels();
       const { data } = await network.get("/api/v1/student/all");
       const newClassNames: string[] = Array.from(
         new Set(data.map((student: IStudent) => student.Class.name))
@@ -248,18 +273,43 @@ function AllStudents() {
             array={filterOptionsArray}
             filterObject={filterAttributes}
             callbackFunction={setFilterAttributes}
-            widthPercent={88}
+            widthPercent={100}
           />
+        </div>
+        <div style={{ display: "flex", marginBottom: "40px",}}>
           <div style={{width:"10%"}}>
-            <TextField
-            onKeyDown={(e) => {
-              clearTimeout(timer);
-              }}
-            onKeyUp={(e) => {
-                const t = e.target as any;
-                timer = setTimeout(() =>setAddressName(t.value ? t.value.toLowerCase() : ""),100)
+              <TextField
+              onKeyDown={(e) => {
+                clearTimeout(timer);
                 }}
-            label="עיר מגורים"/>
+              onKeyUp={(e) => {
+                  const t = e.target as any;
+                  timer = setTimeout(() =>setAddressName(t.value ? t.value.toLowerCase() : ""),100)
+                  }}
+              label="עיר מגורים"/>
+            </div>
+          <div style={{width:"10%", marginLeft: '10px'}}>
+          <Select 
+            multiple
+            labelId={`demo-simple-select-label-Skills`}
+            style={{ height: "100%", width: "100%", marginLeft: '20px' }} 
+            defaultValue={ [""]}
+            onChange={(e:any) => {
+              const value = e.target.value as string | string[] | undefined;
+              if(value && typeof value === "object"){
+                if(value.filter(val => val != "").length === 0){
+                  return setGradeParams({...gradeParams, labelIds: [""]})
+                }
+                return setGradeParams({...gradeParams, labelIds: value.filter(val => val != "")})
+              }
+              return setGradeParams({...gradeParams, labelIds: [""]})
+            }}
+          >
+            <MenuItem value="" disabled>Skills</MenuItem>
+            {labelOptions.map((val: {name: string, id: string}) => (
+              <MenuItem value={val.id}>{val.name}</MenuItem>
+            ))}
+          </Select>
           </div>
         </div>
         <div style={{ marginTop: "40px"}}>
@@ -275,7 +325,12 @@ function AllStudents() {
         <StyledUl>
           {students && (
             <li>
-              <TableHeader repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
+              <TableHeader repeatFormula={`${'0.4fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
+                {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                  if(labelId === "") return null;
+                  const obj = labelOptions.find((obj:{id: string, name: string}) => obj.id == labelId);
+                return <StyledSpan weight="bold">{obj? capitalize(obj.name) : labelId}</StyledSpan>
+                })}
                 <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
                 <StyledSpan weight="bold">Address</StyledSpan>
@@ -290,7 +345,14 @@ function AllStudents() {
             filteredStudents.map((student) => (
               <li>
                 <StyledLink color="black" to={`/student/${student?.id}`}>
-                  <StyledDiv repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
+                  <StyledDiv repeatFormula={`${'0.4fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
+                  {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                    if(labelId === "") return null;
+                      const writing = !gradesByLabel[labelId]? 0 :
+                        !gradesByLabel[labelId][`${student.id}`] ? 0 : 
+                        Math.round(gradesByLabel[labelId][`${student.id}`].sum / gradesByLabel[labelId][`${student.id}`].count)
+                  return <StyledSpan>{writing}</StyledSpan>
+                  })}
                     <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
@@ -314,5 +376,6 @@ function AllStudents() {
     </Wrapper>
   );
 }
+
 
 export default AllStudents;

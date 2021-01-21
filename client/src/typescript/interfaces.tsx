@@ -335,6 +335,23 @@ export interface ITaskCriteria {
   // Grades?: Partial<IGrade>[];
 }
 
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
+}
+
 export interface IGrade {
   id?: number;
   grade?: number;
