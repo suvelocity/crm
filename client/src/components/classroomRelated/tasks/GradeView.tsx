@@ -16,7 +16,6 @@ const calculateGrades = (
   grades2: { grade: number } | null
 ) => {
   const arrayOfAverageScores: number[] = [];
-  console.log("grades", grades);
   if (grades) {
     if (grades2 === null) {
       return "--";
@@ -48,7 +47,7 @@ const calculateGrades = (
       }
     }
   }
-  console.log(grades);
+
   if (arrayOfAverageScores.length !== 0) {
     console.log(arrayOfAverageScores);
     let sum = 0;
@@ -58,6 +57,7 @@ const calculateGrades = (
     return "--";
   }
 };
+
 export default function GradeButton({
   taskLabels,
   grades,
@@ -81,7 +81,7 @@ export default function GradeButton({
   };
   //@ts-ignore
   const calculatedScore = calculateGrades(activeGrades, activeGrades);
-  console.log(taskLabels);
+
   return (
     <>
       <span onClick={handleOpen}>{calculatedScore}</span>
@@ -160,6 +160,8 @@ function GradeView({
       console.log(e);
     }
   };
+
+  console.log(grades);
   return (
     <Modal open={open} onClose={handleClose}>
       <>

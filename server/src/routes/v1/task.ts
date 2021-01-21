@@ -139,7 +139,6 @@ const getGradesOfTaskForStudent: (
   return labelsAndCriteria[0]
     ? Promise.all(
         labelsAndCriteria.map(async (lac: ITaskLabel) => {
-          console.log(lac);
           return {
             Criteria: await Promise.all(
               lac.Criteria.map((criterion: ICriterion) =>
@@ -185,36 +184,43 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
         },
       ],
     })
-  ).toJSON().TaskLabels;
+  )[0].toJSON().TaskLabels;
 
-  console.log(taskLabels);
-
-  return (
-    await TaskofStudent.findAll({
-      where: { taskId: taskId },
-      attributes: ["id"],
-      include: [
-        {
-          model: Student,
-          attributes: ["firstName", "lastName"],
-          include: [
-            {
-              model: Class,
-              attributes: ["id", "name", "endingDate"],
-            },
-          ],
-        },
-      ],
+  const details: any[] = await Promise.all(
+    (
+      await TaskofStudent.findAll({
+        where: { task_id: taskId },
+        attributes: ["studentId", "status", "submitLink", "updatedAt"],
+        include: [
+          {
+            model: Student,
+            attributes: ["firstName", "lastName"],
+            include: [
+              {
+                model: Class,
+                attributes: ["id", "name", "endingDate"],
+              },
+            ],
+          },
+        ],
+      })
+    ).map(async (taskOfStudent: any) => {
+      //TODO solve this typescript way
+      taskOfStudent = taskOfStudent.toJSON();
+      //@ts-ignore
+      taskOfStudent.grades = await getGradesOfTaskForStudent(
+        taskOfStudent.studentId,
+        taskLabels,
+        taskOfStudent.taskId
+      );
+      return taskOfStudent;
     })
-  ).map((taskOfStudent: ITaskofStudent) => {
-    //TODO solve this typescript way
-    //@ts-ignore
-    taskOfStudent.grades = getGradesOfTaskForStudent(
-      taskOfStudent.studentId,
-      taskLabels,
-      taskOfStudent.taskId
-    );
-  });
+  );
+  // // .reduce((gradesMap: any,gradeObj:any )=>(
+  //   {...gradesMap,
+  //   [gradeObj.s]}
+  // ));
+  return details;
 };
 
 router.use("/challenges", challenges);
@@ -340,8 +346,10 @@ router.get(
   async (req: Request, res: Response) => {
     try {
       const taskId: number = Number(req.params.taskid);
+      console.log(taskId);
       const details = await getTaskDetails(taskId);
 
+      console.log(details);
       return res.json(details);
     } catch (e) {
       console.log(e);

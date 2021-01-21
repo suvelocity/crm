@@ -34,6 +34,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import GradeButton from "../tasks/GradeView";
 import { IGrade, ITaskLabel, Grades } from "../../../typescript/interfaces";
+import { capitalize } from "../../../helpers/general";
 
 const useRowStyles = makeStyles({
   root: {
@@ -60,8 +61,8 @@ const createTask = (
   endDate: Date,
   externalLink: string,
   TaskofStudents: [],
-  TaskLabels: ITaskLabel[],
-  Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
+  TaskLabels: ITaskLabel[]
+  // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
   return {
     id,
@@ -72,14 +73,14 @@ const createTask = (
     externalLink,
     TaskofStudents,
     TaskLabels,
-    Grades,
+    // Grades,
   };
 };
 
 function Row(props: { row: ReturnType<typeof createTask> }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  const [taskDetails, setTaskDetails] = useState<any[]>([]);
+  const [studentDetails, setStudentDetails] = useState<any[]>([]);
   const classes = useRowStyles();
 
   row.TaskofStudents = useMemo(() => {
@@ -108,15 +109,35 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     return convertDateToString(row.endDate);
   }, []);
 
-  const fetchTaskDetails = async (taskId: number) => {
+  const fetchStudentDetails = async (taskId: number) => {
     try {
       const { data } = await network.get(`/api/v1/task/details/${taskId}`);
       console.log(data);
-      setTaskDetails(data);
+      setStudentDetails(getDetailsSortedByStatus(data));
     } catch (error) {
       console.log(error);
       return Swal.fire("Error", error, "error");
     }
+  };
+
+  const getDetailsSortedByStatus = (studentDetails: any[]) => {
+    return studentDetails.reduce(
+      (detailsMap: any, oneStudentDetails: any) => {
+        switch (oneStudentDetails.status) {
+          case "pending":
+            detailsMap.pending.push(oneStudentDetails);
+            break;
+          case "submitted":
+            detailsMap.submitted.push(oneStudentDetails);
+            break;
+          case "checked":
+            detailsMap.checked.push(oneStudentDetails);
+            break;
+        }
+        return detailsMap;
+      },
+      { pending: [], submitted: [], checked: [] }
+    );
   };
 
   const handleToggle = async () => {
@@ -125,7 +146,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       return;
     }
     try {
-      await fetchTaskDetails(row.id);
+      await fetchStudentDetails(row.id);
       setOpen(true);
     } catch (error) {
       console.log(error);
@@ -231,67 +252,80 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                Students
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <b>Full Name</b>
-                    </TableCell>
-                    <TableCell>
-                      <b>Class</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission State</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission Date</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission Link</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Grade</b>
-                    </TableCell>
-                    {/*  //todo maybe adding descrtiption to submition */}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.TaskofStudents.map((studentRow: any, i: number) => (
-                    <TableRow key={studentRow.studentId}>
-                      <TableCell component="th" scope="row">
-                        {studentRow?.Student?.firstName +
-                          " " +
-                          studentRow?.Student?.lastName}
-                      </TableCell>
-                      <TableCell>{studentRow?.Student?.Class.name}</TableCell>
-                      <TableCell align="left">{studentRow.status}</TableCell>
-                      <TableCell align="left">
-                        {studentRow.updatedAt
-                          ? convertDateToString(studentRow.updatedAt)
-                          : "hasn't submitted yet"}
-                      </TableCell>
-                      <TableCell align="left">
-                        {studentRow.submitLink ? studentRow.submitLink : "none"}
-                      </TableCell>
-                      <TableCell align="left">
-                        <GradeButton
-                          taskLabels={row.TaskLabels}
-                          //@ts-ignore
-                          grades={
-                            row?.Grades && row?.Grades[studentRow.studentId]
-                          }
-                          key={row.title}
-                          taskId={row.id}
-                          studentId={studentRow.studentId}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {Object.keys(studentDetails).map((key: string) => (
+                <>
+                  <Typography variant="h6" gutterBottom component="div">
+                    {capitalize(key)}
+                  </Typography>
+                  <Table size="small" aria-label="purchases">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <b>Full Name</b>
+                        </TableCell>
+                        <TableCell>
+                          <b>Class</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission State</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission Date</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission Link</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Grade</b>
+                        </TableCell>
+                        {/*  //todo maybe adding descrtiption to submition */}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {/* @ts-ignore */}
+                      {studentDetails[key].map((studentRow: any, i: number) => (
+                        <TableRow key={studentRow.studentId}>
+                          <TableCell component="th" scope="row">
+                            {studentRow?.Student?.firstName +
+                              " " +
+                              studentRow?.Student?.lastName}
+                          </TableCell>
+                          <TableCell>
+                            {studentRow?.Student?.Class.name}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.status}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.updatedAt
+                              ? convertDateToString(studentRow.updatedAt)
+                              : "hasn't submitted yet"}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.submitLink
+                              ? studentRow.submitLink
+                              : "none"}
+                          </TableCell>
+                          <TableCell align="left">
+                            <GradeButton
+                              taskLabels={row.TaskLabels}
+                              //@ts-ignore
+                              // grades={
+                              //   row?.Grades && row?.Grades[studentRow.studentId]
+                              // }
+                              grades={studentRow.grades}
+                              key={row.title}
+                              taskId={row.id}
+                              studentId={studentRow.studentId}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <br />
+                </>
+              ))}
             </Box>
           </Collapse>
         </TableCell>
@@ -459,8 +493,8 @@ export default function TeacherTaskBoard(props: any) {
         task.endDate,
         task.externalLink,
         task.TaskofStudents,
-        task.TaskLabels,
-        task.Grades
+        task.TaskLabels
+        // task.Grades
       );
     }) || [];
 
