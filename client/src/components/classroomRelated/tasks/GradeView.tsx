@@ -10,11 +10,16 @@ import {
 import { Grades } from "../../../typescript/interfaces";
 import { Grade, Label } from "@material-ui/icons";
 import { network } from "../../../helpers";
+import { flatten } from "lodash";
 
 const calculateGrades = (
   grades: Grades[],
   grades2: { grade: number } | null
 ) => {
+  // console.log("GRADES FUNCTION");
+  // console.log(grades);
+  // console.log(grades2);
+  // console.log("*****************");
   const arrayOfAverageScores: number[] = [];
   if (grades) {
     if (grades2 === null) {
@@ -71,8 +76,36 @@ export default function GradeButton({
   taskId: number;
   studentId: number;
 }) {
+  const makeGradesMap: (grades: Grades[]) => any = (grades: Grades[]) => {
+    return Array.isArray(grades)
+      ? grades.reduce(
+          (gradesMap: any, label: any) =>
+            label.Criteria[0]
+              ? label.Criteria.reduce(
+                  (sameGradesMap: any, criterion: any) =>
+                    criterion
+                      ? {
+                          ...sameGradesMap,
+                          [`criterion${criterion?.belongsToId}`]: criterion,
+                        }
+                      : gradesMap,
+                  gradesMap
+                )
+              : label.Label
+              ? {
+                  ...gradesMap,
+                  [`label${label?.Label?.belongsToId}`]: label.Label,
+                }
+              : gradesMap,
+          {}
+        )
+      : grades;
+  };
+
   const [openGrades, setOpenGrades] = useState<boolean>(false);
-  const [activeGrades, setActiveGrades] = useState<Grades[]>(grades);
+  const [activeGrades, setActiveGrades] = useState<Grades[]>(
+    makeGradesMap(grades)
+  );
   const handleOpen: () => void = () => {
     setOpenGrades(true);
   };
@@ -155,13 +188,17 @@ function GradeView({
       } else if (typeof i === "number") {
         newGrades[i].Label = { grade: Number(grade) };
       }
-      setActiveGrades(newGrades);
+      setActiveGrades(grades);
     } catch (e) {
       console.log(e);
     }
   };
 
-  console.log(grades);
+  // console.log("##########");
+  // console.log(taskLabels);
+  // console.log(grades);
+  // console.log("##########");
+
   return (
     <Modal open={open} onClose={handleClose}>
       <>
@@ -184,13 +221,13 @@ function GradeView({
                         //@ts-ignore
                         defaultValue={
                           //@ts-ignore
-                          grades[i]
-                            ? //@ts-ignore
-                              grades[i].Criteria[j]
-                              ? //@ts-ignore
-                                grades[i].Criteria[j].grade
-                              : false
-                            : "--"
+                          grades[`criterion${criterion.id}`]?.grade
+                          // ? //@ts-ignore
+                          //   grades[i].Criteria[j]
+                          //   ? //@ts-ignore
+                          //     grades[i].Criteria[j].grade
+                          //   : false
+                          // : "--"
                         }
                         onBlur={(e) =>
                           changeGrade(
@@ -227,7 +264,8 @@ function GradeView({
                       placeholder="Grade"
                       defaultValue={
                         //@ts-ignore
-                        grades[i] ? grades[i]?.Label?.grade : "--"
+                        // grades[i] ? grades[i]?.Label?.grade : "--"
+                        grades[`label${label.labelId}`]?.grade
                       }
                       onBlur={(e) =>
                         changeGrade(
@@ -264,7 +302,7 @@ function GradeView({
                 placeholder="Grade..."
                 defaultValue={
                   //@ts-ignore
-                  grades?.grade ? grades.grade : ""
+                  grades?.grade
                 }
                 onBlur={(e) =>
                   changeGrade(e.target.value, "task", taskId, studentId, 0)

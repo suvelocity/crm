@@ -19,6 +19,7 @@ import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
 import { validateTeacher } from "../../middlewares";
+import { flatten } from "lodash";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -131,7 +132,7 @@ const getGradesOfTaskForStudent: (
   studentId: number,
   labelsAndCriteria: ITaskLabel[],
   taskId: number
-) => Promise<void> = async (
+) => Promise<ITaskLabel[]> = async (
   studentId: number,
   labelsAndCriteria: ITaskLabel[],
   taskId: number
@@ -211,8 +212,12 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
       taskOfStudent.grades = await getGradesOfTaskForStudent(
         taskOfStudent.studentId,
         taskLabels,
-        taskOfStudent.taskId
+        taskId
       );
+      // .reduce((gradesMap:any,gradeObj:any)=>({
+      //   ...gradesMap,
+
+      // }),{});
       return taskOfStudent;
     })
   );
