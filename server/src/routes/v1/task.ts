@@ -72,9 +72,9 @@ const createTaskLabels: (
   labels: ITaskLabel[],
   taskId: number
 ) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
-  console.log("******************LABELS***************");
-  console.log(labels);
-  console.log("*****************************************");
+  // console.log("******************LABELS***************");
+  // console.log(labels);
+  // console.log("*****************************************");
 
   if (!Array.isArray(labels))
     throw new Error(`Expected an array but got ${typeof labels} instead`);
@@ -90,7 +90,7 @@ const createTaskLabels: (
     await Promise.all(
       newTaskLabels.map((taskLabel: any, i: number) => {
         const parsed: ITaskLabel = taskLabel.toJSON();
-        console.log(parsed);
+        // console.log(parsed);
         return createCriteria(labels[i].Criteria, parsed.taskId, parsed.id!);
       })
     );
@@ -110,9 +110,9 @@ const createCriteria: (
   taskId: number,
   labelId: number
 ) => {
-  console.log("******************CRITERIA***************");
-  console.log(criteria);
-  console.log("*****************************************");
+  // console.log("******************CRITERIA***************");
+  // console.log(criteria);
+  // console.log("*****************************************");
 
   if (!Array.isArray(criteria))
     return Promise.reject(
@@ -351,10 +351,8 @@ router.get(
   async (req: Request, res: Response) => {
     try {
       const taskId: number = Number(req.params.taskid);
-      console.log(taskId);
       const details = await getTaskDetails(taskId);
 
-      console.log(details);
       return res.json(details);
     } catch (e) {
       console.log(e);
@@ -465,7 +463,7 @@ router.post(
 router.post("/label", async (req: Request, res: Response) => {
   //TODO check taskId exists
   const data: ITaskLabel[] = req.body;
-  console.log(data);
+  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)
@@ -483,7 +481,7 @@ router.post("/criterion", async (req: Request, res: Response) => {
   //TODO check labelId exists
 
   const data: ICriterion[] = req.body;
-  console.log(data);
+  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)

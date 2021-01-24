@@ -18,7 +18,8 @@ const calculateGrades = (grades: object, grades2: { grade: number } | null) => {
   console.log(grades2);
   console.log("*****************");
   const avergaesOfGrades: any = {};
-
+  //if grades are not set yet
+  if (!grades) return "--";
   if (Object.keys(grades).length === 0) return "--";
 
   //@ts-ignore
@@ -45,17 +46,18 @@ const calculateGrades = (grades: object, grades2: { grade: number } | null) => {
         break;
     }
   }
-
+  console.log(grades);
   console.log(avergaesOfGrades);
-  console.log(Object.values(avergaesOfGrades));
-  console.log(Object.keys(avergaesOfGrades));
-  console.log(
-    Object.values(avergaesOfGrades).reduce(
-      (sum: number, current: any) => sum + current.score / current.count,
-      0
-    )
-  );
-  return (
+  // console.log(avergaesOfGrades);
+  // console.log(Object.values(avergaesOfGrades));
+  // console.log(Object.keys(avergaesOfGrades));
+  // console.log(
+  //   Object.values(avergaesOfGrades).reduce(
+  //     (sum: number, current: any) => sum + current.score / current.count,
+  //     0
+  //   )
+  // );
+  return Math.floor(
     Object.values(avergaesOfGrades).reduce(
       (sum: number, current: any) => sum + current.score / current.count,
       0
@@ -118,6 +120,7 @@ export default function GradeButton({
   studentId: number;
 }) {
   const makeGradesMap: (grades: Grades[]) => any = (grades: Grades[]) => {
+    console.log(grades);
     return Array.isArray(grades)
       ? grades.reduce(
           (gradesMap: any, label: any, index: number) =>
@@ -164,8 +167,6 @@ export default function GradeButton({
       : grades;
   };
 
-  console.log(grades);
-  console.log(makeGradesMap(grades));
   const [openGrades, setOpenGrades] = useState<boolean>(false);
   const [activeGrades, setActiveGrades] = useState<any>(makeGradesMap(grades));
   const handleOpen: () => void = () => {
@@ -174,12 +175,11 @@ export default function GradeButton({
   const handleClose: () => void = () => {
     setOpenGrades(false);
   };
-  //@ts-ignore
-  const calculatedScore = calculateGrades(activeGrades, activeGrades);
 
+  console.log(activeGrades);
   return (
     <>
-      <span onClick={handleOpen}>{calculatedScore}</span>
+      <span onClick={handleOpen}>{calculateGrades(activeGrades, null)}</span>
       <GradeView
         open={openGrades}
         handleClose={handleClose}
@@ -220,15 +220,13 @@ function GradeView({
     belongsTo: string,
     belongsToId: number,
     studentId: number,
-    i: number,
-    j?: number
+    labelIndex: number
   ) => Promise<void> = async (
     grade: string,
     belongsTo: string,
     belongsToId: number,
     studentId: number,
-    i: number,
-    j?: number
+    labelIndex: number
   ) => {
     try {
       console.log(grade, belongsTo, belongsToId, studentId);
@@ -240,12 +238,18 @@ function GradeView({
         belongsToId,
         studentId,
       });
-      console.log(grades);
-      console.log(i, j);
-      setActiveGrades((prev: any) => ({
-        ...prev,
-        [`${belongsTo}${belongsToId}`]: data,
-      }));
+      // console.log(grades);
+      // console.log(i, j);
+      console.log(data);
+      setActiveGrades((prev: any) => {
+        console.log(prev);
+        const updated = {
+          ...prev,
+          [`${belongsTo}${belongsToId}`]: { ...data, labelId: labelIndex },
+        };
+        console.log(updated);
+        return updated;
+      });
       // if (grades.hasOwnProperty("grade") || grades === null) {
       //   return setActiveGrades({ grade: Number(grade) });
       // }
@@ -255,7 +259,7 @@ function GradeView({
       // } else if (typeof i === "number") {
       //   newGrades[i].Label = { grade: Number(grade) };
       // }
-      setActiveGrades(grades);
+      // setActiveGrades(grades);
     } catch (e) {
       console.log(e);
     }
@@ -302,8 +306,7 @@ function GradeView({
                             "criterion",
                             criterion.id!,
                             studentId,
-                            i,
-                            j
+                            i
                           )
                         }
                       />
