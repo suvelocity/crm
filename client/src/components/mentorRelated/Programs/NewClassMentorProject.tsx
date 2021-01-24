@@ -25,7 +25,7 @@ import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IClass, IMentor, SelectInputs, filterStudentObject } from "../../../typescript/interfaces";
+import { IStudent, IClass, IMentor, SelectInputsV2, filterStudentObject } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
@@ -48,7 +48,7 @@ function NewClassMentorProject() {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchValueStudent, setSearchValueStudent] = useState<string>("");
-  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>([])
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputsV2[]>([])
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
       ReligionLevels: [""],
@@ -86,12 +86,12 @@ function NewClassMentorProject() {
       return mentor;
     });
     console.log(mentorList, 'mentorList')
-    const ReligionLevels: string[] = Array.from(
+    const ReligionLevels: {name: string}[] = Array.from(
       new Set(
         mentorList.map(
           (mentor: IMentor) => {
             // console.log(mentor.religionLevel)
-            return mentor.religionLevel
+            return {name: mentor.religionLevel }
           }
         )
       )

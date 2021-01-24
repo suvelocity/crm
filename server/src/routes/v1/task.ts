@@ -18,6 +18,7 @@ import {
 import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
+import sequelize from "sequelize";
 import { validateTeacher } from "../../middlewares";
 import { flatten } from "lodash";
 
@@ -336,7 +337,6 @@ router.get(
         ],
         order: [["createdAt", "DESC"]],
       });
-
       return res.json(myTasks);
     } catch (error) {
       console.log(error);
@@ -360,6 +360,7 @@ router.get(
     }
   }
 );
+
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
@@ -481,7 +482,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
   //TODO check labelId exists
 
   const data: ICriterion[] = req.body;
-  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)

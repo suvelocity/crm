@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Task, {
         foreignKey: "belongsToId",
       });
-      this.belongsTo(models.Label, {
+      this.belongsTo(models.TaskLabel, {
         foreignKey: "belongsToId",
       });
       this.belongsTo(models.Student, {

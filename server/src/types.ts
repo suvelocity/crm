@@ -1,5 +1,6 @@
 import { Model } from "sequelize/types";
 import { Request } from "express";
+import { number } from "joi";
 
 export interface IJob {
   Company?: ICompany;
@@ -193,6 +194,22 @@ export interface IMentor {
   job: string;
   available: boolean;
   gender: string;
+}
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
 }
 export interface IForm {
   id?: number;

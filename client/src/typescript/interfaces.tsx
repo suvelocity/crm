@@ -80,6 +80,7 @@ export interface IAcademicBackground {
   studyTopic: string;
   degree: string;
   averageScore: number ;
+  gradeAvg: number;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -153,6 +154,12 @@ export interface SelectInputs {
   label?: string;
   singleOption?: boolean;
   possibleValues: string[];
+}
+export interface SelectInputsV2 {
+  filterBy: string;
+  label?: string;
+  singleOption?: boolean;
+  possibleValues: {name: string, id?: number}[];
 }
 
 export interface IMentor {
@@ -333,6 +340,23 @@ export interface ITaskCriteria {
   name: string;
   Grades?: Grades[]
   // Grades?: Partial<IGrade>[];
+}
+
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
 }
 
 export interface IGrade {

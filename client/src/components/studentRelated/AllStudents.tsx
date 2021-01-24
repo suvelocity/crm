@@ -13,13 +13,16 @@ import {
 } from "../../styles/styledComponents";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import PersonIcon from "@material-ui/icons/Person";
 import {
   IStudent,
   IEvent,
   IAcademicBackground,
   filterStudentObject,
-  SelectInputs,
+  SelectInputsV2,
+  LabelIdsWithGradesPerStudent
 } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
@@ -44,8 +47,13 @@ function AllStudents() {
   const [addressName, setAddressName] = useState<string>();
   let timer:any;
   const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
+  const [gradesByLabel, setGradesByLabel] = useState<LabelIdsWithGradesPerStudent>({});
+  const [gradeParams, setGradeParams] = useState<{[param:string]: string[]}>({
+    labelIds: [""]
+  });
+  const [labelOptions, setLabelOptions] = useState<{id:string, name:string}[]>([]);
   const [unsortedStudents, setUnsortedStudents] = useState<IStudent[]>([]);
-  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputsV2[]>(
     []
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
@@ -87,27 +95,64 @@ function AllStudents() {
     }
     return Object.keys(JobStatuses);
   };
+  const getGrades = async () => {
+    const studentIdArray = filteredStudents.map((student: IStudent) => student.id);
+    let query = `?labelIds=[${gradeParams.labelIds}]&&studentIds=[${studentIdArray}]`;
+    const {data : grades}: {data : LabelIdsWithGradesPerStudent} = await network.get(`/api/v1/student/labelIdsWithGrades`, { // /${query}
+      params: gradeParams
+    });
+    console.log('grades', grades)
+    setGradesByLabel(grades);
+    setLoading(false)
+  }
+  useEffect(() => {
+    if(gradeParams.labelIds[0] !== ""){
+      if(!loading) setLoading(true)
+      getGrades();
+    }else{
+      setLoading(false)
+    }
+  },[gradeParams])
+  const fetchLabels = async() => {
+    const {data} = await network.get('/api/v1/label/all');
+    setLabelOptions(data)
+  }
   useEffect(() => {
     (async () => {
+      fetchLabels();
       const { data } = await network.get("/api/v1/student/all");
-      const newClassNames: string[] = Array.from(
-        new Set(data.map((student: IStudent) => student.Class.name))
-      );
-      const newCourseNames: string[] = Array.from(
-        new Set(data.map((student: IStudent) => student.Class.course))
-      );
+      const dataObj: {[key: string]: boolean} = {};
+      const newClassNames : {name: string, id?: number}[]= [];
+      const newCourseNames : {name: string, id?: number}[]= [];
+      const newFullNames : {name: string, id?: number}[]= [];
+      const newJobStatuses : {name: string}[]= [];
+      // const newClassNames: {name: string, id?: number}[] = Array.from(
+      //   new Set(data.map((student: IStudent) => ({ id: student.Class.id, name: student.Class.name})))
+      // );
+      // console.table(newClassNames)
+      data.forEach((student: IStudent) => {
+        if(!dataObj[`${student.Class.name}`]){
+          dataObj[`${student.Class.name}`] = true;
+          newClassNames.push({name:student.Class.name, id:student.Class.id});
+        }
+        if(!dataObj[`${student.Class.course}`]){
+          dataObj[`${student.Class.course}`] = true;
+          newCourseNames.push({name:student.Class.course});
+        }
+        newFullNames.push({ id: student.id, name: student.firstName + " " + student.lastName })
+      })
+      console.log(dataObj)
       let JobStatuses: string[] = [];
       data.forEach((student: IStudent) => {
         JobStatuses = [...JobStatuses, ...getRecentJobsStatus(student.Events)];
       });
-      const newJobStatuses: string[] = Array.from(new Set(JobStatuses));
-      const newFullNames: string[] = Array.from(
-        new Set(
-          data.map(
-            (student: IStudent) => student.firstName + " " + student.lastName
-          )
-        )
-      );
+      JobStatuses.forEach((status: string) => {
+        if(dataObj[`${status}`]){
+          dataObj[`${status}`] = true;
+        }else{
+          newJobStatuses.push({name: status});
+        }
+      })
       setFilterOptionsArray([
         {
           filterBy: "Course",
@@ -132,17 +177,15 @@ function AllStudents() {
         {
           filterBy: "Languages",
           label: "שפות",
-          possibleValues: ["עברית","אנגלית","ספרדית","רוסית","ערבית"],
+          possibleValues: [{name : "עברית"},{name : "אנגלית"},{name : "ספרדית"},{name : "רוסית"},{name : "ערבית"}],
         },
         {
           filterBy: "AverageScore",
           singleOption: true,
           label: "ממוצע ציונים",
-          possibleValues: ["עולה", "יורד"],
+          possibleValues: [{name: "עולה"}, {name :"יורד"}],
         }
       ]);
-      setUnsortedStudents(data.slice());
-      setStudents(data);
       setLoading(false);
     })();
   }, []);
@@ -152,88 +195,68 @@ function AllStudents() {
     }
   }, [students]);
 
-  const filterFunc = useCallback(() => {
-    const ScoreSort = filterAttributes.AverageScore;
-    let studentsToFilter;
-    if(ScoreSort){
-      if(ScoreSort === "רגיל") {
-        studentsToFilter = unsortedStudents;
-      }else{
-        studentsToFilter = students.sort((a:IStudent,b:IStudent) => {
-          if(a.AcademicBackgrounds.length === 0){
-            return 1
-          }else if(b.AcademicBackgrounds.length === 0){
-            return -1
-          }else{
-            if(ScoreSort === "עולה"){
-              return  Number(getGradeAverage(b.AcademicBackgrounds)) - Number(getGradeAverage(a.AcademicBackgrounds))
-            }
-            return  Number(getGradeAverage(a.AcademicBackgrounds)) - Number(getGradeAverage(b.AcademicBackgrounds))
-          }
-        })
-      }
-    }else{
-      studentsToFilter = unsortedStudents;
-    }
-    return studentsToFilter.filter((student) => {
+  const filterFunc = (arr?: IStudent[]) => { //useCallback(
+    const array = arr || students
+    return array.filter((student) => {
       const addressCondition = addressName ? student.address.toLowerCase().includes(addressName) : true;
-      const languageCondition = 
-      filterAttributes.Languages!.length === 1 &&
-      filterAttributes.Languages![0] === ""
-        ? true :
-      filterAttributes.Languages!.every((lang:string) =>!student.languages? false :student.languages.includes(lang));
+      // const languageCondition = 
+      // filterAttributes.Languages!.length === 1 &&
+      // filterAttributes.Languages![0] === ""
+      //   ? true :
+      // filterAttributes.Languages!.every((lang:string) =>!student.languages? false :student.languages.includes(lang));
+      // const classCondition =
+      //   filterAttributes.Class!.length === 1 &&
+      //   filterAttributes.Class![0] === ""
+      //     ? true
+      //     : filterAttributes.Class!.includes(student.Class.name);
+      // const courseCondition =
+      //   filterAttributes.Course!.length === 1 &&
+      //   filterAttributes.Course![0] === ""
+      //     ? true
+      //     : filterAttributes.Course!.includes(student.Class.course);
+      // const recentJobStatus = getRecentJobsStatus(student.Events);
+      // const jobless =
+      //   recentJobStatus.length === 0 ||
+      //   recentJobStatus.every((status) => status === "Rejected");
+      // const jobStatusCondition =
+      //   filterAttributes.JobStatus!.length === 1 &&
+      //   filterAttributes.JobStatus![0] === ""
+      //     ? true
+      //     : (filterAttributes.JobStatus!.includes("None") && jobless) ||
+      //       filterAttributes.JobStatus!.find((status) =>
+      //         recentJobStatus.includes(status)
+      //       );
+      // const studentIdCondition =
+      //   filterAttributes.Name!.length === 1 &&
+      //   filterAttributes.Name![0] === ""
+      //     ? true
+      //     : filterAttributes.Name!.some((val: string) => String(val) === String(student.id));
+      return  addressCondition; //jobStatusCondition &&
+        // classCondition &&
+        // courseCondition &&
+        // studentIdCondition &&
 
-      console.log(student.languages, filterAttributes.Languages, languageCondition)
-      const classCondition =
-        filterAttributes.Class!.length === 1 &&
-        filterAttributes.Class![0] === ""
-          ? true
-          : filterAttributes.Class!.includes(student.Class.name);
-      const courseCondition =
-        filterAttributes.Course!.length === 1 &&
-        filterAttributes.Course![0] === ""
-          ? true
-          : filterAttributes.Course!.includes(student.Class.course);
-      const recentJobStatus = getRecentJobsStatus(student.Events);
-      const jobless =
-        recentJobStatus.length === 0 ||
-        recentJobStatus.every((status) => status === "Rejected");
-      const jobStatusCondition =
-        filterAttributes.JobStatus!.length === 1 &&
-        filterAttributes.JobStatus![0] === ""
-          ? true
-          : (filterAttributes.JobStatus!.includes("None") && jobless) ||
-            filterAttributes.JobStatus!.find((status) =>
-              recentJobStatus.includes(status)
-            );
-      const fullNames = filterAttributes.Name!.map((fullname) =>
-        fullname.split(" ").filter((name) => name != "")
-      );
-      const firstAndLastNamesMatch = fullNames.find((fullname) => {
-        const firstName = fullname[0];
-        const lastName = fullname[1];
-        const firstNameCondition =
-          !firstName && fullNames.length === 1
-            ? true
-            : student.firstName.trim() === firstName;
-        const lastNameCondition =
-          !lastName && fullNames.length === 1
-            ? true
-            : student.lastName.trim() === lastName;
-        return firstNameCondition && lastNameCondition;
-      });
-      return (
-        classCondition &&
-        courseCondition &&
-        firstAndLastNamesMatch &&
-        jobStatusCondition &&
-        addressCondition &&
-        languageCondition
-      );
+        // languageCondition
+      
     });
-  }, [filterAttributes, addressName]);
+  }//, [filterAttributes,  addressName]);
+  const getStudentsByFilters = async () => {
+    try{
+      const {data} = await network.get('/api/v1/student/filtered', {
+        params: filterAttributes
+      })
+      const filtered = filterFunc(data)
+      const studentIds = filtered.map((student: IStudent) => String(student.id));
+      setGradeParams({...gradeParams, studentIds: studentIds});
+      setFilteredStudents(filtered);
+      setLoading(false)
+    }catch(e){
+
+    }
+  }
   useEffect(() => {
-    setFilteredStudents(filterFunc());
+    setLoading(true)
+    getStudentsByFilters();
   }, [filterAttributes, addressName]);
 
   return (
@@ -248,18 +271,43 @@ function AllStudents() {
             array={filterOptionsArray}
             filterObject={filterAttributes}
             callbackFunction={setFilterAttributes}
-            widthPercent={88}
+            widthPercent={100}
           />
+        </div>
+        <div style={{ display: "flex", marginBottom: "40px",}}>
           <div style={{width:"10%"}}>
-            <TextField
-            onKeyDown={(e) => {
-              clearTimeout(timer);
-              }}
-            onKeyUp={(e) => {
-                const t = e.target as any;
-                timer = setTimeout(() =>setAddressName(t.value ? t.value.toLowerCase() : ""),100)
+              <TextField
+              onKeyDown={(e) => {
+                clearTimeout(timer);
                 }}
-            label="עיר מגורים"/>
+              onKeyUp={(e) => {
+                  const t = e.target as any;
+                  timer = setTimeout(() =>setAddressName(t.value ? t.value.toLowerCase() : ""),100)
+                  }}
+              label="עיר מגורים"/>
+            </div>
+          <div style={{width:"10%", marginLeft: '10px'}}>
+          <Select 
+            multiple
+            labelId={`demo-simple-select-label-Skills`}
+            style={{ height: "100%", width: "100%", marginLeft: '20px' }} 
+            defaultValue={ [""]}
+            onChange={(e:any) => {
+              const value = e.target.value as string | string[] | undefined;
+              if(value && typeof value === "object"){
+                if(value.filter(val => val != "").length === 0){
+                  return setGradeParams({...gradeParams, labelIds: [""]})
+                }
+                return setGradeParams({...gradeParams, labelIds: value.filter(val => val != "")})
+              }
+              return setGradeParams({...gradeParams, labelIds: [""]})
+            }}
+          >
+            <MenuItem value="" disabled>Skills</MenuItem>
+            {labelOptions.map((val: {name: string, id: string}) => (
+              <MenuItem value={val.id}>{val.name}</MenuItem>
+            ))}
+          </Select>
           </div>
         </div>
         <div style={{ marginTop: "40px"}}>
@@ -275,7 +323,12 @@ function AllStudents() {
         <StyledUl>
           {students && (
             <li>
-              <TableHeader repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
+              <TableHeader repeatFormula={`${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
+                {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                  if(labelId === "") return null;
+                  const obj = labelOptions.find((obj:{id: string, name: string}) => obj.id == labelId);
+                return <StyledSpan weight="bold">{obj? capitalize(obj.name) : labelId}</StyledSpan>
+                })}
                 <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
                 <StyledSpan weight="bold">Address</StyledSpan>
@@ -290,7 +343,14 @@ function AllStudents() {
             filteredStudents.map((student) => (
               <li>
                 <StyledLink color="black" to={`/student/${student?.id}`}>
-                  <StyledDiv repeatFormula="0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr">
+                  <StyledDiv repeatFormula={`${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
+                  {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                    if(labelId === "") return null;
+                      const writing = !gradesByLabel[labelId]? 0 :
+                        !gradesByLabel[labelId][`${student.id}`] ? 0 : 
+                        Math.round(gradesByLabel[labelId][`${student.id}`].sum / gradesByLabel[labelId][`${student.id}`].count)
+                  return <StyledSpan>{writing}</StyledSpan>
+                  })}
                     <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
@@ -304,7 +364,7 @@ function AllStudents() {
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                     <StyledSpan>{student.languages}</StyledSpan>
-                  <StyledSpan>{getGradeAverage(student.AcademicBackgrounds || [])}</StyledSpan>
+                  <StyledSpan>{student.AcademicBackgrounds.length > 0 ? student.AcademicBackgrounds[0].gradeAvg : ''}</StyledSpan>
                   </StyledDiv>
                 </StyledLink>
               </li>
@@ -314,5 +374,6 @@ function AllStudents() {
     </Wrapper>
   );
 }
+
 
 export default AllStudents;

@@ -175,8 +175,6 @@ export default function GradeButton({
   const handleClose: () => void = () => {
     setOpenGrades(false);
   };
-
-  console.log(activeGrades);
   return (
     <>
       <span onClick={handleOpen}>{calculateGrades(activeGrades, null)}</span>
@@ -229,7 +227,6 @@ function GradeView({
     labelIndex: number
   ) => {
     try {
-      console.log(grade, belongsTo, belongsToId, studentId);
       //@ts-ignore
       if (isNaN(grade)) return;
       const { data } = await network.post("/api/v1/grade", {
@@ -260,6 +257,7 @@ function GradeView({
       //   newGrades[i].Label = { grade: Number(grade) };
       // }
       // setActiveGrades(grades);
+
     } catch (e) {
       console.log(e);
     }
