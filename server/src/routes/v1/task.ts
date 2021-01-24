@@ -19,6 +19,7 @@ import { taskSchema } from "../../validations";
 import { parseFilters } from "../../helper";
 import challenges from "./challenges";
 import { validateTeacher } from "../../middlewares";
+import { flatten } from "lodash";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -71,9 +72,9 @@ const createTaskLabels: (
   labels: ITaskLabel[],
   taskId: number
 ) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
-  console.log("******************LABELS***************");
-  console.log(labels);
-  console.log("*****************************************");
+  // console.log("******************LABELS***************");
+  // console.log(labels);
+  // console.log("*****************************************");
 
   if (!Array.isArray(labels))
     throw new Error(`Expected an array but got ${typeof labels} instead`);
@@ -89,7 +90,7 @@ const createTaskLabels: (
     await Promise.all(
       newTaskLabels.map((taskLabel: any, i: number) => {
         const parsed: ITaskLabel = taskLabel.toJSON();
-        console.log(parsed);
+        // console.log(parsed);
         return createCriteria(labels[i].Criteria, parsed.taskId, parsed.id!);
       })
     );
@@ -109,9 +110,9 @@ const createCriteria: (
   taskId: number,
   labelId: number
 ) => {
-  console.log("******************CRITERIA***************");
-  console.log(criteria);
-  console.log("*****************************************");
+  // console.log("******************CRITERIA***************");
+  // console.log(criteria);
+  // console.log("*****************************************");
 
   if (!Array.isArray(criteria))
     return Promise.reject(
@@ -131,7 +132,7 @@ const getGradesOfTaskForStudent: (
   studentId: number,
   labelsAndCriteria: ITaskLabel[],
   taskId: number
-) => Promise<void> = async (
+) => Promise<ITaskLabel[]> = async (
   studentId: number,
   labelsAndCriteria: ITaskLabel[],
   taskId: number
@@ -139,7 +140,6 @@ const getGradesOfTaskForStudent: (
   return labelsAndCriteria[0]
     ? Promise.all(
         labelsAndCriteria.map(async (lac: ITaskLabel) => {
-          console.log(lac);
           return {
             Criteria: await Promise.all(
               lac.Criteria.map((criterion: ICriterion) =>
@@ -171,6 +171,63 @@ const getGradesOfTaskForStudent: (
       });
 };
 
+// get task details: student list + grades
+const getTaskDetails: (taskId: number) => Promise<any[]> = async (
+  taskId: number
+) => {
+  const taskLabels: ITaskLabel[] = (
+    await Task.findAll({
+      where: { id: taskId },
+      include: [
+        {
+          model: TaskLabel,
+          include: [{ model: Criterion }, { model: Label }],
+        },
+      ],
+    })
+  )[0].toJSON().TaskLabels;
+
+  const details: any[] = await Promise.all(
+    (
+      await TaskofStudent.findAll({
+        where: { task_id: taskId },
+        attributes: ["studentId", "status", "submitLink", "updatedAt"],
+        include: [
+          {
+            model: Student,
+            attributes: ["firstName", "lastName"],
+            include: [
+              {
+                model: Class,
+                attributes: ["id", "name", "endingDate"],
+              },
+            ],
+          },
+        ],
+      })
+    ).map(async (taskOfStudent: any) => {
+      //TODO solve this typescript way
+      taskOfStudent = taskOfStudent.toJSON();
+      //@ts-ignore
+      taskOfStudent.grades = await getGradesOfTaskForStudent(
+        taskOfStudent.studentId,
+        taskLabels,
+        taskId
+      );
+      // .reduce((gradesMap:any,gradeObj:any)=>({
+      //   ...gradesMap,
+
+      // }),{});
+      return taskOfStudent;
+    })
+  );
+  // // .reduce((gradesMap: any,gradeObj:any )=>(
+  //   {...gradesMap,
+  //   [gradeObj.s]}
+  // ));
+  return details;
+};
+
 router.use("/challenges", challenges);
 
 router.get(
@@ -187,69 +244,122 @@ router.get(
       const studentWhereClause: any = parsedFilters.student;
       Object.assign(tosWhereCLause, parsedFilters.task);
 
-      const myTasks: any[] = await Promise.all(
-        (
-          await Task.findAll({
-            where: tosWhereCLause,
+      //#region
+      // const myTasks: any[] = await Promise.all(
+      //   (
+      //     await Task.findAll({
+      //       where: tosWhereCLause,
+      //       include: [
+      //         {
+      //           model: TaskofStudent,
+      //           attributes: ["studentId", "status", "submitLink", "updatedAt"],
+      //           required: true,
+      //           include: [
+      //             {
+      //               model: Student,
+      //               attributes: ["firstName", "lastName"],
+      //               required: true,
+      //               include: [
+      //                 {
+      //                   model: Class,
+      //                   required: true,
+      //                   attributes: ["id", "name", "endingDate"],
+      //                   where: studentWhereClause,
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         },
+      //         {
+      //           model: Lesson,
+      //           attributes: ["title"],
+      //         },
+      //         {
+      //           model: TaskLabel,
+      //           include: [{ model: Criterion }, { model: Label }],
+      //         },
+      //       ],
+      //       order: [["createdAt", "DESC"]],
+      //     })
+      //   ).map(async (task: any) => {
+      //     task = task.toJSON();
+      //     const getGrades = async () => {
+      //       const allStudentGrades: any = await Promise
+      //         .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+      //           const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
+      //           return { result, studentId: tos.studentId }
+      //         }))
+      //       return allStudentGrades.reduce((gradesMap: any, tos: any) =>
+      //         ({
+      //           ...gradesMap,
+      //           [tos.studentId]: tos.result
+      //         })
+      //       , {})
+      //     }
+      //     task.Grades = await getGrades();
+      //     return task;
+      //   })
+      // );
+      //#endregion
+
+      const myTasks: any[] = await Task.findAll({
+        where: tosWhereCLause,
+        include: [
+          {
+            model: TaskofStudent,
+            attributes: ["studentId", "status", "submitLink", "updatedAt"],
+            required: true,
             include: [
               {
-                model: TaskofStudent,
-                attributes: ["studentId", "status", "submitLink", "updatedAt"],
+                model: Student,
+                attributes: ["id"],
                 required: true,
                 include: [
                   {
-                    model: Student,
-                    attributes: ["firstName", "lastName"],
+                    model: Class,
                     required: true,
-                    include: [
-                      {
-                        model: Class,
-                        required: true,
-                        attributes: ["id", "name", "endingDate"],
-                        where: studentWhereClause,
-                      },
-                    ],
+                    attributes: ["id"],
+                    where: studentWhereClause,
                   },
                 ],
               },
-              {
-                model: Lesson,
-                attributes: ["title"],
-              },
-              {
-                model: TaskLabel,
-                include: [{ model: Criterion }, { model: Label }],
-              },
             ],
-            order: [["createdAt", "DESC"]],
-          })
-        ).map(async (task: any) => {
-          task = task.toJSON();
-          const getGrades = async () => {
-            const allStudentGrades: any = await Promise
-              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
-                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
-                return { result, studentId: tos.studentId }
-              }))
-            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
-              ({
-                ...gradesMap,
-                [tos.studentId]: tos.result
-              })
-            , {})
-          }
-          task.Grades = await getGrades();
-          return task;
-        })
-      );
+          },
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
+          {
+            model: Lesson,
+            attributes: ["title"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
 
       return res.json(myTasks);
-    }catch (error) {
+    } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  });
+  }
+);
 
+router.get(
+  "/details/:taskid",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const taskId: number = Number(req.params.taskid);
+      const details = await getTaskDetails(taskId);
+
+      return res.json(details);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ error: e });
+    }
+  }
+);
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
@@ -353,7 +463,7 @@ router.post(
 router.post("/label", async (req: Request, res: Response) => {
   //TODO check taskId exists
   const data: ITaskLabel[] = req.body;
-  console.log(data);
+  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)
@@ -371,7 +481,7 @@ router.post("/criterion", async (req: Request, res: Response) => {
   //TODO check labelId exists
 
   const data: ICriterion[] = req.body;
-  console.log(data);
+  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)

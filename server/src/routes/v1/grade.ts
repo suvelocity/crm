@@ -143,13 +143,17 @@ const patchGrade: (
       //   belongsTo: "task" | "label" | "criterion";
       freeText: string | undefined;
     } = req.body;
-    const updatedGrade: IGrade = await Grade.update(
+    await Grade.update(
       {
         grade: grade,
         freeText: freeText,
       },
-      { where: { id: pk } }
+      { where: { id: pk }, returning: true }
     );
+
+    //TODO fix this
+    const updatedGrade: IGrade = await Grade.findByPk(pk);
+    console.log(updatedGrade);
 
     res.json(updatedGrade);
   } catch (err) {
