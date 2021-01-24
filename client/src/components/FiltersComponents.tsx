@@ -2,12 +2,12 @@
 // import * as React from 'react';
 import React, {useState} from "react";
 import { MenuItem, Select, InputLabel, FormControl } from "@material-ui/core";
-import { filterStudentObject, SelectInputs } from "../typescript/interfaces";
+import { filterStudentObject, SelectInputsV2 } from "../typescript/interfaces";
 import { useLocation } from 'react-router-dom'
 import {camelCaseToWords} from './studentRelated/AddStudent';
 
 interface Props {
-  array: SelectInputs[];
+  array: SelectInputsV2[];
   callbackFunction: Function;
   filterObject: filterStudentObject;
   widthPercent: number;
@@ -27,7 +27,7 @@ export const FiltersComponents = ({
   };
   return (
     <div style={{ display: "flex", width: `${widthPercent}%` }}>
-      {array.map((item: SelectInputs) => (
+      {array.map((item: SelectInputsV2) => (
         <FormControl
           style={{
             justifyContent: "flex-start",
@@ -68,8 +68,11 @@ export const FiltersComponents = ({
             {(item.filterBy === "Job Status" && location.pathname !== "/process/all") &&  (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}
-            {item.possibleValues.map((value: string) => (
-              <MenuItem value={value}>{value}</MenuItem>
+            {/* {labelOptions.map((val: {name: string, id: string}) => (
+              <MenuItem value={val.id}>{val.name}</MenuItem>
+            ))} */}
+            {item.possibleValues.map((val: {name: string, id?: number}) => (
+              <MenuItem value={val.id || val.name}>{val.name}</MenuItem>
             ))}
           </Select>
         </FormControl>

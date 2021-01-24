@@ -15,7 +15,7 @@ import TimelineIcon from "@material-ui/icons/Timeline";
 import {
   filterStudentObject,
   IEvent,
-  SelectInputs,
+  SelectInputsV2,
   IFilterOptions,
 } from "../../typescript/interfaces";
 import { Loading } from "react-loading-wrapper";
@@ -32,7 +32,7 @@ function AllProcesses() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [click, setClick] = useState<boolean>(false);
   //filters
-  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputs[]>(
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputsV2[]>(
     []
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
@@ -89,7 +89,7 @@ function AllProcesses() {
       {
         filterBy: "Class",
         possibleValues: filterOptions.classes
-          .map((cls: { name: string; id: string }) => cls.name),
+          // .map((cls: { name: string; id: string }) => cls.name),
       },
       {
         filterBy: "JobStatus",
