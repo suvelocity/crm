@@ -178,7 +178,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
         "languages",
         "address",
       ],
-      group: ["Events.related_id", "id"],
+      group: ["Events.related_id", "id", "Events.id", "AcademicBackgrounds.id"],
     });
     console.log(students.length);
     res.json(students);

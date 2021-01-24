@@ -323,12 +323,7 @@ function AllStudents() {
         <StyledUl>
           {students && (
             <li>
-              <TableHeader repeatFormula={`${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
-                {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
-                  if(labelId === "") return null;
-                  const obj = labelOptions.find((obj:{id: string, name: string}) => obj.id == labelId);
-                return <StyledSpan weight="bold">{obj? capitalize(obj.name) : labelId}</StyledSpan>
-                })}
+              <TableHeader repeatFormula={`0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr ${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}`}>
                 <StyledSpan weight="bold">Name</StyledSpan>
                 <StyledSpan weight="bold">Class</StyledSpan>
                 <StyledSpan weight="bold">Address</StyledSpan>
@@ -336,6 +331,11 @@ function AllStudents() {
                 <StyledSpan weight="bold">Phone</StyledSpan>
                 <StyledSpan weight="bold">Language</StyledSpan>
                 <StyledSpan weight="bold">Grade Avg.</StyledSpan>
+                {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                  if(labelId === "") return null;
+                  const obj = labelOptions.find((obj:{id: string, name: string}) => obj.id == labelId);
+                return <StyledSpan weight="bold">{obj? capitalize(obj.name) : labelId}</StyledSpan>
+                })}
               </TableHeader>
             </li>
           )}
@@ -343,14 +343,7 @@ function AllStudents() {
             filteredStudents.map((student) => (
               <li>
                 <StyledLink color="black" to={`/student/${student?.id}`}>
-                  <StyledDiv repeatFormula={`${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr`}>
-                  {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
-                    if(labelId === "") return null;
-                      const writing = !gradesByLabel[labelId]? 0 :
-                        !gradesByLabel[labelId][`${student.id}`] ? 0 : 
-                        Math.round(gradesByLabel[labelId][`${student.id}`].sum / gradesByLabel[labelId][`${student.id}`].count)
-                  return <StyledSpan>{writing}</StyledSpan>
-                  })}
+                  <StyledDiv repeatFormula={`0.8fr 1.2fr 1fr 1.2fr 1fr 1fr 0.5fr ${'0.5fr '.repeat(gradeParams.labelIds.filter(param => param !== "").length)}`}>
                     <StyledSpan weight="bold">
                       {capitalize(student.firstName)}&nbsp;
                       {capitalize(student.lastName)}
@@ -364,7 +357,14 @@ function AllStudents() {
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                     <StyledSpan>{student.languages}</StyledSpan>
-                  <StyledSpan>{student.AcademicBackgrounds.length > 0 ? student.AcademicBackgrounds[0].gradeAvg : ''}</StyledSpan>
+                    <StyledSpan>{student.AcademicBackgrounds.length > 0 ? student.AcademicBackgrounds[0].gradeAvg : ''}</StyledSpan>
+                    {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
+                      if(labelId === "") return null;
+                        const writing = !gradesByLabel[labelId]? 0 :
+                          !gradesByLabel[labelId][`${student.id}`] ? 0 : 
+                          Math.round(gradesByLabel[labelId][`${student.id}`].sum / gradesByLabel[labelId][`${student.id}`].count)
+                    return <StyledSpan>{writing}</StyledSpan>
+                    })}
                   </StyledDiv>
                 </StyledLink>
               </li>
