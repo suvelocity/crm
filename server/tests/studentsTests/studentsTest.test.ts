@@ -82,6 +82,36 @@ describe("Students Tests", () => {
     done();
   });
 
+  test.skip("Testing filter route access", async (done) => {
+    const params = {
+      Class: [""],
+      Course: [""],
+      JobStatus: [""],
+      Name: [""],
+      Languages: [""],
+      AverageScore: "רגיל",
+      labelIds: [""],
+    };
+    const output = await sendRequest(
+      "get",
+      "/student/filtered",
+      accessToken,
+      null,
+      {
+        test: JSON.stringify(params),
+      }
+    );
+    console.log("output", output.body);
+    expect(output.status).toBe(200);
+    const output2 = await sendRequest(
+      "get",
+      "/api/v1/student/filter-options",
+      accessToken
+    );
+    expect(output2.status).toBe(200);
+    done();
+  });
+
   test("Admin should be able to delete", async (done) => {
     const prevStudents = await getCurrentStudents();
     expect(prevStudents.body.length).toBe(10);

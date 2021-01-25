@@ -3,8 +3,8 @@ export const jobFormErrorTitles = [
   "Position title is required",
   "Location is required",
   "Contact is required",
-  "Description is required",
-  "Requirements are required",
+  //"Description is required",
+  //"Requirements are required",
 ];
 
 export const studentFormErrorTitles = [
