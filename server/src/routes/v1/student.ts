@@ -165,6 +165,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
         "address",
       ],
       group: ["id"],
+      //group: ["Events.related_id", "id", "Events.id", "AcademicBackgrounds.id"],
     });
     if (!isEmpty(JobStatus) && students.length > 0) {
       const { error } = JobStatusValidation.validate(JobStatus);
