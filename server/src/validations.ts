@@ -32,7 +32,7 @@ export const jobSchema = Joi.object({
   //TODO: check what is required
   companyId: Joi.number().required(),
   position: Joi.string().required(),
-  requirements: Joi.string().max(500).required(),
+  requirements: Joi.string().max(500).allow(null, ""), //.required(),
   location: Joi.string().required(),
   description: Joi.string().max(500).allow(null, ""),
   contact: Joi.string().required(),

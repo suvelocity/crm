@@ -83,7 +83,10 @@ router.get("/all", validateAdmin, async (req: Request, res: Response) => {
 
 router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
   try {
-    console.log(req.query);
+    const query =
+      //@ts-ignore
+      process.env.NODE_ENV === "test" ? JSON.parse(req.query.test) : req.query;
+    console.log("QUERY ", query);
     const {
       JobStatus,
       Course,
@@ -93,7 +96,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
       Languages,
       AverageScore,
       addressName,
-    }: { [key: string]: any } = req.query;
+    }: { [key: string]: any } = query;
     const isEmpty = (property: any) => {
       return property[0] === "";
     };
@@ -164,7 +167,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
         "languages",
         "address",
       ],
-      group: ["id"],
+      group: ["AcademicBackgrounds.student_id"],
       //group: ["Events.related_id", "id", "Events.id", "AcademicBackgrounds.id"],
     });
     if (!isEmpty(JobStatus) && students.length > 0) {
@@ -326,7 +329,7 @@ router.get("/filter-options", async (req: Request, res: Response) => {
       attributes: ["id", "name"],
     });
     const releventStatuses: any = await sequelize.query(
-      `SELECT a.date, event_name, first_name, a.user_id, a.related_id, a.updated_at, max FROM Students
+      `SELECT date, event_name, first_name, a.user_id, a.related_id, max FROM Students
     join Events a on type = 'jobs' and a.user_id = Students.id 
     join (SELECT MAX(date) as max, related_id, user_id from Events
     where type = 'jobs' and deleted_at is null
@@ -340,7 +343,6 @@ router.get("/filter-options", async (req: Request, res: Response) => {
       ;`,
       { type: QueryTypes.SELECT }
     );
-    console.log(courses);
     res.json({
       statuses: releventStatuses.map((event: any) => ({
         name: event.event_name,
