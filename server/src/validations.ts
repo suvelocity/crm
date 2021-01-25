@@ -1,5 +1,4 @@
 import Joi from "joi";
-
 export const classSchema = Joi.object({
   course: Joi.string().required(),
   name: Joi.string().required(),
@@ -210,6 +209,25 @@ export const mentorSchema = Joi.object({
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().required().allow(null, ""),
 });
+
+export const JobStatusValidation = Joi.array().items(
+  Joi.string().valid(
+    "Started application process",
+    "Sent CV",
+    "Phone Interview",
+    "First interview",
+    "Second interview",
+    "Third Interview",
+    "Forth interview",
+    "Home Test",
+    "Hired",
+    "Rejected",
+    "Irrelevant",
+    "Removed Application",
+    "Position Frozen",
+    "Canceled"
+  )
+);
 
 export const mentorSchemaToPut = Joi.object({
   name: Joi.string().allow(null, ""),

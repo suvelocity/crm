@@ -77,6 +77,7 @@ export interface IEvent {
   relatedId: string;
   eventName: string;
   entry?: any;
+  maxDate?: Date;
   type: string;
   date: Date;
 }
@@ -173,6 +174,7 @@ export interface SeqInclude {
   attributes?: string[];
   include?: SeqInclude[];
   required?: boolean;
+  as?: string;
   where?: {};
 }
 
