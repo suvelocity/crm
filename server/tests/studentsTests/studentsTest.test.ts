@@ -82,7 +82,7 @@ describe("Students Tests", () => {
     done();
   });
 
-  test("Testing filter route access", async (done) => {
+  test.skip("Testing filter route access", async (done) => {
     const params = {
       Class: [""],
       Course: [""],
