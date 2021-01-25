@@ -71,7 +71,7 @@ export const FiltersComponents = ({
             {/* {labelOptions.map((val: {name: string, id: string}) => (
               <MenuItem value={val.id}>{val.name}</MenuItem>
             ))} */}
-            {item.possibleValues.map((val: {name: string, id?: number}) => (
+            {item.possibleValues.map((val: {name: string, id?: number | string}) => (
               <MenuItem value={val.id || val.name}>{val.name}</MenuItem>
             ))}
           </Select>

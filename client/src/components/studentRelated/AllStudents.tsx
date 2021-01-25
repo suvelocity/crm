@@ -30,17 +30,6 @@ import { formatPhone } from "../../helpers/general";
 import { FiltersComponents } from "../FiltersComponents";
 import { capitalize, onTheSameDay } from "../../helpers/general";
 
-
-const getGradeAverage = (academicBackgrounds:IAcademicBackground[]): string | number => {
-  let gradeSum = 0;
-  let length = 0;
-  academicBackgrounds.forEach((academicBackground: IAcademicBackground) => {
-    gradeSum += academicBackground.averageScore;
-    length++;
-  });
-  if(length === 0) return "none";
-  return Math.round(gradeSum / length)
-}
 function AllStudents() {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -66,113 +55,39 @@ function AllStudents() {
       AverageScore: "רגיל"
     }
   );
-  const getRecentJobsStatus = (events: IEvent[]): string[] => {
-    type JobEvents = { [id: string]: { time: number; status: string } };
-    let jobs: JobEvents = {};
-    const filteredEvents = events.filter((event) => event.type === "jobs");
-    for (let i = 0; i < filteredEvents.length; i++) {
-      const id: number = filteredEvents[i].Job!.id!;
-      const eventTime = new Date(filteredEvents[i].date);
-      if (!jobs[`job${id}`]) {
-        jobs[`job${id}`] = {
-          time: eventTime.getTime(),
-          status: filteredEvents[i].eventName,
-        };
-      } else if (
-        eventTime.getTime() > jobs[`job${id}`].time ||
-        onTheSameDay(jobs[`job${id}`].time, eventTime.getTime())
-      ) {
-        jobs[`job${id}`] = {
-          time: eventTime.getTime(),
-          status: events[i].eventName,
-        };
-      }
-    }
-    let JobStatuses: { [status: string]: string } = {};
-    for (const key in jobs) {
-      if (!JobStatuses[jobs[key].status])
-        JobStatuses[jobs[key].status] = jobs[key].status;
-    }
-    return Object.keys(JobStatuses);
-  };
-  const getGrades = async () => {
-    const studentIdArray = filteredStudents.map((student: IStudent) => student.id);
-    let query = `?labelIds=[${gradeParams.labelIds}]&&studentIds=[${studentIdArray}]`;
-    const {data : grades}: {data : LabelIdsWithGradesPerStudent} = await network.get(`/api/v1/student/labelIdsWithGrades`, { // /${query}
-      params: gradeParams
-    });
-    console.log('grades', grades)
-    setGradesByLabel(grades);
-    setLoading(false)
-  }
-  useEffect(() => {
-    if(gradeParams.labelIds[0] !== ""){
-      if(!loading) setLoading(true)
-      getGrades();
-    }else{
-      setLoading(false)
-    }
-  },[gradeParams])
   const fetchLabels = async() => {
-    const {data} = await network.get('/api/v1/label/all');
-    setLabelOptions(data)
+    try{
+      const {data} = await network.get('/api/v1/label/all');
+      setLabelOptions(data)
+    }catch(e){
+      setLoading(false);
+      console.log(e.message);
+    }
   }
-  useEffect(() => {
-    (async () => {
-      fetchLabels();
-      const { data } = await network.get("/api/v1/student/all");
-      const dataObj: {[key: string]: boolean} = {};
-      const newClassNames : {name: string, id?: number}[]= [];
-      const newCourseNames : {name: string, id?: number}[]= [];
-      const newFullNames : {name: string, id?: number}[]= [];
-      const newJobStatuses : {name: string}[]= [];
-      // const newClassNames: {name: string, id?: number}[] = Array.from(
-      //   new Set(data.map((student: IStudent) => ({ id: student.Class.id, name: student.Class.name})))
-      // );
-      // console.table(newClassNames)
-      data.forEach((student: IStudent) => {
-        if(!dataObj[`${student.Class.name}`]){
-          dataObj[`${student.Class.name}`] = true;
-          newClassNames.push({name:student.Class.name, id:student.Class.id});
-        }
-        if(!dataObj[`${student.Class.course}`]){
-          dataObj[`${student.Class.course}`] = true;
-          newCourseNames.push({name:student.Class.course});
-        }
-        newFullNames.push({ id: student.id, name: student.firstName + " " + student.lastName })
-      })
-      console.log(dataObj)
-      let JobStatuses: string[] = [];
-      data.forEach((student: IStudent) => {
-        JobStatuses = [...JobStatuses, ...getRecentJobsStatus(student.Events)];
-      });
-      JobStatuses.forEach((status: string) => {
-        if(dataObj[`${status}`]){
-          dataObj[`${status}`] = true;
-        }else{
-          newJobStatuses.push({name: status});
-        }
-      })
+  const fetchOptions = async() => {
+    try{
+      const {data} = await network.get('/api/v1/student/filter-options');
+      console.log("options", data)
       setFilterOptionsArray([
         {
           filterBy: "Course",
           label: "קורס",
-          possibleValues: newCourseNames,
+          possibleValues: data.courses,
         },
         {
           filterBy: "Class",
           label: "כיתה",
-          possibleValues: newClassNames,
+          possibleValues: data.classes,
         },
         {
           filterBy: "JobStatus",
           label: "סטטוס השמה",
-          possibleValues: newJobStatuses,
+          possibleValues: data.statuses,
         },
         {
           filterBy: "Name",
           label: "שם",
-          possibleValues: newFullNames,
+          possibleValues: data.students,
         },
         {
           filterBy: "Languages",
@@ -183,81 +98,39 @@ function AllStudents() {
           filterBy: "AverageScore",
           singleOption: true,
           label: "ממוצע ציונים",
-          possibleValues: [{name: "עולה"}, {name :"יורד"}],
+          possibleValues: [{name: "עולה", id: 'DESC'}, {name :"יורד", id: 'ASC'}],
         }
       ]);
       setLoading(false);
-    })();
-  }, []);
-  useEffect(() => {
-    if (students) {
-      setFilteredStudents(students);
+    }catch(e){
+      setLoading(false);
+      console.log(e.message);
     }
-  }, [students]);
+  }
+  useEffect(() => {
+    fetchLabels()
+    fetchOptions()
+  }, []);
 
-  const filterFunc = (arr?: IStudent[]) => { //useCallback(
-    const array = arr || students
-    return array.filter((student) => {
-      const addressCondition = addressName ? student.address.toLowerCase().includes(addressName) : true;
-      // const languageCondition = 
-      // filterAttributes.Languages!.length === 1 &&
-      // filterAttributes.Languages![0] === ""
-      //   ? true :
-      // filterAttributes.Languages!.every((lang:string) =>!student.languages? false :student.languages.includes(lang));
-      // const classCondition =
-      //   filterAttributes.Class!.length === 1 &&
-      //   filterAttributes.Class![0] === ""
-      //     ? true
-      //     : filterAttributes.Class!.includes(student.Class.name);
-      // const courseCondition =
-      //   filterAttributes.Course!.length === 1 &&
-      //   filterAttributes.Course![0] === ""
-      //     ? true
-      //     : filterAttributes.Course!.includes(student.Class.course);
-      // const recentJobStatus = getRecentJobsStatus(student.Events);
-      // const jobless =
-      //   recentJobStatus.length === 0 ||
-      //   recentJobStatus.every((status) => status === "Rejected");
-      // const jobStatusCondition =
-      //   filterAttributes.JobStatus!.length === 1 &&
-      //   filterAttributes.JobStatus![0] === ""
-      //     ? true
-      //     : (filterAttributes.JobStatus!.includes("None") && jobless) ||
-      //       filterAttributes.JobStatus!.find((status) =>
-      //         recentJobStatus.includes(status)
-      //       );
-      // const studentIdCondition =
-      //   filterAttributes.Name!.length === 1 &&
-      //   filterAttributes.Name![0] === ""
-      //     ? true
-      //     : filterAttributes.Name!.some((val: string) => String(val) === String(student.id));
-      return  addressCondition; //jobStatusCondition &&
-        // classCondition &&
-        // courseCondition &&
-        // studentIdCondition &&
-
-        // languageCondition
-      
-    });
-  }//, [filterAttributes,  addressName]);
   const getStudentsByFilters = async () => {
     try{
-      const {data} = await network.get('/api/v1/student/filtered', {
-        params: filterAttributes
+      const {data} : {data: {students: IStudent[], gradedLabels?: LabelIdsWithGradesPerStudent} } = await network.get('/api/v1/student/filtered', {
+        params: {...filterAttributes, ...gradeParams, addressName}
       })
-      const filtered = filterFunc(data)
-      const studentIds = filtered.map((student: IStudent) => String(student.id));
-      setGradeParams({...gradeParams, studentIds: studentIds});
-      setFilteredStudents(filtered);
+      if(data.gradedLabels){
+        setGradesByLabel(data.gradedLabels);
+      }
+      setFilteredStudents(data.students);
       setLoading(false)
     }catch(e){
-
+      console.log(e)
+      setLoading(false);
     }
   }
   useEffect(() => {
     setLoading(true)
     getStudentsByFilters();
-  }, [filterAttributes, addressName]);
+  }, [filterAttributes, addressName, gradeParams]);
 
   return (
     <Wrapper width="80%">

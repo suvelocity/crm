@@ -159,7 +159,7 @@ export interface SelectInputsV2 {
   filterBy: string;
   label?: string;
   singleOption?: boolean;
-  possibleValues: {name: string, id?: number}[];
+  possibleValues: {name: string, id?: number | string}[];
 }
 
 export interface IMentor {
