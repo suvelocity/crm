@@ -103,7 +103,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
     const OPor = (arr: string[], attr: string, obj: any) => {
       if (!isEmpty(arr)) obj[attr] = { [Op.or]: arr };
     };
-    const classWhere: any = {};
+    let classWhere: any = {};
     const studentWhere: any = {};
     if (!isEmpty(Languages)) {
       studentWhere.languages = {
@@ -115,9 +115,16 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
     if (addressName) {
       studentWhere.address = { [Op.like]: "%" + addressName + "%" };
     }
+    if (!isEmpty(Course)) {
+      const array: any = [];
+      Course.forEach((val: string) => {
+        const [course, cycleNumber] = val.split(" - ");
+        array.push({ [Op.and]: [{ course }, { cycleNumber }] });
+      });
+      classWhere = { [Op.or]: array };
+    }
     OPor(ClassIds, "id", classWhere);
     OPor(Name, "id", studentWhere);
-    OPor(Course, "course", classWhere);
     let orderByScore = [];
     if (AverageScore === "ASC" || AverageScore === "DESC") {
       orderByScore.push([
@@ -128,7 +135,6 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
         AverageScore,
       ]);
     }
-
     let students = await Student.findAll({
       where: studentWhere,
       include: [
@@ -157,7 +163,7 @@ router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
           ],
         },
       ],
-      order: [...orderByScore], //["Events", "date", "ASC"],
+      order: [...orderByScore],
       attributes: [
         "id",
         "firstName",
