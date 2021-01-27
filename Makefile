@@ -65,6 +65,7 @@ start-app:
 			-e MYSQL_USER=${DB_USER} \
 			-e MYSQL_PASSWORD=${DB_PASS} \
 			-e MY_URL=${INSTANCE_URL} \
+			-e PORT=${SERVER_PORT} \
 			-e NODE_ENV=production \
 			--env-file=.env \
 			-p ${SERVER_PORT}:${SERVER_PORT} \

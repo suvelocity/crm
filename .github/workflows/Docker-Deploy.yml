@@ -17,11 +17,11 @@ env:
   DB_NAME_PRODUCTION: ${{ secrets.DB_NAME_PRODUCTION_V1 }} # production database
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
-  SERVER_PORT: 8080
+  SERVER_PORT: 80
   CMDTORUN: npm run spinup:prod # staging start script
   CMDTORUN_PRODUCTION: npm run spinup:prod # production start script
-  INSTANCE_URL: http://35.226.223.57:8080/
-  INSTANCE_URL_PRODUCTION: http://34.69.190.91:8080/
+  INSTANCE_URL: http://35.226.223.57:80/
+  INSTANCE_URL_PRODUCTION: http://34.69.190.91:80/
 
 jobs:
   setup-build-publish-deploy:
