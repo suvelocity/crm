@@ -1,7 +1,8 @@
 import e, { Router, Request, Response } from "express";
+import { calculateGrade, getGradesOfTaskForStudent } from "../../helper";
 //@ts-ignore
-import { Grade, Task } from "../../models";
-import { IGrade, ITask } from "../../types";
+import { Grade, Task, TaskLabel, Criterion, Label } from "../../models";
+import { IGrade, ITask, ITaskLabel } from "../../types";
 const router = Router();
 
 const tableNames = {
@@ -17,6 +18,36 @@ const tableNames = {
 
 // }
 // });
+
+router.get("/:taskId/:studentId", async (req: Request, res: Response) => {
+  const taskId: string = req.params.taskId;
+  const studentId: string = req.params.studentId;
+
+  try {
+    const labelsAndCriteria: ITaskLabel[] = await Task.findByPk(taskId, {
+      include: [
+        {
+          model: TaskLabel,
+          include: [{ model: Criterion }, { model: Label }],
+        },
+      ],
+    });
+
+    console.log(labelsAndCriteria);
+
+    const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
+      Number(studentId),
+      labelsAndCriteria,
+      Number(taskId)
+    );
+
+    const grade = calculateGrade(grades);
+
+    res.json({ grade });
+  } catch (e) {
+    res.status(400).json(e);
+  }
+});
 
 router.post("/", async (req: Request, res: Response) => {
   const type: string = req.body.type;
@@ -35,34 +66,6 @@ router.post("/", async (req: Request, res: Response) => {
   if (gradeExists.found) return patchGrade(req, res, gradeExists.item?.id!);
   postGrade(req, res);
 });
-
-// router.post("/to-task/:taskId", async (req: Request, res: Response) => {
-//   postGrade(req, res);
-// });
-
-// router.post(
-//   "/to-tasklabel/:taskLabelId",
-//   async (req: Request, res: Response) => {
-//     postGrade(req, res);
-//   }
-// );
-
-// router.post(
-//   "/to-criterion/:criterionId",
-//   async (req: Request, res: Response) => {
-//     postGrade(req, res);
-//   }
-// );
-
-// const postGrade: (
-//   grade: number,
-//   belongsToId: number,
-//   freeText?: string
-// ) => Promise<IGrade> = (
-//   grade: number,
-//   belongsToId: number,
-//   freeText?: string
-// ) => {
 
 const findPkByRelatedIdInTable: (
   req: Request,
@@ -159,5 +162,30 @@ const patchGrade: (
     res.status(400).json(err);
   }
 };
+
+// const calculateGrade: (
+//   req: Request,
+//   res: Response
+// ) => Promise<number | Error> = async (req: Request, res: Response) => {
+//   const taskId: string = req.params.taskId;
+//   const studentId: string = req.params.studentId;
+
+//   const labelsAndCriteria: ITaskLabel[] = Task.findByPk(taskId, {
+//     include: [
+//       {
+//         model: TaskLabel,
+//         include: [{ model: Criterion }, { model: Label }],
+//       },
+//     ],
+//   });
+
+//   console.log(labelsAndCriteria);
+
+//   const grades = getGradesOfTaskForStudent(
+//     Number(studentId),
+//     labelsAndCriteria,
+//     Number(taskId)
+//   );
+// };
 
 module.exports = router;

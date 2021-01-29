@@ -16,7 +16,11 @@ import {
   ITaskofStudent,
 } from "../../types";
 import { taskSchema } from "../../validations";
-import { parseFilters } from "../../helper";
+import {
+  calculateGrade,
+  getGradesOfTaskForStudent,
+  parseFilters,
+} from "../../helper";
 import challenges from "./challenges";
 import sequelize from "sequelize";
 import { validateTeacher } from "../../middlewares";
@@ -129,49 +133,6 @@ const createCriteria: (
   );
 };
 
-const getGradesOfTaskForStudent: (
-  studentId: number,
-  labelsAndCriteria: ITaskLabel[],
-  taskId: number
-) => Promise<ITaskLabel[]> = async (
-  studentId: number,
-  labelsAndCriteria: ITaskLabel[],
-  taskId: number
-) => {
-  return labelsAndCriteria[0]
-    ? Promise.all(
-        labelsAndCriteria.map(async (lac: ITaskLabel) => {
-          return {
-            Criteria: await Promise.all(
-              lac.Criteria.map((criterion: ICriterion) =>
-                Grade.findOne({
-                  where: {
-                    studentId: studentId,
-                    belongsTo: "criterion",
-                    belongsToId: criterion.id,
-                  },
-                })
-              )
-            ),
-            Label: await Grade.findOne({
-              where: {
-                studentId: studentId,
-                belongsTo: "label",
-                belongsToId: lac.id,
-              },
-            }),
-          };
-        })
-      )
-    : Grade.findOne({
-        where: {
-          studentId: studentId,
-          belongsTo: "task",
-          belongsToId: taskId,
-        },
-      });
-};
-
 // get task details: student list + grades
 const getTaskDetails: (taskId: number) => Promise<any[]> = async (
   taskId: number
@@ -209,12 +170,15 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
     ).map(async (taskOfStudent: any) => {
       //TODO solve this typescript way
       taskOfStudent = taskOfStudent.toJSON();
-      //@ts-ignore
-      taskOfStudent.grades = await getGradesOfTaskForStudent(
+      const grades = await getGradesOfTaskForStudent(
         taskOfStudent.studentId,
         taskLabels,
         taskId
       );
+
+      //@ts-ignore
+      taskOfStudent.grades = grades;
+      taskOfStudent.overallGrade = calculateGrade(grades);
       // .reduce((gradesMap:any,gradeObj:any)=>({
       //   ...gradesMap,
 
@@ -360,7 +324,6 @@ router.get(
     }
   }
 );
-
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
@@ -523,7 +486,7 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
       await TaskofStudent.update(
         {
           submitLink: req.body.url,
-          status: "done",
+          status: "submitted",
         },
         { where: { id: req.params.id } }
       );
@@ -574,7 +537,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
       where: {
         studentId: studentId,
         type: !"manual",
-        status: !"done",
+        status: !"submitted",
       },
       include: [Task],
     });
@@ -593,7 +556,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
             if (event) {
               const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
-                  status: "done",
+                  status: "submitted",
                 },
                 { where: { id: task.id } }
               );
@@ -615,7 +578,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
             if (event) {
               const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
-                  status: "done",
+                  status: "submitted",
                 },
                 { where: { id: task.id } }
               );

@@ -3,18 +3,20 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import {
+  ICriterion,
   IEvent,
   IFccEvent,
   IJob,
   IStudent,
   ITaskFilter,
+  ITaskLabel,
   ITaskofStudent,
   PublicFields,
   PublicFieldsEnum,
   SeqInclude,
 } from "./types";
 //@ts-ignore
-import { Student, Company, Job, Event } from "./models";
+import { Student, Company, Job, Event, Grade } from "./models";
 //@ts-ignore
 import { Class, TaskofStudent, Task, AcademicBackground } from "./models";
 import { Op } from "sequelize";
@@ -391,4 +393,130 @@ export const parseFilters: (stringified: string) => any = (
     console.log(e);
     return undefined;
   }
+};
+
+export const getGradesOfTaskForStudent: (
+  studentId: number,
+  labelsAndCriteria: ITaskLabel[],
+  taskId: number
+) => Promise<any> = async (
+  studentId: number,
+  labelsAndCriteria: ITaskLabel[],
+  taskId: number
+) => {
+  return labelsAndCriteria[0]
+    ? Promise.all(
+        labelsAndCriteria.map(async (lac: ITaskLabel) => {
+          return {
+            Criteria: await Promise.all(
+              lac.Criteria.map((criterion: ICriterion) =>
+                Grade.findOne({
+                  where: {
+                    studentId: studentId,
+                    belongsTo: "criterion",
+                    belongsToId: criterion.id,
+                  },
+                  raw: true,
+                })
+              )
+            ),
+            Label: await Grade.findOne({
+              where: {
+                studentId: studentId,
+                belongsTo: "label",
+                belongsToId: lac.id,
+              },
+              raw: true,
+            }),
+          };
+        })
+      )
+    : Grade.findOne({
+        where: {
+          studentId: studentId,
+          belongsTo: "task",
+          belongsToId: taskId,
+        },
+        raw: true,
+      });
+};
+
+export const calculateGrade: (
+  // studentId: number,
+  // labelsAndCriteria: ITaskLabel[],
+  // taskId: number
+  grades: ITaskLabel[]
+) => number = (
+  // studentId: number,
+  // labelsAndCriteria: ITaskLabel[],
+  // taskId: number
+  grades: ITaskLabel[]
+) => {
+  try {
+    // const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
+    //   studentId,
+    //   labelsAndCriteria,
+    //   taskId
+    // );
+    console.log(grades);
+
+    const gradesMap: any = makeGradesMap(grades);
+
+    console.log("GRADES MAP **********");
+    console.log(gradesMap);
+
+    return 100;
+  } catch (e) {
+    return e;
+  }
+};
+
+export const makeGradesMap: (grades: ITaskLabel[]) => any = (
+  grades: ITaskLabel[]
+) => {
+  console.log(grades);
+  return Array.isArray(grades)
+    ? grades.reduce(
+        (gradesMap: any, label: any, index: number) =>
+          // label.Criteria[0]
+          label.Label
+            ? {
+                ...gradesMap,
+                [`label${label?.Label?.belongsToId}`]: label.Label,
+              }
+            : // label.Criteria.reduce(
+              //     (sameGradesMap: any, criterion: any) =>
+              //       criterion
+              //         ? {
+              //             ...sameGradesMap,
+              //             [`criterion${criterion?.belongsToId}`]: {
+              //               ...criterion,
+              //               labelId: index,
+              //             },
+              //           }
+              //         : gradesMap,
+              //     gradesMap
+              //   )
+              label.Criteria.reduce(
+                (sameGradesMap: any, criterion: any) =>
+                  criterion
+                    ? {
+                        ...sameGradesMap,
+                        [`criterion${criterion?.belongsToId}`]: {
+                          ...criterion,
+                          labelId: index,
+                        },
+                      }
+                    : sameGradesMap,
+                gradesMap
+              ),
+        // label.Label
+        // ? {
+        //     ...gradesMap,
+        //     [`label${label?.Label?.belongsToId}`]: label.Label,
+        //   }
+        // : gradesMap,
+        {}
+      )
+    : grades;
 };
