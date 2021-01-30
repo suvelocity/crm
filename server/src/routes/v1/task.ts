@@ -154,7 +154,7 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
     (
       await TaskofStudent.findAll({
         where: { task_id: taskId },
-        attributes: ["studentId", "status", "submitLink", "updatedAt"],
+        attributes: ["id", "studentId", "status", "submitLink", "updatedAt"],
         include: [
           {
             model: Student,
@@ -192,6 +192,22 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
   //   [gradeObj.s]}
   // ));
   return details;
+};
+
+const changeTaskStatus: (
+  taskOfStudentId: string,
+  newStatus: string,
+  submitUrl?: string
+) => Promise<Array<any> | Error> = async (
+  taskOfStudentId: string,
+  newStatus: string,
+  submitUrl?: string
+) => {
+  const toUpdate = submitUrl
+    ? { status: newStatus, submitLink: submitUrl }
+    : { status: newStatus };
+
+  return TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
 };
 
 router.use("/challenges", challenges);
@@ -458,23 +474,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
   }
 });
 
-// router.post("/grade", async (req: Request, res: Response) => {
-//   //TODO check taskId exists
-//   //TODO check labelId exists
-
-//   const data: IGrade[] = req.body;
-//   console.log(data);
-//   if (!Array.isArray(data))
-//     res
-//       .status(400)
-//       .json({ error: `Expected an array but got ${typeof data} instead` });
-//   try {
-//     const newGrade: IGrade[] = await Grade.bulkCreate(data);
-//     res.json(newGrade);
-//   } catch (e) {
-//     res.status(400).json({ error: e.message });
-//   }
-// });
 //todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
@@ -484,16 +483,29 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
     });
 
     if (taskType.type === "manual") {
-      await TaskofStudent.update(
-        {
-          submitLink: req.body.url,
-          status: "submitted",
-        },
-        { where: { id: req.params.id } }
-      );
-      return res.status(200).json("task updated");
+      await changeTaskStatus(req.params.id, "submitted", req.body.url);
+
+      return res.status(200).json("task submitted");
     }
-    return res.status(200).json({ error: "can only update manual task" });
+    return res.status(400).json({ error: "can only submit manual task" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Change task status to checked
+router.patch("/check/:id", async (req: Request, res: Response) => {
+  try {
+    const taskType: any = await TaskofStudent.findByPk(req.params.id, {
+      attributes: ["type"],
+    });
+
+    if (taskType.type === "manual") {
+      await changeTaskStatus(req.params.id, "checked");
+
+      return res.status(200).json("task checked");
+    }
+    return res.status(400).json({ error: "can only check manual task" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

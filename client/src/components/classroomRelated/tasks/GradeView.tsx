@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Modal, Theme } from "@material-ui/core";
 import { ITaskCriteria, ITaskLabel } from "../../../typescript/interfaces";
 import { Grades } from "../../../typescript/interfaces";
 import { network } from "../../../helpers";
+import Swal from "sweetalert2";
 
 //#region moved to server
 // const calculateGrades = (grades: object, grades2: { grade: number } | null) => {
@@ -107,6 +108,7 @@ export default function GradeButton({
   taskId,
   studentId,
   overallGrade,
+  taskOfStudentId,
 }: {
   taskLabels: ITaskLabel[];
   grades: Grades[];
@@ -114,6 +116,7 @@ export default function GradeButton({
   taskId: number;
   studentId: number;
   overallGrade: number;
+  taskOfStudentId: number;
 }) {
   //#region moved to server
   // const makeGradesMap: (grades: Grades[]) => any = (grades: Grades[]) => {
@@ -179,11 +182,21 @@ export default function GradeButton({
   };
 
   const updateOverallGrade: () => Promise<void> = async () => {
-    const { data: newOverall } = await network.get(
-      `/api/v1/grade/${taskId}/${studentId}`
-    );
-    console.log(newOverall);
-    setOverallGradeState(newOverall.grade);
+    try {
+      const { data: newOverall } = await network.get(
+        `/api/v1/grade/overall/${taskId}/${studentId}`
+      );
+      console.log(newOverall);
+      setOverallGradeState(newOverall.grade);
+    } catch (e) {
+      console.log(e);
+      Swal.fire(
+        "Oh Shit",
+        `Failed to update grade.
+          Please try again in a moment`,
+        "error"
+      );
+    }
   };
 
   useEffect(() => {
@@ -202,6 +215,7 @@ export default function GradeButton({
         key={key}
         taskId={taskId}
         studentId={studentId}
+        taskOfStudentId={taskOfStudentId}
       />
     </>
   );
@@ -216,6 +230,7 @@ function GradeView({
   key,
   taskId,
   studentId,
+  taskOfStudentId,
 }: {
   open: boolean;
   handleClose: () => void;
@@ -225,6 +240,7 @@ function GradeView({
   setActiveGrades: Function;
   taskId: number;
   studentId: number;
+  taskOfStudentId: number;
 }) {
   const classes = useStyles();
 
@@ -250,6 +266,8 @@ function GradeView({
         belongsToId,
         studentId,
       });
+
+      await network.patch(`/api/v1/task/check/${taskOfStudentId}`);
 
       setActiveGrades((prev: any) => {
         console.log(prev);

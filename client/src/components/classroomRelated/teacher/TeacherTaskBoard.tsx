@@ -307,18 +307,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                               : "none"}
                           </TableCell>
                           <TableCell align="left">
+                            {/* {key !== "pending" ? ( */}
                             <GradeButton
                               taskLabels={row.TaskLabels}
-                              //@ts-ignore
-                              // grades={
-                              //   row?.Grades && row?.Grades[studentRow.studentId]
-                              // }
                               grades={studentRow.grades}
                               key={row.title}
                               taskId={row.id}
                               studentId={studentRow.studentId}
                               overallGrade={studentRow.overallGrade}
+                              taskOfStudentId={studentRow.id}
                             />
+                            {/* ) : ( */}
+                            {/* "N/A" */}
+                            {/* )} */}
                           </TableCell>
                         </TableRow>
                       ))}

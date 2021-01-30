@@ -1,40 +1,43 @@
-import e, { Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { calculateGrade, getGradesOfTaskForStudent } from "../../helper";
 //@ts-ignore
 import { Grade, Task, TaskLabel, Criterion, Label } from "../../models";
 import { IGrade, ITask, ITaskLabel } from "../../types";
 const router = Router();
 
-router.get("/:taskId/:studentId", async (req: Request, res: Response) => {
-  const taskId: string = req.params.taskId;
-  const studentId: string = req.params.studentId;
+router.get(
+  "/overall/:taskId/:studentId",
+  async (req: Request, res: Response) => {
+    const taskId: string = req.params.taskId;
+    const studentId: string = req.params.studentId;
 
-  try {
-    const task: ITask = (
-      await Task.findByPk(taskId, {
-        include: [
-          {
-            model: TaskLabel,
-            include: [{ model: Criterion }, { model: Label }],
-          },
-        ],
-      })
-    ).toJSON();
+    try {
+      const task: ITask = (
+        await Task.findByPk(taskId, {
+          include: [
+            {
+              model: TaskLabel,
+              include: [{ model: Criterion }, { model: Label }],
+            },
+          ],
+        })
+      ).toJSON();
 
-    const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
-      Number(studentId),
-      //@ts-ignore
-      task.TaskLabels,
-      Number(taskId)
-    );
+      const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
+        Number(studentId),
+        //@ts-ignore
+        task.TaskLabels,
+        Number(taskId)
+      );
 
-    const grade = calculateGrade(grades);
+      const grade = calculateGrade(grades);
 
-    res.json({ grade });
-  } catch (e) {
-    res.status(400).json(e);
+      res.json({ grade });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
   }
-});
+);
 
 router.post("/", async (req: Request, res: Response) => {
   const type: string = req.body.type;
@@ -149,30 +152,5 @@ const patchGrade: (
     res.status(400).json(err);
   }
 };
-
-// const calculateGrade: (
-//   req: Request,
-//   res: Response
-// ) => Promise<number | Error> = async (req: Request, res: Response) => {
-//   const taskId: string = req.params.taskId;
-//   const studentId: string = req.params.studentId;
-
-//   const labelsAndCriteria: ITaskLabel[] = Task.findByPk(taskId, {
-//     include: [
-//       {
-//         model: TaskLabel,
-//         include: [{ model: Criterion }, { model: Label }],
-//       },
-//     ],
-//   });
-
-//   console.log(labelsAndCriteria);
-
-//   const grades = getGradesOfTaskForStudent(
-//     Number(studentId),
-//     labelsAndCriteria,
-//     Number(taskId)
-//   );
-// };
 
 module.exports = router;
