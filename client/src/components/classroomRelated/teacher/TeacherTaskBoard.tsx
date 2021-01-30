@@ -317,6 +317,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                               key={row.title}
                               taskId={row.id}
                               studentId={studentRow.studentId}
+                              overallGrade={studentRow.overallGrade}
                             />
                           </TableCell>
                         </TableRow>

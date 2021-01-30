@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles, Modal, Theme } from "@material-ui/core";
 import {
   Criteria,
@@ -112,12 +112,14 @@ export default function GradeButton({
   key,
   taskId,
   studentId,
+  overallGrade,
 }: {
   taskLabels: ITaskLabel[];
   grades: Grades[];
   key: string;
   taskId: number;
   studentId: number;
+  overallGrade: number;
 }) {
   const makeGradesMap: (grades: Grades[]) => any = (grades: Grades[]) => {
     console.log(grades);
@@ -168,16 +170,33 @@ export default function GradeButton({
   };
 
   const [openGrades, setOpenGrades] = useState<boolean>(false);
-  const [activeGrades, setActiveGrades] = useState<any>(makeGradesMap(grades));
+  const [activeGrades, setActiveGrades] = useState<any>(grades);
+  const [overallGradeState, setOverallGradeState] = useState<number>(
+    overallGrade
+  );
   const handleOpen: () => void = () => {
     setOpenGrades(true);
   };
+
   const handleClose: () => void = () => {
     setOpenGrades(false);
   };
+
+  const updateOverallGrade: () => Promise<void> = async () => {
+    const { data: newOverall } = await network.get(
+      `/api/v1/grade/${taskId}/${studentId}`
+    );
+    console.log(newOverall);
+    setOverallGradeState(newOverall.grade);
+  };
+
+  useEffect(() => {
+    updateOverallGrade();
+  }, [activeGrades]);
+
   return (
     <>
-      <span onClick={handleOpen}>{calculateGrades(activeGrades, null)}</span>
+      <span onClick={handleOpen}>{overallGradeState}</span>
       <GradeView
         open={openGrades}
         handleClose={handleClose}
@@ -238,6 +257,7 @@ function GradeView({
       // console.log(grades);
       // console.log(i, j);
       console.log(data);
+
       setActiveGrades((prev: any) => {
         console.log(prev);
         const updated = {
@@ -247,6 +267,7 @@ function GradeView({
         console.log(updated);
         return updated;
       });
+
       // if (grades.hasOwnProperty("grade") || grades === null) {
       //   return setActiveGrades({ grade: Number(grade) });
       // }
@@ -257,7 +278,6 @@ function GradeView({
       //   newGrades[i].Label = { grade: Number(grade) };
       // }
       // setActiveGrades(grades);
-
     } catch (e) {
       console.log(e);
     }

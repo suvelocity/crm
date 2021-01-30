@@ -19,6 +19,7 @@ import { taskSchema } from "../../validations";
 import {
   calculateGrade,
   getGradesOfTaskForStudent,
+  makeGradesMap,
   parseFilters,
 } from "../../helper";
 import challenges from "./challenges";
@@ -177,7 +178,7 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
       );
 
       //@ts-ignore
-      taskOfStudent.grades = grades;
+      taskOfStudent.grades = makeGradesMap(grades);
       taskOfStudent.overallGrade = calculateGrade(grades);
       // .reduce((gradesMap:any,gradeObj:any)=>({
       //   ...gradesMap,

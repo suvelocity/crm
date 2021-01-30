@@ -168,6 +168,7 @@ export interface IGrade {
   studentId: number;
   grade: number;
   freeText: string;
+  weight?: number;
 }
 export interface SeqInclude {
   model: Model;

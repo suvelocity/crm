@@ -24,20 +24,22 @@ router.get("/:taskId/:studentId", async (req: Request, res: Response) => {
   const studentId: string = req.params.studentId;
 
   try {
-    const labelsAndCriteria: ITaskLabel[] = await Task.findByPk(taskId, {
-      include: [
-        {
-          model: TaskLabel,
-          include: [{ model: Criterion }, { model: Label }],
-        },
-      ],
-    });
-
+    const labelsAndCriteria: ITask = (
+      await Task.findByPk(taskId, {
+        include: [
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
+        ],
+      })
+    ).toJSON();
     console.log(labelsAndCriteria);
 
     const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
       Number(studentId),
-      labelsAndCriteria,
+      //@ts-ignore
+      labelsAndCriteria.TaskLabels,
       Number(taskId)
     );
 
