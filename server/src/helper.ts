@@ -445,71 +445,29 @@ export const getGradesOfTaskForStudent: (
 export const calculateGrade: (grades: ITaskLabel[]) => string | number = (
   grades: ITaskLabel[]
 ) => {
+  if (!grades) return "--";
+  if (grades.length === 0) return "--";
+
   const gradesMap: object = makeGradesMap(grades);
 
-  console.log("GRADES MAP **********");
-  console.log(gradesMap);
-
-  const avergaesOfGrades: any = {};
   //if grades are not set yet
   if (!gradesMap) return "--";
   if (Object.keys(gradesMap).length === 0) return "--";
 
-  // //@ts-ignore
-  // if (gradesMap?.belongsTo === "task") return gradesMap.grade;
-
   return Math.floor(
     Object.values(gradesMap).reduce(
-      (sum: number, grade: IGrade) => sum + grade.grade * grade.weight!,
+      (sum: number, grade: IGrade) => sum + grade?.grade * grade?.weight!,
       0
     )
   );
-
-  for (let gradeObj of Object.values(gradesMap)) {
-    switch (gradeObj?.belongsTo) {
-      case "task":
-        return gradeObj.grade;
-      case "label":
-        avergaesOfGrades[gradeObj.belongsToId] =
-          // avergaesOfGrades[gradeObj.id]
-          // ? {score: avergaesOfGrades[gradeObj.is].score + gradeObj.grade, counter: avergaesOfGrades[gradeObj.is].counter++}
-          // :
-          { score: gradeObj.grade, count: 1 };
-        break;
-      case "criterion":
-        avergaesOfGrades[gradeObj.labelId] = avergaesOfGrades[gradeObj.labelId]
-          ? {
-              score: avergaesOfGrades[gradeObj.labelId].score + gradeObj.grade,
-              count: avergaesOfGrades[gradeObj.labelId].count + 1,
-            }
-          : { score: gradeObj.grade, count: 1 };
-        break;
-    }
-  }
-  console.log(grades);
-  console.log(avergaesOfGrades);
-  // console.log(avergaesOfGrades);
-  // console.log(Object.values(avergaesOfGrades));
-  // console.log(Object.keys(avergaesOfGrades));
-  // console.log(
-  //   Object.values(avergaesOfGrades).reduce(
-  //     (sum: number, current: any) => sum + current.score / current.count,
-  //     0
-  //   )
-  // );
-  return Math.floor(
-    Object.values(avergaesOfGrades).reduce(
-      (sum: number, current: any) => sum + current.score / current.count,
-      0
-    ) / Object.keys(avergaesOfGrades).length
-  );
 };
 
-export const makeGradesMap: (grades: ITaskLabel[] | object) => any = (
-  grades: ITaskLabel[] | object
+export const makeGradesMap: (grades: ITaskLabel[] | IGrade) => any = (
+  grades: ITaskLabel[] | IGrade
 ) => {
-  console.log(grades);
-  if (!Array.isArray(grades)) return { ...grades, weight: 1 };
+  if (!grades) return {};
+  if ("grade" in grades)
+    return { [`task${grades.belongsToId}`]: { ...grades, weight: 1 } };
 
   const dividors: number = grades?.length;
   return grades.reduce(

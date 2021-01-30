@@ -5,26 +5,12 @@ import { Grade, Task, TaskLabel, Criterion, Label } from "../../models";
 import { IGrade, ITask, ITaskLabel } from "../../types";
 const router = Router();
 
-const tableNames = {
-  task: "Tasks",
-  label: "TaskLabels",
-  criterion: "Criteria",
-};
-// router.get("/of-task/:taskId", async(req: Request, res: Response) => {
-// const taskId:string = req.params.taskId;
-//     try {
-//     const reqTask:ITask = await Task.
-// }catch(err){
-
-// }
-// });
-
 router.get("/:taskId/:studentId", async (req: Request, res: Response) => {
   const taskId: string = req.params.taskId;
   const studentId: string = req.params.studentId;
 
   try {
-    const labelsAndCriteria: ITask = (
+    const task: ITask = (
       await Task.findByPk(taskId, {
         include: [
           {
@@ -34,12 +20,11 @@ router.get("/:taskId/:studentId", async (req: Request, res: Response) => {
         ],
       })
     ).toJSON();
-    console.log(labelsAndCriteria);
 
     const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
       Number(studentId),
       //@ts-ignore
-      labelsAndCriteria.TaskLabels,
+      task.TaskLabels,
       Number(taskId)
     );
 
