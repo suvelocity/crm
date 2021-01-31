@@ -3,7 +3,7 @@ import { meetingSchema, meetingSchemaToPut } from "../../../validations";
 //@ts-ignore
 import { Student, Mentor, MentorStudent, Meeting } from "../../../models";
 import { IDashboard, IMeeting } from "../../../types";
-import transporter from "../../../mail";
+import { sendMail } from "../../../mail";
 const ical = require("ical-generator");
 const path = require("path");
 const { fork } = require("child_process");
@@ -45,7 +45,7 @@ const sendMeetingEmail = async (to: string, meeting: any) => {
       },
     ],
   };
-  const info = await transporter.sendMail(message);
+  const info = await sendMail(message);
   return info;
 };
 
