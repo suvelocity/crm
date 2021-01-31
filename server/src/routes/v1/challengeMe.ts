@@ -4,7 +4,7 @@ import axios from 'axios'
 import db,{ Event, Student, Teacher, Company, Class, TeacherofClass,} from "../../models";
 import { IClass, ITeacher, IStudent,} from "../../types";
 import { eventsSchema } from "../../validations";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 import { QueryInterface } from "sequelize/types";
 import messageHtml from './message'
 
@@ -183,7 +183,7 @@ suvelocity`,
     // mail new users their new credentials 
     if(newUsers){ 
       await Promise.all(newUsers.map(({email,userName,password})=>{
-        return transporter.sendMail(composeMail(email,userName,password,course))
+        return sendMail(composeMail(email,userName,password,course))
       }))
     }
     // updateteacher with new cmUser

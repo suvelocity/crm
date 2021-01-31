@@ -19,7 +19,7 @@ import {
 } from "../../models";
 import { ITeacher } from "../../types";
 import { teacherSchema, teacherOfClassSchema } from "../../validations";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { Op } from "sequelize";
@@ -67,7 +67,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     const user = await User.create(userToCreate);
     if (user && process.env.NODE_ENV !== "test") {
       console.log("SENDING MAIL");
-      transporter.sendMail(
+      sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
           if (error) {

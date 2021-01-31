@@ -15,7 +15,7 @@ import {
   JobStatusValidation,
 } from "../../validations";
 import { academicBackgroundSchema } from "../../validations";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
@@ -459,7 +459,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     const user = await User.create(userToCreate);
     if (user && process.env.NODE_ENV !== "test") {
       console.log("SENDING MAIL");
-      transporter.sendMail(
+      sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
           if (error) {

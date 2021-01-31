@@ -13,7 +13,7 @@ import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import { checkToken, validateAdmin, validateTeacher } from "../../middlewares";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 //@ts-ignore
 import { Op, Sequelize, query, QueryTypes } from "sequelize";
 
@@ -377,7 +377,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
           attributes: ["firstName", "lastName", "email"],
         })
       ).toJSON();
-      transporter.sendMail(
+      sendMail(
         mailOptions(
           student.email,
           job.position,
