@@ -71,7 +71,7 @@ function SingleTeacher() {
       }).then(async (result: { isConfirmed: boolean }) => {
         if (result.isConfirmed) {
           await network.delete(
-            `/api/v1/event/RemoveTeacherFromClass/?classId=${classId}&&teacherId=${teacher?.id}`
+            `/api/v1/teacher/RemoveTeacherFromClass/?classId=${classId}&&teacherId=${teacher?.id}`
           );
           setLoading(true);
           getTeacher();
@@ -160,7 +160,7 @@ function SingleTeacher() {
             teacherClasses={classes}
             header="Assigned Classes"
             headerColor="#2fbd76"
-            // removeClass={removeClass}
+            removeClass={removeClass}
             applyModal={
               <AssignTeacherModal
                 assignedClasses={classes}

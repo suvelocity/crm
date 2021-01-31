@@ -23,6 +23,7 @@ import transporter from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { Op } from "sequelize";
+import { checkToken, validateAdmin, validateTeacher } from "../../middlewares";
 
 const mailOptions = (to: string, password: string) => ({
   from: process.env.EMAIL_USER,
@@ -33,7 +34,7 @@ const mailOptions = (to: string, password: string) => ({
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
     const body: ITeacher = req.body;
     const teacherExistsInTeachers = await Teacher.findOne({
@@ -120,16 +121,6 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
           include: [
             {
               model: Class,
-              // include: [
-              //     {
-              //     model: Lesson,
-              //     include: [
-              //         {
-              //         model: Task,
-              //         },
-              //     ],
-              //     },
-              // ],
             },
           ],
         },
@@ -142,35 +133,43 @@ router.get("/byId/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/addClassToTeacher", async (req: Request, res: Response) => {
-  try {
-    const { teacherWithClass } = req.body;
-    if (!teacherWithClass)
-      return res
-        .status(400)
-        .json({ error: "missing teacherWithClass in body" });
-    const { value, error } = teacherOfClassSchema.validate(teacherWithClass);
-    if (error) return res.status(400).json(error);
-    const result = await TeacherofClass.bulkCreate(teacherWithClass);
-    res.json(result);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: error.message });
+router.post(
+  "/addClassToTeacher",
+  validateAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const { teacherWithClass } = req.body;
+      if (!teacherWithClass)
+        return res
+          .status(400)
+          .json({ error: "missing teacherWithClass in body" });
+      const { value, error } = teacherOfClassSchema.validate(teacherWithClass);
+      if (error) return res.status(400).json(error);
+      const result = await TeacherofClass.bulkCreate(teacherWithClass);
+      res.json(result);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: error.message });
+    }
   }
-});
-router.post("/RemoveTeacherFromClass", async (req: Request, res: Response) => {
-  try {
-    const { classId, teacherId } = req.body;
-    if (!classId || teacherId)
-      return res.status(400).json({ error: "missing query params" });
-    const result = await TeacherofClass.destroy({
-      where: { classId, teacherId },
-    });
-    res.json(result);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: error.message });
+);
+router.delete(
+  "/RemoveTeacherFromClass",
+  validateAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const { classId, teacherId } = req.query;
+      if (!classId || !teacherId)
+        return res.status(400).json({ error: "missing query params" });
+      const result = await TeacherofClass.destroy({
+        where: { classId, teacherId },
+      });
+      res.json(result);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 module.exports = router;
