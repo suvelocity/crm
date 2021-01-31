@@ -16,6 +16,7 @@ import { AuthContext } from "../helpers";
 import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
 import { IStudent } from "../typescript/interfaces";
+import AllStudents from '../components/studentRelated/AllStudents';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -47,7 +48,7 @@ export default function TeacherRoutes() {
           className: classRoom.Class.name,
         }))
       );
-
+      console.log(teacherStudents);
       setStudents(allStudents.flat()); //TODO check with multipal classes
     } catch {}
   };
@@ -74,6 +75,9 @@ export default function TeacherRoutes() {
           </Route>
           <Route path='/tasks'>
             <TeacherContainer />
+          </Route>
+          <Route path='/students'>
+            <AllStudents classIds={classesToTeacher.map((classOfTeacher: any) => classOfTeacher.classId)} />
           </Route>
           <Route exact path='/quizme'>
             <QuizMe />

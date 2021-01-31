@@ -59,6 +59,8 @@ export const Center = styled.div`
 
 export const StyledLink = styled(Link)`
   color: ${(props: { color: string }) => (props.color ? props.color : "white")};
+  background-color: 'transparent';
+  /* background-color: ${(props: { background: string }) => props.background? props.background : 'transparent'}; */
   text-decoration: ${(props: { textDecoration: string }) =>
     props.textDecoration ? "underline" : "none"};
 `;
@@ -88,7 +90,7 @@ export const StyledDiv = styled.div`
     props.repeatFormula ? props.repeatFormula : "1fr 2.5fr 2fr 2.5fr 2fr"};
   padding: 10px;
   align-items: center;
-  background-color: rgba(180, 180, 180, 0.12);
+  background-color: rgba(180, 180, 180, 0.05);
   transition: 150ms;
   border-radius: 2px;
   margin: 2px;

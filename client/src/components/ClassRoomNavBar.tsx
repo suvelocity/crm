@@ -174,6 +174,16 @@ function ClassRoomNavBar() {
                 />
               </DrawerItem>
             </StyledLink>
+          {user.userType === "teacher" &&
+            <StyledLink to='/students'>
+              <DrawerItem onClick={() => setOpen(false)}>
+                Students
+                <AssignmentLateIcon
+                  style={{ position: "absolute", right: 10 }}
+                />
+              </DrawerItem>
+            </StyledLink>
+          }
           </StyledLink>
           <StyledLink to='/quizme'>
             <DrawerItem onClick={() => setOpen(false)}>
