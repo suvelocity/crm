@@ -271,6 +271,10 @@ function AddStudent(props: Props) {
                 defaultValue={props.student ? props.student.email : ""}
                 inputRef={register({
                   required: "Email is required",
+                  pattern: {
+                    value: validEmailRegex,
+                    message: "Please Enter a Valid Email",
+                  },
                 })}
               />
               {errorComponent('email')}
