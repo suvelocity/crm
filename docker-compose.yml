@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   mysql:
-    image: mysql
+    image: mysql:8
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
     command: --default-authentication-plugin=mysql_native_password
@@ -10,10 +10,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_PASSWORD: password
-      MYSQL_DATABASE: crm_test
+      MYSQL_DATABASE: crm_database
       MYSQL_USER: root
-    volumes:
-      - mysql-data:/var/lib/mysql
+    # volumes:
+    #   - mysql-datav3:/var/lib/mysql
     networks:
       - crm-network
 
@@ -22,39 +22,27 @@ services:
       - mysql
     build:
       context: .
-      dockerfile: Dockerfile.testing
-    image: crm-test
+      dockerfile: Dockerfile.multistage
+    image: crm-multi
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - crm-network
     env_file:
       - ./server/src/.env
-    command: "./wait-for-it/wait-for-it.sh mysql:3306 -- npm run test"
+    command: "./wait-for-it/wait-for-it.sh mysql:3306 -- npm run spinup:staging"
     environment:
       MYSQL_USER: root
       MYSQL_PASSWORD: password
-      NODE_ENV: test
-      MYSQL_DATABASE: database_development
+      NODE_ENV: development
+      MYSQL_DATABASE: crm_database
       MYSQL_DATABSE_TEST: crm_test
       MYSQL_HOST: mysql
-
-  # migrateAndSeed:
-  #     image: crmappcomplete
-  #     command: ["./wait-for-it/wait-for-it.sh", "mysql:3306", "--", "npm", "run", "dbup"]
-  #     links:
-  #       - mysqlj
-  #         - api-server
-  #     image: crmappclient
-  #     ports:
-  #         - "3000:3000"
-  #     stdin_open: true
-  # networks:
-  #   - crm-network
+      PORT: 8081
 
 networks:
   crm-network:
     driver: bridge
-volumes:
-  mysql-data:
-    driver: local
+# volumes:
+#   mysql-datav3:
+#     driver: local

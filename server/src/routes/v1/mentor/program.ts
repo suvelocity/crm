@@ -8,7 +8,7 @@ import { MentorStudent, MentorProgram, Class } from "../../../models";
 //@ts-ignore
 import { Student, Mentor, Meeting, MentorForm } from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
-import transporter from "../../../mail";
+import { sendMail } from "../../../mail";
 
 const mailProps = (to: string, subject: string, text: string) => ({
   from: "lea.soshnik@suvelocity.org", //sender || process.env.EMAIL_USER,
@@ -169,7 +169,7 @@ router.post("/startmails/:id", async (req, res) => {
     });
 
     await pairs.forEach(async (pair: any) => {
-      await transporter.sendMail(
+      await sendMail(
         mailProps(
           pair.Student.email,
           pair.MentorProgram.name,
@@ -202,7 +202,7 @@ router.post("/startmails/:id", async (req, res) => {
         (error: any) => res.status(500).json({ error: error.message })
       );
 
-      await transporter.sendMail(
+      await sendMail(
         mailProps(
           pair.Mentor.email,
           pair.MentorProgram.name,
@@ -247,12 +247,12 @@ router.post("/mails/:id", async (req, res) => {
     });
     await pairs.forEach((pair: any) => {
       if (req.query.recievers !== "mentors") {
-        transporter.sendMail(
+        sendMail(
           mailProps(pair.Student.email, req.body.subject, req.body.content)
         );
       }
       if (req.query.recievers !== "students") {
-        transporter.sendMail(
+        sendMail(
           mailProps(pair.Mentor.email, req.body.subject, req.body.content)
         );
       }

@@ -30,7 +30,10 @@ import { formatPhone } from "../../helpers/general";
 import { FiltersComponents } from "../FiltersComponents";
 import { capitalize, onTheSameDay } from "../../helpers/general";
 
-function AllStudents() {
+interface Props {
+  classIds?: number[];
+}
+function AllStudents({classIds} : Props) {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [addressName, setAddressName] = useState<string>();
@@ -47,7 +50,7 @@ function AllStudents() {
   );
   const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
     {
-      Class: [""],
+      Class:  classIds || [""],
       Course: [""],
       JobStatus: [""],
       Name: [""],
@@ -66,18 +69,20 @@ function AllStudents() {
   }
   const fetchOptions = async() => {
     try{
-      const {data} = await network.get('/api/v1/student/filter-options');
-      console.log("options", data)
+      const {data}: {data: {[key: string] : SelectInputsV2["possibleValues"]}} = await network.get('/api/v1/student/filter-options', {
+        params: {classIds: classIds}
+      });
+      const initialList : SelectInputsV2[] = !classIds ? [{
+        filterBy: "Course",
+        label: "קורס",
+        possibleValues: data.courses,
+      }] : [];
       setFilterOptionsArray([
-        {
-          filterBy: "Course",
-          label: "קורס",
-          possibleValues: data.courses,
-        },
+        ...initialList,
         {
           filterBy: "Class",
           label: "כיתה",
-          possibleValues: data.classes,
+          possibleValues: !classIds ? data.classes : data.classes.filter((c => classIds.includes(Number(c.id)) )),
         },
         {
           filterBy: "JobStatus",
@@ -110,16 +115,18 @@ function AllStudents() {
   useEffect(() => {
     fetchLabels()
     fetchOptions()
-  }, []);
+  }, [classIds]);
 
   const getStudentsByFilters = async () => {
     try{
+      console.log(classIds, filterAttributes)
       const {data} : {data: {students: IStudent[], gradedLabels?: LabelIdsWithGradesPerStudent} } = await network.get('/api/v1/student/filtered', {
         params: {...filterAttributes, ...gradeParams, addressName}
       })
       if(data.gradedLabels){
         setGradesByLabel(data.gradedLabels);
       }
+      console.log(data.students);
       setFilteredStudents(data.students);
       setLoading(false)
     }catch(e){
@@ -230,7 +237,7 @@ function AllStudents() {
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                     <StyledSpan>{student.languages}</StyledSpan>
-                    <StyledSpan>{student.AcademicBackgrounds.length > 0 ? student.AcademicBackgrounds[0].gradeAvg : ''}</StyledSpan>
+                    <StyledSpan>{student.gradeAvg || ''}</StyledSpan>
                     {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
                       if(labelId === "") return null;
                         const writing = !gradesByLabel[labelId]? 0 :
