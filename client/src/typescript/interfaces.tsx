@@ -7,6 +7,7 @@ export interface IStudent {
   phone?: string;
   Class: IClass;
   address: string;
+  gradeAvg?: number;
   age?: number;
   maritalStatus: string;
   children?: number;

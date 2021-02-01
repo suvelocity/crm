@@ -126,6 +126,7 @@ function AllStudents({classIds} : Props) {
       if(data.gradedLabels){
         setGradesByLabel(data.gradedLabels);
       }
+      console.log(data.students);
       setFilteredStudents(data.students);
       setLoading(false)
     }catch(e){
@@ -236,7 +237,7 @@ function AllStudents({classIds} : Props) {
                     <StyledSpan>{student.email}</StyledSpan>
                     <StyledSpan>{formatPhone(student.phone)}</StyledSpan>
                     <StyledSpan>{student.languages}</StyledSpan>
-                    <StyledSpan>{student.AcademicBackgrounds.length > 0 ? student.AcademicBackgrounds[0].gradeAvg : ''}</StyledSpan>
+                    <StyledSpan>{student.gradeAvg || ''}</StyledSpan>
                     {gradeParams.labelIds.length > 0 &&gradeParams.labelIds.map((labelId: string) => {
                       if(labelId === "") return null;
                         const writing = !gradesByLabel[labelId]? 0 :
