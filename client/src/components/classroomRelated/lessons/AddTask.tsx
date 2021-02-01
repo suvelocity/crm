@@ -106,7 +106,12 @@ export default function AddTask({
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
-      task.TaskLabels?.splice(indexToRemove, 1);
+      const labelToRmv: Partial<ITaskLabel> = task.TaskLabels![indexToRemove];
+      if (labelToRmv.id) {
+        labelToRmv.toDelete = true;
+      } else {
+        task.TaskLabels?.splice(indexToRemove, 1);
+      }
       changer(task.TaskLabels, "labels");
     }
   };
@@ -120,13 +125,23 @@ export default function AddTask({
           `/api/v1/label/all${searchQuery ? `?search=${searchQuery}` : ""}`
         )
       ).data;
-      console.log(labels);
       return labels.map((label: ILabel) => {
         return { label: label.name, value: label.id };
       });
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const foramtDefaultLabels: (
+    labels?: ITaskLabel[]
+  ) => Array<{ label: string; value: number }> = (labels?: ITaskLabel[]) => {
+    return labels
+      ? labels.map((lbl: ITaskLabel) => ({
+          label: lbl.Label?.name!,
+          value: lbl.id!,
+        }))
+      : [];
   };
 
   const handleSCSChange: (data: any, actionMeta: any) => Promise<void> = async (
@@ -317,14 +332,16 @@ export default function AddTask({
             loadOptions={getLabels}
             onChange={handleSCSChange}
             defaultOptions={defaultTaskLabels}
+            defaultValue={foramtDefaultLabels(task.TaskLabels as ITaskLabel[])}
           />
 
           {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
           <Button onClick={handleLabelAdd}>Add</Button> */}
         </FormControl>
-        {task.TaskLabels?.map((l: Partial<ITaskLabel>) => (
-          <LabelView label={l as ITaskLabel} />
-        ))}
+        {task.TaskLabels?.map(
+          (l: Partial<ITaskLabel>) =>
+            !l.toDelete && <LabelView label={l as ITaskLabel} />
+        )}
       </LabelsContainer>
       {students && teacherClasses !== undefined ? (
         <ClassAccordion classes={classList!} updatePicks={changer} />

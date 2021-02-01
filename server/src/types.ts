@@ -152,6 +152,7 @@ export interface ITaskLabel {
   taskId: number;
   labelId: number;
   Criteria: ICriterion[];
+  toDelete?: boolean;
 }
 
 export interface ICriterion {
@@ -159,6 +160,7 @@ export interface ICriterion {
   taskId: number;
   labelId: number;
   name: string;
+  toDelete?: boolean;
 }
 
 export interface IGrade {

@@ -78,9 +78,7 @@ const createTaskLabels: (
   labels: ITaskLabel[],
   taskId: number
 ) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
-  // console.log("******************LABELS***************");
-  // console.log(labels);
-  // console.log("*****************************************");
+  // TODO add validaiton
 
   if (!Array.isArray(labels))
     throw new Error(`Expected an array but got ${typeof labels} instead`);
@@ -116,9 +114,7 @@ const createCriteria: (
   taskId: number,
   labelId: number
 ) => {
-  // console.log("******************CRITERIA***************");
-  // console.log(criteria);
-  // console.log("*****************************************");
+  // TODO add validaiton
 
   if (!Array.isArray(criteria))
     return Promise.reject(
@@ -208,6 +204,60 @@ const changeTaskStatus: (
     : { status: newStatus };
 
   return TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
+};
+
+const updateLabelsAndCriteria: (
+  labels: ITaskLabel[],
+  taskId: number
+) => Promise<any> = async (labels: ITaskLabel[], taskId: number) => {
+  return Promise.all(
+    labels.map((label: ITaskLabel) =>
+      label.toDelete
+        ? deleteLabel(label)
+        : label.id
+        ? updateLabel(label, taskId)
+        : createTaskLabels([label], taskId)
+    )
+  );
+};
+
+const updateLabel: (label: ITaskLabel, taskId: number) => Promise<any> = async (
+  label: ITaskLabel,
+  taskId: number
+) => {
+  // TODO add validaiton
+  await Promise.all(
+    label.Criteria.map((crtron: ICriterion) =>
+      crtron.toDelete
+        ? deleteCriterion(crtron)
+        : crtron.id
+        ? updateCriterion(crtron)
+        : createCriteria([crtron], taskId, label.id!)
+    )
+  );
+  return TaskLabel.update(label, { where: { id: label.id } });
+};
+
+const deleteLabel: (label: ITaskLabel) => Promise<any> = async (
+  label: ITaskLabel
+) => {
+  await Promise.all(
+    label.Criteria.map((crtron: ICriterion) => deleteCriterion(crtron))
+  );
+  return TaskLabel.destroy({ where: { id: label.id } });
+};
+
+const updateCriterion: (criterion: ICriterion) => Promise<any> = async (
+  // TODO add validaiton
+  criterion: ICriterion
+) => {
+  return Criterion.update(criterion, { where: { id: criterion.id } });
+};
+
+const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
+  criterion: ICriterion
+) => {
+  return Criterion.destroy({ where: { id: criterion.id } });
 };
 
 router.use("/challenges", challenges);
@@ -541,6 +591,8 @@ router.patch("/:id", validateTeacher, async (req: Request, res: Response) => {
     const updated = await Task.update(taskRowDetails, {
       where: { id },
     });
+    await updateLabelsAndCriteria(task.TaskLabels, task.id);
+
     return res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });

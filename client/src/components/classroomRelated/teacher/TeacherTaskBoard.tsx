@@ -19,11 +19,7 @@ import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissa
 import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
 import { Button, MenuItem, Modal, Select } from "@material-ui/core";
-import {
-  Center,
-  EditDiv,
-  StyledAtavLink,
-} from "../../../styles/styledComponents";
+import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
   makeStyles,
@@ -37,12 +33,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import GradeButton from "../tasks/GradeView";
-import {
-  IGrade,
-  ITaskLabel,
-  Grades,
-  taskType,
-} from "../../../typescript/interfaces";
+import { ITaskLabel, taskType } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTask from "../lessons/AddTask";
@@ -111,11 +102,17 @@ const createTask = (
   };
 };
 
+const deepCloneWithJson: (object: any) => any = (object) =>
+  JSON.parse(JSON.stringify(object));
+
 function Row(props: { row: ReturnType<typeof createTask> }) {
   // const { row } = props;
   const [taskDetails, setTaskDetails] = useState<ReturnType<typeof createTask>>(
     props.row
   );
+  const [taskToUpdate, setTaskToUpdate] = useState<
+    ReturnType<typeof createTask>
+  >(deepCloneWithJson(taskDetails));
   const [open, setOpen] = React.useState(false);
   const [studentDetails, setStudentDetails] = useState<any[]>([]);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
@@ -195,12 +192,12 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   };
 
   const updateTask: () => Promise<void> = async () => {
-    alert("!");
     console.log("in update");
     console.log(taskDetails);
     console.log("^^^^^^^^^^^^^");
     try {
-      await network.patch(`/api/v1/task/${taskDetails.id}`, taskDetails);
+      await network.patch(`/api/v1/task/${taskDetails.id}`, taskToUpdate);
+      setTaskDetails(deepCloneWithJson(taskToUpdate));
       setEditModalOpen(false);
     } catch (e) {
       console.log(e);
@@ -209,39 +206,39 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   };
 
   // not really removing, just closing modal
-  const handleRemove = () => {
-    alert("remove");
+  const handleClose = () => {
+    setTaskToUpdate(deepCloneWithJson(taskDetails));
     setEditModalOpen(false);
   };
 
   const handleTaskChange = (element: string, index: number, change: any) => {
     switch (element) {
       case "title":
-        setTaskDetails((prev) => ({ ...prev, title: change }));
+        setTaskToUpdate((prev) => ({ ...prev, title: change }));
         break;
       case "date":
-        setTaskDetails((prev) => ({ ...prev, date: change }));
+        setTaskToUpdate((prev) => ({ ...prev, date: change }));
         break;
       case "externalLink":
-        setTaskDetails((prev) => ({ ...prev, externalLink: change }));
+        setTaskToUpdate((prev) => ({ ...prev, externalLink: change }));
         break;
       case "externalId":
-        setTaskDetails((prev) => ({ ...prev, externalId: change }));
+        setTaskToUpdate((prev) => ({ ...prev, externalId: change }));
         break;
       case "type":
-        setTaskDetails((prev) => ({ ...prev, type: change }));
+        setTaskToUpdate((prev) => ({ ...prev, type: change }));
         break;
       case "body":
-        setTaskDetails((prev) => ({ ...prev, body: change }));
+        setTaskToUpdate((prev) => ({ ...prev, body: change }));
         break;
       case "endDate":
-        setTaskDetails((prev) => ({ ...prev, endDate: change }));
+        setTaskToUpdate((prev) => ({ ...prev, endDate: change }));
         break;
       case "status":
-        setTaskDetails((prev) => ({ ...prev, status: change }));
+        setTaskToUpdate((prev) => ({ ...prev, status: change }));
         break;
       case "labels":
-        setTaskDetails((prev) => ({ ...prev, TaskLabels: change }));
+        setTaskToUpdate((prev) => ({ ...prev, TaskLabels: change }));
     }
   };
 
@@ -298,9 +295,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     <div style={modalStyle} className={classes.paper}>
       <AddTask
         students={[]}
-        handleRemove={handleRemove}
+        handleRemove={handleClose}
         handleChange={handleTaskChange}
-        task={taskDetails}
+        task={taskToUpdate}
         // studentsToTask={studentsToTask}
         teacherClasses={[]}
       />
@@ -357,7 +354,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <TableCell>
           <EditIcon onClick={() => setEditModalOpen(true)} />
         </TableCell>
-        <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
+        <Modal open={editModalOpen} onClose={handleClose}>
           {editTaskModalBody}
         </Modal>
       </TableRow>

@@ -42,7 +42,12 @@ export function LabelView({ label }: { label: ITaskLabel }) {
     const indexToRemove: number = label.Criteria.findIndex(
       (c: ITaskCriteria) => c === criterionToRemove
     )!;
-    label.Criteria.splice(indexToRemove, 1);
+    const criterionToRmv: ITaskCriteria = label.Criteria[indexToRemove];
+    if (criterionToRmv.id) {
+      criterionToRmv.toDelete = true;
+    } else {
+      label.Criteria.splice(indexToRemove, 1);
+    }
     setCriteria(label?.Criteria.slice());
   };
 
@@ -57,12 +62,15 @@ export function LabelView({ label }: { label: ITaskLabel }) {
 
       {criteria[0] ? (
         <ul>
-          {criteria.map((criterion: ITaskCriteria, i: number) => (
-            <li key={`criteria${i}`}>
-              {criterion.name}
-              <DeleteIcon onClick={() => removeCriterion(criterion)} />
-            </li>
-          ))}
+          {criteria.map(
+            (criterion: ITaskCriteria, i: number) =>
+              !criterion.toDelete && (
+                <li key={`criteria${i}`}>
+                  {criterion.name}
+                  <DeleteIcon onClick={() => removeCriterion(criterion)} />
+                </li>
+              )
+          )}
         </ul>
       ) : undefined}
     </Container>
