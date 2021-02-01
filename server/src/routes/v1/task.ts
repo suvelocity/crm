@@ -244,6 +244,7 @@ const deleteLabel: (label: ITaskLabel) => Promise<any> = async (
   await Promise.all(
     label.Criteria.map((crtron: ICriterion) => deleteCriterion(crtron))
   );
+  // TODO delete grade
   return TaskLabel.destroy({ where: { id: label.id } });
 };
 
@@ -257,6 +258,7 @@ const updateCriterion: (criterion: ICriterion) => Promise<any> = async (
 const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
   criterion: ICriterion
 ) => {
+  // TODO delete grade
   return Criterion.destroy({ where: { id: criterion.id } });
 };
 

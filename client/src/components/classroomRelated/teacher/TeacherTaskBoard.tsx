@@ -47,13 +47,16 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
     },
-    root: {
-      "& > *": {
-        borderBottom: "unset",
-      },
-    },
   })
 );
+
+const useRowStyles = makeStyles({
+  root: {
+    "& > *": {
+      borderBottom: "unset",
+    },
+  },
+});
 
 const modalStyle = {
   top: `50%`,
@@ -118,6 +121,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
 
   const classes = useStyles();
+  const rowClasees = useRowStyles();
 
   taskDetails.TaskofStudents = useMemo(() => {
     return taskDetails.TaskofStudents.sort((tos: any) =>
@@ -192,9 +196,6 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   };
 
   const updateTask: () => Promise<void> = async () => {
-    console.log("in update");
-    console.log(taskDetails);
-    console.log("^^^^^^^^^^^^^");
     try {
       await network.patch(`/api/v1/task/${taskDetails.id}`, taskToUpdate);
       setTaskDetails(deepCloneWithJson(taskToUpdate));
@@ -308,8 +309,8 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   );
 
   return (
-    <div>
-      <TableRow className={classes.root}>
+    <>
+      <TableRow className={rowClasees.root}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -442,7 +443,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </Collapse>
         </TableCell>
       </TableRow>
-    </div>
+    </>
   );
 }
 
