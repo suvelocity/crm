@@ -23,6 +23,7 @@ import { Op, Sequelize, QueryTypes } from "sequelize";
 import { validateTeacher, validateAdmin } from "../../middlewares";
 import grade from "../../models/grade";
 import Joi, { number } from "joi";
+import student from "../../models/student";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -131,24 +132,14 @@ router.get(
       }
       OPor(ClassIds, "id", classWhere);
       OPor(Name, "id", studentWhere);
-      let orderByScore = [];
-      if (AverageScore === "ASC" || AverageScore === "DESC") {
-        orderByScore.push([
-          Sequelize.fn(
-            "ROUND",
-            Sequelize.fn("AVG", Sequelize.col("average_score"))
-          ),
-          AverageScore,
-        ]);
-      }
       let students = await Student.findAll({
         where: studentWhere,
         include: [
           {
             model: Event,
             where: { type: "jobs" },
-            attributes: [],
-            required: !isEmpty(JobStatus),
+            attributes: ["date", "updatedAt", "eventName", "relatedId"],
+            required: false, //!isEmpty(JobStatus),
           },
           {
             model: Class,
@@ -157,19 +148,11 @@ router.get(
           },
           {
             model: AcademicBackground,
-            attributes: [
-              [
-                Sequelize.fn(
-                  "ROUND",
-                  Sequelize.fn("AVG", Sequelize.col("average_score"))
-                ),
-                "gradeAvg",
-              ],
-              "id",
-            ],
+            attributes: ["averageScore", "id"],
+            require: false,
           },
         ],
-        order: [...orderByScore],
+        // order: [...orderByScore],
         attributes: [
           "id",
           "firstName",
@@ -179,48 +162,60 @@ router.get(
           "languages",
           "address",
         ],
-        group: ["AcademicBackgrounds.student_id"],
-        //group: ["Events.related_id", "id", "Events.id", "AcademicBackgrounds.id"],
       });
+
+      let studentsWithGradeAvg: IStudent[] = students.map(
+        (student: { toJSON: () => IStudent }) => {
+          const studentJson = student.toJSON();
+          return {
+            ...studentJson,
+            gradeAvg: getGradeAverage(studentJson.AcademicBackgrounds!),
+          };
+        }
+      );
+
+      if (AverageScore === "ASC" || AverageScore === "DESC") {
+        studentsWithGradeAvg.sort((a: IStudent, b: IStudent) =>
+          AverageScore === "ASC"
+            ? a.gradeAvg! - b.gradeAvg!
+            : b.gradeAvg! - a.gradeAvg!
+        );
+      }
+
       if (!isEmpty(JobStatus) && students.length > 0) {
         const { error } = JobStatusValidation.validate(JobStatus);
         if (error)
           return res
             .status(400)
             .json({ error: "job status input failed validation" });
-        const eventNames = JobStatus.map((status: string) => `\'${status}\'`);
-        const studentIds = students.map(
-          (student: any) => `\'${student.toJSON().id}\'`
-        );
-        const releventStatuses: any = await sequelize.query(
-          `
-      SELECT a.date, event_name, first_name, a.user_id, a.related_id, a.updated_at, max FROM Students
-      join Events a on type = 'jobs' and a.user_id = Students.id 
-      join (
-      SELECT MAX(date) as max, related_id, user_id from Events
-      where type = 'jobs' and deleted_at is null
-      group by related_id, user_id
-      ) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
-      where Students.id IN ( ${studentIds} ) and event_name IN ( ${eventNames} );`,
-          {
-            type: QueryTypes.SELECT,
+        studentsWithGradeAvg = studentsWithGradeAvg.filter(
+          (student: IStudent) => {
+            const releventStatuses = getRecentJobsStatuses(student.Events!);
+            if (
+              JobStatus.includes("None") &&
+              (student.Events!.length == 0 ||
+                releventStatuses.every(
+                  (status: string) => status === "Rejected"
+                ))
+            ) {
+              return true;
+            }
+            console.log("checking statuses");
+            return JobStatus.some((status: string) =>
+              releventStatuses.includes(status)
+            );
           }
         );
-        const idDictionary = releventStatuses.reduce((acc: any, curr: any) => {
-          return { ...acc, [`${curr.user_id}`]: true };
-        }, {});
-        students = students.filter(
-          (student: any) => idDictionary[student.toJSON().id]
-        );
       }
+
       if (!isEmpty(labelIds) && students.length > 0) {
-        const studentIds: string[] = students.map(
-          (student: { toJSON: () => IStudent }) => String(student.toJSON().id)
+        const studentIds: string[] = studentsWithGradeAvg.map(
+          (student: IStudent) => String(student.id)
         );
         req.query.studentIds = studentIds;
-        attachLabels(req, res, students);
+        attachLabels(req, res, studentsWithGradeAvg);
       } else {
-        res.json({ students: students });
+        res.json({ students: studentsWithGradeAvg });
       }
     } catch (error) {
       console.log(error);
@@ -229,10 +224,58 @@ router.get(
   }
 );
 
+const getRecentJobsStatuses = (events: IEvent[]): string[] => {
+  type JobEvents = {
+    [id: string]: { time: number; status: string; updatedAt: number };
+  };
+  let jobs: JobEvents = {};
+  for (let i = 0; i < events.length; i++) {
+    const id: string = events[i].relatedId;
+    const eventTime = new Date(events[i].date);
+    const updatedAt = new Date(events[i].updatedAt!).getTime();
+    if (!jobs[`job${id}`]) {
+      jobs[`job${id}`] = {
+        time: eventTime.getTime(),
+        status: events[i].eventName,
+        updatedAt: updatedAt,
+      };
+    } else if (
+      eventTime.getTime() > jobs[`job${id}`].time ||
+      (eventTime.getTime() === jobs[`job${id}`].time &&
+        updatedAt > jobs[`job${id}`].updatedAt)
+    ) {
+      jobs[`job${id}`] = {
+        time: eventTime.getTime(),
+        status: events[i].eventName,
+        updatedAt: updatedAt,
+      };
+    }
+  }
+  let JobStatuses: { [status: string]: string } = {};
+  for (const key in jobs) {
+    if (!JobStatuses[jobs[key].status])
+      JobStatuses[jobs[key].status] = jobs[key].status;
+  }
+  return Object.keys(JobStatuses);
+};
+
+const getGradeAverage = (
+  AcademicBackgrounds: IAcademicBackground[]
+): number => {
+  let gradeSum = 0;
+  let length = 0;
+  AcademicBackgrounds.forEach((AcademicBackgrounds: IAcademicBackground) => {
+    gradeSum += AcademicBackgrounds.averageScore;
+    length++;
+  });
+  if (length === 0) return 0;
+  return Math.round(gradeSum / length);
+};
+
 async function attachLabels(
   req: Request,
   res: Response,
-  studentsToSend: { toJSON: () => IStudent }[]
+  studentsToSend: IStudent[]
 ): Promise<Response<any> | undefined> {
   try {
     const { labelIds, studentIds } = req.query;
@@ -343,28 +386,42 @@ router.get(
             "name",
           ],
         ],
+        include: [
+          {
+            model: Event,
+            required: false,
+          },
+        ],
       });
       const classes = await Class.findAll({
         attributes: ["id", "name"],
       });
-      const releventStatuses: any = await sequelize.query(
-        `SELECT date, event_name, first_name, a.user_id, a.related_id, max FROM Students
-    join Events a on type = 'jobs' and a.user_id = Students.id 
-    join (SELECT MAX(date) as max, related_id, user_id from Events
-    where type = 'jobs' and deleted_at is null
-    group by related_id, user_id) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
-    group by event_name;`,
-        { type: QueryTypes.SELECT }
-      );
+      //   const releventStatuses: any = await sequelize.query(
+      //     `SELECT date, event_name, first_name, a.user_id, a.related_id, max FROM Students
+      // join Events a on type = 'jobs' and a.user_id = Students.id
+      // join (SELECT MAX(date) as max, related_id, user_id from Events
+      // where type = 'jobs' and deleted_at is null
+      // group by related_id, user_id) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
+      // group by event_name;`,
+      //     { type: QueryTypes.SELECT }
+      //   );
       const courses: any = await sequelize.query(
         `SELECT CONCAT(course, " - ", cycle_number) as name FROM Classes
        group by CONCAT(course, " - ", cycle_number)
       ;`,
         { type: QueryTypes.SELECT }
       );
+      const releventStatuses: { [key: string]: boolean } = {};
+      students.forEach((student: { toJSON: () => IStudent }) => {
+        const jsonStudent = student.toJSON();
+        const recentStatuses = getRecentJobsStatuses(jsonStudent.Events!);
+        recentStatuses.forEach(
+          (status: string) => (releventStatuses[status] = true)
+        );
+      });
       res.json({
-        statuses: releventStatuses.map((event: any) => ({
-          name: event.event_name,
+        statuses: Object.keys(releventStatuses).map((event: string) => ({
+          name: event,
         })),
         students,
         classes,

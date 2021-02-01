@@ -65,7 +65,7 @@ export const FiltersComponents = ({
                 "רגיל"
               }</MenuItem>
             }
-            {(item.filterBy === "Job Status" && location.pathname !== "/process/all") &&  (
+            {(item.filterBy === "JobStatus" && location.pathname !== "/process/all") &&  (
               <MenuItem value={"None"}>No Process</MenuItem>
             )}
             {/* {labelOptions.map((val: {name: string, id: string}) => (
