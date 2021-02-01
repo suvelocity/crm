@@ -15,7 +15,7 @@ import {
   ITaskLabel,
   ITaskofStudent,
 } from "../../types";
-import { taskSchema } from "../../validations";
+import { taskSchema, taskSchemaToPut } from "../../validations";
 import {
   calculateGrade,
   getGradesOfTaskForStudent,
@@ -512,13 +512,33 @@ router.patch("/check/:id", async (req: Request, res: Response) => {
 });
 
 router.patch("/:id", validateTeacher, async (req: Request, res: Response) => {
+  const taskRowFieldNames: string[] = [
+    "id",
+    "lessonId",
+    "externalId",
+    "externalLink",
+    "createdBy",
+    "endDate",
+    "type",
+    "status",
+    "body",
+    "title",
+  ];
   try {
     const task = req.body;
-    const { error } = taskSchema.validate(task);
+    const taskRowDetails: Partial<ITask> = Object.keys(task).reduce(
+      (outcome: Partial<ITask>, key: string) =>
+        taskRowFieldNames.includes(key)
+          ? { ...outcome, [key]: task[key] }
+          : outcome,
+      {}
+    );
+
+    const { error } = taskSchemaToPut.validate(taskRowDetails);
     if (error) return res.status(400).json({ error: error.message });
     const { id } = req.params;
     if (!id) return res.status(400).json({ error: "task id not supplied" });
-    const updated = await Task.update(task, {
+    const updated = await Task.update(taskRowDetails, {
       where: { id },
     });
     return res.status(200).json(updated);

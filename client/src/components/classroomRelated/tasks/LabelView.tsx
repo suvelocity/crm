@@ -8,33 +8,11 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import React, { CSSProperties, useRef, useState } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { ITaskCriteria, ITaskLabel } from "../../../typescript/interfaces";
 
-// export default function LabelButton({ label }: { label: ITaskLabel }) {
-//   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
-//   const handleOpen: () => void = () => {
-//     setModalOpen(true);
-//   };
-//   const handleClose: () => void = () => {
-//     setModalOpen(false);
-//   };
-
-//   return (
-//     <>
-//       <LabelView open={modalOpen} handleClose={handleClose} label={label} />
-//       <span onClick={handleOpen}>{label.name}</span>
-//     </>
-//   );
-// }
-
-export function LabelView({
-  label,
-}: {
-  label: ITaskLabel;
-}) {
-  const [criteria, setCriteria] = useState<ITaskCriteria[]>([]);
+export function LabelView({ label }: { label: ITaskLabel }) {
+  const [criteria, setCriteria] = useState<ITaskCriteria[]>(label.Criteria);
   const classes = useStyles();
 
   const criterionField = useRef(null);
@@ -70,39 +48,33 @@ export function LabelView({
 
   return (
     <Container>
-      <span className="header">{label.name}</span>
+      <span className="header">{label.Label?.name}</span>
 
-        <input
-          placeholder="Add Criterion"
-          ref={criterionField}
-        />
-        <button type="button" onClick={addCriterion}>Add</button>
+      <input placeholder="Add Criterion" ref={criterionField} />
+      <button type="button" onClick={addCriterion}>
+        Add
+      </button>
 
-      {criteria[0]
-        ? (
+      {criteria[0] ? (
         <ul>
           {criteria.map((criterion: ITaskCriteria, i: number) => (
-            <li
-              key={`criteria${i}`}
-              
-            >
+            <li key={`criteria${i}`}>
               {criterion.name}
               <DeleteIcon onClick={() => removeCriterion(criterion)} />
             </li>
           ))}
-        </ul>)
-        : undefined}
+        </ul>
+      ) : undefined}
     </Container>
   );
 }
 
 const Container = styled.div`
-    margin-top: 10px;
-    margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   .header {
     font-size: 20px;
     margin-right: 10px;
-
   }
   .MuiOutlinedInput-input {
     height: 31px;
@@ -111,14 +83,13 @@ const Container = styled.div`
   }
   li {
     height: 30px;
-    .MuiSvgIcon-root{
+    .MuiSvgIcon-root {
       font-size: 19px;
       cursor: pointer;
       vertical-align: middle;
     }
   }
 `;
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -84,23 +84,29 @@ export function convertDateToString(date: Date) {
 const createTask = (
   id: number,
   title: string,
+  body: string,
   type: taskType | undefined,
   lesson: string,
   endDate: Date,
   externalLink: string,
   TaskofStudents: [],
-  TaskLabels: ITaskLabel[]
+  TaskLabels: ITaskLabel[],
+  createdBy: number,
+  status: "active" | "disabled"
   // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
   return {
     id,
     title,
+    body,
     type,
     lesson,
     endDate,
     externalLink,
     TaskofStudents,
     TaskLabels,
+    createdBy,
+    status,
     // Grades,
   };
 };
@@ -185,17 +191,27 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       setOpen(true);
     } catch (error) {
       console.log(error);
-      alert("Error in handleToggle");
     }
   };
 
   const updateTask: () => Promise<void> = async () => {
     alert("!");
-    setEditModalOpen(false);
+    console.log("in update");
+    console.log(taskDetails);
+    console.log("^^^^^^^^^^^^^");
+    try {
+      await network.patch(`/api/v1/task/${taskDetails.id}`, taskDetails);
+      setEditModalOpen(false);
+    } catch (e) {
+      console.log(e);
+      Swal.fire("Oops...", "Could not update Task :(", "error");
+    }
   };
 
+  // not really removing, just closing modal
   const handleRemove = () => {
     alert("remove");
+    setEditModalOpen(false);
   };
 
   const handleTaskChange = (element: string, index: number, change: any) => {
@@ -225,7 +241,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         setTaskDetails((prev) => ({ ...prev, status: change }));
         break;
       case "labels":
-        setTaskDetails((prev) => ({ ...prev, labels: change }));
+        setTaskDetails((prev) => ({ ...prev, TaskLabels: change }));
     }
   };
 
@@ -587,12 +603,15 @@ export default function TeacherTaskBoard(props: any) {
       return createTask(
         task.id,
         task.title,
+        task.body,
         task.type,
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
         task.TaskofStudents,
-        task.TaskLabels
+        task.TaskLabels,
+        task.createdBy,
+        task.status
         // task.Grades
       );
     }) || [];

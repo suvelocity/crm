@@ -90,7 +90,11 @@ export default function AddTask({
     id: number,
     labelName: string
   ) => {
-    task.TaskLabels?.push({ labelId: id, name: labelName, Criteria: [] });
+    task.TaskLabels?.push({
+      labelId: id,
+      Label: { name: labelName },
+      Criteria: [],
+    });
     changer(task.TaskLabels, "labels");
   };
 
@@ -98,7 +102,7 @@ export default function AddTask({
     labelToRemove: string
   ) => {
     const indexToRemove: number = task.TaskLabels!.findIndex(
-      (label: Partial<ITaskLabel>) => label.name === labelToRemove
+      (label: Partial<ITaskLabel>) => label.Label?.name === labelToRemove
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
@@ -210,6 +214,7 @@ export default function AddTask({
           <Input
             label="Link to task"
             variant="outlined"
+            defaultValue={task.externalLink}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               changer(e.target.value, "externalLink");
             }}
@@ -251,6 +256,7 @@ export default function AddTask({
           variant="outlined"
           multiline
           value={task.body}
+          defaultValue={task.body}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "body");
           }}

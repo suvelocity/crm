@@ -167,8 +167,23 @@ export const taskSchema = Joi.object({
   status: Joi.string().required(),
   body: Joi.string().allow(null, ""),
   title: Joi.string().required(),
-  labels: Joi.array(),
+  TaskLabels: Joi.array(),
 });
+
+export const taskSchemaToPut = Joi.object({
+  id: Joi.number().required(),
+  lessonId: Joi.number().allow(null, ""),
+  externalId: Joi.string().allow(null, ""),
+  externalLink: Joi.string().allow(null, ""),
+  createdBy: Joi.number().required(),
+  endDate: Joi.date().required(),
+  type: Joi.string().required(),
+  status: Joi.string().required(),
+  body: Joi.string().allow(null, ""),
+  title: Joi.string().required(),
+  TaskLabels: Joi.array(),
+});
+
 export const meetingSchema = Joi.object({
   pairId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
