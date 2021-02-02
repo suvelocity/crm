@@ -80,7 +80,7 @@ export interface IAcademicBackground {
   institution: string;
   studyTopic: string;
   degree: string;
-  averageScore: number ;
+  averageScore: number;
   gradeAvg: number;
 }
 export interface IClassOfTeacher {
@@ -160,7 +160,7 @@ export interface SelectInputsV2 {
   filterBy: string;
   label?: string;
   singleOption?: boolean;
-  possibleValues: {name: string, id?: number | string}[];
+  possibleValues: { name: string; id?: number | string }[];
 }
 
 export interface IMentor {
@@ -174,9 +174,9 @@ export interface IMentor {
   role: string;
   experience: number;
   available: boolean;
-  education:string;
-  preference:string;
-  religionLevel:string;
+  education: string;
+  preference: string;
+  religionLevel: string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
@@ -307,7 +307,7 @@ export interface ITask {
   body?: string;
   labels?: ITaskLabel[];
   TaskLabels?: Partial<ITaskLabel>[];
-  Grades?: Grades[]// Partial<IGrade>[];
+  Grades?: Grades[]; // Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -332,6 +332,7 @@ export interface ITaskLabel {
   name?: string;
   Label?: ILabel;
   Criteria: ITaskCriteria[];
+  toDelete?: boolean;
 }
 
 export interface ITaskCriteria {
@@ -339,7 +340,8 @@ export interface ITaskCriteria {
   taskId?: number;
   labelId?: number;
   name: string;
-  Grades?: Grades[]
+  Grades?: Grades[];
+  toDelete?: boolean;
   // Grades?: Partial<IGrade>[];
 }
 
@@ -364,10 +366,10 @@ export interface IGrade {
   id?: number;
   grade?: number;
 }
-export type Criteria = null | {grade: number};
+export type Criteria = null | { grade: number };
 export interface Grades {
-  Criteria: Criteria[]
-  Label: null | {grade: number}
+  Criteria: Criteria[];
+  Label: null | { grade: number };
 }
 
 export type ThemeType = "dark" | "light";

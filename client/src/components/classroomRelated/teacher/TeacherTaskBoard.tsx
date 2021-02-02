@@ -18,7 +18,7 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
-import { MenuItem, Select } from "@material-ui/core";
+import { Button, MenuItem, Modal, Select } from "@material-ui/core";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
@@ -33,8 +33,22 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import GradeButton from "../tasks/GradeView";
-import { IGrade, ITaskLabel, Grades } from "../../../typescript/interfaces";
+import { ITaskLabel, taskType } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
+import EditIcon from "@material-ui/icons/Edit";
+import AddTask from "../lessons/AddTask";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      position: "absolute",
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  })
+);
 
 const useRowStyles = makeStyles({
   root: {
@@ -43,6 +57,14 @@ const useRowStyles = makeStyles({
     },
   },
 });
+
+const modalStyle = {
+  top: `50%`,
+  left: `50%`,
+  transform: `translate(-${50}%, -${50}%)`,
+  height: "calc(100vh - 80px)",
+  overflow: "auto",
+};
 
 export function convertDateToString(date: Date) {
   let today = new Date(date);
@@ -56,57 +78,77 @@ export function convertDateToString(date: Date) {
 const createTask = (
   id: number,
   title: string,
-  type: string,
+  body: string,
+  type: taskType | undefined,
   lesson: string,
   endDate: Date,
   externalLink: string,
   TaskofStudents: [],
-  TaskLabels: ITaskLabel[]
+  TaskLabels: ITaskLabel[],
+  createdBy: number,
+  status: "active" | "disabled"
   // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
   return {
     id,
     title,
+    body,
     type,
     lesson,
     endDate,
     externalLink,
     TaskofStudents,
     TaskLabels,
+    createdBy,
+    status,
     // Grades,
   };
 };
 
+const deepCloneWithJson: (object: any) => any = (object) =>
+  JSON.parse(JSON.stringify(object));
+
 function Row(props: { row: ReturnType<typeof createTask> }) {
-  const { row } = props;
+  // const { row } = props;
+  const [taskDetails, setTaskDetails] = useState<ReturnType<typeof createTask>>(
+    props.row
+  );
+  const [taskToUpdate, setTaskToUpdate] = useState<
+    ReturnType<typeof createTask>
+  >(deepCloneWithJson(taskDetails));
   const [open, setOpen] = React.useState(false);
   const [studentDetails, setStudentDetails] = useState<any[]>([]);
-  const classes = useRowStyles();
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
 
-  row.TaskofStudents = useMemo(() => {
-    return row.TaskofStudents.sort((tos: any) =>
+  const classes = useStyles();
+  const rowClasees = useRowStyles();
+
+  taskDetails.TaskofStudents = useMemo(() => {
+    return taskDetails.TaskofStudents.sort((tos: any) =>
       tos.status === "done" ? 1 : -1
     );
   }, []);
 
   const calculatedSubmissionRate = useMemo(() => {
     return (
-      (row.TaskofStudents.reduce((sum: number, tos: any) => {
+      (taskDetails.TaskofStudents.reduce((sum: number, tos: any) => {
         return tos.status === "done" ? sum + 1 : sum + 0;
       }, 0) /
-        row.TaskofStudents.length) *
+        taskDetails.TaskofStudents.length) *
       100
     );
   }, []);
 
   const classList: string = useMemo(() => {
     return Array.from(
-      new Set(row.TaskofStudents.map((tos: any) => tos?.Student?.Class.name))
+      new Set(
+        taskDetails.TaskofStudents.map((tos: any) => tos?.Student?.Class.name)
+      )
     ).join(", ");
   }, []);
 
   const convertedDate = useMemo(() => {
-    return convertDateToString(row.endDate);
+    return convertDateToString(taskDetails.endDate);
   }, []);
 
   const fetchStudentDetails = async (taskId: number) => {
@@ -146,11 +188,58 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       return;
     }
     try {
-      await fetchStudentDetails(row.id);
+      await fetchStudentDetails(taskDetails.id);
       setOpen(true);
     } catch (error) {
       console.log(error);
-      alert("Error in handleToggle");
+    }
+  };
+
+  const updateTask: () => Promise<void> = async () => {
+    try {
+      await network.patch(`/api/v1/task/${taskDetails.id}`, taskToUpdate);
+      setTaskDetails(deepCloneWithJson(taskToUpdate));
+      setEditModalOpen(false);
+    } catch (e) {
+      console.log(e);
+      Swal.fire("Oops...", "Could not update Task :(", "error");
+    }
+  };
+
+  // not really removing, just closing modal
+  const handleClose = () => {
+    setTaskToUpdate(deepCloneWithJson(taskDetails));
+    setEditModalOpen(false);
+  };
+
+  const handleTaskChange = (element: string, index: number, change: any) => {
+    switch (element) {
+      case "title":
+        setTaskToUpdate((prev) => ({ ...prev, title: change }));
+        break;
+      case "date":
+        setTaskToUpdate((prev) => ({ ...prev, date: change }));
+        break;
+      case "externalLink":
+        setTaskToUpdate((prev) => ({ ...prev, externalLink: change }));
+        break;
+      case "externalId":
+        setTaskToUpdate((prev) => ({ ...prev, externalId: change }));
+        break;
+      case "type":
+        setTaskToUpdate((prev) => ({ ...prev, type: change }));
+        break;
+      case "body":
+        setTaskToUpdate((prev) => ({ ...prev, body: change }));
+        break;
+      case "endDate":
+        setTaskToUpdate((prev) => ({ ...prev, endDate: change }));
+        break;
+      case "status":
+        setTaskToUpdate((prev) => ({ ...prev, status: change }));
+        break;
+      case "labels":
+        setTaskToUpdate((prev) => ({ ...prev, TaskLabels: change }));
     }
   };
 
@@ -203,9 +292,25 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     })
   )(LinearProgress);
 
+  const editTaskModalBody = ( //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <AddTask
+        students={[]}
+        handleRemove={handleClose}
+        handleChange={handleTaskChange}
+        task={taskToUpdate}
+        // studentsToTask={studentsToTask}
+        teacherClasses={[]}
+      />
+      <Button variant="contained" onClick={updateTask}>
+        update task
+      </Button>
+    </div>
+  );
+
   return (
     <>
-      <TableRow className={classes.root}>
+      <TableRow className={rowClasees.root}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -217,11 +322,11 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.title}
+          {taskDetails.title}
         </TableCell>
         <TableCell align="center">{classList}</TableCell>
-        <TableCell align="center">{row.type}</TableCell>
-        <TableCell align="center">{row.lesson}</TableCell>
+        <TableCell align="center">{taskDetails.type}</TableCell>
+        <TableCell align="center">{taskDetails.lesson}</TableCell>
         <TableCell align="center">{convertedDate}</TableCell>
         <TableCell align="center">
           <p> {Math.floor(calculatedSubmissionRate)}%</p>
@@ -243,13 +348,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           )}
         </TableCell>
         <TableCell align="center">
-          <StyledAtavLink href={row.externalLink} target="_blank">
+          <StyledAtavLink href={taskDetails.externalLink} target="_blank">
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
+        <TableCell>
+          <EditIcon onClick={() => setEditModalOpen(true)} />
+        </TableCell>
+        <Modal open={editModalOpen} onClose={handleClose}>
+          {editTaskModalBody}
+        </Modal>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               {Object.keys(studentDetails).map((key: string) => (
@@ -307,17 +418,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                               : "none"}
                           </TableCell>
                           <TableCell align="left">
+                            {/* {key !== "pending" ? ( */}
                             <GradeButton
-                              taskLabels={row.TaskLabels}
-                              //@ts-ignore
-                              // grades={
-                              //   row?.Grades && row?.Grades[studentRow.studentId]
-                              // }
+                              taskLabels={taskDetails.TaskLabels}
                               grades={studentRow.grades}
-                              key={row.title}
-                              taskId={row.id}
+                              key={taskDetails.title}
+                              taskId={taskDetails.id}
                               studentId={studentRow.studentId}
+                              overallGrade={studentRow.overallGrade}
+                              taskOfStudentId={studentRow.id}
                             />
+                            {/* ) : ( */}
+                            {/* "N/A" */}
+                            {/* )} */}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -488,12 +601,15 @@ export default function TeacherTaskBoard(props: any) {
       return createTask(
         task.id,
         task.title,
+        task.body,
         task.type,
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
         task.TaskofStudents,
-        task.TaskLabels
+        task.TaskLabels,
+        task.createdBy,
+        task.status
         // task.Grades
       );
     }) || [];
@@ -553,6 +669,9 @@ export default function TeacherTaskBoard(props: any) {
               <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
+              <TableCell align="center" style={{ width: "4vw" }}>
+                <b>Edit</b>
+              </TableCell>
             </TableRow>
           </TableHead>
           {/* <TableBody>
@@ -572,7 +691,7 @@ export default function TeacherTaskBoard(props: any) {
               : null}
             {emptyRows > 0 && (
               <TableRow style={{ height: 91 * emptyRows }}>
-                <TableCell colSpan={8} />
+                <TableCell colSpan={9} />
               </TableRow>
             )}
           </TableBody>
@@ -581,7 +700,7 @@ export default function TeacherTaskBoard(props: any) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={8}
+                colSpan={9}
                 count={taskArray ? taskArray.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}

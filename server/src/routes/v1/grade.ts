@@ -1,22 +1,43 @@
-import e, { Router, Request, Response } from "express";
+import { Router, Request, Response } from "express";
+import { calculateGrade, getGradesOfTaskForStudent } from "../../helper";
 //@ts-ignore
-import { Grade, Task } from "../../models";
-import { IGrade, ITask } from "../../types";
+import { Grade, Task, TaskLabel, Criterion, Label } from "../../models";
+import { IGrade, ITask, ITaskLabel } from "../../types";
 const router = Router();
 
-const tableNames = {
-  task: "Tasks",
-  label: "TaskLabels",
-  criterion: "Criteria",
-};
-// router.get("/of-task/:taskId", async(req: Request, res: Response) => {
-// const taskId:string = req.params.taskId;
-//     try {
-//     const reqTask:ITask = await Task.
-// }catch(err){
+router.get(
+  "/overall/:taskId/:studentId",
+  async (req: Request, res: Response) => {
+    const taskId: string = req.params.taskId;
+    const studentId: string = req.params.studentId;
 
-// }
-// });
+    try {
+      const task: ITask = (
+        await Task.findByPk(taskId, {
+          include: [
+            {
+              model: TaskLabel,
+              include: [{ model: Criterion }, { model: Label }],
+            },
+          ],
+        })
+      ).toJSON();
+
+      const grades: ITaskLabel[] = await getGradesOfTaskForStudent(
+        Number(studentId),
+        //@ts-ignore
+        task.TaskLabels,
+        Number(taskId)
+      );
+
+      const grade = calculateGrade(grades);
+
+      res.json({ grade });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  }
+);
 
 router.post("/", async (req: Request, res: Response) => {
   const type: string = req.body.type;
@@ -35,34 +56,6 @@ router.post("/", async (req: Request, res: Response) => {
   if (gradeExists.found) return patchGrade(req, res, gradeExists.item?.id!);
   postGrade(req, res);
 });
-
-// router.post("/to-task/:taskId", async (req: Request, res: Response) => {
-//   postGrade(req, res);
-// });
-
-// router.post(
-//   "/to-tasklabel/:taskLabelId",
-//   async (req: Request, res: Response) => {
-//     postGrade(req, res);
-//   }
-// );
-
-// router.post(
-//   "/to-criterion/:criterionId",
-//   async (req: Request, res: Response) => {
-//     postGrade(req, res);
-//   }
-// );
-
-// const postGrade: (
-//   grade: number,
-//   belongsToId: number,
-//   freeText?: string
-// ) => Promise<IGrade> = (
-//   grade: number,
-//   belongsToId: number,
-//   freeText?: string
-// ) => {
 
 const findPkByRelatedIdInTable: (
   req: Request,

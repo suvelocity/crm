@@ -72,7 +72,7 @@ export default function Lesson({
         setOpen={setModalState}
         update={true}
         lesson={lessonState}
-        header='Edit Lesson'
+        header="Edit Lesson"
         lessonTasks={tasks}
         classId={classId}
       />
@@ -85,8 +85,9 @@ export default function Lesson({
         <StyledAccordion>
           <StyledSummery
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'>
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
             {"#" + index + " " + lessonState.title}
           </StyledSummery>
           <hr style={{ width: "80%", opacity: "80%" }} />
@@ -98,13 +99,13 @@ export default function Lesson({
           <StyledDetails>
             <Loading size={30} loading={loading}>
               {user.userType === "teacher" && (
-                <EditDiv top='90px' onClick={() => setModalState(true)}>
+                <EditDiv top="90px" onClick={() => setModalState(true)}>
                   <EditIcon />
                 </EditDiv>
               )}
               {lesson.zoomLink && lesson.zoomLink.length > 0 && (
-                <ZoomDiv top='140px'>
-                  <StyledAtavLink href={lesson.zoomLink} target='_blank'>
+                <ZoomDiv top="140px">
+                  <StyledAtavLink href={lesson.zoomLink} target="_blank">
                     <VideocamIcon />
                   </StyledAtavLink>
                 </ZoomDiv>
@@ -116,7 +117,7 @@ export default function Lesson({
                       .split("%#splitingResource#%")
                       .map((resource: string, index: number) => (
                         <ResourcesLink key={index}>
-                          <Link target='_blank' href={resource}>
+                          <Link target="_blank" href={resource}>
                             {resource}
                           </Link>
                         </ResourcesLink>
@@ -124,7 +125,7 @@ export default function Lesson({
                   : //@ts-ignore
                     lessonState.resource?.length > 0 && (
                       //@ts-ignore
-                      <Link target='_blank' href={lessonState.resource}>
+                      <Link target="_blank" href={lessonState.resource}>
                         {lessonState.resource}
                       </Link>
                     )}
@@ -156,8 +157,9 @@ export default function Lesson({
       <Modal
         open={modalState}
         onClose={() => setModalState(false)}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'>
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
         {body}
       </Modal>
     </LessonContainer>
@@ -181,6 +183,7 @@ const LessonContainer = styled.div`
   margin-right: auto;
   padding: 0px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.164);
+  white-space: pre-wrap;
 `;
 
 const StyledAccordion = styled(Accordion)`

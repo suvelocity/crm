@@ -156,6 +156,7 @@ export interface ITaskLabel {
   taskId: number;
   labelId: number;
   Criteria: ICriterion[];
+  toDelete?: boolean;
 }
 
 export interface ICriterion {
@@ -163,6 +164,7 @@ export interface ICriterion {
   taskId: number;
   labelId: number;
   name: string;
+  toDelete?: boolean;
 }
 
 export interface IGrade {
@@ -172,6 +174,7 @@ export interface IGrade {
   studentId: number;
   grade: number;
   freeText: string;
+  weight?: number;
 }
 export interface SeqInclude {
   model: Model;

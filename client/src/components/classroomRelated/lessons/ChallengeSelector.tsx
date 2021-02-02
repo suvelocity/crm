@@ -12,7 +12,7 @@ export type challengeData = {
 export type ChallengeSelectorProps = {
   selectedValue?: string;
   changeValue: (value: any, fieldToChange: string) => void;
-  type: taskType;
+  type?: taskType;
 };
 
 const generateURL: { [key: string]: (id: string) => string } = {
@@ -99,6 +99,7 @@ function ChallengeSelector({
               url = generateURL[type](link);
               changeValue(url, "externalLink");
             } else {
+              if (!type) return;
               url = generateURL[type](id);
               changeValue(url, "externalLink");
             }
