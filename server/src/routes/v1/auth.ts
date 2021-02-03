@@ -32,14 +32,15 @@ router.post("/token", async (req: Request, res: Response) => {
         const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET!);
         res.cookie("accessToken", accessToken);
         if (remembered) {
+          console.log(decoded);
           const student = await Student.findOne({
-            where: { email: decoded.email },
+            where: { id: decoded.relatedId },
           });
           if (student) {
             return res.json({ ...student, userType: decoded.type });
           }
           const teacher = await Teacher.findOne({
-            where: { email: decoded.email },
+            where: { id: decoded.relatedId },
           });
           if (teacher) {
             return res.json({ ...teacher, userType: decoded.type });
@@ -66,7 +67,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     }
     const exp = oneDay() * (rememberMe ? 365 : 1);
     const accessTokenExp = fifteenMinutes();
-    const data = { email, type: user.type, exp };
+    const data = { email, type: user.type, relatedId: user.relatedId, exp };
     const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET!);
     const accessToken = jwt.sign(
       { ...data, exp: accessTokenExp },

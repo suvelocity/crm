@@ -1,5 +1,6 @@
 import { Model } from "sequelize/types";
 import { Request } from "express";
+import { number } from "joi";
 
 export interface IJob {
   Company?: ICompany;
@@ -32,7 +33,7 @@ export interface IAcademicBackground {
   institution: string;
   studyTopic: string;
   degree: string;
-  averageScore: number | undefined;
+  averageScore: number;
 }
 
 export interface IStudent {
@@ -44,11 +45,13 @@ export interface IStudent {
   idNumber: string | null;
   additionalDetails?: string;
   classId: number;
+  gradeAvg?: number;
   age?: number | string | null;
   address: string;
   maritalStatus: string;
   children?: number;
-  academicBackground?: IAcademicBackground;
+  Events?: IEvent[];
+  AcademicBackgrounds?: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -73,9 +76,12 @@ export interface IClass {
 export interface IEvent {
   id?: number;
   userId: number;
+  updatedAt?: Date;
   relatedId: string;
   eventName: string;
   entry?: any;
+  maxDate?: Date;
+  Job?: IJob;
   type: string;
   date: Date;
 }
@@ -150,6 +156,7 @@ export interface ITaskLabel {
   taskId: number;
   labelId: number;
   Criteria: ICriterion[];
+  toDelete?: boolean;
 }
 
 export interface ICriterion {
@@ -157,6 +164,7 @@ export interface ICriterion {
   taskId: number;
   labelId: number;
   name: string;
+  toDelete?: boolean;
 }
 
 export interface IGrade {
@@ -166,12 +174,14 @@ export interface IGrade {
   studentId: number;
   grade: number;
   freeText: string;
+  weight?: number;
 }
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
   required?: boolean;
+  as?: string;
   where?: {};
 }
 
@@ -193,6 +203,22 @@ export interface IMentor {
   job: string;
   available: boolean;
   gender: string;
+}
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
 }
 export interface IForm {
   id?: number;

@@ -7,7 +7,7 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 
 export default function SubmitTask(props: any) {
-  const { taskId, handleClose, handleSubmit } = props;
+  const { taskId, handleClose, handleSubmit, submitLink } = props;
   const [url, setUrl] = useState("");
 
   //   const handleClose = () => {
@@ -22,6 +22,7 @@ export default function SubmitTask(props: any) {
         }}
         id='outlined-multiline-static'
         label='url to submit'
+        defaultValue = {submitLink || ""}
         multiline
         rows={1}
         variant='outlined'

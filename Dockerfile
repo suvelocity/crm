@@ -12,7 +12,7 @@ RUN npm install --production
 
 # RUN git clone https://github.com/vishnubob/wait-for-it.git
 
-EXPOSE 8080
+EXPOSE 80
 
 COPY /server/out ./out
 

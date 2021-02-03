@@ -15,10 +15,17 @@ import {
   ITaskLabel,
   ITaskofStudent,
 } from "../../types";
-import { taskSchema } from "../../validations";
-import { parseFilters } from "../../helper";
+import { taskSchema, taskSchemaToPut } from "../../validations";
+import {
+  calculateGrade,
+  getGradesOfTaskForStudent,
+  makeGradesMap,
+  parseFilters,
+} from "../../helper";
 import challenges from "./challenges";
+import sequelize from "sequelize";
 import { validateTeacher } from "../../middlewares";
+import { flatten } from "lodash";
 
 const createTask = async (req: Request, res: Response) => {
   const {
@@ -71,9 +78,7 @@ const createTaskLabels: (
   labels: ITaskLabel[],
   taskId: number
 ) => Promise<void> | Error = async (labels: ITaskLabel[], taskId: number) => {
-  console.log("******************LABELS***************");
-  console.log(labels);
-  console.log("*****************************************");
+  // TODO add validaiton
 
   if (!Array.isArray(labels))
     throw new Error(`Expected an array but got ${typeof labels} instead`);
@@ -89,7 +94,7 @@ const createTaskLabels: (
     await Promise.all(
       newTaskLabels.map((taskLabel: any, i: number) => {
         const parsed: ITaskLabel = taskLabel.toJSON();
-        console.log(parsed);
+        // console.log(parsed);
         return createCriteria(labels[i].Criteria, parsed.taskId, parsed.id!);
       })
     );
@@ -109,9 +114,7 @@ const createCriteria: (
   taskId: number,
   labelId: number
 ) => {
-  console.log("******************CRITERIA***************");
-  console.log(criteria);
-  console.log("*****************************************");
+  // TODO add validaiton
 
   if (!Array.isArray(criteria))
     return Promise.reject(
@@ -127,48 +130,136 @@ const createCriteria: (
   );
 };
 
-const getGradesOfTaskForStudent: (
-  studentId: number,
-  labelsAndCriteria: ITaskLabel[],
-  taskId: number
-) => Promise<void> = async (
-  studentId: number,
-  labelsAndCriteria: ITaskLabel[],
+// get task details: student list + grades
+const getTaskDetails: (taskId: number) => Promise<any[]> = async (
   taskId: number
 ) => {
-  return labelsAndCriteria[0]
-    ? Promise.all(
-        labelsAndCriteria.map(async (lac: ITaskLabel) => {
-          console.log(lac);
-          return {
-            Criteria: await Promise.all(
-              lac.Criteria.map((criterion: ICriterion) =>
-                Grade.findOne({
-                  where: {
-                    studentId: studentId,
-                    belongsTo: "criterion",
-                    belongsToId: criterion.id,
-                  },
-                })
-              )
-            ),
-            Label: await Grade.findOne({
-              where: {
-                studentId: studentId,
-                belongsTo: "label",
-                belongsToId: lac.id,
-              },
-            }),
-          };
-        })
-      )
-    : Grade.findOne({
-        where: {
-          studentId: studentId,
-          belongsTo: "task",
-          belongsToId: taskId,
+  const taskLabels: ITaskLabel[] = (
+    await Task.findAll({
+      where: { id: taskId },
+      include: [
+        {
+          model: TaskLabel,
+          include: [{ model: Criterion }, { model: Label }],
         },
-      });
+      ],
+    })
+  )[0].toJSON().TaskLabels;
+
+  const details: any[] = await Promise.all(
+    (
+      await TaskofStudent.findAll({
+        where: { task_id: taskId },
+        attributes: ["id", "studentId", "status", "submitLink", "updatedAt"],
+        include: [
+          {
+            model: Student,
+            attributes: ["firstName", "lastName"],
+            include: [
+              {
+                model: Class,
+                attributes: ["id", "name", "endingDate"],
+              },
+            ],
+          },
+        ],
+      })
+    ).map(async (taskOfStudent: any) => {
+      //TODO solve this typescript way
+      taskOfStudent = taskOfStudent.toJSON();
+      const grades = await getGradesOfTaskForStudent(
+        taskOfStudent.studentId,
+        taskLabels,
+        taskId
+      );
+
+      //@ts-ignore
+      taskOfStudent.grades = makeGradesMap(grades);
+      taskOfStudent.overallGrade = calculateGrade(grades);
+      // .reduce((gradesMap:any,gradeObj:any)=>({
+      //   ...gradesMap,
+
+      // }),{});
+      return taskOfStudent;
+    })
+  );
+  // // .reduce((gradesMap: any,gradeObj:any )=>(
+  //   {...gradesMap,
+  //   [gradeObj.s]}
+  // ));
+  return details;
+};
+
+const changeTaskStatus: (
+  taskOfStudentId: string,
+  newStatus: string,
+  submitUrl?: string
+) => Promise<Array<any> | Error> = async (
+  taskOfStudentId: string,
+  newStatus: string,
+  submitUrl?: string
+) => {
+  const toUpdate = submitUrl
+    ? { status: newStatus, submitLink: submitUrl }
+    : { status: newStatus };
+
+  return TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
+};
+
+const updateLabelsAndCriteria: (
+  labels: ITaskLabel[],
+  taskId: number
+) => Promise<any> = async (labels: ITaskLabel[], taskId: number) => {
+  return Promise.all(
+    labels.map((label: ITaskLabel) =>
+      label.toDelete
+        ? deleteLabel(label)
+        : label.id
+        ? updateLabel(label, taskId)
+        : createTaskLabels([label], taskId)
+    )
+  );
+};
+
+const updateLabel: (label: ITaskLabel, taskId: number) => Promise<any> = async (
+  label: ITaskLabel,
+  taskId: number
+) => {
+  // TODO add validaiton
+  await Promise.all(
+    label.Criteria.map((crtron: ICriterion) =>
+      crtron.toDelete
+        ? deleteCriterion(crtron)
+        : crtron.id
+        ? updateCriterion(crtron)
+        : createCriteria([crtron], taskId, label.id!)
+    )
+  );
+  return TaskLabel.update(label, { where: { id: label.id } });
+};
+
+const deleteLabel: (label: ITaskLabel) => Promise<any> = async (
+  label: ITaskLabel
+) => {
+  await Promise.all(
+    label.Criteria.map((crtron: ICriterion) => deleteCriterion(crtron))
+  );
+  // TODO delete grade
+  return TaskLabel.destroy({ where: { id: label.id } });
+};
+
+const updateCriterion: (criterion: ICriterion) => Promise<any> = async (
+  // TODO add validaiton
+  criterion: ICriterion
+) => {
+  return Criterion.update(criterion, { where: { id: criterion.id } });
+};
+
+const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
+  criterion: ICriterion
+) => {
+  // TODO delete grade
+  return Criterion.destroy({ where: { id: criterion.id } });
 };
 
 router.use("/challenges", challenges);
@@ -187,69 +278,121 @@ router.get(
       const studentWhereClause: any = parsedFilters.student;
       Object.assign(tosWhereCLause, parsedFilters.task);
 
-      const myTasks: any[] = await Promise.all(
-        (
-          await Task.findAll({
-            where: tosWhereCLause,
+      //#region
+      // const myTasks: any[] = await Promise.all(
+      //   (
+      //     await Task.findAll({
+      //       where: tosWhereCLause,
+      //       include: [
+      //         {
+      //           model: TaskofStudent,
+      //           attributes: ["studentId", "status", "submitLink", "updatedAt"],
+      //           required: true,
+      //           include: [
+      //             {
+      //               model: Student,
+      //               attributes: ["firstName", "lastName"],
+      //               required: true,
+      //               include: [
+      //                 {
+      //                   model: Class,
+      //                   required: true,
+      //                   attributes: ["id", "name", "endingDate"],
+      //                   where: studentWhereClause,
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         },
+      //         {
+      //           model: Lesson,
+      //           attributes: ["title"],
+      //         },
+      //         {
+      //           model: TaskLabel,
+      //           include: [{ model: Criterion }, { model: Label }],
+      //         },
+      //       ],
+      //       order: [["createdAt", "DESC"]],
+      //     })
+      //   ).map(async (task: any) => {
+      //     task = task.toJSON();
+      //     const getGrades = async () => {
+      //       const allStudentGrades: any = await Promise
+      //         .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
+      //           const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
+      //           return { result, studentId: tos.studentId }
+      //         }))
+      //       return allStudentGrades.reduce((gradesMap: any, tos: any) =>
+      //         ({
+      //           ...gradesMap,
+      //           [tos.studentId]: tos.result
+      //         })
+      //       , {})
+      //     }
+      //     task.Grades = await getGrades();
+      //     return task;
+      //   })
+      // );
+      //#endregion
+
+      const myTasks: any[] = await Task.findAll({
+        where: tosWhereCLause,
+        include: [
+          {
+            model: TaskofStudent,
+            attributes: ["studentId", "status", "submitLink", "updatedAt"],
+            required: true,
             include: [
               {
-                model: TaskofStudent,
-                attributes: ["studentId", "status", "submitLink", "updatedAt"],
+                model: Student,
+                attributes: ["id"],
                 required: true,
                 include: [
                   {
-                    model: Student,
-                    attributes: ["firstName", "lastName"],
+                    model: Class,
                     required: true,
-                    include: [
-                      {
-                        model: Class,
-                        required: true,
-                        attributes: ["id", "name", "endingDate"],
-                        where: studentWhereClause,
-                      },
-                    ],
+                    attributes: ["id"],
+                    where: studentWhereClause,
                   },
                 ],
               },
-              {
-                model: Lesson,
-                attributes: ["title"],
-              },
-              {
-                model: TaskLabel,
-                include: [{ model: Criterion }, { model: Label }],
-              },
             ],
-            order: [["createdAt", "DESC"]],
-          })
-        ).map(async (task: any) => {
-          task = task.toJSON();
-          const getGrades = async () => {
-            const allStudentGrades: any = await Promise
-              .all(task.TaskofStudents.map(async (tos: ITaskofStudent) => {
-                const result = await getGradesOfTaskForStudent(tos.studentId, task.TaskLabels, task.id);
-                return { result, studentId: tos.studentId }
-              }))
-            return allStudentGrades.reduce((gradesMap: any, tos: any) =>
-              ({
-                ...gradesMap,
-                [tos.studentId]: tos.result
-              })
-            , {})
-          }
-          task.Grades = await getGrades();
-          return task;
-        })
-      );
-
+          },
+          {
+            model: TaskLabel,
+            include: [{ model: Criterion }, { model: Label }],
+          },
+          {
+            model: Lesson,
+            attributes: ["title"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
       return res.json(myTasks);
-    }catch (error) {
+    } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
     }
-  });
+  }
+);
 
+router.get(
+  "/details/:taskid",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const taskId: number = Number(req.params.taskid);
+      const details = await getTaskDetails(taskId);
+
+      return res.json(details);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ error: e });
+    }
+  }
+);
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
@@ -353,7 +496,7 @@ router.post(
 router.post("/label", async (req: Request, res: Response) => {
   //TODO check taskId exists
   const data: ITaskLabel[] = req.body;
-  console.log(data);
+  // console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)
@@ -371,7 +514,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
   //TODO check labelId exists
 
   const data: ICriterion[] = req.body;
-  console.log(data);
   if (!Array.isArray(data))
     res
       .status(400)
@@ -384,23 +526,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
   }
 });
 
-// router.post("/grade", async (req: Request, res: Response) => {
-//   //TODO check taskId exists
-//   //TODO check labelId exists
-
-//   const data: IGrade[] = req.body;
-//   console.log(data);
-//   if (!Array.isArray(data))
-//     res
-//       .status(400)
-//       .json({ error: `Expected an array but got ${typeof data} instead` });
-//   try {
-//     const newGrade: IGrade[] = await Grade.bulkCreate(data);
-//     res.json(newGrade);
-//   } catch (e) {
-//     res.status(400).json({ error: e.message });
-//   }
-// });
 //todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
@@ -410,31 +535,66 @@ router.put("/submit/:id", async (req: Request, res: Response) => {
     });
 
     if (taskType.type === "manual") {
-      await TaskofStudent.update(
-        {
-          submitLink: req.body.url,
-          status: "done",
-        },
-        { where: { id: req.params.id } }
-      );
-      return res.status(200).json("task updated");
+      await changeTaskStatus(req.params.id, "submitted", req.body.url);
+
+      return res.status(200).json("task submitted");
     }
-    return res.status(200).json({ error: "can only update manual task" });
+    return res.status(400).json({ error: "can only submit manual task" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Change task status to checked
+router.patch("/check/:id", async (req: Request, res: Response) => {
+  try {
+    const taskType: any = await TaskofStudent.findByPk(req.params.id, {
+      attributes: ["type"],
+    });
+
+    if (taskType.type === "manual") {
+      await changeTaskStatus(req.params.id, "checked");
+
+      return res.status(200).json("task checked");
+    }
+    return res.status(400).json({ error: "can only check manual task" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 router.patch("/:id", validateTeacher, async (req: Request, res: Response) => {
+  const taskRowFieldNames: string[] = [
+    "id",
+    "lessonId",
+    "externalId",
+    "externalLink",
+    "createdBy",
+    "endDate",
+    "type",
+    "status",
+    "body",
+    "title",
+  ];
   try {
     const task = req.body;
-    const { error } = taskSchema.validate(task);
+    const taskRowDetails: Partial<ITask> = Object.keys(task).reduce(
+      (outcome: Partial<ITask>, key: string) =>
+        taskRowFieldNames.includes(key)
+          ? { ...outcome, [key]: task[key] }
+          : outcome,
+      {}
+    );
+
+    const { error } = taskSchemaToPut.validate(taskRowDetails);
     if (error) return res.status(400).json({ error: error.message });
     const { id } = req.params;
     if (!id) return res.status(400).json({ error: "task id not supplied" });
-    const updated = await Task.update(task, {
+    const updated = await Task.update(taskRowDetails, {
       where: { id },
     });
+    await updateLabelsAndCriteria(task.TaskLabels, task.id);
+
     return res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -464,7 +624,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
       where: {
         studentId: studentId,
         type: !"manual",
-        status: !"done",
+        status: !"submitted",
       },
       include: [Task],
     });
@@ -483,7 +643,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
             if (event) {
               const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
-                  status: "done",
+                  status: "submitted",
                 },
                 { where: { id: task.id } }
               );
@@ -505,7 +665,7 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
             if (event) {
               const updatedTask: ITaskofStudent = await TaskofStudent.update(
                 {
-                  status: "done",
+                  status: "submitted",
                 },
                 { where: { id: task.id } }
               );

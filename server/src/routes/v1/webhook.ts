@@ -4,7 +4,6 @@ import axios from "axios";
 import { Event, Student, Job, Company, Class } from "../../models";
 import { IEvent, IJob, IStudent } from "../../types";
 import { eventsSchema } from "../../validations";
-import transporter from "../../mail";
 import { validateTeacher } from "../../middlewares";
 
 const router = Router();

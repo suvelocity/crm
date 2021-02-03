@@ -29,7 +29,7 @@ import ClassAccordion from "./ClassAccordion";
 import { LabelView } from "../tasks/LabelView";
 import { network } from "../../../helpers";
 interface addTaskProps {
-  task: ITask;
+  task: Partial<ITask>;
   index?: number;
   handleChange: (element: string, index: number, change: any) => void;
   handleRemove: (index: number, name: string) => void;
@@ -90,37 +90,58 @@ export default function AddTask({
     id: number,
     labelName: string
   ) => {
-    task.labels?.push({ labelId: id, name: labelName, Criteria: [] });
-    changer(task.labels, "labels");
+    task.TaskLabels?.push({
+      labelId: id,
+      Label: { name: labelName },
+      Criteria: [],
+    });
+    changer(task.TaskLabels, "labels");
   };
 
   const removeLabel: (labelToRemove: string) => void = (
     labelToRemove: string
   ) => {
-    const indexToRemove: number = task.labels!.findIndex(
-      (label: ITaskLabel) => label.name === labelToRemove
+    const indexToRemove: number = task.TaskLabels!.findIndex(
+      (label: Partial<ITaskLabel>) => label.Label?.name === labelToRemove
     );
     if (indexToRemove === -1) alert("label does not exist");
     else {
-      task.labels?.splice(indexToRemove, 1);
-      changer(task.labels, "labels");
+      const labelToRmv: Partial<ITaskLabel> = task.TaskLabels![indexToRemove];
+      if (labelToRmv.id) {
+        labelToRmv.toDelete = true;
+      } else {
+        task.TaskLabels?.splice(indexToRemove, 1);
+      }
+      changer(task.TaskLabels, "labels");
     }
   };
 
-  const getLabels: (searchQuery: string | undefined) => Promise<any[] | undefined> = async (
+  const getLabels: (
     searchQuery: string | undefined
-  ) => {
+  ) => Promise<any[] | undefined> = async (searchQuery: string | undefined) => {
     try {
       const labels: ILabel[] = (
-        await network.get(`/api/v1/label/all${searchQuery ? `?search=${searchQuery}` : ''}`)
+        await network.get(
+          `/api/v1/label/all${searchQuery ? `?search=${searchQuery}` : ""}`
+        )
       ).data;
-      console.log(labels);
       return labels.map((label: ILabel) => {
         return { label: label.name, value: label.id };
       });
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const foramtDefaultLabels: (
+    labels?: ITaskLabel[]
+  ) => Array<{ label: string; value: number }> = (labels?: ITaskLabel[]) => {
+    return labels
+      ? labels.map((lbl: ITaskLabel) => ({
+          label: lbl.Label?.name!,
+          value: lbl.id!,
+        }))
+      : [];
   };
 
   const handleSCSChange: (data: any, actionMeta: any) => Promise<void> = async (
@@ -149,11 +170,14 @@ export default function AddTask({
     (async () => {
       const labels = await getLabels(undefined);
       if (labels) {
-        setDefaultTaskLabels(labels)
+        setDefaultTaskLabels(labels);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
+  console.log("UPDATE TASK");
+  console.log(task);
+  console.log("^^^^^^^^^^^^^^^^^");
   return (
     <Form
       key={index}
@@ -205,6 +229,7 @@ export default function AddTask({
           <Input
             label="Link to task"
             variant="outlined"
+            defaultValue={task.externalLink}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               changer(e.target.value, "externalLink");
             }}
@@ -246,6 +271,7 @@ export default function AddTask({
           variant="outlined"
           multiline
           value={task.body}
+          defaultValue={task.body}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             changer(e.target.value, "body");
           }}
@@ -293,27 +319,29 @@ export default function AddTask({
           <MenuItem value={"disabled"}>disabled</MenuItem>
         </Select>
       </FormControl>
-      <LabelsContainer style={{ borderTop: '1px olid black' }}>
+      <LabelsContainer style={{ borderTop: "1px olid black" }}>
         <h4>Set labels</h4>
         <FormControl
           id="task-labels"
           variant="outlined"
           className={classes.formControl}
-          style={{ width: '100%', margin: 0 }}
+          style={{ width: "100%", margin: 0 }}
         >
           <SearchCreateSelect
             isMulti
             loadOptions={getLabels}
             onChange={handleSCSChange}
             defaultOptions={defaultTaskLabels}
+            defaultValue={foramtDefaultLabels(task.TaskLabels as ITaskLabel[])}
           />
 
           {/* <TextField variant="outlined" label="Add Label" inputRef={labelField} />
           <Button onClick={handleLabelAdd}>Add</Button> */}
         </FormControl>
-        {task.labels?.map((l: ITaskLabel) => (
-          <LabelView label={l} />
-        ))}
+        {task.TaskLabels?.map(
+          (l: Partial<ITaskLabel>) =>
+            !l.toDelete && <LabelView label={l as ITaskLabel} />
+        )}
       </LabelsContainer>
       {students && teacherClasses !== undefined ? (
         <ClassAccordion classes={classList!} updatePicks={changer} />

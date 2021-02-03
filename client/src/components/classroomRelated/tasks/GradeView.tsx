@@ -1,90 +1,211 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles, Modal, Theme } from "@material-ui/core";
-import {
-  Criteria,
-  IGrade,
-  ITask,
-  ITaskCriteria,
-  ITaskLabel,
-} from "../../../typescript/interfaces";
+import { ITaskCriteria, ITaskLabel } from "../../../typescript/interfaces";
 import { Grades } from "../../../typescript/interfaces";
-import { Grade, Label } from "@material-ui/icons";
 import { network } from "../../../helpers";
+import Swal from "sweetalert2";
 
-const calculateGrades = (
-  grades: Grades[],
-  grades2: { grade: number } | null
-) => {
-  const arrayOfAverageScores: number[] = [];
-  console.log("grades", grades);
-  if (grades) {
-    if (grades2 === null) {
-      return "--";
-    }
-    if (grades2 !== null && grades2.hasOwnProperty("grade")) {
-      return grades2.grade;
-    }
-    for (let i = 0; i < grades.length; i++) {
-      const grade: Grades = grades[i];
-      let sum = 0;
-      let length = 0;
-      if (grade.Criteria.length === 0 && grade.Label == null) {
-        return "--";
-      }
-      for (let j = 0; j < grade.Criteria.length; j++) {
-        const val: Criteria = grade.Criteria[j];
-        if (val == null) {
-          return "--";
-        }
-        sum += val.grade;
-        length++;
-      }
-      if (grade.Label) {
-        sum += grade.Label.grade;
-        length++;
-      }
-      if (length !== 0) {
-        arrayOfAverageScores.push(Math.round(sum / length));
-      }
-    }
-  }
-  console.log(grades);
-  if (arrayOfAverageScores.length !== 0) {
-    console.log(arrayOfAverageScores);
-    let sum = 0;
-    arrayOfAverageScores.forEach((val: number) => (sum += val));
-    return Math.round(sum / arrayOfAverageScores.length);
-  } else {
-    return "--";
-  }
-};
+//#region moved to server
+// const calculateGrades = (grades: object, grades2: { grade: number } | null) => {
+//   console.log("GRADES FUNCTION");
+//   console.log(grades);
+//   console.log(grades2);
+//   console.log("*****************");
+//   const avergaesOfGrades: any = {};
+//   //if grades are not set yet
+//   if (!grades) return "--";
+//   if (Object.keys(grades).length === 0) return "--";
+
+//   //@ts-ignore
+//   if (grades?.belongsTo === "task") return grades.grade;
+
+//   for (let gradeObj of Object.values(grades)) {
+//     switch (gradeObj?.belongsTo) {
+//       case "task":
+//         return gradeObj.grade;
+//       case "label":
+//         avergaesOfGrades[gradeObj.belongsToId] =
+//           // avergaesOfGrades[gradeObj.id]
+//           // ? {score: avergaesOfGrades[gradeObj.is].score + gradeObj.grade, counter: avergaesOfGrades[gradeObj.is].counter++}
+//           // :
+//           { score: gradeObj.grade, count: 1 };
+//         break;
+//       case "criterion":
+//         avergaesOfGrades[gradeObj.labelId] = avergaesOfGrades[gradeObj.labelId]
+//           ? {
+//               score: avergaesOfGrades[gradeObj.labelId].score + gradeObj.grade,
+//               count: avergaesOfGrades[gradeObj.labelId].count + 1,
+//             }
+//           : { score: gradeObj.grade, count: 1 };
+//         break;
+//     }
+//   }
+//   console.log(grades);
+//   console.log(avergaesOfGrades);
+//   // console.log(avergaesOfGrades);
+//   // console.log(Object.values(avergaesOfGrades));
+//   // console.log(Object.keys(avergaesOfGrades));
+//   // console.log(
+//   //   Object.values(avergaesOfGrades).reduce(
+//   //     (sum: number, current: any) => sum + current.score / current.count,
+//   //     0
+//   //   )
+//   // );
+//   return Math.floor(
+//     Object.values(avergaesOfGrades).reduce(
+//       (sum: number, current: any) => sum + current.score / current.count,
+//       0
+//     ) / Object.keys(avergaesOfGrades).length
+//   );
+
+//   // if (grades) {
+//   //   if (grades2 === null) {
+//   //     return "--";
+//   //   }
+//   //   if (grades2 !== null && grades2.hasOwnProperty("grade")) {
+//   //     return grades2.grade;
+//   //   }
+//   //   for (let i = 0; i < grades.length; i++) {
+//   //     const grade: Grades = grades[i];
+//   //     let sum = 0;
+//   //     let length = 0;
+//   //     if (grade.Criteria.length === 0 && grade.Label == null) {
+//   //       return "--";
+//   //     }
+//   //     for (let j = 0; j < grade.Criteria.length; j++) {
+//   //       const val: Criteria = grade.Criteria[j];
+//   //       if (val == null) {
+//   //         return "--";
+//   //       }
+//   //       sum += val.grade;
+//   //       length++;
+//   //     }
+//   //     if (grade.Label) {
+//   //       sum += grade.Label.grade;
+//   //       length++;
+//   //     }
+//   //     if (length !== 0) {
+//   //       arrayOfAverageScores.push(Math.round(sum / length));
+//   //     }
+//   //   }
+//   // }
+
+//   // if (arrayOfAverageScores.length !== 0) {
+//   //   console.log(arrayOfAverageScores);
+//   //   let sum = 0;
+//   //   arrayOfAverageScores.forEach((val: number) => (sum += val));
+//   //   return Math.round(sum / arrayOfAverageScores.length);
+//   // } else {
+//   //   return "--";
+//   // }
+// };
+//#endregion
+
 export default function GradeButton({
   taskLabels,
   grades,
   key,
   taskId,
   studentId,
+  overallGrade,
+  taskOfStudentId,
 }: {
   taskLabels: ITaskLabel[];
   grades: Grades[];
   key: string;
   taskId: number;
   studentId: number;
+  overallGrade: number;
+  taskOfStudentId: number;
 }) {
+  //#region moved to server
+  // const makeGradesMap: (grades: Grades[]) => any = (grades: Grades[]) => {
+  //   console.log(grades);
+  //   return Array.isArray(grades)
+  //     ? grades.reduce(
+  //         (gradesMap: any, label: any, index: number) =>
+  //           // label.Criteria[0]
+  //           label.Label
+  //             ? {
+  //                 ...gradesMap,
+  //                 [`label${label?.Label?.belongsToId}`]: label.Label,
+  //               }
+  //             : // label.Criteria.reduce(
+  //               //     (sameGradesMap: any, criterion: any) =>
+  //               //       criterion
+  //               //         ? {
+  //               //             ...sameGradesMap,
+  //               //             [`criterion${criterion?.belongsToId}`]: {
+  //               //               ...criterion,
+  //               //               labelId: index,
+  //               //             },
+  //               //           }
+  //               //         : gradesMap,
+  //               //     gradesMap
+  //               //   )
+  //               label.Criteria.reduce(
+  //                 (sameGradesMap: any, criterion: any) =>
+  //                   criterion
+  //                     ? {
+  //                         ...sameGradesMap,
+  //                         [`criterion${criterion?.belongsToId}`]: {
+  //                           ...criterion,
+  //                           labelId: index,
+  //                         },
+  //                       }
+  //                     : sameGradesMap,
+  //                 gradesMap
+  //               ),
+  //         // label.Label
+  //         // ? {
+  //         //     ...gradesMap,
+  //         //     [`label${label?.Label?.belongsToId}`]: label.Label,
+  //         //   }
+  //         // : gradesMap,
+  //         {}
+  //       )
+  //     : grades;
+  // };
+  //#endregion
+
   const [openGrades, setOpenGrades] = useState<boolean>(false);
-  const [activeGrades, setActiveGrades] = useState<Grades[]>(grades);
+  const [activeGrades, setActiveGrades] = useState<any>(grades);
+  const [overallGradeState, setOverallGradeState] = useState<number>(
+    overallGrade
+  );
   const handleOpen: () => void = () => {
     setOpenGrades(true);
   };
+
   const handleClose: () => void = () => {
     setOpenGrades(false);
   };
-  //@ts-ignore
-  const calculatedScore = calculateGrades(activeGrades, activeGrades);
-  console.log(taskLabels);
+
+  const updateOverallGrade: () => Promise<void> = async () => {
+    try {
+      const { data: newOverall } = await network.get(
+        `/api/v1/grade/overall/${taskId}/${studentId}`
+      );
+      console.log(newOverall);
+      setOverallGradeState(newOverall.grade);
+    } catch (e) {
+      console.log(e);
+      Swal.fire(
+        "Oh Shit",
+        `Failed to update grade.
+          Please try again in a moment`,
+        "error"
+      );
+    }
+  };
+
+  useEffect(() => {
+    updateOverallGrade();
+  }, [activeGrades]);
+
   return (
     <>
-      <span onClick={handleOpen}>{calculatedScore}</span>
+      <span onClick={handleOpen}>{overallGradeState}</span>
       <GradeView
         open={openGrades}
         handleClose={handleClose}
@@ -94,6 +215,7 @@ export default function GradeButton({
         key={key}
         taskId={taskId}
         studentId={studentId}
+        taskOfStudentId={taskOfStudentId}
       />
     </>
   );
@@ -108,6 +230,7 @@ function GradeView({
   key,
   taskId,
   studentId,
+  taskOfStudentId,
 }: {
   open: boolean;
   handleClose: () => void;
@@ -117,6 +240,7 @@ function GradeView({
   setActiveGrades: Function;
   taskId: number;
   studentId: number;
+  taskOfStudentId: number;
 }) {
   const classes = useStyles();
 
@@ -125,41 +249,39 @@ function GradeView({
     belongsTo: string,
     belongsToId: number,
     studentId: number,
-    i: number,
-    j?: number
+    labelIndex: number
   ) => Promise<void> = async (
     grade: string,
     belongsTo: string,
     belongsToId: number,
     studentId: number,
-    i: number,
-    j?: number
+    labelIndex: number
   ) => {
     try {
-      console.log(grade, belongsTo, belongsToId, studentId);
       //@ts-ignore
       if (isNaN(grade)) return;
-      await network.post("/api/v1/grade", {
+      const { data } = await network.post("/api/v1/grade", {
         grade,
         belongsTo,
         belongsToId,
         studentId,
       });
-      console.log(i, j);
-      if (grades.hasOwnProperty("grade") || grades === null) {
-        return setActiveGrades({ grade: Number(grade) });
-      }
-      const newGrades = grades.slice();
-      if (typeof i === "number" && typeof j === "number") {
-        newGrades[i].Criteria[j] = { grade: Number(grade) };
-      } else if (typeof i === "number") {
-        newGrades[i].Label = { grade: Number(grade) };
-      }
-      setActiveGrades(newGrades);
+
+      await network.patch(`/api/v1/task/check/${taskOfStudentId}`);
+
+      setActiveGrades((prev: any) => {
+        console.log(prev);
+        const updated = {
+          ...prev,
+          [`${belongsTo}${belongsToId}`]: { ...data, labelId: labelIndex },
+        };
+        return updated;
+      });
     } catch (e) {
       console.log(e);
     }
   };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <>
@@ -179,16 +301,9 @@ function GradeView({
                         key={`input-${key}-label${i}-crit${j}`}
                         type="number"
                         placeholder="Grade"
-                        //@ts-ignore
                         defaultValue={
                           //@ts-ignore
-                          grades[i]
-                            ? //@ts-ignore
-                              grades[i].Criteria[j]
-                              ? //@ts-ignore
-                                grades[i].Criteria[j].grade
-                              : false
-                            : "--"
+                          grades[`criterion${criterion.id}`]?.grade
                         }
                         onBlur={(e) =>
                           changeGrade(
@@ -196,25 +311,10 @@ function GradeView({
                             "criterion",
                             criterion.id!,
                             studentId,
-                            i,
-                            j
+                            i
                           )
                         }
                       />
-                      {/* <span key={`grade-${key}-label${i}-crit${j}`}>
-                        {grades?.TaskLabels![i]?.Criteria![j].Grades![0]?.grade
-                          ? grades?.TaskLabels![i]?.Criteria![j].Grades![0]
-                              ?.grade
-                          : "--"}
-                      </span> */}
-                      {/* <button
-                        key={`button-${key}-label${i}-crit${j}`}
-                        onClick={() =>
-                          changeGrade(95, "criterion", criterion.id!, studentId)
-                        }
-                      >
-                        Update
-                      </button> */}
                     </div>
                   ))
                 ) : (
@@ -225,7 +325,7 @@ function GradeView({
                       placeholder="Grade"
                       defaultValue={
                         //@ts-ignore
-                        grades[i] ? grades[i]?.Label?.grade : "--"
+                        grades[`label${label.id}`]?.grade
                       }
                       onBlur={(e) =>
                         changeGrade(
@@ -237,19 +337,6 @@ function GradeView({
                         )
                       }
                     />
-                    {/* <span key={`grade-${key}-label${i}`}>
-                      {grades?.TaskLabels![i]?.Label!.Grades![0]?.grade
-                        ? grades?.TaskLabels![i]?.Label!.Grades![0]?.grade
-                        : "--"}
-                    </span> */}
-                    {/* <button
-                      key={`button-${key}-label${i}`}
-                      onClick={() =>
-                        changeGrade(80, "label", label.id!, studentId)
-                      }
-                    >
-                      Update
-                    </button> */}
                   </>
                 )}
               </>
@@ -262,24 +349,12 @@ function GradeView({
                 placeholder="Grade..."
                 defaultValue={
                   //@ts-ignore
-                  grades?.grade ? grades.grade : ""
+                  grades[`task${taskId}`]?.grade
                 }
                 onBlur={(e) =>
                   changeGrade(e.target.value, "task", taskId, studentId, 0)
                 }
               />
-              <span key={`grade-${key}`}>
-                {
-                  //@ts-ignore
-                  grades?.grade ? grades?.grade : "--"
-                }
-              </span>
-              {/* <button
-                key={`button-${key}`}
-                onClick={() => changeGrade(100, "task", taskId, studentId)}
-              >
-                Update
-              </button> */}
             </>
           )}
         </div>

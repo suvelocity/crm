@@ -31,7 +31,7 @@ export default function Teacher() {
     externalLink: "",
     type: "manual",
     status: "active",
-    labels: [],
+    TaskLabels: [],
   });
 
   const postTask = async () => {
@@ -111,13 +111,7 @@ export default function Teacher() {
 
   const handleRemove = () => {
     setOpen(false);
-    setTask({
-      createdBy: user.id,
-      endDate: new Date(),
-      title: "",
-      type: "manual",
-      status: "active",
-    });
+    setTask(getBaseTask());
   };
 
   const handleOpen = () => {
@@ -208,8 +202,8 @@ const modalStyle = {
   top: `50%`,
   left: `50%`,
   transform: `translate(-${50}%, -${50}%)`,
-  height: 'calc(100vh - 80px)',
-  overflow: 'auto'
+  height: "calc(100vh - 80px)",
+  overflow: "auto",
 };
 
 const useStyles = makeStyles((theme: Theme) =>

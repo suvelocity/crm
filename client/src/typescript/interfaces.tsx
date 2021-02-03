@@ -7,6 +7,7 @@ export interface IStudent {
   phone?: string;
   Class: IClass;
   address: string;
+  gradeAvg?: number;
   age?: number;
   maritalStatus: string;
   children?: number;
@@ -79,7 +80,8 @@ export interface IAcademicBackground {
   institution: string;
   studyTopic: string;
   degree: string;
-  averageScore: number ;
+  averageScore: number;
+  gradeAvg: number;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -134,7 +136,7 @@ type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
 export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class?: string[];
+  Class?: string[] | number[];
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];
@@ -154,6 +156,12 @@ export interface SelectInputs {
   singleOption?: boolean;
   possibleValues: string[];
 }
+export interface SelectInputsV2 {
+  filterBy: string;
+  label?: string;
+  singleOption?: boolean;
+  possibleValues: { name: string; id?: number | string }[];
+}
 
 export interface IMentor {
   id?: number;
@@ -166,9 +174,9 @@ export interface IMentor {
   role: string;
   experience: number;
   available: boolean;
-  education:string;
-  preference:string;
-  religionLevel:string;
+  education: string;
+  preference: string;
+  religionLevel: string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
@@ -299,7 +307,7 @@ export interface ITask {
   body?: string;
   labels?: ITaskLabel[];
   TaskLabels?: Partial<ITaskLabel>[];
-  Grades?: Grades[]// Partial<IGrade>[];
+  Grades?: Grades[]; // Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -324,6 +332,7 @@ export interface ITaskLabel {
   name?: string;
   Label?: ILabel;
   Criteria: ITaskCriteria[];
+  toDelete?: boolean;
 }
 
 export interface ITaskCriteria {
@@ -331,18 +340,36 @@ export interface ITaskCriteria {
   taskId?: number;
   labelId?: number;
   name: string;
-  Grades?: Grades[]
+  Grades?: Grades[];
+  toDelete?: boolean;
   // Grades?: Partial<IGrade>[];
+}
+
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
 }
 
 export interface IGrade {
   id?: number;
   grade?: number;
 }
-export type Criteria = null | {grade: number};
+export type Criteria = null | { grade: number };
 export interface Grades {
-  Criteria: Criteria[]
-  Label: null | {grade: number}
+  Criteria: Criteria[];
+  Label: null | { grade: number };
 }
 
 export type ThemeType = "dark" | "light";

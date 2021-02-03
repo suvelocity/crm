@@ -177,7 +177,7 @@ const AddJob = (props: Props) => {
                 id="description"
                 name="description"
                 inputRef={register({
-                  required: "Description is required",
+                  //required: "Description is required",
                   maxLength: {
                     value: 500,
                     message: "Description are too long",
@@ -202,7 +202,7 @@ const AddJob = (props: Props) => {
                 variant="outlined"
                 name="requirements"
                 inputRef={register({
-                  required: "Requirements are required",
+                  // required: "Requirements are required",
                   maxLength: {
                     value: 500,
                     message: "Requirements are too long",

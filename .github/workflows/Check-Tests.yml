@@ -41,6 +41,7 @@ jobs:
         env:
           MYSQL_DATABASE_TEST: crm_test
           MYSQL_PASSWORD: null
+          NODE_ENV: test
         working-directory: ./server
 
   client-tests:
