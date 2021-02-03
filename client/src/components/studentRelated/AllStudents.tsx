@@ -119,14 +119,12 @@ function AllStudents({classIds} : Props) {
 
   const getStudentsByFilters = async () => {
     try{
-      console.log(classIds, filterAttributes)
       const {data} : {data: {students: IStudent[], gradedLabels?: LabelIdsWithGradesPerStudent} } = await network.get('/api/v1/student/filtered', {
         params: {...filterAttributes, ...gradeParams, addressName}
       })
       if(data.gradedLabels){
         setGradesByLabel(data.gradedLabels);
       }
-      console.log(data.students);
       setFilteredStudents(data.students);
       setLoading(false)
     }catch(e){

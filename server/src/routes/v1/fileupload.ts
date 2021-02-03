@@ -37,6 +37,8 @@ router.post("/", async (req, res) => {
         ? "0".concat(obj.phone.toString())
         : obj.phone.toString(),
       company: obj.company || null,
+      additional: obj.additional || null,
+      mentoringExperience: obj.mentoringExperience || null,
       preference: obj.preference || null,
       gender: obj.gender || null,
       name: obj.name || null,

@@ -5,6 +5,7 @@ import { Student, Mentor, Meeting } from "../../../models";
 import { Class, MentorProgram, MentorStudent } from "../../../models";
 import { mentorSchema, mentorSchemaToPut } from "../../../validations";
 import { IMentor } from "../../../types";
+import { Op } from "sequelize";
 
 const router = Router();
 
@@ -29,8 +30,29 @@ router.get("/available", async (req: Request, res: Response) => {
 // Get all mentors
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const { classId, notClassIds } = req.query;
+    let mentorWhere: any = {};
+    if (classId) {
+      mentorWhere.agreedTo = {
+        [Op.like]: "%" + classId + "%",
+      };
+    } else if (notClassIds) {
+      mentorWhere[`[Op.not]`] = {
+        agreedTo: {
+          [Op.or]: {
+            [Op.like]: "%" + notClassIds + "%",
+          },
+        },
+      };
+    }
     const allMentors: any[] = await Mentor.findAll({
+      where: mentorWhere,
       // order:[["available","DESC"]],
+      include: [
+        {
+          model: MentorStudent,
+        },
+      ],
     });
 
     res.json(allMentors);

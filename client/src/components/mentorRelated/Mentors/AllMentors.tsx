@@ -14,7 +14,7 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import Swal from "sweetalert2";
 import Switch from "@material-ui/core/Switch";
-import { InputLabel, Select, MenuItem, TextField } from "@material-ui/core";
+import { InputLabel, Select, MenuItem, TextField, FormControl } from "@material-ui/core";
 import {
   IMentor,
   SelectInputs,
@@ -124,8 +124,8 @@ function AllMentors() {
     }
     if (filterAttributes.Search !== "") {
       newFilteredMentors = newFilteredMentors.filter(
-        (mentor) =>
-          mentor.name
+        (mentor) =>{
+          return mentor.name
             .toLocaleLowerCase()
             .includes(filterAttributes.Search.toLocaleLowerCase()) ||
           mentor.company
@@ -134,7 +134,7 @@ function AllMentors() {
           mentor.email
             .toLocaleLowerCase()
             .includes(filterAttributes.Search.toLocaleLowerCase()) ||
-          mentor.address
+          !mentor.address ? false : mentor.address
             .toLocaleLowerCase()
             .includes(filterAttributes.Search.toLocaleLowerCase()) ||
           mentor.role
@@ -143,6 +143,7 @@ function AllMentors() {
           mentor.gender
             .toLocaleLowerCase()
             .includes(filterAttributes.Search.toLocaleLowerCase())
+        }
       );
     }
     setMentors(newFilteredMentors);
@@ -205,9 +206,18 @@ function AllMentors() {
           }}
         >
           {filterOptionsArray.map((arr) => (
-            <div style={{width:`${100 / filterOptionsArray.length}`}}>
-              <InputLabel>{arr.filterBy}</InputLabel>
+            // <div style={{width:`${100 / filterOptionsArray.length}`}}>
+            <FormControl
+              style={{
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                width: `${100 / filterOptionsArray.length}%`,
+              }}
+            >
+              <InputLabel id={`demo-simple-select-label${arr.filterBy}`}>{arr.filterBy}</InputLabel>
               <Select
+                labelId={`demo-simple-select-label${arr.filterBy}`}
+                style={{ height: "100%", width: "50%" }} 
                 onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                   filterFunc(arr.filterBy, e.target.value as string);
                 }}
@@ -217,7 +227,7 @@ function AllMentors() {
                   <MenuItem value={field}>{field}</MenuItem>
                 ))}
               </Select>
-            </div>
+              </FormControl>
           ))}
           <div>
             <TextField

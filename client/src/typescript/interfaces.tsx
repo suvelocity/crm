@@ -174,9 +174,12 @@ export interface IMentor {
   role: string;
   experience: number;
   available: boolean;
-  education: string;
-  preference: string;
-  religionLevel: string;
+  education:string;
+  agreedTo?: string;
+  preference:string;
+  religionLevel:string;
+  additional:string;
+  mentoringExperience: string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];

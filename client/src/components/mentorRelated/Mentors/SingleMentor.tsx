@@ -20,10 +20,11 @@ import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IMentor } from "../../../typescript/interfaces";
+import { IMentor, IClass } from "../../../typescript/interfaces";
 import BusinessIcon from "@material-ui/icons/Business";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import WorkOutlineIcon from "@material-ui/icons/WorkOutline";
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import BuildIcon from '@material-ui/icons/Build';
 import HourglassEmptyOutlinedIcon from "@material-ui/icons/HourglassEmptyOutlined";
 import WcIcon from "@material-ui/icons/Wc";
@@ -40,6 +41,7 @@ import Modal from "@material-ui/core/Modal";
 const SingleMentor: React.FC = () => {
   const [mentor, setMentor] = useState<IMentor | null>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [agreedTo, setAgreedTo] = useState<IClass[]>([]);
   const [ModalState, setModalState] = useState<boolean>(false);
   const { id } = useParams();
 
@@ -47,7 +49,6 @@ const SingleMentor: React.FC = () => {
     const { data }: { data: IMentor[] } = await network.get(
       `/api/v1/M/mentor/${id}`
     );
-      console.log(data[0])
     setMentor(data[0]);
     setLoading(false);
   }, [id, setMentor, setLoading]);
@@ -57,6 +58,19 @@ const SingleMentor: React.FC = () => {
     setLoading(true);
     getMentor();
   };
+  const getAgreedToClasses = useCallback(async () => {
+    if(mentor && mentor.agreedTo){
+      const {data} : {data : IClass[]} = await network.get('/api/v1/class/all-active-classes', {
+        params: {
+          classIds: mentor.agreedTo.split(', ')
+        }
+      });
+      setAgreedTo(data)
+    }
+  },[mentor])
+  useEffect(() =>{
+      getAgreedToClasses()
+  } ,[mentor])
 
   useEffect(() => {
     try {
@@ -66,6 +80,18 @@ const SingleMentor: React.FC = () => {
     }
     //eslint-disable-next-line
   }, []);
+  const mentoringExperience = (!mentor || !mentor.mentoringExperience) ? [] : mentor.mentoringExperience.split(',').map((exp: string) => <div>
+  {capitalize(exp)}
+</div>)
+  const mentorPrograms = (!mentor  || !mentor.MentorStudents ) ? [] : mentor!.MentorStudents!.map(
+    (program) => {
+      return (
+        <div>
+          {capitalize(program.MentorProgram!.name)}
+        </div>
+      );
+    }
+  )
   const mentorFields = !mentor ? [] :[
     {
       primary:"Name",
@@ -131,15 +157,7 @@ const SingleMentor: React.FC = () => {
   const outsideGridDiv = !mentor ? [] : [
     {
       primary:"programs",
-      secondary:mentor?.MentorStudents?.map(
-        (program) => {
-          return (
-            <div>
-              {capitalize(program.MentorProgram!.name)}
-            </div>
-          );
-        }
-      ),
+      secondary: [...mentoringExperience, ...mentorPrograms],
       icon: <AssignmentIndIcon />
     },
     {
@@ -163,6 +181,15 @@ const SingleMentor: React.FC = () => {
       icon: <MenuBookIcon />
     }
   ]
+  if(agreedTo.length > 0){
+    outsideGridDiv.push({
+      primary: 'Agreed to',
+      secondary: agreedTo.map((cls: IClass) => {
+        return <div>{capitalize(cls.name)}</div>
+      }),
+      icon : <VerifiedUserIcon />
+    })
+  }
   const mentorFieldArr = [];
   for(let i = 0, increment = 4; i< mentorFields.length; i+=increment){
     const sliceTo = i + increment;
@@ -220,26 +247,27 @@ const SingleMentor: React.FC = () => {
                 </ListItem>
                 })
               }
-              <Modal
-                open={ModalState}
-                onClose={() => setModalState(false)}
-                style={{ overflow: "scroll" }}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-              >
-                {!mentor ? (
-                  <div>oops</div>
-                ) : (
-                  <AddMentor
-                    handleClose={handleClose}
-                    update={true}
-                    mentor={mentor}
-                    header="Edit Mentor"
-                  />
-                )}
-              </Modal>
             </>
           )}
+          
+          <Modal
+            open={ModalState}
+            onClose={() => setModalState(false)}
+            style={{ overflow: "scroll" }}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {!mentor ? (
+              <div>oops</div>
+            ) : (
+              <AddMentor
+                handleClose={handleClose}
+                update={true}
+                mentor={mentor}
+                header="Edit Mentor"
+              />
+            )}
+          </Modal>
         </Loading>
       </Wrapper>
     </>

@@ -1,8 +1,9 @@
 import { Router, Request, Response } from "express";
 const router = Router();
 //@ts-ignore
-import { Student, Class } from "../../models";
+import { Student, Class, sequelize } from "../../models";
 import { IClass } from "../../types";
+const { Op } = require("sequelize");
 
 import { classSchema, classSchemaToPut } from "../../validations";
 router.get("/all", async (req: Request, res: Response) => {
@@ -14,6 +15,43 @@ router.get("/all", async (req: Request, res: Response) => {
         },
       ],
     });
+    res.json(classes);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/all-active-classes", async (req: Request, res: Response) => {
+  try {
+    const classWhere: any = {};
+    classWhere.endingDate = { [Op.gt]: new Date() };
+    const { classIds } = req.query;
+    if (classIds) {
+      classWhere.id = {
+        [Op.or]: classIds,
+      };
+    }
+    const classes: IClass[] = await Class.findAll({
+      where: classWhere,
+      attributes: [
+        "id",
+        [
+          sequelize.fn(
+            "concat",
+            sequelize.col("course"),
+            " ",
+            sequelize.col("cycle_number"),
+            " ( ",
+            sequelize.col("name"),
+            " )"
+          ),
+          "name",
+        ],
+        "endingDate",
+      ],
+    });
+    console.log(classes);
     res.json(classes);
   } catch (error) {
     console.log(error.message);
