@@ -19,7 +19,11 @@ import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissa
 import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
 import { Button, MenuItem, Modal, Select } from "@material-ui/core";
-import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import {
+  Center,
+  Hoverable,
+  StyledAtavLink,
+} from "../../../styles/styledComponents";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
   makeStyles,
@@ -353,7 +357,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </StyledAtavLink>
         </TableCell>
         <TableCell>
-          <EditIcon onClick={() => setEditModalOpen(true)} />
+          <Hoverable onClick={() => setEditModalOpen(true)}>
+            <EditIcon />
+          </Hoverable>
         </TableCell>
         <Modal open={editModalOpen} onClose={handleClose}>
           {editTaskModalBody}
@@ -418,19 +424,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
                               : "none"}
                           </TableCell>
                           <TableCell align="left">
-                            {/* {key !== "pending" ? ( */}
-                            <GradeButton
-                              taskLabels={taskDetails.TaskLabels}
-                              grades={studentRow.grades}
-                              key={taskDetails.title}
-                              taskId={taskDetails.id}
-                              studentId={studentRow.studentId}
-                              overallGrade={studentRow.overallGrade}
-                              taskOfStudentId={studentRow.id}
-                            />
-                            {/* ) : ( */}
-                            {/* "N/A" */}
-                            {/* )} */}
+                            {key !== "pending" ? (
+                              <GradeButton
+                                taskLabels={taskDetails.TaskLabels}
+                                grades={studentRow.grades}
+                                key={taskDetails.title}
+                                taskId={taskDetails.id}
+                                studentId={studentRow.studentId}
+                                overallGrade={studentRow.overallGrade}
+                                taskOfStudentId={studentRow.id}
+                              />
+                            ) : (
+                              "N/A"
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}

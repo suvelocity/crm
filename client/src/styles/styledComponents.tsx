@@ -175,3 +175,12 @@ export const StyledAtavLink = styled.a`
     color: black;
   }
 `;
+
+export const Hoverable = styled.div`
+  cursor: pointer;
+  transition: 0.2s;
+  :hover {
+    color: #696d69;
+    transform: translateY(-5px);
+  }
+`;
