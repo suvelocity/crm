@@ -396,17 +396,37 @@ router.get(
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
-    const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
-      where: { student_id: req.params.id },
-      attributes: ["id", "status", "submitLink"],
-      include: [
-        {
-          model: Task,
-          include: [{ model: Lesson, attributes: ["id", "title"] }],
-          where: { status: "active" },
-        },
-      ],
-    });
+    const myTasks: ITaskofStudent[] = await Promise.all(
+      (
+        await TaskofStudent.findAll({
+          where: { student_id: req.params.id },
+          attributes: ["id", "status", "submitLink", "studentId"],
+          include: [
+            {
+              model: Task,
+              include: [
+                { model: Lesson, attributes: ["id", "title"] },
+                {
+                  model: TaskLabel,
+                  include: [{ model: Criterion }, { model: Label }],
+                },
+              ],
+              where: { status: "active" },
+            },
+          ],
+        })
+      ).map(async (taskOfStudent: any) => {
+        taskOfStudent = taskOfStudent.toJSON();
+        const grades = await getGradesOfTaskForStudent(
+          taskOfStudent.studentId,
+          taskOfStudent.Task.TaskLabels,
+          taskOfStudent.Task.id
+        );
+
+        taskOfStudent.overall = calculateGrade(grades);
+        return taskOfStudent;
+      })
+    );
     return res.json(myTasks);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -28,6 +28,7 @@ const columns: ColDef[] = [
     headerName: "URL Submitted",
     flex: 400,
   },
+  { field: "grade", headerName: "Grade", flex: 200 },
 ];
 const separateToValues = (dateTimeBigger: number, dateTimeSmaller: number) => {
   let diff = dateTimeBigger - dateTimeSmaller;
@@ -88,9 +89,11 @@ export default function DataGridDemo(props: any) {
         link: task.Task.externalLink,
         // status: task.status,
         submitLink: task.submitLink,
+        grade: task.overall,
       };
     }) || [];
 
+  console.log(myTasks);
   return (
     <TaskTableConatiner>
       <div style={{ height: 630, width: "100%", color: "white" }}>

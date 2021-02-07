@@ -65,13 +65,13 @@ export default function TaskBoard() {
 
       setFinishedTasks(() => {
         const finished = data.filter((task: any) => {
-          return task.status === "done";
+          return task.status !== "pending";
         });
         return finished;
       });
       setUnfinishedTasks(() => {
         const unfinished = data.filter((task: any) => {
-          return task.status !== "done";
+          return task.status === "pending";
         });
         return unfinished;
       });
@@ -127,13 +127,14 @@ export default function TaskBoard() {
   return (
     <DashboardContainer>
       <Typography
-        variant='h2'
+        variant="h2"
         style={{
           marginRight: 15,
           marginTop: "2%",
           marginBottom: "auto",
           marginLeft: "15%",
-        }}>
+        }}
+      >
         Tasks
       </Typography>
       <Content>
@@ -148,13 +149,14 @@ export default function TaskBoard() {
             ))
           ) : (
             <Typography
-              variant='h4'
+              variant="h4"
               style={{
                 marginRight: 15,
                 marginTop: "2%",
                 marginBottom: "auto",
                 marginLeft: "15%",
-              }}>
+              }}
+            >
               You have finished all of your tasks!
             </Typography>
           )}
@@ -162,18 +164,20 @@ export default function TaskBoard() {
           <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby='simple-modal-title'
-            aria-describedby='simple-modal-description'>
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
             {body}
           </Modal>
           <Typography
-            variant='h2'
+            variant="h2"
             style={{
               marginRight: 15,
               marginTop: "5%",
               marginBottom: "2%",
               marginLeft: "15%",
-            }}>
+            }}
+          >
             History
           </Typography>
           <TaskTable myTasks={finishedTasks} />
