@@ -38,7 +38,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
-    labels,
+    TaskLabels,
   } = req.body;
   const { error } = taskSchema.validate({
     lessonId,
@@ -50,7 +50,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
-    labels,
+    TaskLabels,
   });
   if (error) return res.status(400).json({ error: error.message });
   try {
@@ -66,7 +66,7 @@ const createTask = async (req: Request, res: Response) => {
       body,
     });
 
-    await createTaskLabels(labels, task.id!);
+    await createTaskLabels(TaskLabels, task.id!);
     return task;
   } catch (e) {
     console.log(e);
