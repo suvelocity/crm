@@ -16,6 +16,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField,
 } from "@material-ui/core";
 import { Loading } from "react-loading-wrapper";
 import { SingleListItem } from "../tableRelated";
@@ -34,7 +35,8 @@ function ApplyForJobModal({
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState(false);
-  const [students, setStudents] = useState<IStudent[] | null>();
+  const [allStudents, setAllStudents] = useState<IStudent[] | null>();
+  const [filteredStudents, setFilteredStudents] = useState<IStudent[]>([]);
   const [studentsToApply, setStudentsToApply] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -44,7 +46,7 @@ function ApplyForJobModal({
         const { data }: { data: IStudent[] } = await network.get(
           "/api/v1/student/all"
         );
-        setStudents(
+        setAllStudents(
           data.filter(
             (student: IStudent) => !currentStudents?.includes(student.id)
           )
@@ -60,6 +62,7 @@ function ApplyForJobModal({
   };
 
   const handleClose = () => {
+    setFilteredStudents([]);
     setOpen(false);
   };
 
@@ -100,63 +103,87 @@ function ApplyForJobModal({
       );
     }
   };
+
+  // TODO change search to server side
+  const search = (searchQuery: string) => {
+    if (!searchQuery) {
+      setFilteredStudents([]);
+      return;
+    }
+    if (!allStudents) return;
+    setFilteredStudents(
+      allStudents?.filter(
+        (student: IStudent) =>
+          new RegExp(`^${searchQuery}`, "i").test(`${student.firstName}`) ||
+          new RegExp(`^${searchQuery}`, "i").test(`${student.lastName}`)
+      )
+    );
+  };
   let body = <CircularProgress />;
-  if (students) {
+  if (filteredStudents) {
     body = (
       <div style={modalStyle} className={classes.paper}>
         <div className={classes.accordionContainer}>
           <h1>Choose Students To Apply</h1>
-          {students.length > 0 ? (
+          <TextField
+            id="searchStudentToApply"
+            fullWidth
+            label={"Search student"}
+            onChange={(e) => search(e.target.value)}
+          />
+          {allStudents && allStudents.length > 0 ? (
             <>
-              {students?.map((student: IStudent) => (
-                <Accordion key={student.id}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
-                  >
-                    <FormControlLabel
-                      aria-label="Acknowledge"
-                      onClick={(event) => event.stopPropagation()}
-                      onFocus={(event) => event.stopPropagation()}
-                      control={
-                        <Checkbox
-                          id={`${student.id}`}
-                          value={student.id}
-                          onChange={handleCheckBoxOnChange}
+              {filteredStudents.length > 0
+                ? filteredStudents.map((student: IStudent) => (
+                    <Accordion key={student.id}>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-label="Expand"
+                        aria-controls="additional-actions2-content"
+                        id="additional-actions2-header"
+                      >
+                        <FormControlLabel
+                          aria-label="Acknowledge"
+                          onClick={(event) => event.stopPropagation()}
+                          onFocus={(event) => event.stopPropagation()}
+                          control={
+                            <Checkbox
+                              id={`${student.id}`}
+                              value={student.id}
+                              onChange={handleCheckBoxOnChange}
+                            />
+                          }
+                          label=""
                         />
-                      }
-                      label=""
-                    />
-                    <Typography className={classes.heading}>
-                      {student.firstName} {student.lastName}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <List dense>
-                      <SingleListItem
-                        primary="Name"
-                        secondary={student.firstName + " " + student.lastName}
-                      />
-                      <SingleListItem
-                        primary="Email"
-                        secondary={student.email}
-                      />
-                      <SingleListItem
-                        primary="Phone Number"
-                        secondary={student.phone}
-                      />
-                      <ListItem>
-                        <ListItemText
-                          primary="Course"
-                          secondary={student.Class?.name}
-                        />
-                      </ListItem>
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                        <Typography className={classes.heading}>
+                          {student.firstName} {student.lastName}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <List dense>
+                          <SingleListItem
+                            primary="Name"
+                            secondary={`${student.firstName} ${student.lastName}`}
+                          />
+                          <SingleListItem
+                            primary="Email"
+                            secondary={student.email}
+                          />
+                          <SingleListItem
+                            primary="Phone Number"
+                            secondary={student.phone}
+                          />
+                          <ListItem>
+                            <ListItemText
+                              primary="Course"
+                              secondary={student.Class?.name}
+                            />
+                          </ListItem>
+                        </List>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))
+                : null}
             </>
           ) : (
             <h2>No students available</h2>
