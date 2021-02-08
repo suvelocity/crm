@@ -27,6 +27,7 @@ router.use("/task", require("./task"));
 router.use("/notice", require("./notice"));
 router.use("/label", require("./label"));
 router.use("/grade", require("./grade"));
+router.use("/fileupload", validateAdmin, require("./fileupload"));
 // quizme routes
 router.use("/form", require("./form"));
 router.use("/fieldsubmission", require("./fieldsubmission"));

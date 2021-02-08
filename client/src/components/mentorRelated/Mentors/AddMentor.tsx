@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import network from "../../../helpers/network";
 import {
@@ -26,7 +26,7 @@ import {
   H1,
   Center,
 } from "../../../styles/styledComponents";
-import { IMentor } from "../../../typescript/interfaces";
+import { IMentor, IClass } from "../../../typescript/interfaces";
 import { useHistory } from "react-router-dom";
 import GoogleMaps from "../../GeoSearch";
 import Swal from "sweetalert2";
@@ -44,19 +44,29 @@ const AddMentor: React.FC<Props> = ({
   handleClose,
 }) => {
   const { register, handleSubmit, errors, control } = useForm();
-
+  const [availableClasses, setAvailbleClasses] = useState<IClass[]>([])
   const history = useHistory();
 
   const empty = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
+  const getAvailableClasses = useCallback(async () => {
+    const {data} : {data : IClass[]} = await network.get('/api/v1/class/all-active-classes');
+    setAvailbleClasses(data)
+  },[])
+  useEffect(() =>{
+    getAvailableClasses();
+  } ,[])
   const errorComponent = (name:string) => {
     if(empty) return null
     return errors[name] ?
     <ErrorBtn tooltipTitle={errors[name].message} />
     :<ActionBtn />
   }
-
   const onSubmit = async (data: IMentor) => {
+    if(data.agreedTo){
+      //@ts-ignore
+      data.agreedTo = data.agreedTo.join(', ');
+    }
     try {
       if (update && mentor) {
         await network.put(`/api/v1/M/mentor/${mentor.id}`, data);
@@ -172,7 +182,39 @@ const AddMentor: React.FC<Props> = ({
                 label="Phone Number"
               />
             {errorComponent('phone')}
-              <br />
+            {availableClasses.length > 0 &&
+              <>
+                <br />
+                <FormControl
+                  style={{ minWidth: 200, maxWidth: 200,
+                  textOverflow: "ellipsis",
+                  overflow: "break",
+                  wordWrap: "break-word",
+                  whiteSpace: "pre"}}
+                  error={Boolean(errors.classId)}
+                >
+                  <InputLabel>Agrees To Participate In</InputLabel>
+                  <Controller
+                    as={
+                      <Select multiple style={{
+                        }}>
+                        {
+                          availableClasses.map((cls:IClass) =>{
+                          return <MenuItem key={cls.id!} value={String(cls.id!)}>
+                          {cls.name}
+                          </MenuItem>
+                        })
+                        }
+                      </Select>
+                    }
+                    name="agreedTo"
+                    defaultValue={ mentor ? mentor.agreedTo ? mentor.agreedTo.split(', ').filter((id: string) => availableClasses.some((cls:IClass) => cls.id == Number(id))): [] :[]} //
+                    control={control}
+                  />
+                </FormControl>
+                {!empty && <ActionBtn />}
+              </>
+            }
             </div>
             <div>
               <TextField
@@ -290,6 +332,44 @@ const AddMentor: React.FC<Props> = ({
             label="Preference"
           />
           {errorComponent('preference')}
+          <br />
+          <br />
+          <TextField
+            id="mentoringExperience"
+            multiline
+            fullWidth
+            defaultValue={mentor ? mentor.mentoringExperience : ""}
+            rows={4}
+            variant="outlined"
+            name="mentoringExperience"
+            inputRef={register({
+              maxLength: {
+                value: 100,
+                message: "Mentoring Experience is too long",
+              },
+            })}
+            label="Mentoring Experience"
+          />
+          {errorComponent('mentoringExperience')}
+          <br />
+          <br />
+          <TextField
+            id="additional"
+            multiline
+            fullWidth
+            defaultValue={mentor ? mentor.additional : ""}
+            rows={4}
+            variant="outlined"
+            name="additional"
+            inputRef={register({
+              maxLength: {
+                value: 500,
+                message: "Additional Information is too long",
+              },
+            })}
+            label="Additional Information"
+          />
+          {errorComponent('additional')}
           <br />
           <br />
           <Button

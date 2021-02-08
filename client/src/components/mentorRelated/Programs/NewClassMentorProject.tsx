@@ -74,7 +74,7 @@ function NewClassMentorProject() {
 
   const getMentors = useCallback(async () => {
     console.log(students);
-    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
+    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor?classId=${query}`);
     const mentorList = data.map((mentor) => {
       let count = 0;
       students.forEach((student: Omit<IStudent, "Class">) => {
