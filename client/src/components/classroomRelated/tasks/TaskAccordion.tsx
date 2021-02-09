@@ -89,7 +89,7 @@ export default function SingleTask(props: any) {
             <IconButton
               aria-label="submit button"
               onClick={() => {
-                handleOpen(task.id);
+                handleOpen({...task.Task, id: task.id});
               }}
               disabled={task.Task.type !== "manual" ? true : false}
             >

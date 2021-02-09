@@ -231,6 +231,7 @@ export const JobStatusValidation = Joi.array().items(
     "Sent CV",
     "Phone Interview",
     "First interview",
+    "None",
     "Second interview",
     "Third Interview",
     "Forth interview",

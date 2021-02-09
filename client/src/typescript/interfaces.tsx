@@ -7,6 +7,7 @@ export interface IStudent {
   phone?: string;
   Class: IClass;
   address: string;
+  gradeAvg?: number;
   age?: number;
   maritalStatus: string;
   children?: number;
@@ -136,7 +137,7 @@ type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
 export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class?: string[];
+  Class?: string[] | number[];
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];

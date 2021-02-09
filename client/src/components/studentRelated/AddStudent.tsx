@@ -99,6 +99,8 @@ function AddStudent(props: Props) {
     handleSubmit,
     errors,
     control,
+    setError,
+    clearErrors,
     getValues,
     setValue,
     reset,
@@ -201,6 +203,35 @@ function AddStudent(props: Props) {
       averageScore: undefined,
     });
   };
+  const checkEmailIsUnique = async (email: string) => {
+    if (!validEmailRegex.test(email))
+      return setError("email", {
+        type: "manual",
+        message: "Please Enter a Valid Email",
+      });
+    let query = `/api/v1/student/ByEmail/?email=${email}`;
+    if (props.student) {
+      query += `&&validId=${props.student.id}`;
+    }
+    try {
+      const { data } = await network.get(`${query}`);
+      if (!data.available) {
+        setError("email", {
+          type: "manual",
+          message: "A Student Already Exists With This Email",
+        });
+      } else {
+        console.log(data);
+        clearErrors("email");
+      }
+    } catch (e) {
+      console.log(e);
+      setError("email", {
+        type: "manual",
+        message: e,
+      });
+    }
+  };
   return (
     <Wrapper>
       <Center>
@@ -275,6 +306,7 @@ function AddStudent(props: Props) {
                 id="email"
                 label="Email"
                 name="email"
+                onChange={(e) => checkEmailIsUnique(e.target.value)}
                 defaultValue={props.student ? props.student.email : ""}
                 inputRef={register({
                   required: "Email is required",

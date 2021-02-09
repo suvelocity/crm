@@ -15,7 +15,7 @@ import {
   JobStatusValidation,
 } from "../../validations";
 import { academicBackgroundSchema } from "../../validations";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 import generatePassword from "password-generator";
 import bcrypt from "bcryptjs";
 import { getQuery } from "../../helper";
@@ -23,6 +23,7 @@ import { Op, Sequelize, QueryTypes } from "sequelize";
 import { validateTeacher, validateAdmin } from "../../middlewares";
 import grade from "../../models/grade";
 import Joi, { number } from "joi";
+import student from "../../models/student";
 
 // const publicFields: PublicFields[] = ["firstname", "lastname", "fcc"];
 const publicFields: string[] = Object.keys(PublicFieldsEnum);
@@ -81,151 +82,200 @@ router.get("/all", validateAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.get("/filtered", validateAdmin, async (req: Request, res: Response) => {
-  try {
-    const query =
-      //@ts-ignore
-      process.env.NODE_ENV === "test" ? JSON.parse(req.query.test) : req.query;
-    console.log("QUERY ", query);
-    const {
-      JobStatus,
-      Course,
-      Class: ClassIds,
-      Name,
-      labelIds,
-      Languages,
-      AverageScore,
-      addressName,
-    }: { [key: string]: any } = query;
-    const isEmpty = (property: any) => {
-      return property[0] === "";
-    };
-    const OPor = (arr: string[], attr: string, obj: any) => {
-      if (!isEmpty(arr)) obj[attr] = { [Op.or]: arr };
-    };
-    let classWhere: any = {};
-    const studentWhere: any = {};
-    if (!isEmpty(Languages)) {
-      studentWhere.languages = {
-        [Op.or]: Languages.map((lang: string) => ({
-          [Op.like]: "%" + lang + "%",
-        })),
-      };
-    }
-    if (addressName) {
-      studentWhere.address = { [Op.like]: "%" + addressName + "%" };
-    }
-    if (!isEmpty(Course)) {
-      const array: any = [];
-      Course.forEach((val: string) => {
-        const [course, cycleNumber] = val.split(" - ");
-        array.push({ [Op.and]: [{ course }, { cycleNumber }] });
-      });
-      classWhere = { [Op.or]: array };
-    }
-    OPor(ClassIds, "id", classWhere);
-    OPor(Name, "id", studentWhere);
-    let orderByScore = [];
-    if (AverageScore === "ASC" || AverageScore === "DESC") {
-      orderByScore.push([
-        Sequelize.fn(
-          "ROUND",
-          Sequelize.fn("AVG", Sequelize.col("average_score"))
-        ),
+router.get(
+  "/filtered",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const query =
+        process.env.NODE_ENV === "test"
+          ? //@ts-ignore
+            JSON.parse(req.query.test)
+          : req.query;
+      console.log("QUERY ", query);
+      const {
+        JobStatus,
+        Course,
+        Class: ClassIds,
+        Name,
+        labelIds,
+        Languages,
         AverageScore,
-      ]);
-    }
-    let students = await Student.findAll({
-      where: studentWhere,
-      include: [
-        {
-          model: Event,
-          where: { type: "jobs" },
-          attributes: [],
-          required: !isEmpty(JobStatus),
-        },
-        {
-          model: Class,
-          attributes: ["id", "name", "course", "cycleNumber"],
-          where: classWhere,
-        },
-        {
-          model: AcademicBackground,
-          attributes: [
-            [
-              Sequelize.fn(
-                "ROUND",
-                Sequelize.fn("AVG", Sequelize.col("average_score"))
-              ),
-              "gradeAvg",
-            ],
-            "id",
-          ],
-        },
-      ],
-      order: [...orderByScore],
-      attributes: [
-        "id",
-        "firstName",
-        "lastName",
-        "phone",
-        "email",
-        "languages",
-        "address",
-      ],
-      group: ["AcademicBackgrounds.student_id"],
-      //group: ["Events.related_id", "id", "Events.id", "AcademicBackgrounds.id"],
-    });
-    if (!isEmpty(JobStatus) && students.length > 0) {
-      const { error } = JobStatusValidation.validate(JobStatus);
-      if (error)
-        return res
-          .status(400)
-          .json({ error: "job status input failed validation" });
-      const eventNames = JobStatus.map((status: string) => `\'${status}\'`);
-      const studentIds = students.map(
-        (student: any) => `\'${student.toJSON().id}\'`
-      );
-      const releventStatuses: any = await sequelize.query(
-        `
-      SELECT a.date, event_name, first_name, a.user_id, a.related_id, a.updated_at, max FROM Students
-      join Events a on type = 'jobs' and a.user_id = Students.id 
-      join (
-      SELECT MAX(date) as max, related_id, user_id from Events
-      where type = 'jobs' and deleted_at is null
-      group by related_id, user_id
-      ) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
-      where Students.id IN ( ${studentIds} ) and event_name IN ( ${eventNames} );`,
-        {
-          type: QueryTypes.SELECT,
+        addressName,
+      }: { [key: string]: any } = query;
+      const isEmpty = (property: any) => {
+        if (!property) return true;
+        return property[0] === "";
+      };
+      const OPor = (arr: string[], attr: string, obj: any) => {
+        if (!isEmpty(arr)) obj[attr] = { [Op.or]: arr };
+      };
+      let classWhere: any = {};
+      const studentWhere: any = {};
+      if (!isEmpty(Languages)) {
+        studentWhere.languages = {
+          [Op.or]: Languages.map((lang: string) => ({
+            [Op.like]: "%" + lang + "%",
+          })),
+        };
+      }
+      if (addressName) {
+        studentWhere.address = { [Op.like]: "%" + addressName + "%" };
+      }
+      if (!isEmpty(Course)) {
+        const array: any = [];
+        Course.forEach((val: string) => {
+          const [course, cycleNumber] = val.split(" - ");
+          array.push({ [Op.and]: [{ course }, { cycleNumber }] });
+        });
+        classWhere = { [Op.or]: array };
+      }
+      OPor(ClassIds, "id", classWhere);
+      OPor(Name, "id", studentWhere);
+      let students = await Student.findAll({
+        where: studentWhere,
+        include: [
+          {
+            model: Event,
+            where: { type: "jobs" },
+            attributes: ["date", "updatedAt", "eventName", "relatedId"],
+            required: false, //!isEmpty(JobStatus),
+          },
+          {
+            model: Class,
+            attributes: ["id", "name", "course", "cycleNumber"],
+            where: classWhere,
+          },
+          {
+            model: AcademicBackground,
+            attributes: ["averageScore", "id"],
+            require: false,
+          },
+        ],
+        // order: [...orderByScore],
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "phone",
+          "email",
+          "languages",
+          "address",
+        ],
+      });
+
+      let studentsWithGradeAvg: IStudent[] = students.map(
+        (student: { toJSON: () => IStudent }) => {
+          const studentJson = student.toJSON();
+          return {
+            ...studentJson,
+            gradeAvg: getGradeAverage(studentJson.AcademicBackgrounds!),
+          };
         }
       );
-      const idDictionary = releventStatuses.reduce((acc: any, curr: any) => {
-        return { ...acc, [`${curr.user_id}`]: true };
-      }, {});
-      students = students.filter(
-        (student: any) => idDictionary[student.toJSON().id]
-      );
+
+      if (AverageScore === "ASC" || AverageScore === "DESC") {
+        studentsWithGradeAvg.sort((a: IStudent, b: IStudent) =>
+          AverageScore === "ASC"
+            ? a.gradeAvg! - b.gradeAvg!
+            : b.gradeAvg! - a.gradeAvg!
+        );
+      }
+
+      if (!isEmpty(JobStatus) && students.length > 0) {
+        const { error } = JobStatusValidation.validate(JobStatus);
+        if (error)
+          return res
+            .status(400)
+            .json({ error: "job status input failed validation" });
+        studentsWithGradeAvg = studentsWithGradeAvg.filter(
+          (student: IStudent) => {
+            const releventStatuses = getRecentJobsStatuses(student.Events!);
+            if (
+              JobStatus.includes("None") &&
+              (student.Events!.length == 0 ||
+                releventStatuses.every(
+                  (status: string) => status === "Rejected"
+                ))
+            ) {
+              return true;
+            }
+            console.log("checking statuses");
+            return JobStatus.some((status: string) =>
+              releventStatuses.includes(status)
+            );
+          }
+        );
+      }
+
+      if (!isEmpty(labelIds) && students.length > 0) {
+        const studentIds: string[] = studentsWithGradeAvg.map(
+          (student: IStudent) => String(student.id)
+        );
+        req.query.studentIds = studentIds;
+        attachLabels(req, res, studentsWithGradeAvg);
+      } else {
+        res.json({ students: studentsWithGradeAvg });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error.message });
     }
-    if (!isEmpty(labelIds) && students.length > 0) {
-      const studentIds: string[] = students.map(
-        (student: { toJSON: () => IStudent }) => String(student.toJSON().id)
-      );
-      req.query.studentIds = studentIds;
-      attachLabels(req, res, students);
-    } else {
-      res.json({ students: students });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
   }
-});
+);
+
+const getRecentJobsStatuses = (events: IEvent[]): string[] => {
+  type JobEvents = {
+    [id: string]: { time: number; status: string; updatedAt: number };
+  };
+  let jobs: JobEvents = {};
+  for (let i = 0; i < events.length; i++) {
+    const id: string = events[i].relatedId;
+    const eventTime = new Date(events[i].date);
+    const updatedAt = new Date(events[i].updatedAt!).getTime();
+    if (!jobs[`job${id}`]) {
+      jobs[`job${id}`] = {
+        time: eventTime.getTime(),
+        status: events[i].eventName,
+        updatedAt: updatedAt,
+      };
+    } else if (
+      eventTime.getTime() > jobs[`job${id}`].time ||
+      (eventTime.getTime() === jobs[`job${id}`].time &&
+        updatedAt > jobs[`job${id}`].updatedAt)
+    ) {
+      jobs[`job${id}`] = {
+        time: eventTime.getTime(),
+        status: events[i].eventName,
+        updatedAt: updatedAt,
+      };
+    }
+  }
+  let JobStatuses: { [status: string]: string } = {};
+  for (const key in jobs) {
+    if (!JobStatuses[jobs[key].status])
+      JobStatuses[jobs[key].status] = jobs[key].status;
+  }
+  return Object.keys(JobStatuses);
+};
+
+const getGradeAverage = (
+  AcademicBackgrounds: IAcademicBackground[]
+): number => {
+  let gradeSum = 0;
+  let length = 0;
+  AcademicBackgrounds.forEach((AcademicBackgrounds: IAcademicBackground) => {
+    gradeSum += AcademicBackgrounds.averageScore;
+    length++;
+  });
+  if (length === 0) return 0;
+  return Math.round(gradeSum / length);
+};
 
 async function attachLabels(
   req: Request,
   res: Response,
-  studentsToSend: { toJSON: () => IStudent }[]
+  studentsToSend: IStudent[]
 ): Promise<Response<any> | undefined> {
   try {
     const { labelIds, studentIds } = req.query;
@@ -315,52 +365,74 @@ async function attachLabels(
   }
 }
 
-router.get("/filter-options", async (req: Request, res: Response) => {
-  try {
-    const students = await Student.findAll({
-      attributes: [
-        "id",
-        [
-          Sequelize.fn(
-            "concat",
-            Sequelize.col("first_name"),
-            " ",
-            Sequelize.col("last_name")
-          ),
-          "name",
+router.get(
+  "/filter-options",
+  validateTeacher,
+  async (req: Request, res: Response) => {
+    try {
+      const classIds = req.query.classIds;
+      console.log(classIds, "filter options");
+      const students = await Student.findAll({
+        where: !classIds ? {} : { classId: { [Op.or]: classIds } },
+        attributes: [
+          "id",
+          [
+            Sequelize.fn(
+              "concat",
+              Sequelize.col("first_name"),
+              " ",
+              Sequelize.col("last_name")
+            ),
+            "name",
+          ],
         ],
-      ],
-    });
-    const classes = await Class.findAll({
-      attributes: ["id", "name"],
-    });
-    const releventStatuses: any = await sequelize.query(
-      `SELECT date, event_name, first_name, a.user_id, a.related_id, max FROM Students
-    join Events a on type = 'jobs' and a.user_id = Students.id 
-    join (SELECT MAX(date) as max, related_id, user_id from Events
-    where type = 'jobs' and deleted_at is null
-    group by related_id, user_id) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
-    group by event_name;`,
-      { type: QueryTypes.SELECT }
-    );
-    const courses: any = await sequelize.query(
-      `SELECT CONCAT(course, " - ", cycle_number) as name FROM Classes
+        include: [
+          {
+            model: Event,
+            required: false,
+          },
+        ],
+      });
+      const classes = await Class.findAll({
+        attributes: ["id", "name"],
+      });
+      //   const releventStatuses: any = await sequelize.query(
+      //     `SELECT date, event_name, first_name, a.user_id, a.related_id, max FROM Students
+      // join Events a on type = 'jobs' and a.user_id = Students.id
+      // join (SELECT MAX(date) as max, related_id, user_id from Events
+      // where type = 'jobs' and deleted_at is null
+      // group by related_id, user_id) b on a.date = b.max and b.user_id = a.user_id and b.related_id = a.related_id
+      // group by event_name;`,
+      //     { type: QueryTypes.SELECT }
+      //   );
+      const courses: any = await sequelize.query(
+        `SELECT CONCAT(course, " - ", cycle_number) as name FROM Classes
        group by CONCAT(course, " - ", cycle_number)
       ;`,
-      { type: QueryTypes.SELECT }
-    );
-    res.json({
-      statuses: releventStatuses.map((event: any) => ({
-        name: event.event_name,
-      })),
-      students,
-      classes,
-      courses,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+        { type: QueryTypes.SELECT }
+      );
+      const releventStatuses: { [key: string]: boolean } = {};
+      students.forEach((student: { toJSON: () => IStudent }) => {
+        const jsonStudent = student.toJSON();
+        const recentStatuses = getRecentJobsStatuses(jsonStudent.Events!);
+        recentStatuses.forEach(
+          (status: string) => (releventStatuses[status] = true)
+        );
+      });
+      res.json({
+        statuses: Object.keys(releventStatuses).map((event: string) => ({
+          name: event,
+        })),
+        students,
+        classes,
+        courses,
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 router.get("/byId/:id", validateAdmin, async (req: Request, res: Response) => {
   try {
@@ -444,7 +516,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
     const user = await User.create(userToCreate);
     if (user && process.env.NODE_ENV !== "test" && body.createUser) {
       console.log("SENDING MAIL");
-      transporter.sendMail(
+      sendMail(
         mailOptions(body.email, password),
         function (error: Error | null) {
           if (error) {
@@ -460,9 +532,25 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
   }
 });
 
+router.get("/ByEmail", async (req, res) => {
+  let query: any = {};
+  if (req.query.validId) {
+    query.id = { [Op.not]: [req.query.validId] };
+  }
+  if (!req.query.email)
+    return res.status(400).json({ error: "email not supplied" });
+  query.email = req.query.email;
+  const studentWithSameEmail = await Student.findOne({
+    where: query,
+  });
+  if (studentWithSameEmail) return res.json({ available: false });
+  res.json({ available: true });
+});
+
 router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   req.body.age = req.body.age === "" ? null : req.body.age;
   req.body.children = req.body.children === "" ? null : req.body.children;
+  if (!req.params.id) return res.json({ error: "no id provided in params" });
   if (req.body.AcademicBackgrounds) {
     const academicBackgrounds = [...req.body.AcademicBackgrounds];
     for (let i = 0; i < academicBackgrounds.length; i++) {
@@ -484,6 +572,22 @@ router.patch("/:id", validateAdmin, async (req: Request, res: Response) => {
   const { error } = studentSchemaToPut.validate(req.body);
   if (error) return res.status(400).json(error);
   try {
+    if (req.body.email) {
+      const studentWithSameEmail = await Student.findOne({
+        where: { email: req.body.email, id: { [Op.not]: [req.params.id] } },
+      });
+      if (studentWithSameEmail) {
+        return res
+          .status(400)
+          .json({ error: "Email already exists for other student" });
+      }
+      await User.update(
+        { email: req.body.email },
+        {
+          where: { relatedId: req.params.id },
+        }
+      );
+    }
     const updated = await Student.update(req.body, {
       where: { id: req.params.id },
     });

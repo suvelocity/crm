@@ -33,7 +33,7 @@ export interface IAcademicBackground {
   institution: string;
   studyTopic: string;
   degree: string;
-  averageScore: number | undefined;
+  averageScore: number;
 }
 
 export interface IStudent {
@@ -45,11 +45,13 @@ export interface IStudent {
   idNumber: string | null;
   additionalDetails?: string;
   classId: number;
+  gradeAvg?: number;
   age?: number | string | null;
   address: string;
   maritalStatus: string;
   children?: number;
-  academicBackground?: IAcademicBackground;
+  Events?: IEvent[];
+  AcademicBackgrounds?: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -74,10 +76,12 @@ export interface IClass {
 export interface IEvent {
   id?: number;
   userId: number;
+  updatedAt?: Date;
   relatedId: string;
   eventName: string;
   entry?: any;
   maxDate?: Date;
+  Job?: IJob;
   type: string;
   date: Date;
 }

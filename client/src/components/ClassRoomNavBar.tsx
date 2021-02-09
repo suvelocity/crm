@@ -20,6 +20,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import SignOutButton from "./auth/SignOutButton";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
+import PeopleIcon from '@material-ui/icons/People';
 import SchoolIcon from "@material-ui/icons/School";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import TodayIcon from "@material-ui/icons/Today";
@@ -174,6 +175,16 @@ function ClassRoomNavBar() {
                 />
               </DrawerItem>
             </StyledLink>
+          {user.userType === "teacher" &&
+            <StyledLink to='/students'>
+              <DrawerItem onClick={() => setOpen(false)}>
+                Students
+                <PeopleIcon
+                  style={{ position: "absolute", right: 10 }}
+                />
+              </DrawerItem>
+            </StyledLink>
+          }
           </StyledLink>
           <StyledLink to='/quizme'>
             <DrawerItem onClick={() => setOpen(false)}>
