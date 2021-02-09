@@ -38,7 +38,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
-    labels,
+    TaskLabels,
   } = req.body;
   const { error } = taskSchema.validate({
     lessonId,
@@ -50,7 +50,7 @@ const createTask = async (req: Request, res: Response) => {
     status,
     title,
     body,
-    labels,
+    TaskLabels,
   });
   if (error) return res.status(400).json({ error: error.message });
   try {
@@ -66,7 +66,7 @@ const createTask = async (req: Request, res: Response) => {
       body,
     });
 
-    await createTaskLabels(labels, task.id!);
+    await createTaskLabels(TaskLabels, task.id!);
     return task;
   } catch (e) {
     console.log(e);
@@ -396,17 +396,37 @@ router.get(
 
 router.get("/bystudentid/:id", async (req: Request, res: Response) => {
   try {
-    const myTasks: ITaskofStudent[] = await TaskofStudent.findAll({
-      where: { student_id: req.params.id },
-      attributes: ["id", "status", "submitLink"],
-      include: [
-        {
-          model: Task,
-          include: [{ model: Lesson, attributes: ["id", "title"] }],
-          where: { status: "active" },
-        },
-      ],
-    });
+    const myTasks: ITaskofStudent[] = await Promise.all(
+      (
+        await TaskofStudent.findAll({
+          where: { student_id: req.params.id },
+          attributes: ["id", "status", "submitLink", "studentId"],
+          include: [
+            {
+              model: Task,
+              include: [
+                { model: Lesson, attributes: ["id", "title"] },
+                {
+                  model: TaskLabel,
+                  include: [{ model: Criterion }, { model: Label }],
+                },
+              ],
+              where: { status: "active" },
+            },
+          ],
+        })
+      ).map(async (taskOfStudent: any) => {
+        taskOfStudent = taskOfStudent.toJSON();
+        const grades = await getGradesOfTaskForStudent(
+          taskOfStudent.studentId,
+          taskOfStudent.Task.TaskLabels,
+          taskOfStudent.Task.id
+        );
+
+        taskOfStudent.overall = calculateGrade(grades);
+        return taskOfStudent;
+      })
+    );
     return res.json(myTasks);
   } catch (error) {
     res.status(500).json({ error: error.message });

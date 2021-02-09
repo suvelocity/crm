@@ -105,7 +105,7 @@ export default function Teacher() {
         );
         break;
       case "labels":
-        setTask((prev) => ({ ...prev, labels: change }));
+        setTask((prev) => ({ ...prev, TaskLabels: change }));
     }
   };
 

@@ -504,27 +504,29 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       await AcademicBackground.bulkCreate(academicBackgroundToCreate);
     }
 
-    const password = generatePassword(12, false);
+    if (body.createUser) {
+      const password = generatePassword(12, false);
 
-    const hash = bcrypt.hashSync(password, 10);
-    const userToCreate = {
-      email: body.email,
-      relatedId: student.id,
-      password: hash,
-      type: "student",
-    };
-    const user = await User.create(userToCreate);
-    if (user && process.env.NODE_ENV !== "test") {
-      console.log("SENDING MAIL");
-      sendMail(
-        mailOptions(body.email, password),
-        function (error: Error | null) {
-          if (error) {
-            console.log(error);
-            console.log("Mail not sent");
+      const hash = bcrypt.hashSync(password, 10);
+      const userToCreate = {
+        email: body.email,
+        relatedId: student.id,
+        password: hash,
+        type: "student",
+      };
+      const user = await User.create(userToCreate);
+      if (user && process.env.NODE_ENV !== "test") {
+        console.log("SENDING MAIL");
+        sendMail(
+          mailOptions(body.email, password),
+          function (error: Error | null) {
+            if (error) {
+              console.log(error);
+              console.log("Mail not sent");
+            }
           }
-        }
-      );
+        );
+      }
     }
     res.json(student);
   } catch (error) {

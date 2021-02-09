@@ -1,6 +1,6 @@
 import * as React from "react";
-import { DataGrid, ColDef, ValueFormatterParams  } from "@material-ui/data-grid";
-import Button from '@material-ui/core/Button';
+import { DataGrid, ColDef, ValueFormatterParams } from "@material-ui/data-grid";
+import Button from "@material-ui/core/Button";
 import { Loading } from "react-loading-wrapper";
 // import {Link} from 'react-dom'
 import LinkIcon from "@material-ui/icons/Link";
@@ -50,7 +50,8 @@ const manipulateDate = (date: string) => {
   return returnVal;
 };
 
-export default function DataGridDemo(props: any) { //
+export default function DataGridDemo(props: any) {
+  //
   const [loading, setLoading] = React.useState<boolean>(true);
   const { myTasks } = props;
   const columns: ColDef[] = [
@@ -75,25 +76,26 @@ export default function DataGridDemo(props: any) { //
       headerName: "URL Submitted",
       renderCell: (params: ValueFormatterParams) => (
         <strong>
-          {params.value }
-          {params.row.type === 'manual' &&        
+          {params.value}
+          {params.row.type === "manual" && (
             <Button
               variant="contained"
               color="primary"
               size="small"
               onClick={() => {
                 console.log(params);
-                props.ReSubmit({...params.row, title : params.row.taskName})
+                props.ReSubmit({ ...params.row, title: params.row.taskName });
               }}
               style={{ marginLeft: 16 }}
             >
               update
             </Button>
-          }
+          )}
         </strong>
       ),
       flex: 400,
     },
+    { field: "grade", headerName: "Grade", flex: 200 },
   ];
   const rows =
     myTasks?.map((task: any) => {
@@ -109,9 +111,11 @@ export default function DataGridDemo(props: any) { //
         // renderCell: <button>hello</button>,
         // status: task.status,
         submitLink: task.submitLink,
+        grade: task.overall,
       };
     }) || [];
 
+  console.log(myTasks);
   return (
     <TaskTableConatiner>
       <div style={{ height: 630, width: "100%", color: "white" }}>

@@ -271,6 +271,7 @@ export const newStudent = {
   classId: 6,
   mentorId: null,
   fccAccount: null,
+  createUser: true,
   resumeLink: null,
   createdAt: "2020-12-18T01:00:12.000Z",
   updatedAt: "2020-12-18T01:00:12.000Z",
