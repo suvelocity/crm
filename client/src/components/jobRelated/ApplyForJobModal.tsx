@@ -46,11 +46,12 @@ function ApplyForJobModal({
         const { data }: { data: IStudent[] } = await network.get(
           "/api/v1/student/all"
         );
-        setAllStudents(
-          data.filter(
-            (student: IStudent) => !currentStudents?.includes(student.id)
-          )
+        const fetchedStudents: IStudent[] = data.filter(
+          (student: IStudent) => !currentStudents?.includes(student.id)
         );
+
+        setAllStudents(fetchedStudents);
+        setFilteredStudents(fetchedStudents);
       })();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -107,7 +108,7 @@ function ApplyForJobModal({
   // TODO change search to server side
   const search = (searchQuery: string) => {
     if (!searchQuery) {
-      setFilteredStudents([]);
+      setFilteredStudents(allStudents!);
       return;
     }
     if (!allStudents) return;
