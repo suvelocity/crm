@@ -101,7 +101,6 @@ describe("Students Tests", () => {
         test: JSON.stringify(params),
       }
     );
-    console.log("output", output.body);
     expect(output.status).toBe(200);
     const output2 = await sendRequest(
       "get",
