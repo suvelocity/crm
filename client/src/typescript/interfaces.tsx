@@ -22,6 +22,7 @@ export interface IStudent {
   Events: IEvent[];
   resumeLink?: string;
   fccAccount?: string;
+  createUser: boolean;
 }
 
 export interface ITeacher {

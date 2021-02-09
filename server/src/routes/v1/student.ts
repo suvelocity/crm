@@ -442,7 +442,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       type: "student",
     };
     const user = await User.create(userToCreate);
-    if (user && process.env.NODE_ENV !== "test") {
+    if (user && process.env.NODE_ENV !== "test" && body.createUser) {
       console.log("SENDING MAIL");
       transporter.sendMail(
         mailOptions(body.email, password),
