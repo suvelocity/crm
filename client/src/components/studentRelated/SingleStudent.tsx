@@ -20,6 +20,7 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import BusinessIcon from "@material-ui/icons/Business";
 import PhoneIcon from "@material-ui/icons/Phone";
+import {camelCaseToWords, academicKeys} from './AddStudent';
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
@@ -27,7 +28,7 @@ import { useParams } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IEvent } from "../../typescript/interfaces";
+import { IStudent, IEvent, IAcademicBackground } from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -44,6 +45,7 @@ import { capitalize } from "../../helpers/general";
 import Swal from "sweetalert2";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 import { SingleListItem } from "../tableRelated";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
@@ -51,10 +53,9 @@ function SingleStudent() {
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
-
   const getStudent = useCallback(async () => {
     const { data }: { data: IStudent } = await network.get(
-      `/api/v1/student/byId/${id}`
+      `/api/v1/student/byId/${id}?only=jobs`
     );
     const uniqueJobs: IEvent[] = [];
     const sortedEvents = data.Events.sort(
@@ -76,6 +77,7 @@ function SingleStudent() {
     setLoading(true);
     getStudent();
   };
+  console.log(student);
 
   const removeJob = useCallback(
     async (
@@ -122,7 +124,7 @@ function SingleStudent() {
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editStudentButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatFormula="1fr 1fr 1fr">
@@ -142,27 +144,42 @@ function SingleStudent() {
               </SingleListItem>
               <SingleListItem
                 primary="Phone Number"
-                secondary={formatPhone(student?.phone)}
+                secondary={
+                  student?.phone ? formatPhone(student?.phone) : "לא ידוע"
+                }
               >
                 <PhoneIcon />
               </SingleListItem>
               <SingleListItem primary="ID Number" secondary={student?.idNumber}>
                 <DialpadIcon />
               </SingleListItem>
-              {student?.militaryService && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <TrackChangesIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Military Service"
-                    secondary={capitalize(student?.militaryService)}
-                  />
-                </MultilineListItem>
+              {student?.resumeLink && (
+                <SingleListItem
+                  primary="Resume Link"
+                  secondary={student?.resumeLink}
+                >
+                  <PostAddIcon />
+                </SingleListItem>
               )}
+              <MultilineListItem>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Military Service"
+                  secondary={
+                    student?.militaryService
+                      ? capitalize(student?.militaryService)
+                      : "לא ידוע"
+                  }
+                />
+              </MultilineListItem>
             </List>
             <List>
-              <SingleListItem primary="Age" secondary={student?.age}>
+              <SingleListItem
+                primary="Age"
+                secondary={student?.age ? student.age : "לא ידוע"}
+              >
                 <DateRangeIcon />
               </SingleListItem>
               <SingleListItem
@@ -177,46 +194,12 @@ function SingleStudent() {
               >
                 <FavoriteIcon />
               </SingleListItem>
-              <SingleListItem primary="Children" secondary={student?.children}>
+              <SingleListItem
+                primary="Children"
+                secondary={student?.children ? student.children : "אין"}
+              >
                 <ChildFriendlyIcon />
               </SingleListItem>
-              <SingleListItem
-                primary="Work Experience"
-                secondary={capitalize(student?.workExperience)}
-              >
-                <WorkIcon />
-              </SingleListItem>
-            </List>
-            <List>
-              <SingleListItem
-                primary="Citizenships"
-                secondary={capitalize(student?.citizenship)}
-              >
-                <LanguageIcon />
-              </SingleListItem>
-              <SingleListItem
-                primary="Languages"
-                secondary={capitalize(student?.languages)}
-              >
-                <TranslateIcon />
-              </SingleListItem>
-              <SingleListItem
-                primary="Course"
-                secondary={capitalize(student?.Class.name)}
-              >
-                <ClassIcon />
-              </SingleListItem>
-              {student?.academicBackground && (
-                <MultilineListItem>
-                  <ListItemIcon>
-                    <AccountBalanceIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Academic Background"
-                    secondary={capitalize(student?.academicBackground)}
-                  />
-                </MultilineListItem>
-              )}
               {student?.additionalDetails && (
                 <MultilineListItem>
                   <ListItemIcon>
@@ -229,10 +212,73 @@ function SingleStudent() {
                 </MultilineListItem>
               )}
             </List>
+            <List>
+              <SingleListItem
+                primary="Citizenships"
+                secondary={
+                  student?.citizenship
+                    ? capitalize(student?.citizenship)
+                    : "לא ידוע"
+                }
+              >
+                <LanguageIcon />
+              </SingleListItem>
+              <SingleListItem
+                primary="Languages"
+                secondary={
+                  student?.languages
+                    ? capitalize(student?.languages)
+                    : "לא ידוע"
+                }
+              >
+                <TranslateIcon />
+              </SingleListItem>
+              <SingleListItem
+                primary="Class"
+                secondary={`${capitalize(student?.Class.name)} (${capitalize(
+                  student?.Class.course
+                )} - ${student?.Class.cycleNumber})`}
+              >
+                <ClassIcon />
+              </SingleListItem>
+              <SingleListItem
+                primary="Work Experience"
+                secondary={
+                  student?.workExperience
+                    ? capitalize(student?.workExperience)
+                    : "לא ידוע"
+                }
+              >
+                <WorkIcon />
+              </SingleListItem>
+
+            </List>
           </GridDiv>
+          {
+          student?.AcademicBackgrounds && student?.AcademicBackgrounds.length > 0 &&<div style={{display:"flex", width: '70%',margin:'auto', alignItems: "center", flexDirection:'column'}}>
+            <h2>Academic Background</h2>
+            {
+              student?.AcademicBackgrounds.map((background: IAcademicBackground, index: number) => {
+                return <div style={{backgroundColor:'#bebbbb' , marginBottom: '10px', borderRadius: '5px', display:"flex", width: '100%',alignItems: 'center', justifyContent:'space-between'}}>
+                  <div style={{fontSize:'30px', fontWeight:'bold',textAlign:'center', width: '20%'}}>{index + 1}</div>
+                  {
+                  academicKeys.map((key: string) => {
+                    return <SingleListItem
+                    primary={camelCaseToWords(key)}
+                    //@ts-ignore
+                    secondary={background[key]}
+                    >
+                    </SingleListItem>
+                  })
+                  }
+                </div>
+              })
+            }
+          </div>
+          }
           <Modal
             open={modalState}
-            onClose={() => setModalState(false)}
+            onClose={handleClose}
             style={{ overflow: "scroll" }}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"

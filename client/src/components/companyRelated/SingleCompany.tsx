@@ -41,7 +41,6 @@ function SingleCompany() {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalState, setModalState] = useState(false);
   const { id } = useParams();
-  console.log(company);
 
   const getCompany = useCallback(async () => {
     const { data }: { data: ICompany } = await network.get(
@@ -70,11 +69,11 @@ function SingleCompany() {
       <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color="#a3a365">Company Info</H1>
+            <H1 color="#b0b050">Company Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
-          <EditDiv onClick={() => setModalState(true)}>
+          <EditDiv id="editCompanyButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
           <GridDiv repeatingFormula="1fr 1fr">
@@ -176,7 +175,7 @@ function SingleCompany() {
       <Wrapper width="50%">
         <Center>
           <TitleWrapper>
-            <H1 color={"#a3a365"}>Jobs</H1>
+            <H1 color={"#b0b050"}>Jobs</H1>
           </TitleWrapper>
         </Center>
         <br />

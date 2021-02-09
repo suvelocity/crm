@@ -43,9 +43,19 @@ interface PlaceType {
   };
 }
 
+interface Props {
+  id: string;
+  name: string;
+  defaultValue: string;
+  inputRef: any;
+  label: string;
+}
+
 export default function GoogleMaps(props: any) {
   const classes = useStyles();
-  const [value, setValue] = React.useState<PlaceType | null>(props.defaultValue? props.defaultValue : null);
+  const [value, setValue] = React.useState<PlaceType | null>(
+    props.defaultValue ? props.defaultValue : null
+  );
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<PlaceType[]>([]);
   const loaded = React.useRef(false);
@@ -117,7 +127,7 @@ export default function GoogleMaps(props: any) {
 
   return (
     <Autocomplete
-      id={"google-map-demo"}
+      id={props.id}
       style={{
         width: props.width ? props.width : 200,
         margin: "0 auto",
@@ -131,6 +141,7 @@ export default function GoogleMaps(props: any) {
       includeInputInList
       filterSelectedOptions
       value={value}
+      // @ts-ignore
       onChange={(event: any, newValue: PlaceType | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
@@ -157,7 +168,7 @@ export default function GoogleMaps(props: any) {
           ])
         );
         return (
-          <Grid container alignItems='center'>
+          <Grid container alignItems="center">
             <Grid item>
               <LocationOnIcon className={classes.icon} />
             </Grid>
@@ -170,7 +181,7 @@ export default function GoogleMaps(props: any) {
                   {part.text}
                 </span>
               ))}
-              <Typography variant='body2' color='textSecondary'>
+              <Typography variant="body2" color="textSecondary">
                 {option.structured_formatting.secondary_text}
               </Typography>
             </Grid>

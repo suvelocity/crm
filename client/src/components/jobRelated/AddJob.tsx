@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useForm, Controller} from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import network from "../../helpers/network";
 import { TextField, Button, Tooltip, InputLabel } from "@material-ui/core";
 import {
@@ -22,7 +22,7 @@ interface Props {
   update?: boolean;
   handleClose?: Function;
 }
-const AddJob = (props:Props) => {
+const AddJob = (props: Props) => {
   const { register, handleSubmit, setValue, errors, control } = useForm();
   const [companies, setCompanies] = useState<Pick<ICompany, "id" | "name">[]>(
     []
@@ -32,13 +32,12 @@ const AddJob = (props:Props) => {
   const empty = Object.keys(errors).length === 0;
 
   const onSubmit = async (data: Omit<IJob, "id">) => {
-    
     try {
-      if(props.update && props.job) {
+      if (props.update && props.job) {
         await network.patch(`/api/v1/job/${props.job.id}`, data);
-        props.handleClose&& props.handleClose()
+        props.handleClose && props.handleClose();
         // history.push(`/company/${props.company.id}`);
-      }else{
+      } else {
         await network.post("/api/v1/job", data);
         history.push("/job/all");
       }
@@ -58,16 +57,15 @@ const AddJob = (props:Props) => {
       );
     })();
   }, []);
-  console.log(props)
 
   return (
-    <Wrapper width='80%'>
+    <Wrapper width="80%">
       <Center>
         <TitleWrapper>
-          <H1 color='#bb4040'>{props.header? props.header : 'Add Job'}</H1>
+          <H1 color="#bb4040">{props.header ? props.header : "Add Job"}</H1>
         </TitleWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <GridDiv repeatFormula='1fr 0.5fr 3fr'>
+          <GridDiv repeatFormula="1fr 0.5fr 3fr">
             <div>
               <FormControl
                 style={{ minWidth: 255 }}
@@ -79,18 +77,23 @@ const AddJob = (props:Props) => {
                     <Select>
                       {companies.map(
                         (company: Pick<ICompany, "id" | "name">) => (
-                          <MenuItem key={`opt${company.id}`} value={company.id}>
+                          <MenuItem
+                            key={`opt${company.id}`}
+                            value={company.id}
+                            id={company.name}
+                          >
                             {company.name}
                           </MenuItem>
                         )
                       )}
                     </Select>
                   }
-                  name='companyId'
+                  id="companyId"
+                  name="companyId"
                   rules={{ required: "Company is required" }}
                   control={control}
                   // defaultValue='Microsoft'
-                  defaultValue={props.job? props.job.Company.id : ''}
+                  defaultValue={props.job ? props.job.Company.id : ""}
                 />
               </FormControl>
               {!empty ? (
@@ -102,10 +105,10 @@ const AddJob = (props:Props) => {
               ) : null}
               {generateBrs(3)}
               <TextField
-                id='position'
-                label='Position'
+                id="position"
+                label="Position"
                 fullWidth
-                defaultValue={props.job? props.job.position : ''}
+                defaultValue={props.job ? props.job.position : ""}
                 inputRef={register({
                   required: "Position title is required",
                   pattern: {
@@ -117,7 +120,7 @@ const AddJob = (props:Props) => {
                     message: "Position needs to have a minimum of 2 letters",
                   },
                 })}
-                name='position'
+                name="position"
               />
               {!empty ? (
                 errors.position ? (
@@ -128,14 +131,14 @@ const AddJob = (props:Props) => {
               ) : null}
               {generateBrs(3)}
               <GoogleMaps
-                id='location'
-                name='location'
-                defaultValue={props.job? props.job.location : ''}
+                id="location"
+                name="location"
+                defaultValue={props.job ? props.job.location : ""}
                 inputRef={register({
                   required: "Location is required",
                 })}
-                width='100%'
-                label='Location'
+                width="100%"
+                label="Location"
               />
               {!empty ? (
                 errors.location ? (
@@ -146,11 +149,12 @@ const AddJob = (props:Props) => {
               ) : null}
               {generateBrs(2)}
               <TextField
-                name='contact'
+                id="contact"
+                name="contact"
                 fullWidth
-                defaultValue={props.job? props.job.contact : ''}
+                defaultValue={props.job ? props.job.contact : ""}
                 inputRef={register({ required: "Contact is required" })}
-                label='Contact'
+                label="Contact"
               />
               {!empty ? (
                 errors.contact ? (
@@ -168,17 +172,18 @@ const AddJob = (props:Props) => {
                 multiline
                 fullWidth
                 rows={3}
-                defaultValue={props.job? props.job.description : ''}
-                variant='outlined'
-                name='description'
+                defaultValue={props.job ? props.job.description : ""}
+                variant="outlined"
+                id="description"
+                name="description"
                 inputRef={register({
-                  required: "Description is required",
+                  //required: "Description is required",
                   maxLength: {
                     value: 500,
                     message: "Description are too long",
                   },
                 })}
-                label='Description'
+                label="Description"
               />
               {!empty ? (
                 errors.description ? (
@@ -189,21 +194,21 @@ const AddJob = (props:Props) => {
               ) : null}
               {generateBrs(2)}
               <TextField
-                id='requirements'
+                id="requirements"
                 multiline
                 fullWidth
-                defaultValue={props.job? props.job.requirements : ''}
+                defaultValue={props.job ? props.job.requirements : ""}
                 rows={5}
-                variant='outlined'
-                name='requirements'
+                variant="outlined"
+                name="requirements"
                 inputRef={register({
-                  required: "Requirements are required",
+                  // required: "Requirements are required",
                   maxLength: {
                     value: 500,
                     message: "Requirements are too long",
                   },
                 })}
-                label='Job Requirements'
+                label="Job Requirements"
               />
               {!empty ? (
                 errors.requirements ? (
@@ -215,20 +220,20 @@ const AddJob = (props:Props) => {
               {generateBrs(2)}
 
               <TextField
-                id='additionalDetails'
+                id="additionalDetails"
                 multiline
                 fullWidth
-                defaultValue={props.job? props.job.additionalDetails : ''}
+                defaultValue={props.job ? props.job.additionalDetails : ""}
                 rows={3}
-                variant='outlined'
-                name='additionalDetails'
+                variant="outlined"
+                name="additionalDetails"
                 inputRef={register({
                   maxLength: {
                     value: 500,
                     message: "Additional Details are too long",
                   },
                 })}
-                label='Additional Details'
+                label="Additional Details"
               />
               {!empty ? (
                 errors.additionalDetails ? (
@@ -242,11 +247,11 @@ const AddJob = (props:Props) => {
           </GridDiv>
 
           <Button
-            id='submitButton'
+            id="submitButton"
             style={{ backgroundColor: "#bb4040", color: "white" }}
-            variant='contained'
-            color='primary'
-            type='submit'
+            variant="contained"
+            color="primary"
+            type="submit"
           >
             Submit
           </Button>

@@ -12,7 +12,7 @@ export const repeatFormula = "1fr 2.5fr 2.5fr 1fr";
 export const H1 = styled.h1`
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 27px;
+  font-size: 20px;
   color: white;
   /* position: relative; */
   /* left: -50%;
@@ -33,7 +33,7 @@ export const TitleWrapper = styled.div`
   /* top: 50%; */
   /* width: 50%; */
   height: 0px;
-  transform: translate(0, -60px);
+  transform: translate(0, -52px);
 `;
 
 export const Wrapper = styled.div`
@@ -59,6 +59,8 @@ export const Center = styled.div`
 
 export const StyledLink = styled(Link)`
   color: ${(props: { color: string }) => (props.color ? props.color : "white")};
+  background-color: 'transparent';
+  /* background-color: ${(props: { background: string }) => props.background? props.background : 'transparent'}; */
   text-decoration: ${(props: { textDecoration: string }) =>
     props.textDecoration ? "underline" : "none"};
 `;
@@ -88,7 +90,7 @@ export const StyledDiv = styled.div`
     props.repeatFormula ? props.repeatFormula : "1fr 2.5fr 2fr 2.5fr 2fr"};
   padding: 10px;
   align-items: center;
-  background-color: rgba(180, 180, 180, 0.12);
+  background-color: rgba(180, 180, 180, 0.05);
   transition: 150ms;
   border-radius: 2px;
   margin: 2px;
@@ -99,6 +101,7 @@ export const StyledDiv = styled.div`
 
 export const StyledSpan = styled.span`
   font-size: 16px;
+  padding-right: 7px;
   font-weight: ${(props: { weight: string }) =>
     props.weight === "bold" && "bold"};
 `;
@@ -147,5 +150,37 @@ export const EditDiv = styled.div`
   cursor: pointer;
   position: absolute;
   right: 33px;
-  top: 25px;
+  top: ${(props: { top: string }) => props.top || "30px"};
+`;
+
+export const RegisterToCM = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 33px;
+  top: ${(props: { top: string }) => props.top || "60px"};
+`;
+
+export const StyledAtavLink = styled.a`
+  cursor: pointer;
+  transition: 0.2s;
+  :hover {
+    text-decoration: none;
+    color: rgb(20, 35, 220);
+  }
+  :visited,
+  :focus,
+  :active,
+  :any-link {
+    text-decoration: none;
+    color: black;
+  }
+`;
+
+export const Hoverable = styled.div`
+  cursor: pointer;
+  transition: 0.2s;
+  :hover {
+    color: #696d69;
+    transform: translateY(-5px);
+  }
 `;

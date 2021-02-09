@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import network from "../../helpers/network";
-import { Modal, Button } from "@material-ui/core";
+import { Modal, Button, TextField } from "@material-ui/core";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -31,7 +31,8 @@ function ApplyStudentModal({
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState(false);
-  const [jobs, setJobs] = useState<IJob[] | null>();
+  const [allJobs, setAllJobs] = useState<IJob[] | null>();
+  const [filteredJobs, setFilteredJobs] = useState<IJob[]>([]);
   const [jobsToApply, setJobsToApply] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -39,7 +40,11 @@ function ApplyStudentModal({
     try {
       (async () => {
         const { data }: { data: IJob[] } = await network.get("/api/v1/job/all");
-        setJobs(data.filter((job: IJob) => !currentJobs?.includes(job.id)));
+        const fetchedJobs: IJob[] = data.filter(
+          (job: IJob) => !currentJobs?.includes(job.id)
+        );
+        setAllJobs(fetchedJobs);
+        setFilteredJobs(fetchedJobs);
       })();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");
@@ -51,6 +56,7 @@ function ApplyStudentModal({
   };
 
   const handleClose = () => {
+    setFilteredJobs(allJobs!);
     setOpen(false);
   };
 
@@ -58,12 +64,13 @@ function ApplyStudentModal({
     if (jobsToApply.length > 0) {
       try {
         setLoading(true);
-        jobsToApply.forEach(async (jobId: string) => {
+        Array.from(new Set(jobsToApply)).forEach(async (jobId: string) => {
           await network.post(`/api/v1/event`, {
             userId: studentId,
             relatedId: jobId,
             eventName: "Started application process",
             date: new Date().setHours(0, 0, 0, 0),
+            type: "jobs",
           });
         });
         setTimeout(() => {
@@ -86,76 +93,89 @@ function ApplyStudentModal({
       setJobsToApply((prev) => prev.filter((item) => item !== e.target.value));
     }
   };
+
+  // TODO change search to server side
+  const search = (searchQuery: string) => {
+    if (!searchQuery) {
+      setFilteredJobs(allJobs!);
+      return;
+    }
+    if (!allJobs) return;
+    setFilteredJobs(
+      allJobs?.filter(
+        (job: IJob) =>
+          new RegExp(`^${searchQuery}`, "i").test(`${job.position}`) ||
+          new RegExp(`^${searchQuery}`, "i").test(`${job.Company.name}`)
+      )
+    );
+  };
+
   let body = <CircularProgress />;
-  if (jobs) {
+  if (allJobs) {
     body = (
       <div style={modalStyle} className={classes.paper}>
-        <div className={classes.root}>
+        <div className={classes.accordionContainer}>
           <h1>Choose Jobs To Apply To</h1>
-          {jobs.length > 0 ? (
+          <TextField
+            id="searchJobsToApply"
+            fullWidth
+            label={"Search job"}
+            onChange={(e) => search(e.target.value)}
+          />
+          {allJobs.length > 0 ? (
             <>
-              {jobs?.map((job: IJob) => (
-                <Accordion key={job.id}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-label="Expand"
-                    aria-controls="additional-actions2-content"
-                    id="additional-actions2-header"
-                  >
-                    <FormControlLabel
-                      aria-label="Acknowledge"
-                      onClick={(event) => event.stopPropagation()}
-                      onFocus={(event) => event.stopPropagation()}
-                      control={
-                        <Checkbox
-                          id={`${job.id}`}
-                          value={job.id}
-                          onChange={handleCheckBoxOnChange}
-                        />
-                      }
-                      label=""
-                    />
-                    <Typography className={classes.heading}>
-                      {job.position}
-                    </Typography>
-                    <Typography className={classes.secondaryHeading}>
-                      {job.Company.name}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <List>
-                      <SingleListItem
-                        primary="Requirements"
-                        secondary={job.requirements}
+              {filteredJobs.length > 0 ? (
+                filteredJobs.map((job: IJob) => (
+                  <Accordion key={job.id}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-label="Expand"
+                      aria-controls="additional-actions2-content"
+                      id="additional-actions2-header"
+                    >
+                      <FormControlLabel
+                        aria-label="Acknowledge"
+                        onClick={(event) => event.stopPropagation()}
+                        onFocus={(event) => event.stopPropagation()}
+                        control={
+                          <Checkbox
+                            id={`${job.id}`}
+                            value={job.id}
+                            onChange={handleCheckBoxOnChange}
+                          />
+                        }
+                        label=""
                       />
-                      <SingleListItem
-                        primary="Location"
-                        secondary={job.location}
-                      />
-                      <ListItem>
-                        <ListItemText
-                          primary="Applied Students"
-                          secondary={
-                            <>
-                              {job.Events.map((event: IEvent) => (
-                                <p key={event?.Student?.id}>
-                                  {event?.Student?.firstName}{" "}
-                                  {event?.Student?.lastName}
-                                </p>
-                              ))}
-                            </>
-                          }
+                      <Typography className={classes.heading}>
+                        {job.position}
+                      </Typography>
+                      <Typography className={classes.secondaryHeading}>
+                        {job.Company.name}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <List>
+                        <SingleListItem
+                          primary="Requirements"
+                          secondary={job.requirements}
                         />
-                      </ListItem>
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                        <SingleListItem
+                          primary="Location"
+                          secondary={job.location}
+                        />
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
+                ))
+              ) : (
+                <h1>No jobs found</h1>
+              )}
               <Button
                 className={classes.button}
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
+                id="apply"
               >
                 Apply
               </Button>
@@ -170,7 +190,12 @@ function ApplyStudentModal({
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button
+        id="applyForJob"
+        variant="contained"
+        color="primary"
+        onClick={handleOpen}
+      >
         Apply for a job
       </Button>
       <Modal open={open} onClose={handleClose}>
@@ -182,24 +207,35 @@ function ApplyStudentModal({
 
 export default ApplyStudentModal;
 
-function getModalStyle() {
+function getModalStyle(): {
+  top: string;
+  left: string;
+  transform: string;
+  overflowY: "auto";
+} {
   return {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+    overflowY: "auto",
   };
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    accordionContainer: {
+      position: "relative",
       width: "100%",
+      height: "90%",
+      overflowY: "auto",
     },
     paper: {
       position: "absolute",
       width: "50%",
       maxWidth: 700,
       minWidth: 300,
+      maxHeight: "80%",
+      overflow: "scroll",
       backgroundColor: theme.palette.background.paper,
       borderRadius: 7,
       boxShadow: theme.shadows[5],

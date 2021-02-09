@@ -1,0 +1,19 @@
+FROM node:14-slim
+
+WORKDIR /server
+
+COPY /server/package.json /server/package-lock.json ./
+
+RUN npm install
+
+RUN apt-get update && apt-get -y install git
+
+RUN git clone https://github.com/vishnubob/wait-for-it.git
+
+COPY ./server/src ./src
+
+COPY ./server/tests ./tests
+
+COPY ./server/tsconfig.json /server/babel.config.js ./
+
+EXPOSE 8080

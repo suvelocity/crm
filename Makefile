@@ -60,14 +60,17 @@ start-app:
 	@$(MAKE) ssh-cmd CMD='\
 		docker run -d --name=$(CONTAINER_NAME) \
 			--restart=unless-stopped \
-			--network=$(NETWORK_NAME) \
 			-e MYSQL_HOST=${DB_HOST} \
 			-e MYSQL_DATABASE=${DB_NAME} \
 			-e MYSQL_USER=${DB_USER} \
 			-e MYSQL_PASSWORD=${DB_PASS} \
+			-e MY_URL=${INSTANCE_URL} \
+			-e PORT=${SERVER_PORT} \
+			-e NODE_ENV=${ENV_NAME} \
 			--env-file=.env \
 			-p ${SERVER_PORT}:${SERVER_PORT} \
 			$(REMOTE_TAG) \
+			${CMDTORUN} \
 			'
 
 initialize:
@@ -75,14 +78,14 @@ initialize:
 	$(MAKE) ssh-cmd CMD='docker-credential-gcr configure-docker'
 	# @echo "creating network..."
 	# $(MAKE) network-init
-	@echo "creating volume for database..."
-	$(MAKE) volume-create
-	@echo "stopping old mysql container..."
-	-$(MAKE) ssh-cmd CMD='docker container stop ${DB_HOST}'
-	@echo "removing old mysql container..."
-	-$(MAKE) ssh-cmd CMD='docker container rm ${DB_HOST}'
-	@echo "initializing sql ..."
-	$(MAKE) sql-init
+	# @echo "creating volume for database..."
+	# $(MAKE) volume-create
+	# @echo "stopping old mysql container..."
+	# -$(MAKE) ssh-cmd CMD='docker container stop ${DB_HOST}'
+	# @echo "removing old mysql container..."
+	# -$(MAKE) ssh-cmd CMD='docker container rm ${DB_HOST}'
+	# @echo "initializing sql ..."
+	# $(MAKE) sql-init
 
 deploy: 
 	@echo "pulling image..."

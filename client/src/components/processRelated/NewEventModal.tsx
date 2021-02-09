@@ -24,10 +24,12 @@ function NewEventModal({
   studentId,
   jobId,
   add,
+  events,
 }: {
   studentId: number;
   jobId: number;
   add: (ne: IEvent) => void;
+  events: IEvent[];
 }) {
   const classes = useStyles();
   const modalStyle = getModalStyle();
@@ -54,6 +56,7 @@ function NewEventModal({
     data.userId = studentId;
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
+    data.type = "jobs";
     delete data.comment;
     try {
       const {
@@ -73,7 +76,7 @@ function NewEventModal({
     return Swal.fire({
       title: "Are you sure?",
       text:
-        "Changing status to 'hired' will automaticaly cancel all other applicants and the rest of this student jobs.\nThis is ireversible!",
+        "Changing status to 'hired' will automatically cancel all other applicants and the rest of this student jobs.\nThis is irreversible!",
       icon: "warning",
       showCancelButton: true,
       cancelButtonColor: "#3085d6",
@@ -102,11 +105,16 @@ function NewEventModal({
                 <Controller
                   as={
                     <Select>
-                      {statuses.map((status: string) => (
-                        <MenuItem key={`status-${status}`} value={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
+                      {statuses
+                        .filter(
+                          (status) =>
+                            !events.find((event) => event.eventName === status)
+                        )
+                        .map((status: string) => (
+                          <MenuItem key={`status-${status}`} value={status}>
+                            {status}
+                          </MenuItem>
+                        ))}
                     </Select>
                   }
                   name="eventName"

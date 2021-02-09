@@ -1,6 +1,7 @@
 import { status } from "../typescript/interfaces";
 import { IStudent } from "../typescript/interfaces";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 export const searchResults = (search: string | number, array: IStudent[]) => {
   return array.filter((student: IStudent) => {
@@ -12,7 +13,6 @@ export const searchResults = (search: string | number, array: IStudent[]) => {
 };
 
 export const getRefreshToken = () => Cookies.get("refreshToken") || "";
-
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
   if (isNaN(+phoneNumber)) return phoneNumber;
@@ -22,6 +22,17 @@ export const formatPhone = (phoneNumber: string | undefined) => {
   newArr.splice(7, 0, "-");
   return newArr.join("");
 };
+
+export const execSwalConfirmation = async () =>
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  });
 
 export const onTheSameDay = (day1: number, day2: number) => {
   const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
@@ -67,4 +78,18 @@ export function formatToIsraeliDate(date: string) {
   )
     .toString()
     .padStart(2, "0")}/${baseDate.getFullYear()}`;
+}
+
+export function formatToIsraeliDateAndTime(date: string) {
+  const baseDate = new Date(date);
+  return `${baseDate.getDate().toString().padStart(2, "0")}/${(
+    baseDate.getMonth() + 1
+  )
+    .toString()
+    .padStart(
+      2,
+      "0"
+    )}/${baseDate.getFullYear()} - ${baseDate
+    .toLocaleTimeString()
+    .slice(0, -3)}`;
 }
