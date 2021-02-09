@@ -2,7 +2,7 @@ name: Build and Deploy to Google Compute Engine
 
 on:
   push:
-    branches: [gcloud, production] # specify the branch you want the deploy to take place from
+    branches: [gcloud, master] # specify the branch you want the deploy to take place from
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -32,8 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Switching to Production Variables if branch is "production"
-        if: github.ref == 'refs/heads/production'
+      - name: Switching to Production Variables if branch is "master"
+        if: github.ref == 'refs/heads/master'
         run: |
           echo "GCE_INSTANCE=$GCE_INSTANCE_PRODUCTION" >> $GITHUB_ENV
           echo "CMDTORUN=$CMDTORUN_PRODUCTION" >> $GITHUB_ENV
