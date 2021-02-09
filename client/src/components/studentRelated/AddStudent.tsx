@@ -168,7 +168,7 @@ function AddStudent(props: Props) {
   const onSubmit = async (data: IStudent) => {
     //@ts-ignore
     data.languages = data.languages.join(", ");
-    data.createUser = !data.createUser;
+    data.createUser = data.createUser;
     try {
       if (props.update && props.student) {
         if (data.AcademicBackgrounds) {
@@ -700,23 +700,25 @@ function AddStudent(props: Props) {
           />
           {errorComponent("additionalDetails")}
           {generateBrs(2)}
-          <FormControlLabel
-            control={
-              <Checkbox
-                id="createUser"
-                name="createUser"
-                color="primary"
-                defaultChecked
-                value={register.createUser}
-                onChange={() => {
-                  register.createUser = !register.createUser;
-                }}
-                inputRef={register}
-              />
-            }
-            label="Create a user?"
-            style={{ marginLeft: 0 }}
-          />
+          {!props.student && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="createUser"
+                  name="createUser"
+                  color="primary"
+                  defaultChecked
+                  value={register.createUser}
+                  onChange={() => {
+                    register.createUser = !register.createUser;
+                  }}
+                  inputRef={register}
+                />
+              }
+              label="Create a user?"
+              style={{ marginLeft: 0 }}
+            />
+          )}
           {generateBrs(2)}
           <Button
             id="submitButton"
