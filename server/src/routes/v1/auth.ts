@@ -94,6 +94,7 @@ router.post("/signin", async (req: Request, res: Response) => {
         return res.status(400).json({ error: "Unknown user type" });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -136,7 +136,9 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const calculatedSubmissionRate = useMemo(() => {
     return (
       (taskDetails.TaskofStudents.reduce((sum: number, tos: any) => {
-        return tos.status === "done" ? sum + 1 : sum + 0;
+        return tos.status === "submitted" || tos.status === "checked"
+          ? sum + 1
+          : sum + 0;
       }, 0) /
         taskDetails.TaskofStudents.length) *
       100

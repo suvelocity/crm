@@ -30,7 +30,7 @@ export function TasksFidget() {
       );
 
       setIncompletedTasks(
-        allTasks.filter((task: ITaskofStudent) => task.status !== "done")
+        allTasks.filter((task: ITaskofStudent) => task.status === "pending")
       );
     } catch (e) {
       //todo error handler
