@@ -66,9 +66,12 @@ export default function Teacher() {
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    network.get("/api/v1/event/updates").then((data: any) => {
-      setLoaded(data.data.success);
-    });
+    network
+      .get("/api/v1/event/updates")
+      .catch(() => Swal.fire("Error fetching FCC", "", "warning"))
+      .finally(() => {
+        setLoaded(true);
+      });
   }, []);
 
   const handleTaskChange = (element: string, index: number, change: any) => {
