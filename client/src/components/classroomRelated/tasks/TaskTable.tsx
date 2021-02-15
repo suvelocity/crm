@@ -75,8 +75,7 @@ export default function DataGridDemo(props: any) {
       field: "submitLink",
       headerName: "URL Submitted",
       renderCell: (params: ValueFormatterParams) => (
-        <strong>
-          {params.value}
+        <strong style={{ overflowX: "scroll" }}>
           {params.row.type === "manual" && (
             <Button
               variant="contained"
@@ -88,13 +87,14 @@ export default function DataGridDemo(props: any) {
               }}
               style={{ marginLeft: 16 }}
             >
-              update
+              Resubmit
             </Button>
           )}
         </strong>
       ),
-      flex: 400,
+      flex: 250,
     },
+    // { field: "submitLink", headerName: "Update", flex: 200 },
     { field: "grade", headerName: "Grade", flex: 200 },
   ];
   const rows =
