@@ -1,6 +1,6 @@
 # CRM
 
-Project management for courses and beyond.  
+Project management for courses and beyond!  
 deployment on cloud: http://35.226.223.57:8080/
 
 ## TOC
