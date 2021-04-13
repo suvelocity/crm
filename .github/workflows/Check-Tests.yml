@@ -2,7 +2,7 @@ name: Check Tests
 
 on:
   pull_request:
-    branches: [gcloud, master, dev] # specify the branch you want the deploy to take place from
+    branches: [gcloud, master, dev, staging, cloud-run] # specify the branch you want the deploy to take place from
   # push:
   #   branches: [gcloud, production]
 
