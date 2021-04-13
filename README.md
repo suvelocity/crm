@@ -1,6 +1,9 @@
-# CRM
+# CRM - STAGING
 
-Project management for courses and beyond.  
+_New features are checked **here** before going to production_
+
+Project management for courses and beyond.
+
 deployment on cloud: http://35.226.223.57:8080/
 
 ## TOC
@@ -40,7 +43,6 @@ ACCESS_TOKEN_SECRET = "<your secret>";
 REFRESH_TOKEN_SECRET = "<another secret>"; // strings used in token creation
 EMAIL_USER = ""; // mail used to send user confirmation messages
 EMAIL_PASSWORD = "";
-;
 ```
 
 5. Run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation.
