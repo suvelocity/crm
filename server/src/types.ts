@@ -84,6 +84,7 @@ export interface IEvent {
   Job?: IJob;
   type: string;
   date: Date;
+  cancelMail?: boolean;
 }
 export interface RequestWithUser extends Request {
   user?: IUser;

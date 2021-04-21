@@ -172,6 +172,9 @@ function SingleProcess() {
             </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
+            <Center>
+              <H1 color="#466397">Event Log 📅</H1>
+            </Center>
             {job?.id && student?.id && events && (
               <EventLog events={events} remove={removeFromEventLog} />
             )}

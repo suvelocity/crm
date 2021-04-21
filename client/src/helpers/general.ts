@@ -42,6 +42,7 @@ export const onTheSameDay = (day1: number, day2: number) => {
 };
 
 export const statuses: status[] = [
+  "Started application process",
   "Sent CV",
   "Phone Interview",
   "First interview",

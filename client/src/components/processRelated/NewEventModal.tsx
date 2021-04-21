@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import network from "../../helpers/network";
 import {
   Modal,
@@ -14,7 +14,7 @@ import {
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { Controller, useForm } from "react-hook-form";
 import { Center, GridDiv } from "../../styles/styledComponents";
-import { IEvent } from "../../typescript/interfaces";
+import { IEvent, status } from "../../typescript/interfaces";
 import { ActionBtn, ErrorBtn } from "../formRelated";
 //TODO change this later
 import { statuses } from "../../helpers";
@@ -34,7 +34,10 @@ function NewEventModal({
   const classes = useStyles();
   const modalStyle = getModalStyle();
   const [open, setOpen] = useState<boolean>(false);
+  const [showMailButton, setShowMailButton] = useState<boolean>(false);
   const { register, handleSubmit, errors, control } = useForm();
+
+  const mailButton = useRef<any>();
 
   const empty = Object.keys(errors).length === 0;
 
@@ -44,6 +47,7 @@ function NewEventModal({
 
   const handleClose = () => {
     setOpen(false);
+    setShowMailButton(false);
   };
 
   // const submitStatus = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,6 +61,7 @@ function NewEventModal({
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
     data.type = "jobs";
+    data.cancelMail = !mailButton.current.checked;
     delete data.comment;
     try {
       const {
@@ -119,6 +124,9 @@ function NewEventModal({
                   }
                   name="eventName"
                   rules={{ required: "Event is required" }}
+                  onClick={(event: any) =>
+                    setShowMailButton(event.target.value === "Sent CV")
+                  }
                   control={control}
                   defaultValue=""
                 />
@@ -174,15 +182,26 @@ function NewEventModal({
             </div>
           </GridDiv>
           {generateBrs(2)}
+
           <Center>
-            <Button
-              type="submit"
-              className={classes.button}
-              variant="contained"
-              color="primary"
-            >
-              Add
-            </Button>
+            <>
+              <input
+                type={"checkbox"}
+                onClick={() => alert(mailButton.current.checked)}
+                defaultChecked={true}
+                disabled={!showMailButton}
+                ref={mailButton}
+              />
+              Send Mail?
+              <Button
+                type="submit"
+                className={classes.button}
+                variant="contained"
+                color="primary"
+              >
+                Add
+              </Button>
+            </>
           </Center>
         </form>
       </div>

@@ -106,6 +106,7 @@ export interface ICompany {
 }
 
 export type status =
+  | "Started application process"
   | "Sent CV"
   | "Phone Interview"
   | "First interview"
@@ -175,11 +176,11 @@ export interface IMentor {
   role: string;
   experience: number;
   available: boolean;
-  education:string;
+  education: string;
   agreedTo?: string;
-  preference:string;
-  religionLevel:string;
-  additional:string;
+  preference: string;
+  religionLevel: string;
+  additional: string;
   mentoringExperience: string;
   gender: string;
   Students?: Partial<IStudent>[];
