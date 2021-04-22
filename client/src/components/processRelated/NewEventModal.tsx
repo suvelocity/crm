@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import network from "../../helpers/network";
 import {
   Modal,
@@ -37,7 +37,7 @@ function NewEventModal({
   const [showMailButton, setShowMailButton] = useState<boolean>(false);
   const { register, handleSubmit, errors, control } = useForm();
 
-  const mailButton = useRef<any>();
+  const mailButtonRef = useRef<any>(null);
 
   const empty = Object.keys(errors).length === 0;
 
@@ -61,7 +61,9 @@ function NewEventModal({
     data.relatedId = jobId;
     data.entry = { comment: data.comment };
     data.type = "jobs";
-    data.cancelMail = !mailButton.current.checked;
+    if (data.eventName === "Sent CV") {
+      data.cancelMail = !mailButtonRef.current.checked;
+    }
     delete data.comment;
     try {
       const {
@@ -81,7 +83,7 @@ function NewEventModal({
     return Swal.fire({
       title: "Are you sure?",
       text:
-        "Changing status to 'hired' will automatically cancel all other applicants and the rest of this student jobs.\nThis is irreversible!",
+        "Changing status to 'hired' will automatically cancel the rest of this student job applications.\nThis is irreversible!",
       icon: "warning",
       showCancelButton: true,
       cancelButtonColor: "#3085d6",
@@ -187,10 +189,9 @@ function NewEventModal({
             <>
               <input
                 type={"checkbox"}
-                onClick={() => alert(mailButton.current.checked)}
                 defaultChecked={true}
                 disabled={!showMailButton}
-                ref={mailButton}
+                ref={mailButtonRef}
               />
               Send Mail?
               <Button
@@ -207,6 +208,10 @@ function NewEventModal({
       </div>
     </div>
   );
+
+  // useEffect(() => {
+  //   console.log(mailButton);
+  // }, [mailButton]);
 
   return (
     <>
