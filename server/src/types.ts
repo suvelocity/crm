@@ -10,8 +10,9 @@ export interface IJob {
   requirements: string;
   location: string;
   description: string;
-  contact: string;
   additionalDetails: string;
+  isActive: string;
+  closeComment: string;
 }
 
 export interface ITeacher {

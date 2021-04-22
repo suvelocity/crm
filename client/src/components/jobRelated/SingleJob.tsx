@@ -36,7 +36,7 @@ import "react-loading-wrapper/dist/index.css";
 import { IJob, IEvent } from "../../typescript/interfaces";
 import ApplyForJobModal from "./ApplyForJobModal";
 import Swal from "sweetalert2";
-import { capitalize, formatToIsraeliDate } from "../../helpers";
+import { capitalize, fireSwalError, formatToIsraeliDate } from "../../helpers";
 
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
@@ -102,42 +102,44 @@ function SingleJob() {
   );
 
   useEffect(() => {
-    try {
-      getJob();
-    } catch (error) {
-      Swal.fire("Error Occurred", error.message, "error");
-    }
+    getJob().catch((error) => {
+      console.log(error.message);
+      setLoading(false);
+      const reason =
+        error.response.status === 404 ? "Not found" : "Internal Error";
+      fireSwalError("Could not fetch job. " + reason);
+    });
     //eslint-disable-next-line
   }, [id]);
 
-  const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
-    const sortedEvents = eventsToMap
-      ?.concat(newEvent)
-      .sort(
-        (a: IEvent, b: IEvent) =>
-          new Date(a.date).getMilliseconds() -
-          new Date(b.date).getMilliseconds()
-      );
-    setEventsToMap(sortedEvents);
-  };
+  // const addEventToLog: (newEvent: IEvent) => void = (newEvent: IEvent) => {
+  //   const sortedEvents = eventsToMap
+  //     ?.concat(newEvent)
+  //     .sort(
+  //       (a: IEvent, b: IEvent) =>
+  //         new Date(a.date).getMilliseconds() -
+  //         new Date(b.date).getMilliseconds()
+  //     );
+  //   setEventsToMap(sortedEvents);
+  // };
 
   const tableRepeatFormula = "0.7fr 1.2fr 1.8fr 1.6fr 2.2fr";
   return (
     <>
-      <Wrapper width='80%'>
+      <Wrapper width="80%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Job Info</H1>
+            <H1 color="#bb4040">Job Info</H1>
           </TitleWrapper>
         </Center>
         <Loading size={30} loading={loading}>
           <EditDiv id="editJobButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
-          <GridDiv repeatFormula='1fr 1fr 1fr 1fr'>
+          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
             <List>
               <SingleListItem
-                primary='Position'
+                primary="Position"
                 secondary={capitalize(job?.position)}
               >
                 <PostAddIcon />
@@ -147,7 +149,7 @@ function SingleJob() {
             </List>
             <List>
               <SingleListItem
-                primary='Company'
+                primary="Company"
                 secondary={capitalize(job?.Company?.name)}
               >
                 <BusinessIcon />
@@ -156,7 +158,7 @@ function SingleJob() {
             {/* Company */}
             <List>
               <SingleListItem
-                primary='Location'
+                primary="Location"
                 secondary={capitalize(job?.location)}
               >
                 <BusinessIcon />
@@ -165,7 +167,7 @@ function SingleJob() {
             <List>
               {/* Location */}
               <SingleListItem
-                primary='Contact'
+                primary="Contact"
                 secondary={capitalize(job?.contact)}
               >
                 <PersonIcon />
@@ -179,7 +181,7 @@ function SingleJob() {
                 <DescriptionIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Description'
+                primary="Description"
                 secondary={capitalize(job?.description)}
               />
             </MultilineListItem>
@@ -191,7 +193,7 @@ function SingleJob() {
                 <PlaylistAddCheckIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Requirements'
+                primary="Requirements"
                 secondary={capitalize(job?.requirements)}
               />
             </MultilineListItem>
@@ -203,7 +205,7 @@ function SingleJob() {
                 <ContactSupportIcon />
               </ListItemIcon>
               <ListItemText
-                primary='Additional Details'
+                primary="Additional Details"
                 secondary={capitalize(job?.additionalDetails)}
               />
             </MultilineListItem>
@@ -212,8 +214,8 @@ function SingleJob() {
             open={modalState}
             onClose={() => setModalState(false)}
             style={{ overflow: "scroll" }}
-            aria-labelledby='simple-modal-title'
-            aria-describedby='simple-modal-description'
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
           >
             {!job ? (
               <div>oops</div>
@@ -222,17 +224,17 @@ function SingleJob() {
                 handleClose={handleClose}
                 update={true}
                 job={job}
-                header='Edit Job'
+                header="Edit Job"
               />
             )}
           </Modal>
           {/* Additional Details */}
         </Loading>
       </Wrapper>
-      <Wrapper width='75%'>
+      <Wrapper width="75%">
         <Center>
           <TitleWrapper>
-            <H1 color='#bb4040'>Applicants In Process</H1>
+            <H1 color="#bb4040">Applicants In Process</H1>
           </TitleWrapper>
         </Center>
         <br />
@@ -243,10 +245,10 @@ function SingleJob() {
                 {/* <TableHeader repeatFormula="0.7fr 2.2fr 1.5fr 2fr 2.2fr"> */}
                 <TableHeader repeatFormula={tableRepeatFormula}>
                   <PersonIcon />
-                  <StyledSpan weight='bold'>Name</StyledSpan>
-                  <StyledSpan weight='bold'>Class</StyledSpan>
-                  <StyledSpan weight='bold'>Email</StyledSpan>
-                  <StyledSpan weight='bold'>Status</StyledSpan>
+                  <StyledSpan weight="bold">Name</StyledSpan>
+                  <StyledSpan weight="bold">Class</StyledSpan>
+                  <StyledSpan weight="bold">Email</StyledSpan>
+                  <StyledSpan weight="bold">Status</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -254,12 +256,12 @@ function SingleJob() {
               eventsToMap.map((event: IEvent) => (
                 <li key={event.Student?.id}>
                   <StyledLink
-                    color='black'
+                    color="black"
                     to={`/process/${event.Student?.id}/${job?.id}`}
                   >
                     <StyledDiv repeatFormula={tableRepeatFormula}>
                       <PersonIcon />
-                      <StyledSpan weight='bold'>
+                      <StyledSpan weight="bold">
                         {capitalize(event.Student?.firstName)}{" "}
                         {capitalize(event.Student?.lastName)}
                       </StyledSpan>
