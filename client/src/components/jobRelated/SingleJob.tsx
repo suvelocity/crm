@@ -103,7 +103,7 @@ function SingleJob() {
       setJob((prev) => ({ ...prev, isActive: !prev.isActive }));
     } catch (error) {
       console.log(error.message);
-      fireSwalError("Could change job status");
+      fireSwalError("Could not change job status");
     }
   };
 
@@ -164,7 +164,17 @@ function SingleJob() {
     <>
       {!loading && !job?.isActive && (
         <Center>
-          <p style={{ color: "orange" }}>This job is closed!</p>
+          <div
+            style={{
+              backgroundColor: "rgba(253,100,53,0.77)",
+              padding: "0.8vh 0",
+            }}
+          >
+            <h3 style={{ color: "white", margin: 0 }}>This job is closed!</h3>
+            <p>
+              <i>{job?.closeComment}</i>
+            </p>
+          </div>
         </Center>
       )}
       <Wrapper width="80%">

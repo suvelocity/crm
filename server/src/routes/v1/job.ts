@@ -1,5 +1,6 @@
 import { Router, Response, Request } from "express";
 import { isNumber } from "lodash";
+import { cancelAllApplicantsForJob } from "../../helper";
 //@ts-ignore
 import { Student, Job, Event, Class, Company } from "../../models";
 import job from "../../models/job";
@@ -128,9 +129,18 @@ router.patch("/:action/:id", async (req: Request, res: Response) => {
       { where: { id } }
     );
 
-    console.log(updated);
     if (updated[0] !== 1) {
       return res.status(404).json({ error: "Job not found" });
+    }
+
+    if (action === "close") {
+      await cancelAllApplicantsForJob(
+        parseInt(id),
+        undefined,
+        closeComment,
+        new Date(),
+        "Position Frozen"
+      );
     }
 
     res.json({ message: "Job updated" });

@@ -60,7 +60,7 @@ export interface IJob {
   description: string;
   additionalDetails: string;
   isActive: boolean;
-  closeMessage: string | undefined | null;
+  closeComment: string | undefined | null;
   Events: IEvent[];
 }
 
