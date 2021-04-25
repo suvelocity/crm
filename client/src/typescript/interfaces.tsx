@@ -58,8 +58,9 @@ export interface IJob {
   requirements: string;
   location: string;
   description: string;
-  contact: string;
   additionalDetails: string;
+  isActive: boolean;
+  closeMessage: string | undefined | null;
   Events: IEvent[];
 }
 

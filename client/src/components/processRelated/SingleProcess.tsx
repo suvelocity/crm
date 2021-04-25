@@ -136,30 +136,22 @@ function SingleProcess() {
             <Center>
               <H2>Job</H2>
               <GridDiv>
-                <List dense>
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Position"
-                    secondary={`${job?.position}`}
-                  />
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Company"
-                    secondary={`${job?.Company.name}`}
-                  />
-                </List>
-                <List dense>
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Location"
-                    secondary={`${job?.location}`}
-                  />
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Contact"
-                    secondary={`${job?.contact}`}
-                  />
-                </List>
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Position"
+                  secondary={`${job?.position}`}
+                />
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Company"
+                  secondary={`${job?.Company.name}`}
+                />
+
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Location"
+                  secondary={`${job?.location}`}
+                />
               </GridDiv>
             </Center>
             <MultilineListItem>

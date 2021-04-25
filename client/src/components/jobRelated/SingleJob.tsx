@@ -36,7 +36,13 @@ import "react-loading-wrapper/dist/index.css";
 import { IJob, IEvent } from "../../typescript/interfaces";
 import ApplyForJobModal from "./ApplyForJobModal";
 import Swal from "sweetalert2";
-import { capitalize, fireSwalError, formatToIsraeliDate } from "../../helpers";
+import {
+  capitalize,
+  fireSwalError,
+  formatToIsraeliDate,
+  promptSwalConfirmation,
+} from "../../helpers";
+import { Button } from "@material-ui/core";
 
 function SingleJob() {
   const [job, setJob] = useState<IJob | null>();
@@ -74,32 +80,59 @@ function SingleJob() {
     getJob();
   };
 
-  const removeStudents = useCallback(
-    async (
-      studentId: number,
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
-      e.stopPropagation();
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: { isConfirmed: boolean }) => {
-        if (result.isConfirmed) {
-          await network.put("/api/v1/event/delete", {
-            userId: studentId,
-            relatedId: job?.id,
-          });
-          getJob();
-        }
-      });
-    },
-    [setJob, id, job, getJob]
-  );
+  const changeJobStatus: () => Promise<void> = async () => {
+    const options = {
+      confirmButtonColor: job?.isActive ? "#fd6435" : "#30c230",
+      text: `${job?.isActive ? "Close" : "Reopen"} job? ${
+        job?.isActive ? "All on going processes will be canceled." : ""
+      }`,
+    };
+    const positiveRespond: boolean = await promptSwalConfirmation(
+      "Attention",
+      "",
+      "question",
+      options
+    );
+    if (!positiveRespond) return;
+
+    try {
+      await network.patch(
+        `/api/v1/job/${job?.isActive ? "close" : "open"}/${id}`
+      );
+      //@ts-ignore
+      setJob((prev) => ({ ...prev, isActive: !prev.isActive }));
+    } catch (error) {
+      console.log(error.message);
+      fireSwalError("Could change job status");
+    }
+  };
+
+  // const removeStudents = useCallback(
+  //   async (
+  //     studentId: number,
+  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  //   ) => {
+  //     e.stopPropagation();
+  //     Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "You won't be able to revert this!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     }).then(async (result: { isConfirmed: boolean }) => {
+  //       if (result.isConfirmed) {
+  //         await network.put("/api/v1/event/delete", {
+  //           userId: studentId,
+  //           relatedId: job?.id,
+  //         });
+  //         getJob();
+  //       }
+  //     });
+  //   },
+  //   [setJob, id, job, getJob]
+  // );
 
   useEffect(() => {
     getJob().catch((error) => {
@@ -123,9 +156,17 @@ function SingleJob() {
   //   setEventsToMap(sortedEvents);
   // };
 
+  //
+
   const tableRepeatFormula = "0.7fr 1.2fr 1.8fr 1.6fr 2.2fr";
+
   return (
     <>
+      {!loading && !job?.isActive && (
+        <Center>
+          <p style={{ color: "orange" }}>This job is closed!</p>
+        </Center>
+      )}
       <Wrapper width="80%">
         <Center>
           <TitleWrapper>
@@ -136,7 +177,7 @@ function SingleJob() {
           <EditDiv id="editJobButton" onClick={() => setModalState(true)}>
             <EditIcon />
           </EditDiv>
-          <GridDiv repeatFormula="1fr 1fr 1fr 1fr">
+          <GridDiv repeatFormula="1fr 1fr 1fr">
             <List>
               <SingleListItem
                 primary="Position"
@@ -164,16 +205,7 @@ function SingleJob() {
                 <BusinessIcon />
               </SingleListItem>
             </List>
-            <List>
-              {/* Location */}
-              <SingleListItem
-                primary="Contact"
-                secondary={capitalize(job?.contact)}
-              >
-                <PersonIcon />
-              </SingleListItem>
-              {/* Contact */}
-            </List>
+            <List>{/* Location */}</List>
           </GridDiv>
           {job?.description && (
             <MultilineListItem>
@@ -296,6 +328,21 @@ function SingleJob() {
           </Center>
         </Loading>
       </Wrapper>
+      {!loading && (
+        <Center>
+          <Button
+            style={{
+              color: "white",
+              backgroundColor: job?.isActive ? "#fd6435" : "#30c230",
+              marginBottom: "3vh",
+            }}
+            variant={"contained"}
+            onClick={changeJobStatus}
+          >
+            <b>{job?.isActive ? "Close" : "ReOpen"} Job</b>
+          </Button>
+        </Center>
+      )}
     </>
   );
 }

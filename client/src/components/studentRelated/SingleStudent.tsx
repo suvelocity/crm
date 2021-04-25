@@ -408,19 +408,21 @@ function SingleStudent() {
           </Center>
         </Loading>
       </Wrapper>
-      <Center>
-        <Button
-          style={{
-            color: "white",
-            backgroundColor: "#fd3535",
-            marginBottom: "3vh",
-          }}
-          variant={"contained"}
-          onClick={deleteStudent}
-        >
-          <b>Delete Student</b>
-        </Button>
-      </Center>
+      {!loading && (
+        <Center>
+          <Button
+            style={{
+              color: "white",
+              backgroundColor: "#fd3535",
+              marginBottom: "3vh",
+            }}
+            variant={"contained"}
+            onClick={deleteStudent}
+          >
+            <b>Delete Student</b>
+          </Button>
+        </Center>
+      )}
     </>
   );
 }
