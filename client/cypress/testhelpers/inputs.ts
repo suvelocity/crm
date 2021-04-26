@@ -15,13 +15,6 @@ export const jobInputs = [
   },
   {
     type: "textfield",
-    field: "contact",
-    errors: [],
-    trueValue: "Yesyes",
-    updatedValue: "Ci agent",
-  },
-  {
-    type: "textfield",
     field: "description",
     errors: [],
     trueValue: "Tel Aviv",
