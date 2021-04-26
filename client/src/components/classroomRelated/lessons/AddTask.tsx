@@ -65,7 +65,7 @@ export default function AddTask({
   teacherClasses,
 }: addTaskProps) {
   const classes = useStyles();
-  const [defaultTaskLabels, setDefaultTaskLabels] = useState<any[]>([]); // TODO: add type
+  const [defaultTaskLabels, setDefaultTaskLabels] = useState<any[]>([]);
 
   //@ts-ignore
   const classList: classList[] | undefined = teacherClasses?.map(

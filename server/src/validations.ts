@@ -25,29 +25,26 @@ export const eventsSchema = Joi.object({
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
-  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().required(),
   position: Joi.string().required(),
-  requirements: Joi.string().max(500).allow(null, ""), //.required(),
+  requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().required(),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().required(),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const jobSchemaToPut = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().allow(null, ""),
   position: Joi.string().allow(null, ""),
   requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().allow(null, ""),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
+  isActive: Joi.boolean(),
+  closeComment: Joi.string().allow(null, ""),
 });
 
 export const teacherOfClassSchema = Joi.array().items({

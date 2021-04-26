@@ -32,12 +32,12 @@ export default function Task({
       {task.type === "manual" && (
         <>
           <Input
-            variant='outlined'
-            label='Task name'
+            variant="outlined"
+            label="Task name"
             value={task.externalLink}
-            onChange={(
-              e: React.ChangeEvent<{ value: unknown }> //TODO move to funtion upword
-            ) => handleChange("title", index, e.target.value)}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
+              handleChange("title", index, e.target.value)
+            }
           />
           <div>name: {task.body}</div>
         </>
@@ -48,9 +48,9 @@ export default function Task({
           handleChange("type", index, e.target.value)
         }
       >
-        <MenuItem value='manual'>manual</MenuItem>
-        <MenuItem value='challengeMe'>challengeMe</MenuItem>
-        <MenuItem value='fcc'>fcc</MenuItem>
+        <MenuItem value="manual">manual</MenuItem>
+        <MenuItem value="challengeMe">challengeMe</MenuItem>
+        <MenuItem value="fcc">fcc</MenuItem>
       </Select>
       <br />
       {task.type === "manual" ? (
@@ -61,7 +61,7 @@ export default function Task({
         />
       ) : (
         <div></div>
-        // <Select //TODO change to challenge type
+        // <Select
         //   value={challenge}
         //   onChange={handleChallengeChange}
         //   defaultValue='pick challenge'
@@ -75,11 +75,11 @@ export default function Task({
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           disableToolbar
-          variant='inline'
-          format='MM/dd/yyyy'
-          margin='normal'
-          id='date-picker-inline'
-          label='Date picker inline'
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          label="Date picker inline"
           value={task.endDate}
           onChange={(e: Date | null) => handleChange("endDate", index, e)}
           KeyboardButtonProps={{

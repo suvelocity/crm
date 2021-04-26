@@ -20,7 +20,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import SignOutButton from "./auth/SignOutButton";
 import styled from "styled-components";
 import { StyledLink } from "../styles/styledComponents";
-import PeopleIcon from '@material-ui/icons/People';
+import PeopleIcon from "@material-ui/icons/People";
 import SchoolIcon from "@material-ui/icons/School";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import TodayIcon from "@material-ui/icons/Today";
@@ -86,22 +86,24 @@ function ClassRoomNavBar() {
 
   return (
     <div>
-      <AppBar position='static'>
+      <AppBar position="static">
         <Toolbar>
           <IconButton
             onClick={handleDrawer}
-            color='inherit'
-            edge='start'
-            aria-label='menu'>
+            color="inherit"
+            edge="start"
+            aria-label="menu"
+          >
             <Menu />
           </IconButton>
           <Typography
-            variant='h4'
+            variant="h4"
             style={{
               marginRight: 15,
               marginTop: "auto",
               marginBottom: "auto",
-            }}>
+            }}
+          >
             Classroom
           </Typography>
           {/* <DarkModeToggle
@@ -110,13 +112,14 @@ function ClassRoomNavBar() {
             size={50}
           /> */}
           <Typography
-            variant='h6'
+            variant="h6"
             style={{
               display: "flex",
               position: "absolute",
               right: 10,
               marginRight: 10,
-            }}>
+            }}
+          >
             {/* <>
               <IconButton
                 onClick={handleClick}
@@ -149,25 +152,26 @@ function ClassRoomNavBar() {
         </Toolbar>
       </AppBar>
       <Drawer
-        anchor='left'
+        anchor="left"
         open={open}
         onClose={() => {
           setOpen(false);
-        }}>
+        }}
+      >
         <StyledDrawer>
-          <StyledLink to='/'>
+          <StyledLink to="/">
             <DrawerItem onClick={() => setOpen(false)}>
               Dashboard
               <DashboardIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
           </StyledLink>
-          <StyledLink to='/lessons'>
+          <StyledLink to="/lessons">
             <DrawerItem onClick={() => setOpen(false)}>
               Lessons
               <ImportContactsIcon style={{ position: "absolute", right: 10 }} />
             </DrawerItem>
 
-            <StyledLink to='/tasks'>
+            <StyledLink to="/tasks">
               <DrawerItem onClick={() => setOpen(false)}>
                 Tasks
                 <AssignmentLateIcon
@@ -175,18 +179,16 @@ function ClassRoomNavBar() {
                 />
               </DrawerItem>
             </StyledLink>
-          {user.userType === "teacher" &&
-            <StyledLink to='/students'>
-              <DrawerItem onClick={() => setOpen(false)}>
-                Students
-                <PeopleIcon
-                  style={{ position: "absolute", right: 10 }}
-                />
-              </DrawerItem>
-            </StyledLink>
-          }
+            {user.userType === "teacher" && (
+              <StyledLink to="/students">
+                <DrawerItem onClick={() => setOpen(false)}>
+                  Students
+                  <PeopleIcon style={{ position: "absolute", right: 10 }} />
+                </DrawerItem>
+              </StyledLink>
+            )}
           </StyledLink>
-          <StyledLink to='/quizme'>
+          <StyledLink to="/quizme">
             <DrawerItem onClick={() => setOpen(false)}>
               QuizMe
               <QuizIcon style={{ position: "absolute", right: 10 }} />
@@ -269,7 +271,6 @@ const StyledDrawer = styled.div`
 `;
 
 const StyledAppBar = styled(AppBar)`
-  background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.sidebar}; //TODO change
+  background-color: ${({ theme }: { theme: any }) => theme.colors.sidebar};
   width: 100%;
 `;

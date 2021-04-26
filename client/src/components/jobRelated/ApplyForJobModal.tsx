@@ -106,7 +106,7 @@ function ApplyForJobModal({
     }
   };
 
-  // TODO change search to server side
+  // TODO Move search to server side
   const search = (searchQuery: string) => {
     if (!searchQuery) {
       setFilteredStudents(allStudents!);

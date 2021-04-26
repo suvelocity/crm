@@ -21,10 +21,7 @@ import { Student, Company, Job, Event, Grade } from "./models";
 //@ts-ignore
 import { Class, TaskofStudent, Task, AcademicBackground } from "./models";
 import { Op } from "sequelize";
-import { flatMap, flatten, orderBy, reduce } from "lodash";
-import { parse } from "dotenv/types";
-import { object } from "joi";
-//TODO fix types
+import { flatMap } from "lodash";
 
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -75,42 +72,60 @@ export const cancelAllJobsOfStudent: (
 
 export const cancelAllApplicantsForJob: (
   jobId: number,
-  hiredStudentId: number,
+  hiredStudentId: number | undefined,
   comment: string,
-  date: Date
+  date: Date,
+  eventToCreate?: string
 ) => Promise<void> = async (
   jobId: number,
-  hiredStudentId: number,
+  hiredStudentId: number | undefined,
   comment: string,
-  date: Date
+  date: Date,
+  eventToCreate: string = "Canceled"
 ) => {
   try {
-    const jobData: IJob | null = await Job.findByPk(jobId, {
-      include: [
-        {
-          model: Event,
-          attributes: ["userId"],
-        },
-      ],
+    const jobEvents: Array<IEvent> | null = await Event.findAll({
+      attributes: ["userId", "eventName"],
+      where: {
+        relatedId: jobId,
+        type: "jobs",
+        // userId: { [Op.notIn]: [hiredStudentId] },
+      },
+      order: [["date", "DESC"]],
+      raw: true,
     });
 
-    if (!jobData) return;
+    //@ts-ignore
 
-    const studentsIds = getUnique(
-      //@ts-ignore
-      jobData.Events.map((event: IEvent) => event.userId),
-      [hiredStudentId]
-    );
+    if (!jobEvents) return;
+
+    // Removing hired student and all other students who have current status that is irrelevant (rejected, canceled, etc..)
+    const relevantStudentsIds: Array<number> = jobEvents
+      .filter(
+        (elem: IEvent, i: number, array) =>
+          array.findIndex((elem2: IEvent) => elem.userId === elem2.userId) === i
+      )
+      .filter(
+        (event: any) =>
+          ![
+            "Hired",
+            "Rejected",
+            "Irrelevant",
+            "Removed Application",
+            "Position Frozen",
+            "Canceled",
+          ].includes(event.eventName) && event.userId !== hiredStudentId
+      )
+      .map((event) => event.userId);
 
     await Promise.all(
-      studentsIds.map((userId: number) =>
+      relevantStudentsIds.map((userId: number) =>
         Event.create({
           date,
           userId,
           relatedId: jobId,
           type: "jobs",
-          // date: new Date().setHours(0, 0, 0, 0),
-          eventName: "Canceled",
+          eventName: eventToCreate,
           entry: { comment },
         })
       )
@@ -121,10 +136,10 @@ export const cancelAllApplicantsForJob: (
   }
 };
 
-const getUnique: (array: number[], exclude: number[]) => number[] = (
+const getUnique: (
   array: number[],
-  exclude: number[]
-) => {
+  exclude: Array<number | undefined>
+) => number[] = (array: number[], exclude: Array<number | undefined>) => {
   //@ts-ignore
   return array.filter(
     (elem: number, i: number) =>
@@ -132,7 +147,6 @@ const getUnique: (array: number[], exclude: number[]) => number[] = (
   );
 };
 
-//TODO add inteface for query
 export const getQuery: (
   specificFields?: PublicFields[],
   omitRelations?: boolean,

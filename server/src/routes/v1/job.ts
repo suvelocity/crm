@@ -1,6 +1,9 @@
 import { Router, Response, Request } from "express";
+import { isNumber } from "lodash";
+import { cancelAllApplicantsForJob } from "../../helper";
 //@ts-ignore
 import { Student, Job, Event, Class, Company } from "../../models";
+import job from "../../models/job";
 import { IJob } from "../../types";
 import { jobSchema, jobSchemaToPut } from "../../validations";
 const router = Router();
@@ -76,15 +79,13 @@ router.post("/", async (req: Request, res: Response) => {
       companyId,
       description,
       location,
-      contact,
       requirements,
       additionalDetails,
     } = req.body;
-    const newJob: IJob = {
+    const newJob: Partial<IJob> = {
       position,
       companyId,
       description,
-      contact,
       location,
       requirements,
       additionalDetails,
@@ -107,6 +108,42 @@ router.patch("/:id", async (req: Request, res: Response) => {
     });
     if (updated[0] === 1) return res.json({ message: "Job updated" });
     res.status(404).json({ error: "Job not found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.patch("/:action/:id", async (req: Request, res: Response) => {
+  const {
+    params: { action, id },
+    body: { closeComment },
+  } = req;
+
+  try {
+    if (!["close", "open"].includes(action) || isNaN(parseInt(id))) {
+      return res.status(400).json({ message: "Malformed action or id" });
+    }
+
+    const updated = await Job.update(
+      { isActive: action === "open", closeComment },
+      { where: { id } }
+    );
+
+    if (updated[0] !== 1) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    if (action === "close") {
+      await cancelAllApplicantsForJob(
+        parseInt(id),
+        undefined,
+        closeComment,
+        new Date(),
+        "Position Frozen"
+      );
+    }
+
+    res.json({ message: "Job updated" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

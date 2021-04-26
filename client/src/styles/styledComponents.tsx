@@ -59,8 +59,9 @@ export const Center = styled.div`
 
 export const StyledLink = styled(Link)`
   color: ${(props: { color: string }) => (props.color ? props.color : "white")};
-  background-color: 'transparent';
-  /* background-color: ${(props: { background: string }) => props.background? props.background : 'transparent'}; */
+  background-color: "transparent";
+  /* background-color: ${(props: { background: string }) =>
+    props.background ? props.background : "transparent"}; */
   text-decoration: ${(props: { textDecoration: string }) =>
     props.textDecoration ? "underline" : "none"};
 `;

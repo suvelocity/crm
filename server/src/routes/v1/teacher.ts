@@ -1,22 +1,6 @@
 import { Router, Response, Request } from "express";
-import {
-  //TODO fix
-  //@ts-ignore
-  Student,
-  //@ts-ignore
-  Teacher,
-  //@ts-ignore
-  Class,
-  //@ts-ignore
-  User,
-  //@ts-ignore
-  Task,
-  //@ts-ignore
-  Lesson,
-  //@ts-ignore
-  TeacherofClass,
-  //@ts-ignore
-} from "../../models";
+//@ts-ignore
+import { Teacher, Class, User, TeacherofClass } from "../../models";
 import { ITeacher } from "../../types";
 import { teacherSchema, teacherOfClassSchema } from "../../validations";
 import { sendMail } from "../../mail";

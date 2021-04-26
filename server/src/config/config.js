@@ -5,6 +5,7 @@ module.exports = {
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
     host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
     dialect: "mysql",
     define: {
       underscored: true,
@@ -15,7 +16,8 @@ module.exports = {
     username: "root",
     password: process.env.MYSQL_PASSWORD || null,
     database: process.env.MYSQL_DATABASE || "crm_test",
-    host: process.env.MYSQL_HOST || '127.0.0.1',
+    host: process.env.MYSQL_HOST || "127.0.0.1",
+    port: process.env.MYSQL_PORT,
     dialect: "mysql",
     define: {
       underscored: true,

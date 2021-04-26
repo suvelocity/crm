@@ -183,11 +183,10 @@ function SingleCompany() {
           <StyledUl>
             {company?.Jobs && (
               <li>
-                <TableHeader repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                <TableHeader repeatFormula="1fr 4fr 3fr">
                   <PersonIcon />
                   <StyledSpan weight="bold">Position</StyledSpan>
                   <StyledSpan weight="bold">Location</StyledSpan>
-                  <StyledSpan weight="bold">Contact</StyledSpan>
                 </TableHeader>
               </li>
             )}
@@ -195,13 +194,12 @@ function SingleCompany() {
               company?.Jobs!.map((job: Omit<IJob, "Company">) => (
                 <li key={job.id}>
                   <StyledLink color="black" to={`/job/${job.id}`}>
-                    <StyledDiv repeatFormula="1fr 2.5fr 2.5fr 1fr">
+                    <StyledDiv repeatFormula="1fr 4fr 3fr">
                       <PersonIcon />
                       <StyledSpan weight="bold">
                         {capitalize(job.position)}
                       </StyledSpan>
                       <StyledSpan>{capitalize(job.location)}</StyledSpan>
-                      <StyledSpan>{capitalize(job.contact)}</StyledSpan>
                     </StyledDiv>
                   </StyledLink>
                 </li>
