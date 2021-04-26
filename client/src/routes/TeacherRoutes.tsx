@@ -16,7 +16,7 @@ import { AuthContext } from "../helpers";
 import { useRecoilState } from "recoil";
 import { teacherStudents, classesOfTeacher } from "../atoms";
 import { IStudent } from "../typescript/interfaces";
-import AllStudents from '../components/studentRelated/AllStudents';
+import AllStudents from "../components/studentRelated/AllStudents";
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -49,7 +49,7 @@ export default function TeacherRoutes() {
         }))
       );
       console.log(teacherStudents);
-      setStudents(allStudents.flat()); //TODO check with multipal classes
+      setStudents(allStudents.flat());
     } catch {}
   };
 
@@ -65,28 +65,32 @@ export default function TeacherRoutes() {
       <ClassRoomNavBar />
       {/* <ErrorBoundary> */}
       {/* <div id='classroom-container' style={{display:"flex"}} > */}
-      <div id='interface-container' style={{ flexGrow: 1 }}>
+      <div id="interface-container" style={{ flexGrow: 1 }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <TeacherDashboard />
           </Route>
-          <Route path='/lessons'>
+          <Route path="/lessons">
             <Lessons />
           </Route>
-          <Route path='/tasks'>
+          <Route path="/tasks">
             <TeacherContainer />
           </Route>
-          <Route path='/students'>
-            <AllStudents classIds={classesToTeacher.map((classOfTeacher: any) => classOfTeacher.classId)} />
+          <Route path="/students">
+            <AllStudents
+              classIds={classesToTeacher.map(
+                (classOfTeacher: any) => classOfTeacher.classId
+              )}
+            />
           </Route>
-          <Route exact path='/quizme'>
+          <Route exact path="/quizme">
             <QuizMe />
           </Route>
-          <Route exact path='/quizme/quiz/:id'>
+          <Route exact path="/quizme/quiz/:id">
             {/* @ts-ignore */}
             <QuizPage />
           </Route>
-          <Route path='*'>
+          <Route path="*">
             <div>404 Not Found</div>
           </Route>
         </Switch>

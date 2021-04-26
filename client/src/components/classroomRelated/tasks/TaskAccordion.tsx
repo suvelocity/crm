@@ -89,7 +89,7 @@ export default function SingleTask(props: any) {
             <IconButton
               aria-label="submit button"
               onClick={() => {
-                handleOpen({...task.Task, id: task.id});
+                handleOpen({ ...task.Task, id: task.id });
               }}
               disabled={task.Task.type !== "manual" ? true : false}
             >
@@ -121,20 +121,19 @@ const TaskAccordrionContainer = styled.div`
 `;
 
 const StyledAccordion = styled(Accordion)`
-  background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.container}; //TODO change
+  background-color: ${({ theme }: { theme: any }) => theme.colors.container};
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   font-weight: bold;
   font-size: 20px;
   display: flex;
 `;
 
 const StyledDetails = styled(AccordionDetails)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   white-space: pre-wrap;
 `;

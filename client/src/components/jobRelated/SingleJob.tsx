@@ -157,6 +157,7 @@ function SingleJob() {
       const reason =
         error.response.status === 404 ? "Not found" : "Internal Error";
       fireSwalError("Could not fetch job. " + reason);
+      // TODO 404 page for job
     });
     //eslint-disable-next-line
   }, [id]);

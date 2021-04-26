@@ -38,4 +38,4 @@ COPY --from=serverbuilder ./server/out ./out
 
 EXPOSE 8080
 
-CMD ["npm", "run", "start"]
+CMD npm run ${SPINUP_SCRIPT}

@@ -37,7 +37,7 @@ Scale-Up Velocity.`,
 });
 
 router.post("/challengeMe", async (req, res) => {
-  //todo add validate chllengeme!
+  //TODO add validate chllengeme!
   try {
     interface CM {
       eventName: "Submitted Challenge" | "Started Challenge";

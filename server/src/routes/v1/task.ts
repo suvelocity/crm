@@ -165,7 +165,6 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
         ],
       })
     ).map(async (taskOfStudent: any) => {
-      //TODO solve this typescript way
       taskOfStudent = taskOfStudent.toJSON();
       const grades = await getGradesOfTaskForStudent(
         taskOfStudent.studentId,
@@ -244,12 +243,12 @@ const deleteLabel: (label: ITaskLabel) => Promise<any> = async (
   await Promise.all(
     label.Criteria.map((crtron: ICriterion) => deleteCriterion(crtron))
   );
-  // TODO delete grade
+  // TODO Delete related grades
   return TaskLabel.destroy({ where: { id: label.id } });
 };
 
 const updateCriterion: (criterion: ICriterion) => Promise<any> = async (
-  // TODO add validaiton
+  // TODO add validation
   criterion: ICriterion
 ) => {
   return Criterion.update(criterion, { where: { id: criterion.id } });
@@ -258,7 +257,7 @@ const updateCriterion: (criterion: ICriterion) => Promise<any> = async (
 const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
   criterion: ICriterion
 ) => {
-  // TODO delete grade
+  // TODO Delete related grades
   return Criterion.destroy({ where: { id: criterion.id } });
 };
 
@@ -545,8 +544,6 @@ router.post("/criterion", async (req: Request, res: Response) => {
     res.status(400).json({ error: e.message });
   }
 });
-
-//todo support 3rd party apps fcc/challengeme
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
   try {

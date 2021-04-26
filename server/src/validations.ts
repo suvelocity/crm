@@ -25,21 +25,18 @@ export const eventsSchema = Joi.object({
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
-  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().required(),
   position: Joi.string().required(),
-  requirements: Joi.string().max(500).allow(null, ""), //.required(),
+  requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().required(),
   description: Joi.string().max(500).allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const jobSchemaToPut = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().allow(null, ""),
   position: Joi.string().allow(null, ""),
   requirements: Joi.string().max(500).allow(null, ""),

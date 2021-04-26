@@ -93,14 +93,15 @@ export default function SingleLessonTask(props: any) {
         style={{ backgroundColor: "#f2f2f2" }}
         avatar={
           <Avatar
-            aria-label='recipe'
+            aria-label="recipe"
             className={
               task.type === "fcc"
                 ? classes.fcc
                 : task.type === "challengeMe"
                 ? classes.challengeMe
                 : classes.manual
-            }>
+            }
+          >
             {task.type === "fcc" ? (
               "fcc"
             ) : task.type === "challengeMe" ? (
@@ -111,10 +112,10 @@ export default function SingleLessonTask(props: any) {
           </Avatar>
         }
         title={task.title}
-        subheader={`deadline: ${task.endDate.substring(0, 10)}`} //todo make date red/yellow if close to deadline and fix to israeli time
+        subheader={`deadline: ${task.endDate.substring(0, 10)}`}
       />
       <StyledCardContent>
-        <Typography variant='body1' color='textPrimary' component='p'>
+        <Typography variant="body1" color="textPrimary" component="p">
           {task.body}
           {task.status === "disabled" && (
             <h3 style={{ color: "red" }}>Disabled!, edit to activate</h3>
@@ -123,18 +124,19 @@ export default function SingleLessonTask(props: any) {
       </StyledCardContent>
       <CardActions>
         {task.type === "manual" && (
-          <Link to='/tasks'>
+          <Link to="/tasks">
             <IconButton
               // onClick={handleOpen}
-              aria-label='submit button'
-              disabled={task.type !== "manual" ? true : false}>
+              aria-label="submit button"
+              disabled={task.type !== "manual" ? true : false}
+            >
               <ArrowForwardIcon />
             </IconButton>
           </Link>
         )}
         {task.externalLink && (
-          <StyledAtavLink href={task.externalLink} target='_blank'>
-            <IconButton aria-label='external link?'>
+          <StyledAtavLink href={task.externalLink} target="_blank">
+            <IconButton aria-label="external link?">
               <LinkIcon />
             </IconButton>
           </StyledAtavLink>
