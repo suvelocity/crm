@@ -67,12 +67,10 @@ function EventsLog({
             <DateStamp>{formatToIsraeliDate(event.date)}</DateStamp>
           </TimelineOppositeContent>
           <TimelineSeparator>
-            <TimelineDot
-              color={i !== arr.length - 1 ? "grey" : "primary"}
-              variant={i !== arr.length - 1 ? "outlined" : undefined}
-            >
-              {i === arr.length - 1 ? <UpdateIcon /> : <CheckCircleOutline />}
+            <TimelineDot color={"inherit"}>
+              {i === arr.length - 1 ? "🔛" : "✅"}
             </TimelineDot>
+
             {i !== arr.length - 1 && <TimelineConnector />}
           </TimelineSeparator>
           <TimelineContent>

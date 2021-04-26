@@ -334,6 +334,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       entry,
       date,
       type,
+      cancelMail,
     }: IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
@@ -366,7 +367,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       //   jobMsg,
       //   date
       // );
-    } else if (eventName === "Sent CV") {
+    } else if (eventName === "Sent CV" && !cancelMail) {
       const job: IJob = (
         await Job.findByPk(relatedId, {
           include: [{ model: Company, attributes: ["name"] }],

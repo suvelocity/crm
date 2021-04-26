@@ -147,23 +147,7 @@ const AddJob = (props: Props) => {
                   <ActionBtn />
                 )
               ) : null}
-              {generateBrs(2)}
-              <TextField
-                id="contact"
-                name="contact"
-                fullWidth
-                defaultValue={props.job ? props.job.contact : ""}
-                inputRef={register({ required: "Contact is required" })}
-                label="Contact"
-              />
-              {!empty ? (
-                errors.contact ? (
-                  <ErrorBtn tooltipTitle={errors.contact.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
-              {generateBrs(4)}
+              {generateBrs(6)}
             </div>
             <div></div> {/*placeholder*/}
             <div>

@@ -136,30 +136,22 @@ function SingleProcess() {
             <Center>
               <H2>Job</H2>
               <GridDiv>
-                <List dense>
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Position"
-                    secondary={`${job?.position}`}
-                  />
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Company"
-                    secondary={`${job?.Company.name}`}
-                  />
-                </List>
-                <List dense>
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Location"
-                    secondary={`${job?.location}`}
-                  />
-                  <SingleCenteredListItem
-                    classes={classesType}
-                    primary="Contact"
-                    secondary={`${job?.contact}`}
-                  />
-                </List>
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Position"
+                  secondary={`${job?.position}`}
+                />
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Company"
+                  secondary={`${job?.Company.name}`}
+                />
+
+                <SingleCenteredListItem
+                  classes={classesType}
+                  primary="Location"
+                  secondary={`${job?.location}`}
+                />
               </GridDiv>
             </Center>
             <MultilineListItem>
@@ -172,6 +164,9 @@ function SingleProcess() {
             </MultilineListItem>
           </Wrapper>
           <div style={{ gridColumn: "span 2", height: "auto" }}>
+            <Center>
+              <H1 color="#466397">Event Log 📅</H1>
+            </Center>
             {job?.id && student?.id && events && (
               <EventLog events={events} remove={removeFromEventLog} />
             )}

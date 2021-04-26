@@ -2,7 +2,7 @@ export const jobFormErrorTitles = [
   "Company is required",
   "Position title is required",
   "Location is required",
-  "Contact is required",
+  // "Contact is required",
   //"Description is required",
   //"Requirements are required",
 ];

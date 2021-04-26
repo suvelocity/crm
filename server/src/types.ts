@@ -10,8 +10,9 @@ export interface IJob {
   requirements: string;
   location: string;
   description: string;
-  contact: string;
   additionalDetails: string;
+  isActive: string;
+  closeComment: string;
 }
 
 export interface ITeacher {
@@ -84,6 +85,7 @@ export interface IEvent {
   Job?: IJob;
   type: string;
   date: Date;
+  cancelMail?: boolean;
 }
 export interface RequestWithUser extends Request {
   user?: IUser;

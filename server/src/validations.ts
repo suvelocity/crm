@@ -35,7 +35,6 @@ export const jobSchema = Joi.object({
   requirements: Joi.string().max(500).allow(null, ""), //.required(),
   location: Joi.string().required(),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().required(),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
@@ -46,8 +45,9 @@ export const jobSchemaToPut = Joi.object({
   requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().allow(null, ""),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
+  isActive: Joi.boolean(),
+  closeComment: Joi.string().allow(null, ""),
 });
 
 export const teacherOfClassSchema = Joi.array().items({

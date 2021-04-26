@@ -20,15 +20,19 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import BusinessIcon from "@material-ui/icons/Business";
 import PhoneIcon from "@material-ui/icons/Phone";
-import {camelCaseToWords, academicKeys} from './AddStudent';
+import { camelCaseToWords, academicKeys } from "./AddStudent";
 import DialpadIcon from "@material-ui/icons/Dialpad";
 import ClassIcon from "@material-ui/icons/Class";
 import ApplyStudentModal from "./ApplyStudentModal";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import network from "../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IEvent, IAcademicBackground } from "../../typescript/interfaces";
+import {
+  IStudent,
+  IEvent,
+  IAcademicBackground,
+} from "../../typescript/interfaces";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import ChildFriendlyIcon from "@material-ui/icons/ChildFriendly";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -41,11 +45,16 @@ import TrackChangesIcon from "@material-ui/icons/TrackChanges";
 import Modal from "@material-ui/core/Modal";
 import EditIcon from "@material-ui/icons/Edit";
 import AddStudent from "./AddStudent";
-import { capitalize } from "../../helpers/general";
-import Swal from "sweetalert2";
+import {
+  capitalize,
+  fireSwalError,
+  fireSwalSuccess,
+  promptSwalConfirmation,
+} from "../../helpers/general";
 import { formatPhone, formatToIsraeliDate } from "../../helpers/general";
 import { SingleListItem } from "../tableRelated";
 import PostAddIcon from "@material-ui/icons/PostAdd";
+import { Button } from "@material-ui/core";
 
 function SingleStudent() {
   const [student, setStudent] = useState<IStudent | null>();
@@ -53,7 +62,10 @@ function SingleStudent() {
   const [modalState, setModalState] = useState(false);
   const [eventsToMap, setEventsToMap] = useState<IEvent[]>([]);
   const { id } = useParams();
+  const history = useHistory();
+
   const getStudent = useCallback(async () => {
+    // try {
     const { data }: { data: IStudent } = await network.get(
       `/api/v1/student/byId/${id}?only=jobs`
     );
@@ -70,6 +82,9 @@ function SingleStudent() {
     setEventsToMap(uniqueJobs);
     setStudent(data);
     setLoading(false);
+    // } catch (error) {
+    //   alert(error.message);
+    // }
   }, [id, setStudent, setLoading, setEventsToMap]);
 
   const handleClose = () => {
@@ -77,41 +92,64 @@ function SingleStudent() {
     setLoading(true);
     getStudent();
   };
-  console.log(student);
 
-  const removeJob = useCallback(
-    async (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-      jobId: number
-    ) => {
-      e.stopPropagation();
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: { isConfirmed: boolean }) => {
-        if (result.isConfirmed) {
-          await network.patch("/api/v1/event/delete", {
-            studentId: student?.id!,
-            jobId,
-          });
-          getStudent();
-        }
-      });
-    },
-    [setStudent, id, student, getStudent]
-  );
+  // const removeJob = useCallback(
+  //   async (
+  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  //     jobId: number
+  //   ) => {
+  //     e.stopPropagation();
+  //     Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "You won't be able to revert this!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     }).then(async (result: { isConfirmed: boolean }) => {
+  //       if (result.isConfirmed) {
+  //         await network.patch("/api/v1/event/delete", {
+  //           studentId: student?.id!,
+  //           jobId,
+  //         });
+  //         getStudent();
+  //       }
+  //     });
+  //   },
+  //   [setStudent, id, student, getStudent]
+  // );
+
+  const deleteStudent: () => Promise<void> = async () => {
+    try {
+      const response: boolean = await promptSwalConfirmation(
+        "Are you sure?",
+        `Delete student ${capitalize(student?.firstName)} ${capitalize(
+          student?.lastName
+        )}`,
+        "warning"
+      );
+      if (!response) return;
+      console.log(id);
+
+      const deleteMessage = await network.delete(`/api/v1/student/${id}`);
+      await fireSwalSuccess(deleteMessage.data.message);
+
+      history.push("/student/all");
+    } catch (error) {
+      console.log(error.message);
+      fireSwalError("Could not delete student");
+    }
+  };
 
   useEffect(() => {
-    try {
-      getStudent();
-    } catch (error) {
-      Swal.fire("Error Occurred", error.message, "error");
-    }
+    getStudent().catch((error) => {
+      console.log(error.message);
+      setLoading(false);
+      const reason =
+        error.response.status === 404 ? "Not found" : "Internal Error";
+      fireSwalError("Could not fetch student. " + reason);
+    });
     //eslint-disable-next-line
   }, []);
 
@@ -251,31 +289,59 @@ function SingleStudent() {
               >
                 <WorkIcon />
               </SingleListItem>
-
             </List>
           </GridDiv>
-          {
-          student?.AcademicBackgrounds && student?.AcademicBackgrounds.length > 0 &&<div style={{display:"flex", width: '70%',margin:'auto', alignItems: "center", flexDirection:'column'}}>
-            <h2>Academic Background</h2>
-            {
-              student?.AcademicBackgrounds.map((background: IAcademicBackground, index: number) => {
-                return <div style={{backgroundColor:'#bebbbb' , marginBottom: '10px', borderRadius: '5px', display:"flex", width: '100%',alignItems: 'center', justifyContent:'space-between'}}>
-                  <div style={{fontSize:'30px', fontWeight:'bold',textAlign:'center', width: '20%'}}>{index + 1}</div>
-                  {
-                  academicKeys.map((key: string) => {
-                    return <SingleListItem
-                    primary={camelCaseToWords(key)}
-                    //@ts-ignore
-                    secondary={background[key]}
-                    >
-                    </SingleListItem>
-                  })
+          {student?.AcademicBackgrounds &&
+            student?.AcademicBackgrounds.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  width: "70%",
+                  margin: "auto",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <h2>Academic Background</h2>
+                {student?.AcademicBackgrounds.map(
+                  (background: IAcademicBackground, index: number) => {
+                    return (
+                      <div
+                        style={{
+                          backgroundColor: "#bebbbb",
+                          marginBottom: "10px",
+                          borderRadius: "5px",
+                          display: "flex",
+                          width: "100%",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "30px",
+                            fontWeight: "bold",
+                            textAlign: "center",
+                            width: "20%",
+                          }}
+                        >
+                          {index + 1}
+                        </div>
+                        {academicKeys.map((key: string) => {
+                          return (
+                            <SingleListItem
+                              primary={camelCaseToWords(key)}
+                              //@ts-ignore
+                              secondary={background[key]}
+                            ></SingleListItem>
+                          );
+                        })}
+                      </div>
+                    );
                   }
-                </div>
-              })
-            }
-          </div>
-          }
+                )}
+              </div>
+            )}
           <Modal
             open={modalState}
             onClose={handleClose}
@@ -342,6 +408,21 @@ function SingleStudent() {
           </Center>
         </Loading>
       </Wrapper>
+      {!loading && (
+        <Center>
+          <Button
+            style={{
+              color: "white",
+              backgroundColor: "#fd3535",
+              marginBottom: "3vh",
+            }}
+            variant={"contained"}
+            onClick={deleteStudent}
+          >
+            <b>Delete Student</b>
+          </Button>
+        </Center>
+      )}
     </>
   );
 }

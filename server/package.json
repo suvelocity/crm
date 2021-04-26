@@ -6,7 +6,7 @@
   "scripts": {
     "fuckin:go": "npm i && npm run schema && npm run migrate && npm run seed && npm run dev ",
     "start": "node out/.",
-    "test": "NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
     "testseeders": "NODE_ENV=test npm run migrate && NODE_ENV=test npm run seed && NODE_ENV=test npm run undoseed",
     "build": "tsc --build tsconfig.json",
     "migrate": "cd src && npx sequelize db:migrate && cd ..",
@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.19",
+    "cross-env": "^7.0.3",
     "jest": "^26.6.3",
     "ngrok": "^3.4.0",
     "supertest": "^6.0.1"
