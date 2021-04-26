@@ -29,7 +29,6 @@ const mockAddedJob = {
   position: "test job",
   companyId: 1,
   description: "test description",
-  contact: "Nitzan - 054545454",
   location: "Tel Mond, Israel",
   requirements: "be awesome",
   additionalDetails: "Shahar Eliyahu is a MASSIVE snake",
@@ -41,7 +40,6 @@ const mockAddedJob = {
 const mockUpdate = {
   position: "updated job",
   description: "updated description",
-  contact: "updated",
   location: "Kadima Zoran, Israel",
   requirements: "Update",
   additionalDetails: "Shahar Eliyahu is a STILL MASSIVE snake",
