@@ -39,6 +39,7 @@ import Swal from "sweetalert2";
 import {
   capitalize,
   fireSwalError,
+  fireSwalSuccess,
   formatToIsraeliDate,
   promptSwalConfirmation,
 } from "../../helpers";
@@ -95,12 +96,27 @@ function SingleJob() {
     );
     if (!positiveRespond) return;
 
+    let closeComment: string = "";
+
+    // Get closing comment only when closing a job
+    if (job?.isActive) {
+      closeComment = (
+        await Swal.fire({
+          title: "Enter a closing reason?",
+          input: "text",
+          inputLabel: "Closing reason",
+        })
+      ).value;
+    }
+
     try {
       await network.patch(
-        `/api/v1/job/${job?.isActive ? "close" : "open"}/${id}`
+        `/api/v1/job/${job?.isActive ? "close" : "open"}/${id}`,
+        { closeComment }
       );
       //@ts-ignore
-      setJob((prev) => ({ ...prev, isActive: !prev.isActive }));
+      setJob((prev) => ({ ...prev, isActive: !prev.isActive, closeComment }));
+      fireSwalSuccess(`Job ${job?.isActive ? "closed" : "reopened"}`);
     } catch (error) {
       console.log(error.message);
       fireSwalError("Could not change job status");

@@ -103,21 +103,10 @@ export const cancelAllApplicantsForJob: (
       },
       order: [["date", "DESC"]],
       raw: true,
-      // type: {
-      //   [Op.notIn]: [
-      //     "Hired",
-      //     "Rejected",
-      //     "Irrelevant",
-      //     "Removed Application",
-      //     "Position Frozen",
-      //     "Canceled",
-      //   ],
-      // },
-      // },
     });
 
     //@ts-ignore
-    console.log(jobEvents);
+
     if (!jobEvents) return;
 
     // Removing hired student and all other students who have current status that is irrelevant (rejected, canceled, etc..)
