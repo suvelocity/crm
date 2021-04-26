@@ -80,6 +80,7 @@ export const RemoveJobButton = styled(DeleteIcon)`
 
 export const GridDiv = styled.div`
   display: grid;
+  width: 95%;
   grid-template-columns: ${(props: { repeatFormula: string }) =>
     props.repeatFormula ? props.repeatFormula : "1fr 1fr"};
 `;
