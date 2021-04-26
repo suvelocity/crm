@@ -55,7 +55,7 @@ export default function TaskBoard() {
     try {
       await network.post(`/api/v1/task/checksubmit/${user.id}`);
     } catch (error) {
-      //todo error handler
+      //TODO error handler
     }
   };
 
@@ -96,7 +96,7 @@ export default function TaskBoard() {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleOpen = (Task : ITask) => {
+  const handleOpen = (Task: ITask) => {
     setOpen(true);
     setCurrentTask(Task);
   };
@@ -104,9 +104,12 @@ export default function TaskBoard() {
   //modal and submit
   const handleSubmit = async (url: string) => {
     try {
-      const { data } = await network.put(`/api/v1/task/submit/${currentTask!.id}`, {
-        url: url,
-      });
+      const { data } = await network.put(
+        `/api/v1/task/submit/${currentTask!.id}`,
+        {
+          url: url,
+        }
+      );
       handleClose();
       if (data.error) {
         Swal.fire("Error Occurred", data.error, "error");
@@ -121,32 +124,36 @@ export default function TaskBoard() {
 
   const body = (
     //@ts-ignore
-    <div style={modalStyle} className={classes.paper}>      
-    <h1>{currentTask ? currentTask.title : "Error Displaying title"}</h1>
-    <div>
-      <Submit setOpen={setOpen} handleSubmit={handleSubmit} submitLink = {currentTask ? currentTask.submitLink : undefined} />
-    </div>
+    <div style={modalStyle} className={classes.paper}>
+      <h1>{currentTask ? currentTask.title : "Error Displaying title"}</h1>
+      <div>
+        <Submit
+          setOpen={setOpen}
+          handleSubmit={handleSubmit}
+          submitLink={currentTask ? currentTask.submitLink : undefined}
+        />
+      </div>
     </div>
   );
 
   return (
     <DashboardContainer>
-      {(unfinishedTasks && unfinishedTasks.length>0) &&
-      <Typography
-        variant="h2"
-        style={{
-          marginRight: 15,
-          marginTop: "2%",
-          marginBottom: "auto",
-          marginLeft: "15%",
-        }}
-      >
-        Tasks
-      </Typography>
-      }
+      {unfinishedTasks && unfinishedTasks.length > 0 && (
+        <Typography
+          variant="h2"
+          style={{
+            marginRight: 15,
+            marginTop: "2%",
+            marginBottom: "auto",
+            marginLeft: "15%",
+          }}
+        >
+          Tasks
+        </Typography>
+      )}
       <Content>
         <Loading size={30} loading={loading}>
-          {unfinishedTasks && unfinishedTasks.length>0 ? (
+          {unfinishedTasks && unfinishedTasks.length > 0 ? (
             unfinishedTasks?.map((unfinishedTask: any) => (
               <TaskAccordion
                 task={unfinishedTask}
@@ -187,7 +194,7 @@ export default function TaskBoard() {
           >
             History
           </Typography>
-          <TaskTable myTasks={finishedTasks} ReSubmit={handleOpen}/>
+          <TaskTable myTasks={finishedTasks} ReSubmit={handleOpen} />
         </Loading>
       </Content>
     </DashboardContainer>

@@ -33,7 +33,7 @@ export function TasksFidget() {
         allTasks.filter((task: ITaskofStudent) => task.status === "pending")
       );
     } catch (e) {
-      //todo error handler
+      //TODO error handler
     }
   };
 
@@ -63,10 +63,7 @@ export function TasksFidget() {
             <div style={{ lineHeight: "2em", fontSize: "1.1em" }}>
               {/* <h2 style={{ color: "red" }}>You Have Incomplete Tasks!</h2> */}
               <List>
-                {incompletedTasks.map((
-                  task: any,
-                  i: number //todo change intefacce
-                ) => (
+                {incompletedTasks.map((task: any, i: number) => (
                   <ListItemComponent
                     key={`incompTask${i}`}
                     task={task.Task}
@@ -106,7 +103,7 @@ export function LessonsFidget() {
       );
       settodayLessons(latestLesson);
     } catch (e) {
-      //todo error handler
+      //TODO error handler
     }
   };
 

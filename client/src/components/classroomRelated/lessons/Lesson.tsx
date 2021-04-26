@@ -187,20 +187,19 @@ const LessonContainer = styled.div`
 `;
 
 const StyledAccordion = styled(Accordion)`
-  background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.accordion}; //TODO change
+  background-color: ${({ theme }: { theme: any }) => theme.colors.accordion};
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   font-weight: bold;
   font-size: 20px;
 `;
 
 const StyledDetails = styled(AccordionDetails)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   /* padding: 2%; */
 `;
 

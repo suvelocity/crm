@@ -149,6 +149,7 @@ function SingleStudent() {
       const reason =
         error.response.status === 404 ? "Not found" : "Internal Error";
       fireSwalError("Could not fetch student. " + reason);
+      // TODO 404 page for student
     });
     //eslint-disable-next-line
   }, []);

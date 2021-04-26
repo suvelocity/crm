@@ -16,7 +16,6 @@ import { Controller, useForm } from "react-hook-form";
 import { Center, GridDiv } from "../../styles/styledComponents";
 import { IEvent, status } from "../../typescript/interfaces";
 import { ActionBtn, ErrorBtn } from "../formRelated";
-//TODO change this later
 import { statuses } from "../../helpers";
 import Swal from "sweetalert2";
 

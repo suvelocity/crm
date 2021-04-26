@@ -21,17 +21,7 @@ import { Student, Company, Job, Event, Grade } from "./models";
 //@ts-ignore
 import { Class, TaskofStudent, Task, AcademicBackground } from "./models";
 import { Op } from "sequelize";
-import {
-  flatMap,
-  flatten,
-  orderBy,
-  reduce,
-  sortedUniqBy,
-  uniqBy,
-} from "lodash";
-import { parse } from "dotenv/types";
-import { object } from "joi";
-//TODO fix types
+import { flatMap } from "lodash";
 
 export const cancelAllJobsOfStudent: (
   studentId: number,
@@ -157,7 +147,6 @@ const getUnique: (
   );
 };
 
-//TODO add inteface for query
 export const getQuery: (
   specificFields?: PublicFields[],
   omitRelations?: boolean,
