@@ -17,6 +17,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import LinkIcon from "@material-ui/icons/Link";
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import StarIcon from '@material-ui/icons/Star';
+
 import Swal from "sweetalert2";
 import { Button, MenuItem, Modal, Select } from "@material-ui/core";
 import {
@@ -87,6 +90,9 @@ const createTask = (
   lesson: string,
   endDate: Date,
   externalLink: string,
+  totalRank: number,
+  rankCount: number,
+  commentsCount: number,
   TaskofStudents: [],
   TaskLabels: ITaskLabel[],
   createdBy: number,
@@ -101,6 +107,9 @@ const createTask = (
     lesson,
     endDate,
     externalLink,
+    totalRank,
+    rankCount,
+    commentsCount,
     TaskofStudents,
     TaskLabels,
     createdBy,
@@ -123,6 +132,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [open, setOpen] = React.useState(false);
   const [studentDetails, setStudentDetails] = useState<any[]>([]);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
 
   const classes = useStyles();
   const rowClasees = useRowStyles();
@@ -316,6 +326,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
 
   return (
     <>
+     
       <TableRow className={rowClasees.root}>
         <TableCell>
           <IconButton
@@ -328,6 +339,8 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
+          {console.log(taskDetails.title)}
+          
           {taskDetails.title}
         </TableCell>
         <TableCell align="center">{classList}</TableCell>
@@ -358,17 +371,26 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
-        <TableCell>
+        <TableCell align="center" >
+          <Hoverable onClick={() => setCommentsOpen(true)}>
+          {taskDetails?.commentsCount}
+          <ChatBubbleIcon />
+          </Hoverable>
+        </TableCell>
+        <TableCell align="center">
           <Hoverable onClick={() => setEditModalOpen(true)}>
             <EditIcon />
           </Hoverable>
+        </TableCell>
+        <TableCell align="center">
+        <StarIcon />
         </TableCell>
         <Modal open={editModalOpen} onClose={handleClose}>
           {editTaskModalBody}
         </Modal>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               {Object.keys(studentDetails).map((key: string) => (
@@ -614,6 +636,9 @@ export default function TeacherTaskBoard(props: any) {
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
+        task.commentsCount,
+        task.rankCount,
+        task.totalRank,
         task.TaskofStudents,
         task.TaskLabels,
         task.createdBy,
@@ -677,8 +702,14 @@ export default function TeacherTaskBoard(props: any) {
               <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
+              <TableCell align="center" style={{ width: "6vw" }}>
+                <b>Comments</b>
+              </TableCell>
               <TableCell align="center" style={{ width: "4vw" }}>
                 <b>Edit</b>
+              </TableCell>
+              <TableCell align="center" style={{ width: "4vw" }}>
+                <b>Rank</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -699,7 +730,7 @@ export default function TeacherTaskBoard(props: any) {
               : null}
             {emptyRows > 0 && (
               <TableRow style={{ height: 91 * emptyRows }}>
-                <TableCell colSpan={9} />
+                <TableCell colSpan={11} />
               </TableRow>
             )}
           </TableBody>
@@ -708,7 +739,7 @@ export default function TeacherTaskBoard(props: any) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={9}
+                colSpan={11}
                 count={taskArray ? taskArray.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}

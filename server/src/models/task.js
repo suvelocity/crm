@@ -39,6 +39,9 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       body: DataTypes.TEXT,
       status: DataTypes.STRING,
+      feedbackCount: DataTypes.TEXT,
+      totalRank: DataTypes.INTEGER,
+      rankCount: DataTypes.INTEGER
     },
     {
       sequelize,

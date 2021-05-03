@@ -206,7 +206,12 @@ const changeTaskStatus: (
   if (submitUrl) toUpdate.submitLink = submitUrl;
   if (submitFeedback) toUpdate.feedback = submitFeedback;
   if (rank) toUpdate.rank = rank;
-  return TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
+  console.log(toUpdate);
+  try {
+    TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
+    
+  }catch(e){console.log(e)}
+  return []
 };
 
 const updateLabelsAndCriteria: (
@@ -551,13 +556,16 @@ router.post("/criterion", async (req: Request, res: Response) => {
 });
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
+  const { url, feedback, rank } = req.body;
+  console.log(url, feedback, rank);
+  
   try {
     const taskType: any = await TaskofStudent.findByPk(req.params.id, {
       attributes: ["type"],
     });
 
     if (taskType.type === "manual") {
-      await changeTaskStatus(req.params.id, "submitted", req.body.url);
+      await changeTaskStatus(req.params.id, "submitted", url, feedback, rank);
 
       return res.status(200).json("task submitted");
     }

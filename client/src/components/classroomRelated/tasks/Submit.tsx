@@ -78,7 +78,7 @@ export default function SubmitTask(props: any) {
         variant='contained'
         color='primary'
         onClick={() => {
-          handleSubmit(url, feedback);
+          handleSubmit(url, feedback, rank);
         }}>
         Submit
       </Button>
