@@ -192,16 +192,20 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
 const changeTaskStatus: (
   taskOfStudentId: string,
   newStatus: string,
-  submitUrl?: string
+  submitUrl?: string,
+  submitFeedback?: string,
+  rank?: number
 ) => Promise<Array<any> | Error> = async (
   taskOfStudentId: string,
   newStatus: string,
-  submitUrl?: string
+  submitUrl?: string,
+  submitFeedback?: string,
+  rank?: number
 ) => {
-  const toUpdate = submitUrl
-    ? { status: newStatus, submitLink: submitUrl }
-    : { status: newStatus };
-
+  const toUpdate= <any>{};
+  if (submitUrl) toUpdate.submitLink = submitUrl;
+  if (submitFeedback) toUpdate.feedback = submitFeedback;
+  if (rank) toUpdate.rank = rank;
   return TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
 };
 
@@ -416,6 +420,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
         })
       ).map(async (taskOfStudent: any) => {
         taskOfStudent = taskOfStudent.toJSON();
+        
         const grades = await getGradesOfTaskForStudent(
           taskOfStudent.studentId,
           taskOfStudent.Task.TaskLabels,

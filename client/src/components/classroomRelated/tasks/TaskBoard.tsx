@@ -97,17 +97,23 @@ export default function TaskBoard() {
     setOpen(false);
   };
   const handleOpen = (Task: ITask) => {
+    console.log("handle open");
+    
     setOpen(true);
     setCurrentTask(Task);
   };
 
   //modal and submit
-  const handleSubmit = async (url: string) => {
+  const handleSubmit = async (url: string, feedback: string, rank: number) => {
+    console.log(url, feedback, rank);
+    
     try {
       const { data } = await network.put(
         `/api/v1/task/submit/${currentTask!.id}`,
         {
           url: url,
+          feedback: feedback,
+          rank: rank
         }
       );
       handleClose();
