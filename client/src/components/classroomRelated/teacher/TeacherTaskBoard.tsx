@@ -44,6 +44,7 @@ import { ITaskLabel, taskType } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTask from "../lessons/AddTask";
+import { TasksFidget } from "../dashboard/DashBoardFidgets";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -150,7 +151,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [open, setOpen] = React.useState(false);
   const [studentDetails, setStudentDetails] = useState<any[]>([]);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+  const [feedbacksOpen, setFeedbacksOpen] = useState<boolean>(false);
 
   const classes = useStyles();
   const rowClasees = useRowStyles();
@@ -241,7 +242,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   };
 
   // not really removing, just closing modal
-  const handleClose = () => {
+  const handleEditModalClose = () => {
     setTaskToUpdate(deepCloneWithJson(taskDetails));
     setEditModalOpen(false);
   };
@@ -330,7 +331,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     <div style={modalStyle} className={classes.paper}>
       <AddTask
         students={[]}
-        handleRemove={handleClose}
+        handleRemove={handleEditModalClose}
         handleChange={handleTaskChange}
         task={taskToUpdate}
         // studentsToTask={studentsToTask}
@@ -341,6 +342,14 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       </Button>
     </div>
   );
+  const feedbackModalBody = (
+    (taskDetails.TaskofStudents.map((task: any, i) => {
+        if (task.feedback === null) return null;
+        return (<div key={i} style={{ width: '30rem', border: '0.6px solid #e0e0e0', padding: '2rem', paddingTop: '1.5rem', margin: '1rem', borderRadius: '3px' }}><span style={{ color: "#e0e0e0", marginBottom: "3rem", fontSize: '1.5rem' }}>#{i}</span><br /> <span>{String(task.feedback)}</span></div>)
+      })).filter(feedback => feedback !== null)
+    );
+  
+  // });
 
   return (
     <>
@@ -390,7 +399,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </StyledAtavLink>
         </TableCell>
         <TableCell align="center" >
-          <Hoverable onClick={() => setCommentsOpen(true)}>
+          <Hoverable onClick={() => setFeedbacksOpen(true)}>
             {taskDetails?.feedbackCount}
           <ChatBubbleIcon />
           </Hoverable>
@@ -404,8 +413,17 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           { taskDetails?.totalRank/taskDetails.rankCount || 0}
         <StarIcon />
         </TableCell>
-        <Modal open={editModalOpen} onClose={handleClose}>
+        <Modal open={editModalOpen} onClose={handleEditModalClose}>
           {editTaskModalBody}
+        </Modal>
+        <Modal open={feedbacksOpen} onClose={() => setFeedbacksOpen(false)}>
+          {<div style={modalStyle} className={classes.paper}>
+        <h3 style={{ fontSize: '2rem', marginLeft: '1rem' }}>{taskDetails.title} feedbacks:</h3>
+            { console.log(feedbackModalBody)
+            }
+            {feedbackModalBody?.length > 0 ? feedbackModalBody : <span style={{marginLeft: '2rem', width: '30rem'}}>"No feedbacks yet..."</span>}
+            </div>
+            }
         </Modal>
       </TableRow>
       <TableRow>

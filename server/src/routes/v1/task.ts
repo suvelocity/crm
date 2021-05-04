@@ -281,6 +281,18 @@ const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
 
 router.use("/challenges", challenges);
 
+// router.get("/feedbacks/:id", validateTeacher, async (req: Request, res: Response) => {
+//   const taskId = req.params.id;
+
+//   const feedbacks = await TaskofStudent.findAll({
+//     where: { taskId: taskId },
+//   attributes:["feedback"]});
+
+//   console.log(feedbacks);
+//   return res.json(feedbacks.toJSON());
+  
+// });
+
 router.get(
   "/byteacherid/:id",
   validateTeacher,
@@ -358,7 +370,7 @@ router.get(
         include: [
           {
             model: TaskofStudent,
-            attributes: ["studentId", "status", "submitLink", "updatedAt"],
+            attributes: ["studentId", "status", "submitLink", "feedback", "updatedAt"],
             required: true,
             include: [
               {
