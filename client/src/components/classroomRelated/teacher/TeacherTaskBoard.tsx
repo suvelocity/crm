@@ -90,15 +90,33 @@ const createTask = (
   lesson: string,
   endDate: Date,
   externalLink: string,
-  totalRank: number,
+  feedbackCount: number,
   rankCount: number,
-  commentsCount: number,
+  totalRank: number,
   TaskofStudents: [],
   TaskLabels: ITaskLabel[],
   createdBy: number,
   status: "active" | "disabled"
   // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
+  console.log({
+    id,
+    title,
+    body,
+    type,
+    lesson,
+    endDate,
+    externalLink,
+    feedbackCount,
+    rankCount,
+    totalRank,
+    TaskofStudents,
+    TaskLabels,
+    createdBy,
+    status,
+    // Grades,
+  });
+  
   return {
     id,
     title,
@@ -109,7 +127,7 @@ const createTask = (
     externalLink,
     totalRank,
     rankCount,
-    commentsCount,
+    feedbackCount,
     TaskofStudents,
     TaskLabels,
     createdBy,
@@ -373,7 +391,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         </TableCell>
         <TableCell align="center" >
           <Hoverable onClick={() => setCommentsOpen(true)}>
-          {taskDetails?.commentsCount}
+            {taskDetails?.feedbackCount}
           <ChatBubbleIcon />
           </Hoverable>
         </TableCell>
@@ -383,6 +401,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </Hoverable>
         </TableCell>
         <TableCell align="center">
+          { taskDetails?.totalRank/taskDetails.rankCount || 0}
         <StarIcon />
         </TableCell>
         <Modal open={editModalOpen} onClose={handleClose}>
@@ -597,7 +616,7 @@ export default function TeacherTaskBoard(props: any) {
         `/api/v1/task/byteacherid/${user.id}`,
         { params: { filters: filter } }
       );
-      console.log(data);
+      // console.log(data);
       setTeacherTasks(data);
     } catch (error) {
       return Swal.fire("Error", error, "error");
@@ -605,10 +624,13 @@ export default function TeacherTaskBoard(props: any) {
   };
 
   const getFilterOptins: () => Promise<void> = async () => {
-    const { data: options }: { data: any } = await network.get(
-      `/api/v1/task/options/${user.id}`
-    );
-    setFilterOptions(options);
+    try {
+      
+      const { data: options }: { data: any } = await network.get(`/api/v1/task/options/${user.id}`);
+      console.log(options);
+      
+      setFilterOptions(options);
+    } catch (e) { console.log(e) }
   };
 
   const makeFilter = useCallback(() => {
@@ -622,9 +644,9 @@ export default function TeacherTaskBoard(props: any) {
     fetchTeacherTasks();
   }, [typeFilter, classFilter]);
 
-  useEffect(() => {
-    getFilterOptins();
-  }, []);
+  // useEffect(() => {
+  //   getFilterOptins();
+  // }, []);
 
   const taskArray =
     teacherTasks?.map((task: any) => {
@@ -636,7 +658,7 @@ export default function TeacherTaskBoard(props: any) {
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
-        task.commentsCount,
+        task.feedbackCount,
         task.rankCount,
         task.totalRank,
         task.TaskofStudents,
@@ -703,7 +725,7 @@ export default function TeacherTaskBoard(props: any) {
                 <b>Link</b>
               </TableCell>
               <TableCell align="center" style={{ width: "6vw" }}>
-                <b>Comments</b>
+                <b>Feedbacks</b>
               </TableCell>
               <TableCell align="center" style={{ width: "4vw" }}>
                 <b>Edit</b>

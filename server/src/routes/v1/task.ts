@@ -193,22 +193,31 @@ const changeTaskStatus: (
   taskOfStudentId: string,
   newStatus: string,
   submitUrl?: string,
-  submitFeedback?: string,
+  feedback?: string,
   rank?: number
 ) => Promise<Array<any> | Error> = async (
   taskOfStudentId: string,
   newStatus: string,
   submitUrl?: string,
-  submitFeedback?: string,
+  feedback?: string,
   rank?: number
 ) => {
-  const toUpdate= <any>{};
-  if (submitUrl) toUpdate.submitLink = submitUrl;
-  if (submitFeedback) toUpdate.feedback = submitFeedback;
-  if (rank) toUpdate.rank = rank;
-  console.log(toUpdate);
   try {
-    TaskofStudent.update(toUpdate, { where: { id: taskOfStudentId } });
+    const incrementStuff = <any> {};
+  const taskOfStudent = await TaskofStudent.findByPk(taskOfStudentId);
+  if (submitUrl) taskOfStudent.submitLink = submitUrl;
+    if (feedback) {
+      taskOfStudent.feedback = feedback;
+      incrementStuff.feedbackCount = 1
+    }
+    if (rank) {
+      taskOfStudent.rank = rank;
+      incrementStuff.rankCount = 1
+      incrementStuff.totalRank = rank
+    }
+    console.log(taskOfStudent);
+    taskOfStudent.save();
+    Task.increment(incrementStuff, { where: { id: taskOfStudent.taskId } });
     
   }catch(e){console.log(e)}
   return []
@@ -378,6 +387,8 @@ router.get(
         ],
         order: [["createdAt", "DESC"]],
       });
+      console.log(myTasks);
+      
       return res.json(myTasks);
     } catch (error) {
       console.log(error);
