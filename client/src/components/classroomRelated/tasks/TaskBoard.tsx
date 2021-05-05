@@ -16,7 +16,8 @@ import Modal from "@material-ui/core/Modal";
 import Submit from "./Submit";
 import TaskAccordion from "./TaskAccordion";
 interface TaskWithPossibleSubmitLink extends ITask {
-  submitLink?: string;
+  submitLink?: string,
+  feedback?: string
 }
 export default function TaskBoard() {
   const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();

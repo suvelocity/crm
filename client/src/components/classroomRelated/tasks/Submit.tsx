@@ -9,7 +9,7 @@ import StarIcon from '@material-ui/icons/Star';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 
 export default function SubmitTask(props: any) {
-  const { taskId, handleClose, handleSubmit, submitLink } = props;
+  const { taskId, handleClose, handleSubmit, submitLink, feedbackDefault } = props;
   const [url, setUrl] = useState("");
   const [feedback, setFeedback] = useState("");
   const [rank, setRank] = useState(0)
@@ -19,18 +19,25 @@ export default function SubmitTask(props: any) {
     //     setOpen(false);
     //   };
   const Rank = (props: any) => {
-    const { rank, setRank } = props;
+    const { rankState, setRank } = props;
     const [rankDisplay, setRankDisplay] = useState([false, false, false, false, false])
     const hoverHandler = (rank: number) => {
       const newRanks = rankDisplay.map((v: Boolean, i: number) => i < rank)
       setRankDisplay(newRanks)
     }
     const clickHandler = (rank: number) => {
+      // const newRanks = rankDisplay.map((v: Boolean, i: number) => i < rank)
       setRank(rank)
     }
+    const mouseLeaveHandler = (rank: number) => {
+      const newRanks = rankDisplay.map((v: Boolean, i: number) => i < rank)
+      setRankDisplay(newRanks)
+    }
+
+
 
     return (
-      <div id="rank" style={{ display: 'flex', justifyContent: 'end', marginBottom: '0.5rem'}}>
+      <div id="rank" onMouseLeave={()=> mouseLeaveHandler(rank)} style={{ display: 'flex', justifyContent: 'end', marginBottom: '0.5rem'}}>
 
 
 
@@ -47,7 +54,7 @@ export default function SubmitTask(props: any) {
   }
   return (
     <div id='post-notice' style={{ display: "flex", flexDirection: "column"}}>
-      <Rank rank={rank} setRank={setRank} />
+      <Rank rankState={rank} setRank={setRank} />
       <TextField
         onChange={(e) => {
           setUrl(e.target.value)
@@ -67,7 +74,7 @@ export default function SubmitTask(props: any) {
         }
         id='outlined-multiline-static'
         label='feedback on this task'
-        defaultValue = {submitLink || ""}
+        defaultValue = {feedback || ""}
         multiline
         rows={10}
         variant='outlined'
