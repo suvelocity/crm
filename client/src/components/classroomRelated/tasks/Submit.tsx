@@ -9,11 +9,12 @@ import StarIcon from '@material-ui/icons/Star';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 
 export default function SubmitTask(props: any) {
-  const { taskId, handleClose, handleSubmit, submitLink, feedbackDefault } = props;
+  const { taskId, handleClose, handleSubmit, submitLink, taskOfStudentId } = props;
   const [url, setUrl] = useState("");
   const [feedback, setFeedback] = useState("");
   const [rank, setRank] = useState(0)
   
+
   
   //   const handleClose = () => {
     //     setOpen(false);
@@ -85,7 +86,7 @@ export default function SubmitTask(props: any) {
         variant='contained'
         color='primary'
         onClick={() => {
-          handleSubmit(url, feedback, rank);
+          handleSubmit(url, feedback, rank, taskOfStudentId);
         }}>
         Submit
       </Button>

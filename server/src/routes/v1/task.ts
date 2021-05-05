@@ -196,29 +196,45 @@ const changeTaskStatus: (
   newStatus: string,
   submitUrl?: string,
   feedback?: string,
-  rank?: number
+  rank?: number,
+  oldFeedback?: string,
+  oldRank?: number
 ) => Promise<Array<any> | Error> = async (
   taskOfStudentId: string,
   newStatus: string,
   submitUrl?: string,
   feedback?: string,
-  rank?: number
+  rank?: number,
+  oldFeedback?: string,
+  oldRank?: number
 ) => {
   try {
     const incrementStuff = <any> {};
-  const taskOfStudent = await TaskofStudent.findByPk(taskOfStudentId);
-  if (submitUrl) taskOfStudent.submitLink = submitUrl;
-    if (feedback) {
+    const decrementStuff = <any> {};
+    const taskOfStudent = await TaskofStudent.findByPk(taskOfStudentId);
+    if (submitUrl) taskOfStudent.submitLink = submitUrl;
+    if (oldFeedback && feedback) {
       taskOfStudent.feedback = feedback;
-      incrementStuff.feedbackCount = 1
     }
-    if (rank) {
+    else if (feedback) {
+      taskOfStudent.feedback = feedback;
+      incrementStuff.feedback_count = 1
+    }
+    if (oldRank && rank) {
+      decrementStuff.total_rank = oldRank;
+      incrementStuff.total_rank = rank
       taskOfStudent.rank = rank;
-      incrementStuff.rankCount = 1
-      incrementStuff.totalRank = rank
+    }
+    else if (rank) {
+      taskOfStudent.rank = rank;
+      incrementStuff.rank_count = 1
+      incrementStuff.total_rank = rank
     }
     console.log(taskOfStudent);
     taskOfStudent.save();
+    if ((oldRank)||oldFeedback) {
+      Task.decrement(decrementStuff,{ where: { id: taskOfStudent.taskId } })
+    }
     Task.increment(incrementStuff, { where: { id: taskOfStudent.taskId } });
     
   }catch(e){console.log(e)}
@@ -282,18 +298,6 @@ const deleteCriterion: (criterion: ICriterion) => Promise<any> = async (
 };
 
 router.use("/challenges", challenges);
-
-// router.get("/feedbacks/:id", validateTeacher, async (req: Request, res: Response) => {
-//   const taskId = req.params.id;
-
-//   const feedbacks = await TaskofStudent.findAll({
-//     where: { taskId: taskId },
-//   attributes:["feedback"]});
-
-//   console.log(feedbacks);
-//   return res.json(feedbacks.toJSON());
-  
-// });
 
 router.get(
   "/byteacherid/:id",
@@ -432,7 +436,7 @@ router.get("/bystudentid/:id", async (req: Request, res: Response) => {
       (
         await TaskofStudent.findAll({
           where: { student_id: req.params.id },
-          attributes: ["id", "status", "submitLink", "studentId"],
+          attributes: ["id", "status", "submitLink", "feedback", "rank", "studentId"],
           include: [
             {
               model: Task,
@@ -580,16 +584,15 @@ router.post("/criterion", async (req: Request, res: Response) => {
 });
 
 router.put("/submit/:id", async (req: Request, res: Response) => {
-  const { url, feedback, rank } = req.body;
+  const { url, feedback, rank, taskOfStudentId} = req.body;
   console.log(url, feedback, rank);
-  
   try {
-    const taskType: any = await TaskofStudent.findByPk(req.params.id, {
-      attributes: ["type"],
+    const taskOldData: any = await TaskofStudent.findByPk(req.params.id, {
+      attributes: ["type", "rank", "feedback"],
     });
 
-    if (taskType.type === "manual") {
-      await changeTaskStatus(req.params.id, "submitted", url, feedback, rank);
+    if (taskOldData.type === "manual") {
+      await changeTaskStatus(req.params.id, "submitted", url, feedback, rank, taskOldData.feedback, taskOldData.rank );
 
       return res.status(200).json("task submitted");
     }
@@ -680,7 +683,8 @@ router.post("/checksubmit/:studentId", async (req: Request, res: Response) => {
         type: !"manual",
         status: !"submitted",
       },
-      include: [Task],
+      include: [Task]
+      // attributes: ["studentId", "status", "rank"]
     });
 
     unfinishedTasks.forEach(async (task: any) => {
