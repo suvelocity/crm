@@ -166,6 +166,8 @@ const getTaskDetails: (taskId: number) => Promise<any[]> = async (
       })
     ).map(async (taskOfStudent: any) => {
       taskOfStudent = taskOfStudent.toJSON();
+      console.log("THIS IS MY LOG: ", taskOfStudent);
+      
       const grades = await getGradesOfTaskForStudent(
         taskOfStudent.studentId,
         taskLabels,
@@ -375,7 +377,7 @@ router.get(
             include: [
               {
                 model: Student,
-                attributes: ["id"],
+                attributes: ["id", "firstName", "lastName"],
                 required: true,
                 include: [
                   {
@@ -416,7 +418,6 @@ router.get(
     try {
       const taskId: number = Number(req.params.taskid);
       const details = await getTaskDetails(taskId);
-
       return res.json(details);
     } catch (e) {
       console.log(e);

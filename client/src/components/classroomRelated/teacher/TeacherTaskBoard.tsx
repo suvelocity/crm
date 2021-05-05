@@ -345,7 +345,8 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const feedbackModalBody = (
     (taskDetails.TaskofStudents.map((task: any, i) => {
         if (task.feedback === null) return null;
-        return (<div key={i} style={{ width: '30rem', border: '0.6px solid #e0e0e0', padding: '2rem', paddingTop: '1.5rem', margin: '1rem', borderRadius: '3px' }}><span style={{ color: "#e0e0e0", marginBottom: "3rem", fontSize: '1.5rem' }}>#{i}</span><br /> <span>{String(task.feedback)}</span></div>)
+        return (<div key={i} style={{ width: '30rem', border: '0.6px solid #e0e0e0', padding: '2rem', paddingTop: '1.5rem', margin: '1rem', borderRadius: '3px' }}><span style={{ color: "#e0e0e0", marginBottom: "3rem", fontSize: '1.5rem' }}>#{i}</span><br />{console.log(task)
+        } <span>{task.Student.firstName+" "+task.Student.lastName+": "+String(task.feedback)}</span></div>)
       })).filter(feedback => feedback !== null)
     );
   
@@ -419,8 +420,6 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
         <Modal open={feedbacksOpen} onClose={() => setFeedbacksOpen(false)}>
           {<div style={modalStyle} className={classes.paper}>
         <h3 style={{ fontSize: '2rem', marginLeft: '1rem' }}>{taskDetails.title} feedbacks:</h3>
-            { console.log(feedbackModalBody)
-            }
             {feedbackModalBody?.length > 0 ? feedbackModalBody : <span style={{marginLeft: '2rem', width: '30rem'}}>"No feedbacks yet..."</span>}
             </div>
             }
