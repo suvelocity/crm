@@ -16,7 +16,8 @@ import Modal from "@material-ui/core/Modal";
 import Submit from "./Submit";
 import TaskAccordion from "./TaskAccordion";
 interface TaskWithPossibleSubmitLink extends ITask {
-  submitLink?: string;
+  submitLink?: string,
+  feedback?: string
 }
 export default function TaskBoard() {
   const [finishedTasks, setFinishedTasks] = useState<ITask[] | null>();
@@ -97,17 +98,23 @@ export default function TaskBoard() {
     setOpen(false);
   };
   const handleOpen = (Task: ITask) => {
+    console.log("handle open", Task);
+    
     setOpen(true);
     setCurrentTask(Task);
   };
 
   //modal and submit
-  const handleSubmit = async (url: string) => {
+  const handleSubmit = async (url: string, feedback: string, rank: number) => {
+    console.log(url, feedback, rank);
+    
     try {
       const { data } = await network.put(
         `/api/v1/task/submit/${currentTask!.id}`,
         {
           url: url,
+          feedback: feedback,
+          rank: rank,
         }
       );
       handleClose();
@@ -154,27 +161,34 @@ export default function TaskBoard() {
       <Content>
         <Loading size={30} loading={loading}>
           {unfinishedTasks && unfinishedTasks.length > 0 ? (
-            unfinishedTasks?.map((unfinishedTask: any) => (
-              <TaskAccordion
-                task={unfinishedTask}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
-              />
-            ))
-          ) : (
-            <Typography
-              variant="h4"
-              style={{
-                marginRight: 15,
-                marginTop: "2%",
-                marginBottom: "auto",
-                marginLeft: "15%",
-              }}
-            >
+            unfinishedTasks?.map((unfinishedTask: any) => {
+             console.log("unfinished task: ", unfinishedTask);
+             
+             
+              return (
+                <TaskAccordion
+              
+                  task={unfinishedTask}
+                  handleOpen={handleOpen}
+                  handleClose={handleClose}
+                />
+              )
+            })
+              ) : (
+                <Typography
+                variant="h4"
+                style={{
+                  marginRight: 15,
+                  marginTop: "2%",
+                  marginBottom: "auto",
+                  marginLeft: "15%",
+                }}
+                >
               You have finished all of your tasks!
             </Typography>
           )}
 
+{console.log(currentTask)}
           <Modal
             open={open}
             onClose={handleClose}

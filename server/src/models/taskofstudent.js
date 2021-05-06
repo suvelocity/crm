@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       status: DataTypes.STRING,
       submitLink: DataTypes.STRING,
+      feedback: DataTypes.TEXT,
+      rank: DataTypes.INTEGER
     },
     {
       sequelize,
