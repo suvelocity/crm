@@ -25,7 +25,7 @@ import { useParams } from "react-router-dom";
 import network from "../../../helpers/network";
 import { Loading } from "react-loading-wrapper";
 import "react-loading-wrapper/dist/index.css";
-import { IStudent, IClass, IMentor } from "../../../typescript/interfaces";
+import { IStudent, IClass, IMentor, SelectInputsV2, filterStudentObject } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useHistory, useLocation } from "react-router-dom";
@@ -35,6 +35,7 @@ import Swal from "sweetalert2";
 import { StudentRoutes } from "../../../routes";
 import { fixedPairing } from "../PairingByDistance";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import {FiltersComponents} from '../../FiltersComponents';
 
 function NewClassMentorProject() {
   const [students, setStudents] = useState<Omit<IStudent, "Class">[]>([]);
@@ -47,6 +48,12 @@ function NewClassMentorProject() {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchValueStudent, setSearchValueStudent] = useState<string>("");
+  const [filterOptionsArray, setFilterOptionsArray] = useState<SelectInputsV2[]>([])
+  const [filterAttributes, setFilterAttributes] = useState<filterStudentObject>(
+    {
+      ReligionLevels: [""],
+    }
+  );
   const { id } = useParams();
   const history = useHistory();
   let query = useLocation().search.split("=")[1];
@@ -67,7 +74,7 @@ function NewClassMentorProject() {
 
   const getMentors = useCallback(async () => {
     console.log(students);
-    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor`);
+    const { data }: { data: IMentor[] } = await network.get(`/api/v1/M/mentor?classId=${query}`);
     const mentorList = data.map((mentor) => {
       let count = 0;
       students.forEach((student: Omit<IStudent, "Class">) => {
@@ -78,6 +85,22 @@ function NewClassMentorProject() {
       mentor.student = count;
       return mentor;
     });
+    console.log(mentorList, 'mentorList')
+    const ReligionLevels: {name: string}[] = Array.from(
+      new Set(
+        mentorList.map(
+          (mentor: IMentor) => {
+            // console.log(mentor.religionLevel)
+            return {name: mentor.religionLevel }
+          }
+        )
+      )
+    ).filter(level => level !== null)
+    setFilterOptionsArray([
+      {
+        filterBy: "ReligionLevels",
+        possibleValues: ReligionLevels,
+      }]);
     setMentors(mentorList);
     setLoading(false);
   }, [students]);
@@ -107,9 +130,19 @@ function NewClassMentorProject() {
         : mentors.filter(
             (mentor) => mentor.available === available
           );
+    const mentorSelectFilter =  relevant.filter((mentor) => {
+        const religionLevelCondition =
+          filterAttributes.ReligionLevels!.length === 1 &&
+          filterAttributes.ReligionLevels![0] === ""
+            ? true
+            : filterAttributes.ReligionLevels!.includes(mentor.religionLevel);
+        return (
+          religionLevelCondition
+        );
+      });
     if (searchValue !== "") {
       setFilteredMentors(
-        relevant.filter(
+        mentorSelectFilter.filter(
           (mentor) =>
             mentor.name
               .toLocaleLowerCase()
@@ -126,9 +159,9 @@ function NewClassMentorProject() {
         )
       );
     } else {
-      setFilteredMentors(relevant);
+      setFilteredMentors(mentorSelectFilter);
     }
-  }, [searchValue, mentors, available]);
+  }, [searchValue, mentors, available, filterAttributes]);
 
   useEffect(() => {
     if (searchValueStudent !== "" && students) {
@@ -442,6 +475,7 @@ function NewClassMentorProject() {
                   }}
                   value={searchValueStudent}
                 />
+                
 
                 <div
                   style={{
@@ -539,13 +573,20 @@ function NewClassMentorProject() {
             <Loading loading={loading} size={30}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <TextField
+                  style = {{marginRight: '10%'}}
                   label="Search"
                   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                     changeSearchValue(e.target.value as string);
                   }}
                   value={searchValue}
                 />
-                <FormControl style={{ minWidth: 200, marginRight: 20 }}>
+                <FiltersComponents
+                  array={filterOptionsArray}
+                  filterObject={filterAttributes}
+                  callbackFunction={setFilterAttributes}
+                  widthPercent={50}
+                />
+                <FormControl style={{ minWidth: 130, marginRight: 20 }}>
                   <InputLabel>Availability</InputLabel>
                   <Select
                     onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
@@ -566,10 +607,11 @@ function NewClassMentorProject() {
                     <PersonIcon />
                     <StyledSpan weight="bold">Name</StyledSpan>
                     <StyledSpan weight="bold">Address</StyledSpan>
-                    <StyledSpan weight="bold">company</StyledSpan>
-                    <StyledSpan weight="bold">role</StyledSpan>
-                    <StyledSpan weight="bold">experience</StyledSpan>
-                    <StyledSpan weight="bold">available</StyledSpan>
+                    <StyledSpan weight="bold">Company</StyledSpan>
+                    <StyledSpan weight="bold">Religion</StyledSpan>
+                    {/* <StyledSpan weight="bold">role</StyledSpan> */}
+                    <StyledSpan weight="bold">Preference</StyledSpan>
+                    <StyledSpan weight="bold">Available</StyledSpan>
                   </TableHeader>
                 </li>
                 <Droppable droppableId="mentors">
@@ -602,9 +644,10 @@ function NewClassMentorProject() {
                                       </StyledLink>
                                       <StyledSpan>{mentor.address}</StyledSpan>
                                       <StyledSpan>{mentor.company}</StyledSpan>
-                                      <StyledSpan>{mentor.role}</StyledSpan>
+                                      <StyledSpan>{mentor.religionLevel}</StyledSpan>
+                                      {/* <StyledSpan>{mentor.role}</StyledSpan> */}
                                       <StyledSpan>
-                                        {mentor.experience}
+                                        {mentor.preference}
                                       </StyledSpan>
                                       <StyledSpan>
                                         <Switch

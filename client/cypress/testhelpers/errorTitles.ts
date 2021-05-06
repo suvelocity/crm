@@ -2,9 +2,9 @@ export const jobFormErrorTitles = [
   "Company is required",
   "Position title is required",
   "Location is required",
-  "Contact is required",
-  "Description is required",
-  "Requirements are required",
+  // "Contact is required",
+  //"Description is required",
+  //"Requirements are required",
 ];
 
 export const studentFormErrorTitles = [
@@ -14,7 +14,6 @@ export const studentFormErrorTitles = [
   "Email is required",
   "Address is required",
   "Class is required",
-  "Academic background is required",
 ];
 
 export const companyFormErrorTitles = [

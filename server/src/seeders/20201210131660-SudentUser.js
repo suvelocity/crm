@@ -14,7 +14,7 @@ module.exports = {
           type: "student",
           created_at: new Date(),
           updated_at: new Date(),
-          related_id: 7,
+          related_id: 1,
         },
       ],
       {}

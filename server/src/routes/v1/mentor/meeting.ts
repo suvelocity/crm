@@ -1,51 +1,53 @@
 import { Request, Response, Router } from "express";
 import { meetingSchema, meetingSchemaToPut } from "../../../validations";
 //@ts-ignore
-import {Student,Mentor,MentorStudent,Meeting} from "../../../models";
+import { Student, Mentor, MentorStudent, Meeting } from "../../../models";
 import { IDashboard, IMeeting } from "../../../types";
-import transporter from "../../../mail";
+import { sendMail } from "../../../mail";
 const ical = require("ical-generator");
-const path = require('path');
-const { fork } = require('child_process');
+const path = require("path");
+const { fork } = require("child_process");
 
-const child : any = fork(path.join(__dirname, 'sendSMS.js'))
-child.on('message', (msg: any) => {
-  console.log(msg)
-})
+const child: any = fork(path.join(__dirname, "sendSMS.js"));
+child.on("message", (msg: any) => {
+  console.log(msg);
+});
 
 const router = Router();
 
-const sendMeetingEmail = async (
-    to: string,
-    meeting: any
-) => {
-    const cal = ical()
-    cal.createEvent({
-        start: meeting.date,
-        end: new Date((new Date(meeting.date)).getTime() + 1000 * 60 * 60),
-        summary: meeting.title,
-        organizer: `${meeting.studentName} <${meeting.studentEmail}>`,
-        location: meeting.place,
-        alarms: [
-          { type: 'display', trigger: 60 * 60 * 24 },
-          { type: 'audio', trigger: 60 * 30 },  
-        ]
-    });
+const sendMeetingEmail = async (to: string, meeting: any) => {
+  const cal = ical();
+  cal.createEvent({
+    start: meeting.date,
+    end: new Date(new Date(meeting.date).getTime() + 1000 * 60 * 60),
+    summary: meeting.title,
+    organizer: `${meeting.studentName} <${meeting.studentEmail}>`,
+    location: meeting.place,
+    alarms: [
+      { type: "display", trigger: 60 * 60 * 24 },
+      { type: "audio", trigger: 60 * 30 },
+    ],
+  });
 
-    const message = {
-        from: process.env.EMAIL_USER,
-        to: to === 'mentor' ? meeting.mentorEmail : meeting.studentEmail,
-        subject: 'Scale Up Velocity - Mentors Project Meeting',
-        text: `Hi! you invited to a meeting in part of your mentors project with ${to === 'mentor' ? meeting.studentName +' '+meeting.studentEmail : meeting.mentorName+' '+meeting.mentorEmail}`,
-        alternatives: [{
-            contentType: "text/calendar",
-            content: cal.toString(),
-        }]
-    }
-    const info = await transporter.sendMail(message)
-    return info
+  const message = {
+    from: "lea.soshnik@suvelocity.org", //process.env.EMAIL_USER,
+    to: to === "mentor" ? meeting.mentorEmail : meeting.studentEmail,
+    subject: "Scale Up Velocity - Mentors Project Meeting",
+    text: `Hi! you invited to a meeting in part of your mentors project with ${
+      to === "mentor"
+        ? meeting.studentName + " " + meeting.studentEmail
+        : meeting.mentorName + " " + meeting.mentorEmail
+    }`,
+    alternatives: [
+      {
+        contentType: "text/calendar",
+        content: cal.toString(),
+      },
+    ],
+  };
+  const info = await sendMail(message);
+  return info;
 };
-  
 
 // get pair meets:
 router.get("/:id", async (req: Request, res: Response) => {
@@ -72,21 +74,21 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 // post new meet:
 router.post("/", async (req: Request, res: Response) => {
+  try {
+    const { error } = meetingSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.message });
+    let response: any[] = [];
     try {
-      const { error } = meetingSchema.validate(req.body);
-      if (error) return res.status(400).json({ error: error.message });
-      let response: any[] = [];
-      try {
-          await sendMeetingEmail("mentor", req.body);
-          await sendMeetingEmail("student", req.body);
-        } catch (error) {
-            response[1] = "email not sent : " + error.message;
-        }
-        const newMeeting = req.body;
-        delete newMeeting.studentEmail;
-        delete newMeeting.mentorEmail;
-        delete newMeeting.studentName;
-        delete newMeeting.mentorName;
+      await sendMeetingEmail("mentor", req.body);
+      await sendMeetingEmail("student", req.body);
+    } catch (error) {
+      response[1] = "email not sent : " + error.message;
+    }
+    const newMeeting = req.body;
+    delete newMeeting.studentEmail;
+    delete newMeeting.mentorEmail;
+    delete newMeeting.studentName;
+    delete newMeeting.mentorName;
 
     response[0] = await Meeting.create(newMeeting);
 

@@ -57,7 +57,7 @@ export default function AddLesson({
         classId,
         title,
         body,
-        resource: resources.join("%#splitingResource#%"), //TODO change to json in sql
+        resource: resources.join("%#splitingResource#%"),
         zoomLink,
         createdBy: user.id,
       };
@@ -382,7 +382,6 @@ const Info = styled.div`
   }
   height: 5%;
   min-height: fit-content;
-  //TODO rename
   display: flex;
   transition: 0.5s;
   /* flex-direction: column; */
@@ -391,7 +390,6 @@ const Info = styled.div`
 `;
 
 const OneInfo = styled.div`
-  //TODO rename
   margin-top: 10px;
   padding: 10px;
   margin-right: 15px;

@@ -89,7 +89,7 @@ function SendMailModal({ id, forms }: MailProps) {
     data.content = content
     handleClose();
     try {
-      await network.post(`/api/V1/M/program/mails/${id}`, data, {
+      await network.post(`/api/v1/M/program/mails/${id}`, data, {
         params: {
           recievers,
         },

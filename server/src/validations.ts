@@ -1,5 +1,4 @@
 import Joi from "joi";
-
 export const classSchema = Joi.object({
   course: Joi.string().required(),
   name: Joi.string().required(),
@@ -22,36 +21,30 @@ export const classSchemaToPut = Joi.object({
 
 export const eventsSchema = Joi.object({
   userId: Joi.number().required(),
-  relatedId: Joi.alternatives([
-    Joi.string(),
-    Joi.number()
-  ]).required(),
+  relatedId: Joi.alternatives([Joi.string(), Joi.number()]).required(),
   eventName: Joi.string().required(),
   date: Joi.date(),
   type: Joi.string().required(),
-  // entry: Joi.string().allow(null, ""),
 });
 
 export const jobSchema = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().required(),
   position: Joi.string().required(),
-  requirements: Joi.string().max(500).required(),
+  requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().required(),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().required(),
   additionalDetails: Joi.string().max(500).allow(null, ""),
 });
 
 export const jobSchemaToPut = Joi.object({
-  //TODO: check what is required
   companyId: Joi.number().allow(null, ""),
   position: Joi.string().allow(null, ""),
   requirements: Joi.string().max(500).allow(null, ""),
   location: Joi.string().allow(null, ""),
   description: Joi.string().max(500).allow(null, ""),
-  contact: Joi.string().allow(null, ""),
   additionalDetails: Joi.string().max(500).allow(null, ""),
+  isActive: Joi.boolean(),
+  closeComment: Joi.string().allow(null, ""),
 });
 
 export const teacherOfClassSchema = Joi.array().items({
@@ -71,7 +64,6 @@ export const studentSchema = Joi.object({
   address: Joi.string().required(),
   maritalStatus: Joi.string().required(),
   children: Joi.number().allow(null),
-  academicBackground: Joi.string().required(),
   militaryService: Joi.string().max(500).allow(null, ""),
   workExperience: Joi.string().max(500).allow(null, ""),
   languages: Joi.string().allow(null, ""),
@@ -79,7 +71,12 @@ export const studentSchema = Joi.object({
   fccAccount: Joi.string().max(30).allow(null, ""),
   resumeLink: Joi.string().max(500).allow(null, ""),
 });
-
+export const academicBackgroundSchema = Joi.array().items({
+  institution: Joi.string().required(),
+  studyTopic: Joi.string().required(),
+  degree: Joi.string().required(),
+  averageScore: Joi.number().required(),
+});
 export const teacherSchema = Joi.object({
   email: Joi.string().required(),
   firstName: Joi.string().required(),
@@ -167,7 +164,23 @@ export const taskSchema = Joi.object({
   status: Joi.string().required(),
   body: Joi.string().allow(null, ""),
   title: Joi.string().required(),
+  TaskLabels: Joi.array(),
 });
+
+export const taskSchemaToPut = Joi.object({
+  id: Joi.number().required(),
+  lessonId: Joi.number().allow(null, ""),
+  externalId: Joi.string().allow(null, ""),
+  externalLink: Joi.string().allow(null, ""),
+  createdBy: Joi.number().required(),
+  endDate: Joi.date().required(),
+  type: Joi.string().required(),
+  status: Joi.string().required(),
+  body: Joi.string().allow(null, ""),
+  title: Joi.string().required(),
+  TaskLabels: Joi.array(),
+});
+
 export const meetingSchema = Joi.object({
   pairId: Joi.number().required(),
   place: Joi.string().allow(null, ""),
@@ -200,10 +213,37 @@ export const mentorSchema = Joi.object({
   phone: Joi.string().required(),
   address: Joi.string().required(),
   role: Joi.string().allow(null, ""),
+  age: Joi.number().allow(null, ""),
+  education: Joi.string().allow(null, ""),
+  religionLevel: Joi.string().allow(null, ""),
+  mentoringExperience: Joi.string().allow(null, ""),
+  agreedTo: Joi.string().allow(null, ""),
+  additional: Joi.string().allow(null, ""),
+  preference: Joi.string().allow(null, ""), //Joi.string().allow(null, ""),
   experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().required().allow(null, ""),
 });
+
+export const JobStatusValidation = Joi.array().items(
+  Joi.string().valid(
+    "Started application process",
+    "Sent CV",
+    "Phone Interview",
+    "First interview",
+    "None",
+    "Second interview",
+    "Third Interview",
+    "Forth interview",
+    "Home Test",
+    "Hired",
+    "Rejected",
+    "Irrelevant",
+    "Removed Application",
+    "Position Frozen",
+    "Canceled"
+  )
+);
 
 export const mentorSchemaToPut = Joi.object({
   name: Joi.string().allow(null, ""),
@@ -211,10 +251,17 @@ export const mentorSchemaToPut = Joi.object({
   email: Joi.string().allow(null, ""),
   phone: Joi.string().allow(null, ""),
   address: Joi.string().allow(null, ""),
+  education: Joi.string().allow(null, ""),
+  religionLevel: Joi.string().allow(null, ""),
+  agreedTo: Joi.string().allow(null, ""),
+  preference: Joi.string().allow(null, ""),
+  mentoringExperience: Joi.string().allow(null, ""),
+  additional: Joi.string().allow(null, ""),
   role: Joi.string().allow(null, ""),
   experience: Joi.number().allow(null, ""),
   available: Joi.boolean().allow(null, ""),
   gender: Joi.string().allow(null, ""),
+  age: Joi.number().allow(null, ""),
 });
 
 export const mentorProgramSchema = Joi.object({

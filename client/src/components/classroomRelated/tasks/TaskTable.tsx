@@ -1,34 +1,12 @@
 import * as React from "react";
-import { DataGrid, ColDef } from "@material-ui/data-grid";
+import { DataGrid, ColDef, ValueFormatterParams } from "@material-ui/data-grid";
+import Button from "@material-ui/core/Button";
 import { Loading } from "react-loading-wrapper";
 // import {Link} from 'react-dom'
 import LinkIcon from "@material-ui/icons/Link";
 import styled from "styled-components";
 import { Center, StyledAtavLink } from "../../../styles/styledComponents";
 
-const columns: ColDef[] = [
-  // { field: "taskId", headerName: "#", width: 50 },
-  { field: "taskName", headerName: "Task", width: 200 },
-  { field: "lesson", headerName: "Lesson", width: 150 },
-  { field: "type", headerName: "Type", width: 90 },
-  {
-    field: "deadline",
-    headerName: "Deadline",
-    type: "string",
-    width: 110,
-  },
-  {
-    field: "link",
-    headerName: "External Link",
-    type: "string",
-    flex: 500,
-  },
-  {
-    field: "submitLink",
-    headerName: "URL Submitted",
-    flex: 400,
-  },
-];
 const separateToValues = (dateTimeBigger: number, dateTimeSmaller: number) => {
   let diff = dateTimeBigger - dateTimeSmaller;
   const Minute = 1000 * 60;
@@ -71,10 +49,54 @@ const manipulateDate = (date: string) => {
   }
   return returnVal;
 };
+
 export default function DataGridDemo(props: any) {
+  //
   const [loading, setLoading] = React.useState<boolean>(true);
   const { myTasks } = props;
-
+  const columns: ColDef[] = [
+    // { field: "taskId", headerName: "#", width: 50 },
+    { field: "taskName", headerName: "Task", width: 200 },
+    { field: "lesson", headerName: "Lesson", width: 150 },
+    { field: "type", headerName: "Type", width: 90 },
+    {
+      field: "deadline",
+      headerName: "Deadline",
+      type: "string",
+      width: 110,
+    },
+    {
+      field: "link",
+      headerName: "External Link",
+      type: "string",
+      flex: 500,
+    },
+    {
+      field: "submitLink",
+      headerName: "URL Submitted",
+      renderCell: (params: ValueFormatterParams) => (
+        <strong style={{ overflowX: "scroll" }}>
+          {params.row.type === "manual" && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                console.log(params);
+                props.ReSubmit({ ...params.row, title: params.row.taskName });
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              Resubmit
+            </Button>
+          )}
+        </strong>
+      ),
+      flex: 250,
+    },
+    // { field: "submitLink", headerName: "Update", flex: 200 },
+    { field: "grade", headerName: "Grade", flex: 200 },
+  ];
   const rows =
     myTasks?.map((task: any) => {
       return {
@@ -86,11 +108,14 @@ export default function DataGridDemo(props: any) {
         // deadline: manipulateDate(task.Task.endDate), //.split("T").join(" At ").slice(0, 19),
         deadline: task.Task.endDate.substring(0, 10),
         link: task.Task.externalLink,
+        // renderCell: <button>hello</button>,
         // status: task.status,
         submitLink: task.submitLink,
+        grade: task.overall,
       };
     }) || [];
 
+  console.log(myTasks);
   return (
     <TaskTableConatiner>
       <div style={{ height: 630, width: "100%", color: "white" }}>

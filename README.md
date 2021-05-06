@@ -1,9 +1,12 @@
-# CRM
+# CRM - STAGING
+<!-- This is DEV branch-->
+_New features are checked **here** before going to production_
 
-Project management for courses and beyond.  
+Project management for courses and beyond.
+
 deployment on cloud: http://35.226.223.57:8080/
 
-## TOC
+## Table of Contents
 
 - [Setup](#Setup)
 - [Contributing](#Contributing)
@@ -12,7 +15,7 @@ deployment on cloud: http://35.226.223.57:8080/
 ## Stack
 
 - Front end: React TypeScript
-- Back end: NodeJs(Express) TypeScript MySQL(ORM:[Sequelize](https://sequelize.org/master/index.html))
+- Back end: NodeJs(Express) TypeScript, MySQL(ORM:[Sequelize](https://sequelize.org/master/index.html))
 
 ## Setup
 
@@ -40,7 +43,6 @@ ACCESS_TOKEN_SECRET = "<your secret>";
 REFRESH_TOKEN_SECRET = "<another secret>"; // strings used in token creation
 EMAIL_USER = ""; // mail used to send user confirmation messages
 EMAIL_PASSWORD = "";
-;
 ```
 
 5. Run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation.

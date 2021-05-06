@@ -2,7 +2,7 @@ name: Build and Deploy to Google Compute Engine
 
 on:
   push:
-    branches: [gcloud, production] # specify the branch you want the deploy to take place from
+    branches: [gcloud] # specify the branch you want the deploy to take place from
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -17,11 +17,12 @@ env:
   DB_NAME_PRODUCTION: ${{ secrets.DB_NAME_PRODUCTION_V1 }} # production database
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
   REACT_ENV_FILE: ${{ secrets.REACT_ENV_FILE }}
-  SERVER_PORT: 8080
-  CMDTORUN: npm run spinup:staging # staging start script
+  SERVER_PORT: 80
+  CMDTORUN: npm run spinup:prod # staging start script
   CMDTORUN_PRODUCTION: npm run spinup:prod # production start script
-  INSTANCE_URL: http://35.226.223.57:8080/
-  INSTANCE_URL_PRODUCTION: http://34.69.190.91:8080/
+  INSTANCE_URL: http://course-staging.suvelocity.org/
+  INSTANCE_URL_PRODUCTION: http://34.69.190.91:80/
+  ENV_NAME: staging
 
 jobs:
   setup-build-publish-deploy:
@@ -31,12 +32,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Switching to Production Variables if branch is "production"
-        if: github.ref == 'refs/heads/production'
+      - name: Switching to Production Variables if branch is "master"
+        if: github.ref == 'refs/heads/master'
         run: |
           echo "GCE_INSTANCE=$GCE_INSTANCE_PRODUCTION" >> $GITHUB_ENV
           echo "CMDTORUN=$CMDTORUN_PRODUCTION" >> $GITHUB_ENV
           echo "DB_NAME=$DB_NAME_PRODUCTION" >> $GITHUB_ENV
+          echo "ENV_NAME=production" >> $GITHUB_ENV
           echo "INSTANCE_URL=$INSTANCE_URL_PRODUCTION" >> $GITHUB_ENV
           echo "switched to production variables"
 

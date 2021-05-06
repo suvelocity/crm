@@ -14,24 +14,26 @@ FROM node:14-slim as serverbuilder
 
 WORKDIR /server
 
-COPY ./server/package.json ./server/package-lock.json ./
+COPY ./server/package.json ./server/package-lock.json ./server/tsconfig.json ./
 
 RUN npm install --only=production
 
-COPY ./server .
+COPY ./server/src ./src
 
 RUN npm run build 
 
-FROM node:14-slim
+FROM node:12
+
+WORKDIR /client/build
+
+COPY --from=builder ./client/build .
 
 WORKDIR /server
 
-COPY /server/package.json /server/package-lock.json ./
+COPY --from=serverbuilder ./server/package.json ./server/package-lock.json ./
 
-RUN npm install --only=production
-
-EXPOSE 8080
+COPY --from=serverbuilder ./server/node_modules ./node_modules
 
 COPY --from=serverbuilder ./server/out ./out
 
-COPY --from=builder ./client/build ./build
+RUN git clone https://github.com/vishnubob/wait-for-it.git

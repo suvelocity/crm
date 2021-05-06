@@ -52,23 +52,25 @@ const ProgramDashboard: React.FC = () => {
   }, [id]);
 
   const getAvailableMentors = useCallback(async () => {
-    const { data } = await network.get(`/api/v1/M/mentor/available`);
-    setAvailableMentors(data);
-  }, []);
+    if(programdetails && programdetails.classId){
+      const { data } = await network.get(`/api/v1/M/mentor?classId=${programdetails.classId}`);
+      setAvailableMentors(data);
+    }
+  }, [programdetails]);
 
   const getForms = useCallback(async () => {
     const formsData = await network.get(`/api/v1/M/program/forms/${id}`);
-    console.log(formsData.data);
     setForms(formsData.data);
   }, [id]);
 
   useEffect(() => {
     getTableData();
-    getAvailableMentors();
     getForms();
-  }, [getTableData, getAvailableMentors, getForms]);
+  }, [id]);
+  useEffect(() => {
+    getAvailableMentors();
+  }, [programdetails])
 
-  console.log(programdetails);
   const endProgram = async () => {
     try {
       await network.put(`/api/v1/M/program/end/${id}`);
@@ -176,7 +178,7 @@ const ProgramDashboard: React.FC = () => {
               }}
               variant="contained"
               onClick={async () => {
-                await network.post(`/api/V1/M/program/startmails/${id}`);
+                await network.post(`/api/v1/M/program/startmails/${id}`);
                 await getTableData();
               }}
             >

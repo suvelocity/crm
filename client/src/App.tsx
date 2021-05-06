@@ -32,7 +32,7 @@ export function App() {
         } else {
           if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             //check default theme of the user
-            setCurrentTheme("dark");
+            // setCurrentTheme("dark"); // TODO: support switch theme mode again
           }
         }
         if (!getRefreshToken()) {

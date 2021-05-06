@@ -23,10 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       position: DataTypes.STRING,
       companyId: DataTypes.INTEGER,
       description: DataTypes.STRING,
-      contact: DataTypes.STRING,
       location: DataTypes.STRING,
       requirements: DataTypes.STRING,
       additionalDetails: DataTypes.STRING,
+      isActive: DataTypes.BOOLEAN,
+      closeComment: DataTypes.STRING,
     },
     {
       sequelize,

@@ -6,7 +6,7 @@ export const sendRequest = (
   url: string,
   accessToken?: string,
   body?: object,
-  query?: object
+  query?: object | string
 ) => {
   if (!url.startsWith("/api/v1")) {
     const base = "/api/v1";

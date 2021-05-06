@@ -18,8 +18,12 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import LinkIcon from "@material-ui/icons/Link";
 import Swal from "sweetalert2";
-import { MenuItem, Select } from "@material-ui/core";
-import { Center, StyledAtavLink } from "../../../styles/styledComponents";
+import { Button, MenuItem, Modal, Select } from "@material-ui/core";
+import {
+  Center,
+  Hoverable,
+  StyledAtavLink,
+} from "../../../styles/styledComponents";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
   makeStyles,
@@ -32,6 +36,23 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
+import GradeButton from "../tasks/GradeView";
+import { ITaskLabel, taskType } from "../../../typescript/interfaces";
+import { capitalize } from "../../../helpers/general";
+import EditIcon from "@material-ui/icons/Edit";
+import AddTask from "../lessons/AddTask";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      position: "absolute",
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  })
+);
 
 const useRowStyles = makeStyles({
   root: {
@@ -40,6 +61,14 @@ const useRowStyles = makeStyles({
     },
   },
 });
+
+const modalStyle = {
+  top: `50%`,
+  left: `50%`,
+  transform: `translate(-${50}%, -${50}%)`,
+  height: "calc(100vh - 80px)",
+  overflow: "auto",
+};
 
 export function convertDateToString(date: Date) {
   let today = new Date(date);
@@ -51,53 +80,174 @@ export function convertDateToString(date: Date) {
 }
 
 const createTask = (
+  id: number,
   title: string,
-  type: string,
+  body: string,
+  type: taskType | undefined,
   lesson: string,
   endDate: Date,
   externalLink: string,
-  TaskofStudents: []
+  TaskofStudents: [],
+  TaskLabels: ITaskLabel[],
+  createdBy: number,
+  status: "active" | "disabled"
+  // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
   return {
+    id,
     title,
+    body,
     type,
     lesson,
     endDate,
     externalLink,
     TaskofStudents,
+    TaskLabels,
+    createdBy,
+    status,
+    // Grades,
   };
 };
 
-function Row(props: { row: ReturnType<typeof createTask> }) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(false);
-  const classes = useRowStyles();
+const deepCloneWithJson: (object: any) => any = (object) =>
+  JSON.parse(JSON.stringify(object));
 
-  row.TaskofStudents = useMemo(() => {
-    return row.TaskofStudents.sort((tos: any) =>
+function Row(props: { row: ReturnType<typeof createTask> }) {
+  // const { row } = props;
+  const [taskDetails, setTaskDetails] = useState<ReturnType<typeof createTask>>(
+    props.row
+  );
+  const [taskToUpdate, setTaskToUpdate] = useState<
+    ReturnType<typeof createTask>
+  >(deepCloneWithJson(taskDetails));
+  const [open, setOpen] = React.useState(false);
+  const [studentDetails, setStudentDetails] = useState<any[]>([]);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const classes = useStyles();
+  const rowClasees = useRowStyles();
+
+  taskDetails.TaskofStudents = useMemo(() => {
+    return taskDetails.TaskofStudents.sort((tos: any) =>
       tos.status === "done" ? 1 : -1
     );
   }, []);
 
   const calculatedSubmissionRate = useMemo(() => {
     return (
-      (row.TaskofStudents.reduce((sum: number, tos: any) => {
-        return tos.status === "done" ? sum + 1 : sum + 0;
+      (taskDetails.TaskofStudents.reduce((sum: number, tos: any) => {
+        return tos.status === "submitted" || tos.status === "checked"
+          ? sum + 1
+          : sum + 0;
       }, 0) /
-        row.TaskofStudents.length) *
+        taskDetails.TaskofStudents.length) *
       100
     );
   }, []);
 
   const classList: string = useMemo(() => {
     return Array.from(
-      new Set(row.TaskofStudents.map((tos: any) => tos?.Student?.Class.name))
+      new Set(
+        taskDetails.TaskofStudents.map((tos: any) => tos?.Student?.Class.name)
+      )
     ).join(", ");
   }, []);
 
   const convertedDate = useMemo(() => {
-    return convertDateToString(row.endDate);
+    return convertDateToString(taskDetails.endDate);
   }, []);
+
+  const fetchStudentDetails = async (taskId: number) => {
+    try {
+      const { data } = await network.get(`/api/v1/task/details/${taskId}`);
+      console.log(data);
+      setStudentDetails(getDetailsSortedByStatus(data));
+    } catch (error) {
+      console.log(error);
+      return Swal.fire("Error", error, "error");
+    }
+  };
+
+  const getDetailsSortedByStatus = (studentDetails: any[]) => {
+    return studentDetails.reduce(
+      (detailsMap: any, oneStudentDetails: any) => {
+        switch (oneStudentDetails.status) {
+          case "pending":
+            detailsMap.pending.push(oneStudentDetails);
+            break;
+          case "submitted":
+            detailsMap.submitted.push(oneStudentDetails);
+            break;
+          case "checked":
+            detailsMap.checked.push(oneStudentDetails);
+            break;
+        }
+        return detailsMap;
+      },
+      { pending: [], submitted: [], checked: [] }
+    );
+  };
+
+  const handleToggle = async () => {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    try {
+      await fetchStudentDetails(taskDetails.id);
+      setOpen(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateTask: () => Promise<void> = async () => {
+    try {
+      await network.patch(`/api/v1/task/${taskDetails.id}`, taskToUpdate);
+      setTaskDetails(deepCloneWithJson(taskToUpdate));
+      setEditModalOpen(false);
+    } catch (e) {
+      console.log(e);
+      Swal.fire("Oops...", "Could not update Task :(", "error");
+    }
+  };
+
+  // not really removing, just closing modal
+  const handleClose = () => {
+    setTaskToUpdate(deepCloneWithJson(taskDetails));
+    setEditModalOpen(false);
+  };
+
+  const handleTaskChange = (element: string, index: number, change: any) => {
+    switch (element) {
+      case "title":
+        setTaskToUpdate((prev) => ({ ...prev, title: change }));
+        break;
+      case "date":
+        setTaskToUpdate((prev) => ({ ...prev, date: change }));
+        break;
+      case "externalLink":
+        setTaskToUpdate((prev) => ({ ...prev, externalLink: change }));
+        break;
+      case "externalId":
+        setTaskToUpdate((prev) => ({ ...prev, externalId: change }));
+        break;
+      case "type":
+        setTaskToUpdate((prev) => ({ ...prev, type: change }));
+        break;
+      case "body":
+        setTaskToUpdate((prev) => ({ ...prev, body: change }));
+        break;
+      case "endDate":
+        setTaskToUpdate((prev) => ({ ...prev, endDate: change }));
+        break;
+      case "status":
+        setTaskToUpdate((prev) => ({ ...prev, status: change }));
+        break;
+      case "labels":
+        setTaskToUpdate((prev) => ({ ...prev, TaskLabels: change }));
+    }
+  };
 
   const GreenBorderLinearProgress = withStyles((theme: Theme) =>
     createStyles({
@@ -148,25 +298,41 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     })
   )(LinearProgress);
 
+  const editTaskModalBody = ( //@ts-ignore
+    <div style={modalStyle} className={classes.paper}>
+      <AddTask
+        students={[]}
+        handleRemove={handleClose}
+        handleChange={handleTaskChange}
+        task={taskToUpdate}
+        // studentsToTask={studentsToTask}
+        teacherClasses={[]}
+      />
+      <Button variant="contained" onClick={updateTask}>
+        update task
+      </Button>
+    </div>
+  );
+
   return (
     <>
-      <TableRow className={classes.root}>
+      <TableRow className={rowClasees.root}>
         <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={handleToggle}
             style={{ width: "2vw" }}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.title}
+          {taskDetails.title}
         </TableCell>
         <TableCell align="center">{classList}</TableCell>
-        <TableCell align="center">{row.type}</TableCell>
-        <TableCell align="center">{row.lesson}</TableCell>
+        <TableCell align="center">{taskDetails.type}</TableCell>
+        <TableCell align="center">{taskDetails.lesson}</TableCell>
         <TableCell align="center">{convertedDate}</TableCell>
         <TableCell align="center">
           <p> {Math.floor(calculatedSubmissionRate)}%</p>
@@ -188,61 +354,99 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           )}
         </TableCell>
         <TableCell align="center">
-          <StyledAtavLink href={row.externalLink} target="_blank">
+          <StyledAtavLink href={taskDetails.externalLink} target="_blank">
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
+        <TableCell>
+          <Hoverable onClick={() => setEditModalOpen(true)}>
+            <EditIcon />
+          </Hoverable>
+        </TableCell>
+        <Modal open={editModalOpen} onClose={handleClose}>
+          {editTaskModalBody}
+        </Modal>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                Students
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <b>Full Name</b>
-                    </TableCell>
-                    <TableCell>
-                      <b>Class</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission State</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission Date</b>
-                    </TableCell>
-                    <TableCell align="left">
-                      <b>Submission Link</b>
-                    </TableCell>
-                    {/*  //todo maybe adding descrtiption to submition */}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.TaskofStudents.map((studentRow: any) => (
-                    <TableRow key={studentRow.studentId}>
-                      <TableCell component="th" scope="row">
-                        {studentRow?.Student?.firstName +
-                          " " +
-                          studentRow?.Student?.lastName}
-                      </TableCell>
-                      <TableCell>{studentRow?.Student?.Class.name}</TableCell>
-                      <TableCell align="left">{studentRow.status}</TableCell>
-                      <TableCell align="left">
-                        {studentRow.updatedAt
-                          ? convertDateToString(studentRow.updatedAt)
-                          : "hasn't submitted yet"}
-                      </TableCell>
-                      <TableCell align="left">
-                        {studentRow.submitLink ? studentRow.submitLink : "none"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {Object.keys(studentDetails).map((key: string) => (
+                <>
+                  <Typography variant="h6" gutterBottom component="div">
+                    {capitalize(key)}
+                  </Typography>
+                  <Table size="small" aria-label="purchases">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <b>Full Name</b>
+                        </TableCell>
+                        <TableCell>
+                          <b>Class</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission State</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission Date</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Submission Link</b>
+                        </TableCell>
+                        <TableCell align="left">
+                          <b>Grade</b>
+                        </TableCell>
+                        {/*  //todo maybe adding descrtiption to submition */}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {/* @ts-ignore */}
+                      {studentDetails[key].map((studentRow: any, i: number) => (
+                        <TableRow key={studentRow.studentId}>
+                          <TableCell component="th" scope="row">
+                            {studentRow?.Student?.firstName +
+                              " " +
+                              studentRow?.Student?.lastName}
+                          </TableCell>
+                          <TableCell>
+                            {studentRow?.Student?.Class.name}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.status}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.updatedAt
+                              ? convertDateToString(studentRow.updatedAt)
+                              : "hasn't submitted yet"}
+                          </TableCell>
+                          <TableCell align="left">
+                            {studentRow.submitLink
+                              ? studentRow.submitLink
+                              : "none"}
+                          </TableCell>
+                          <TableCell align="left">
+                            {key !== "pending" ? (
+                              <GradeButton
+                                taskLabels={taskDetails.TaskLabels}
+                                grades={studentRow.grades}
+                                key={taskDetails.title}
+                                taskId={taskDetails.id}
+                                studentId={studentRow.studentId}
+                                overallGrade={studentRow.overallGrade}
+                                taskOfStudentId={studentRow.id}
+                              />
+                            ) : (
+                              "N/A"
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <br />
+                </>
+              ))}
             </Box>
           </Collapse>
         </TableCell>
@@ -371,7 +575,7 @@ export default function TeacherTaskBoard(props: any) {
         `/api/v1/task/byteacherid/${user.id}`,
         { params: { filters: filter } }
       );
-
+      console.log(data);
       setTeacherTasks(data);
     } catch (error) {
       return Swal.fire("Error", error, "error");
@@ -403,12 +607,18 @@ export default function TeacherTaskBoard(props: any) {
   const taskArray =
     teacherTasks?.map((task: any) => {
       return createTask(
+        task.id,
         task.title,
+        task.body,
         task.type,
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
-        task.TaskofStudents
+        task.TaskofStudents,
+        task.TaskLabels,
+        task.createdBy,
+        task.status
+        // task.Grades
       );
     }) || [];
 
@@ -467,6 +677,9 @@ export default function TeacherTaskBoard(props: any) {
               <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
+              <TableCell align="center" style={{ width: "4vw" }}>
+                <b>Edit</b>
+              </TableCell>
             </TableRow>
           </TableHead>
           {/* <TableBody>
@@ -486,7 +699,7 @@ export default function TeacherTaskBoard(props: any) {
               : null}
             {emptyRows > 0 && (
               <TableRow style={{ height: 91 * emptyRows }}>
-                <TableCell colSpan={8} />
+                <TableCell colSpan={9} />
               </TableRow>
             )}
           </TableBody>
@@ -495,7 +708,7 @@ export default function TeacherTaskBoard(props: any) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={8}
+                colSpan={9}
                 count={taskArray ? taskArray.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}

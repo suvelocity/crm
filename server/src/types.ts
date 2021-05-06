@@ -1,5 +1,6 @@
 import { Model } from "sequelize/types";
 import { Request } from "express";
+import { number } from "joi";
 
 export interface IJob {
   Company?: ICompany;
@@ -9,8 +10,9 @@ export interface IJob {
   requirements: string;
   location: string;
   description: string;
-  contact: string;
   additionalDetails: string;
+  isActive: string;
+  closeComment: string;
 }
 
 export interface ITeacher {
@@ -24,7 +26,15 @@ export interface ITeacher {
   Task?: ITask;
   Lesson?: ILesson;
   Notice?: INotice;
-  cmUser?:string;
+  cmUser?: string;
+}
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number;
 }
 
 export interface IStudent {
@@ -36,18 +46,20 @@ export interface IStudent {
   idNumber: string | null;
   additionalDetails?: string;
   classId: number;
+  gradeAvg?: number;
   age?: number | string | null;
   address: string;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  Events?: IEvent[];
+  AcademicBackgrounds?: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
   citizenship?: string;
   fccAccount?: string;
   resumeLink?: string;
-  cmUser?:string;
+  cmUser?: string;
 }
 
 export interface IClass {
@@ -59,17 +71,21 @@ export interface IClass {
   cycleNumber: number;
   zoomLink: string;
   additionalDetails: string;
-  cmId?:string;
+  cmId?: string;
 }
 
 export interface IEvent {
   id?: number;
   userId: number;
-  relatedId: string ;
+  updatedAt?: Date;
+  relatedId: string;
   eventName: string;
   entry?: any;
+  maxDate?: Date;
+  Job?: IJob;
   type: string;
   date: Date;
+  cancelMail?: boolean;
 }
 export interface RequestWithUser extends Request {
   user?: IUser;
@@ -132,11 +148,42 @@ export interface ITaskofStudent {
   submitLink?: string;
   description?: string;
 }
+
+export interface ILabel {
+  id?: number;
+  name: string;
+}
+export interface ITaskLabel {
+  id?: number;
+  taskId: number;
+  labelId: number;
+  Criteria: ICriterion[];
+  toDelete?: boolean;
+}
+
+export interface ICriterion {
+  id?: number;
+  taskId: number;
+  labelId: number;
+  name: string;
+  toDelete?: boolean;
+}
+
+export interface IGrade {
+  id?: number;
+  belongsToId: number;
+  belongsTo: string;
+  studentId: number;
+  grade: number;
+  freeText: string;
+  weight?: number;
+}
 export interface SeqInclude {
   model: Model;
   attributes?: string[];
   include?: SeqInclude[];
   required?: boolean;
+  as?: string;
   where?: {};
 }
 
@@ -158,6 +205,22 @@ export interface IMentor {
   job: string;
   available: boolean;
   gender: string;
+}
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
 }
 export interface IForm {
   id?: number;

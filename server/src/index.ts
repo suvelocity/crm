@@ -8,6 +8,7 @@ import { IClass } from "./types";
 import axios from "axios";
 import { urlencoded } from "express";
 const token = process.env.CM_ACCESS;
+console.log(process.env.NODE_ENV);
 if (token) {
   if (token.startsWith("'") && token.endsWith("'")) {
     process.env.CM_ACCESS = token.slice(1, token.length - 1);
@@ -21,7 +22,7 @@ async function establishConnection() {
   process.env.MY_URL = url;
   console.log("MY_URL", process.env.MY_URL);
 }
-if (env === "development") {
+if (env === "development2") {
   establishConnection()
     .then(async () => {
       const { CM_ACCESS: cmAccess, MY_URL: url } = process.env;

@@ -7,10 +7,11 @@ export interface IStudent {
   phone?: string;
   Class: IClass;
   address: string;
+  gradeAvg?: number;
   age?: number;
   maritalStatus: string;
   children?: number;
-  academicBackground: string;
+  AcademicBackgrounds: IAcademicBackground[];
   militaryService?: string;
   workExperience?: string;
   languages?: string;
@@ -22,6 +23,7 @@ export interface IStudent {
   Events: IEvent[];
   resumeLink?: string;
   fccAccount?: string;
+  createUser: boolean;
 }
 
 export interface ITeacher {
@@ -56,8 +58,9 @@ export interface IJob {
   requirements: string;
   location: string;
   description: string;
-  contact: string;
   additionalDetails: string;
+  isActive: boolean;
+  closeComment: string | undefined | null;
   Events: IEvent[];
 }
 
@@ -71,7 +74,16 @@ export interface IClass {
   zoomLink: string;
   additionalDetails: string;
   Students: Omit<IStudent, "Class">[];
-  cmId?:string;
+  cmId?: string;
+}
+
+export interface IAcademicBackground {
+  id?: number;
+  institution: string;
+  studyTopic: string;
+  degree: string;
+  averageScore: number;
+  gradeAvg: number;
 }
 export interface IClassOfTeacher {
   id: number;
@@ -95,6 +107,7 @@ export interface ICompany {
 }
 
 export type status =
+  | "Started application process"
   | "Sent CV"
   | "Phone Interview"
   | "First interview"
@@ -126,11 +139,14 @@ type eventTypes = "jobs" | "courses" | "mentors" | "challengeMe" | "fcc";
 export type IFilterOptions = "Class" | "Course" | "JobStatus" | "Name";
 
 export interface filterStudentObject {
-  Class?: string[];
+  Class?: string[] | number[];
   Course?: string[];
   Company?: string[];
   JobStatus?: string[];
+  Languages?: string[];
+  AverageScore?: string;
   Name?: string[];
+  ReligionLevels?: string[];
 }
 export interface Name {
   firstName: string;
@@ -139,19 +155,34 @@ export interface Name {
 
 export interface SelectInputs {
   filterBy: string;
+  label?: string;
+  singleOption?: boolean;
   possibleValues: string[];
+}
+export interface SelectInputsV2 {
+  filterBy: string;
+  label?: string;
+  singleOption?: boolean;
+  possibleValues: { name: string; id?: number | string }[];
 }
 
 export interface IMentor {
   id?: number;
   name: string;
   company: string;
+  age: string;
   email: string;
   phone: string;
   address: string;
   role: string;
   experience: number;
   available: boolean;
+  education: string;
+  agreedTo?: string;
+  preference: string;
+  religionLevel: string;
+  additional: string;
+  mentoringExperience: string;
   gender: string;
   Students?: Partial<IStudent>[];
   Meetings?: Partial<IMeeting>[];
@@ -201,7 +232,7 @@ export interface IMentorProgram {
   open: boolean;
   endDate: string;
   startDate: string;
-  email: boolean
+  email: boolean;
 }
 
 export interface IMentorForm {
@@ -280,6 +311,9 @@ export interface ITask {
   type: taskType;
   status: "active" | "disabled";
   body?: string;
+  labels?: ITaskLabel[];
+  TaskLabels?: Partial<ITaskLabel>[];
+  Grades?: Grades[]; // Partial<IGrade>[];
 }
 export interface ITaskofStudent {
   id?: number;
@@ -289,6 +323,59 @@ export interface ITaskofStudent {
   status: string;
   submitLink?: string;
   description?: string;
+}
+
+export interface ILabel {
+  id?: number;
+  name: string;
+  Grades?: Partial<IGrade>[];
+}
+
+export interface ITaskLabel {
+  id?: number;
+  taskId?: number;
+  labelId: number;
+  name?: string;
+  Label?: ILabel;
+  Criteria: ITaskCriteria[];
+  toDelete?: boolean;
+}
+
+export interface ITaskCriteria {
+  id?: number;
+  taskId?: number;
+  labelId?: number;
+  name: string;
+  Grades?: Grades[];
+  toDelete?: boolean;
+  // Grades?: Partial<IGrade>[];
+}
+
+export interface gradeObj {
+  studentId: string;
+  grade: number;
+}
+export interface LabelIdsWithGrades {
+  labelId: string;
+  Grades: gradeObj[];
+  Criteria: { Grades: gradeObj[] }[];
+}
+export interface studentGrades {
+  sum: number;
+  count: number;
+}
+export interface LabelIdsWithGradesPerStudent {
+  [labelId: string]: { [studentId: string]: studentGrades };
+}
+
+export interface IGrade {
+  id?: number;
+  grade?: number;
+}
+export type Criteria = null | { grade: number };
+export interface Grades {
+  Criteria: Criteria[];
+  Label: null | { grade: number };
 }
 
 export type ThemeType = "dark" | "light";

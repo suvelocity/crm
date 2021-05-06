@@ -14,11 +14,11 @@ const router = Router();
 router.get("/", async (req: Request, res: Response) => {
   try {
     const classes: IClass[] = await Class.findAll({
-      where: {
-        endingDate: {
-          [Op.gt]: new Date(),
-        },
-      },
+      // where: {
+      //   endingDate: {
+      //     [Op.gt]: new Date(),
+      //   },
+      // },
     });
     res.json(classes);
   } catch (error) {

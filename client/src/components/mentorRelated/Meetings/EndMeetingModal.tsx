@@ -75,7 +75,7 @@ function EndMeetingModal({
     handleClose();
     try {
       data.occurred = true;
-      await network.put(`/api/V1/M/meeting/${meeting.id}`, data);
+      await network.put(`/api/v1/M/meeting/${meeting.id}`, data);
       getMeetings();
     } catch (error) {
       Swal.fire("Error Occurred", error.message, "error");

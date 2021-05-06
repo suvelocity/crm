@@ -147,23 +147,7 @@ const AddJob = (props: Props) => {
                   <ActionBtn />
                 )
               ) : null}
-              {generateBrs(2)}
-              <TextField
-                id="contact"
-                name="contact"
-                fullWidth
-                defaultValue={props.job ? props.job.contact : ""}
-                inputRef={register({ required: "Contact is required" })}
-                label="Contact"
-              />
-              {!empty ? (
-                errors.contact ? (
-                  <ErrorBtn tooltipTitle={errors.contact.message} />
-                ) : (
-                  <ActionBtn />
-                )
-              ) : null}
-              {generateBrs(4)}
+              {generateBrs(6)}
             </div>
             <div></div> {/*placeholder*/}
             <div>
@@ -177,7 +161,7 @@ const AddJob = (props: Props) => {
                 id="description"
                 name="description"
                 inputRef={register({
-                  required: "Description is required",
+                  //required: "Description is required",
                   maxLength: {
                     value: 500,
                     message: "Description are too long",
@@ -202,7 +186,7 @@ const AddJob = (props: Props) => {
                 variant="outlined"
                 name="requirements"
                 inputRef={register({
-                  required: "Requirements are required",
+                  // required: "Requirements are required",
                   maxLength: {
                     value: 500,
                     message: "Requirements are too long",

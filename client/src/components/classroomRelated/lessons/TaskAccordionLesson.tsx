@@ -107,16 +107,15 @@ const TaskAccordrionContainer = styled.div`
 `;
 
 const StyledAccordion = styled(Accordion)`
-  background-color: ${({ theme }: { theme: any }) =>
-    theme.colors.accordion}; //TODO change
+  background-color: ${({ theme }: { theme: any }) => theme.colors.accordion};
   width: 100%;
 `;
 const StyledSummery = styled(AccordionSummary)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
   font-weight: bold;
   font-size: 20px;
 `;
 
 const StyledDetails = styled(AccordionDetails)`
-  color: ${({ theme }: { theme: any }) => theme.colors.font}; //TODO change
+  color: ${({ theme }: { theme: any }) => theme.colors.font};
 `;

@@ -1,6 +1,7 @@
 import { status } from "../typescript/interfaces";
 import { IStudent } from "../typescript/interfaces";
 import Cookies from "js-cookie";
+import Swal, { SweetAlertIcon, SweetAlertOptions } from "sweetalert2";
 
 export const searchResults = (search: string | number, array: IStudent[]) => {
   return array.filter((student: IStudent) => {
@@ -12,6 +13,7 @@ export const searchResults = (search: string | number, array: IStudent[]) => {
 };
 
 export const getRefreshToken = () => Cookies.get("refreshToken") || "";
+
 export const formatPhone = (phoneNumber: string | undefined) => {
   if (!phoneNumber) return null;
   if (isNaN(+phoneNumber)) return phoneNumber;
@@ -22,6 +24,44 @@ export const formatPhone = (phoneNumber: string | undefined) => {
   return newArr.join("");
 };
 
+// export const execSwalConfirmation = async () =>
+//   Swal.fire({
+//     title: "Are you sure?",
+//     text: "You won't be able to revert this!",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonColor: "#3085d6",
+//     cancelButtonColor: "#d33",
+//     confirmButtonText: "Yes, delete it!",
+//   });
+
+export const fireSwalSuccess = async (
+  title: string,
+  text: string | undefined = undefined
+) => Swal.fire(title, text, "success");
+
+export const fireSwalError = async (text: string) =>
+  Swal.fire("Error Occurred", text, "error");
+
+export const promptSwalConfirmation = async (
+  title: string,
+  text: string,
+  icon: SweetAlertIcon,
+  options?: SweetAlertOptions
+) =>
+  Swal.fire({
+    title,
+    text,
+    icon,
+    showCancelButton: true,
+    cancelButtonColor: "#3085d6",
+    confirmButtonColor: "#FF0000",
+    confirmButtonText: "Yes!",
+    ...options,
+  }).then((result) => {
+    return result.isConfirmed === true;
+  });
+
 export const onTheSameDay = (day1: number, day2: number) => {
   const sameDayNumber = new Date(day1).getDate() === new Date(day2).getDate();
   const Day = 1000 * 60 * 60 * 24;
@@ -30,6 +70,7 @@ export const onTheSameDay = (day1: number, day2: number) => {
 };
 
 export const statuses: status[] = [
+  "Started application process",
   "Sent CV",
   "Phone Interview",
   "First interview",

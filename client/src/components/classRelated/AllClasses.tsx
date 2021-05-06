@@ -91,25 +91,29 @@ function AllClasses({
           {classes &&
             classes.map((cls) => (
               <li>
-                <StyledLink to={`/class/${cls.id}`} disabled color="black">
                   <StyledDiv
                     repeatFormula={
-                      removeClass ? "1fr 2.5fr 2.5fr 1fr 0.5fr" : repeatFormula
+                      removeClass ? "7fr 0.2fr" : '1fr'
                     }
                   >
+                <StyledLink to={`/class/${cls.id}`} disabled color="black">
+                  <StyledDiv
+                      repeatFormula={repeatFormula}
+                    >
                     <ClassIcon />
                     <StyledSpan weight="bold">
                       {capitalize(cls.name)}
                     </StyledSpan>
                     <StyledSpan>{capitalize(cls.course)}</StyledSpan>
                     <StyledSpan>{cls.cycleNumber}</StyledSpan>
-                    {removeClass && (
+                  </StyledDiv>
+                </StyledLink>
+                {removeClass && (
                       <StyledSpan>
                         <DeleteIcon onClick={(e) => removeClass(cls.id, e)} />
                       </StyledSpan>
                     )}
                   </StyledDiv>
-                </StyledLink>
               </li>
             ))}
         </StyledUl>

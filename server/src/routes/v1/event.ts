@@ -13,7 +13,7 @@ import { Model } from "sequelize";
 import { IEvent, IJob, IStudent, IClass } from "../../types";
 import { eventsSchema } from "../../validations";
 import { checkToken, validateAdmin, validateTeacher } from "../../middlewares";
-import transporter from "../../mail";
+import { sendMail } from "../../mail";
 //@ts-ignore
 import { Op, Sequelize, query, QueryTypes } from "sequelize";
 
@@ -37,7 +37,7 @@ Scale-Up Velocity.`,
 });
 
 router.post("/challengeMe", async (req, res) => {
-  //todo add validate chllengeme!
+  //TODO add validate chllengeme!
   try {
     interface CM {
       eventName: "Submitted Challenge" | "Started Challenge";
@@ -75,15 +75,13 @@ router.post("/challengeMe", async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
     const createdEvent = await Event.create(event);
-    console.log('LOGGED EVENT',event,createdEvent)
     return res.status(200).send("noice");
   } catch (error) {
-    console.trace(error)
     res.status(500).json({ error: error.message });
   }
 });
 
-router.use(checkToken)
+router.use(checkToken);
 
 router.get("/all/job", validateAdmin, async (req: Request, res: Response) => {
   try {
@@ -229,13 +227,13 @@ router.get(
   async (req: Request, res: Response) => {
     interface options {
       classes: { name: string; id: string }[];
-      courses: string[];
-      statuses: string[];
+      courses: { name: string }[];
+      statuses: { name: string }[];
       companies: string[];
     }
     try {
       const uniqueClassesQuery = `
-    SELECT DISTINCT Classes.name  FROM Events
+    SELECT DISTINCT Classes.name, Classes.id  FROM Events
     join Students on Events.user_id = Students.id
     join Classes on Students.class_id = Classes.id
     WHERE Events.type = 'jobs'`;
@@ -257,7 +255,7 @@ router.get(
         }
       );
       const uniqueCompanyQuery = `
-    SELECT DISTINCT(Companies.name) FROM Events
+    SELECT DISTINCT Companies.name, Companies.id FROM Events
     join Jobs on Events.related_id = Jobs.id
     join Companies on Jobs.company_id = Companies.id
     WHERE Events.type = 'jobs'`;
@@ -291,21 +289,23 @@ router.get(
           statusesToSend.push(status);
         }
       });
-      const finalStatuses: string[] = [];
+      const finalStatuses: { name: string }[] = [];
       statusesToSend.forEach((status: any, i: number) => {
         if (
           !finalStatuses.find(
-            (status2: string) => status2 === status.event_name
+            (status2: { name: string }) => status2.name === status.event_name
           )
         ) {
-          finalStatuses.push(status.event_name);
+          finalStatuses.push({ name: status.event_name });
         }
       });
       const options: options = {
-        courses: courses.map((object: { course: string }) => object.course),
+        courses: courses.map((object: { course: string }) => ({
+          name: object.course,
+        })),
         classes: [...classes],
         statuses: [...finalStatuses],
-        companies: companies.map((object: { name: string }) => object.name),
+        companies: companies, //.map((object: { name: string }) => object.name),
       };
 
       res.json(options);
@@ -317,15 +317,13 @@ router.get(
 );
 
 router.get("/updates", validateTeacher, async (req: Request, res: Response) => {
-  try{
+  try {
     const result = await fetchFCC();
     res.status(200).json(result);
-  }
-  catch(e){
-    res.status(500).json(e)
+  } catch (e) {
+    res.status(500).json(e);
   }
 });
-
 
 router.post("/", validateAdmin, async (req: Request, res: Response) => {
   try {
@@ -336,6 +334,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       entry,
       date,
       type,
+      cancelMail,
     }: IEvent = req.body;
     const { error } = eventsSchema.validate({
       relatedId,
@@ -368,7 +367,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
       //   jobMsg,
       //   date
       // );
-    } else if (eventName === "Sent CV") {
+    } else if (eventName === "Sent CV" && !cancelMail) {
       const job: IJob = (
         await Job.findByPk(relatedId, {
           include: [{ model: Company, attributes: ["name"] }],
@@ -379,7 +378,7 @@ router.post("/", validateAdmin, async (req: Request, res: Response) => {
           attributes: ["firstName", "lastName", "email"],
         })
       ).toJSON();
-      transporter.sendMail(
+      sendMail(
         mailOptions(
           student.email,
           job.position,

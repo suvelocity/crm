@@ -4,12 +4,14 @@ import {
   mentorProgramSchemaToPut,
 } from "../../../validations";
 //@ts-ignore
-import { MentorStudent,MentorProgram, Class, Student, Mentor, Meeting, MentorForm} from "../../../models";
+import { MentorStudent, MentorProgram, Class } from "../../../models";
+//@ts-ignore
+import { Student, Mentor, Meeting, MentorForm } from "../../../models";
 import { IMentorProgram, IDashboard } from "../../../types";
-import transporter from "../../../mail";
+import { sendMail } from "../../../mail";
 
 const mailProps = (to: string, subject: string, text: string) => ({
-  from: process.env.EMAIL_USER,
+  from: "lea.soshnik@suvelocity.org", //sender || process.env.EMAIL_USER,
   to,
   subject,
   text,
@@ -25,6 +27,7 @@ router.get("/all", async (req: Request, res: Response) => {
     });
     res.json(allProgram);
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -75,11 +78,11 @@ router.get("/dashboard/:id", async (req: Request, res: Response) => {
 router.get("/forms/:id", async (req: Request, res: Response) => {
   try {
     const programForms = await MentorProgram.findOne({
-      where: { id: req.params.id},
+      where: { id: req.params.id },
       attributes: ["id"],
       include: [
         {
-          model: MentorForm ,
+          model: MentorForm,
         },
       ],
     });
@@ -166,23 +169,40 @@ router.post("/startmails/:id", async (req, res) => {
     });
 
     await pairs.forEach(async (pair: any) => {
-      await transporter.sendMail(
+      await sendMail(
         mailProps(
           pair.Student.email,
           pair.MentorProgram.name,
-          `Welcome to ${pair.MentorProgram.name} \n \n
-         In the next few weeks you gonna have someone to talk, consult and learn about what you need to know for your next job. \n
-         We hope you will grow from this opportunity and wish you the best. \n
-         Please do not forget to help us keep treack your meeting and feedbacks via http://35.226.223.57:8080/mentor/meeting/${pair.id} \n
-         Your mentor: \n
-          -  ${pair.Mentor.name} \n
-          -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
-          -  company: ${pair.Mentor.company} \n
-          -  role: ${pair.Mentor.role}`
-        ), (error: any) => res.status(500).json({ error: error.message })
+          `
+          Welcome to ${pair.MentorProgram.name} - Mentoring Program
+          
+                   In the next few weeks you you will have a Mentor- a person to consult with and to learn from, in order to raise your chances in finding your next job.
+          
+                   We hope you will grow from this experience and fulfill this wonderful opportunity.
+          
+                   Please do not forget to help us keep track of your meetings and feedbacks via http://35.226.223.57:8080/mentor/meeting/48
+          
+                   Your mentor is: \n
+                   -  ${pair.Mentor.name} \n
+                   -  contact: ${pair.Mentor.email} / ${pair.Mentor.phone} \n
+                   -  company: ${pair.Mentor.company} \n
+                   -  role: ${pair.Mentor.role}
+          
+           
+          
+          Please contact your mentor and schedule your first meeting.
+          
+           
+          
+          For more questions please contact: Lea.soshnik@suvelocity.org
+          
+           
+          `
+        ),
+        (error: any) => res.status(500).json({ error: error.message })
       );
 
-      await transporter.sendMail(
+      await sendMail(
         mailProps(
           pair.Mentor.email,
           pair.MentorProgram.name,
@@ -192,14 +212,18 @@ router.post("/startmails/:id", async (req, res) => {
           -  ${pair.Student.firstName + " " + pair.Student.lastName}\n
           -  contact: ${pair.Student.email} / ${pair.Student.phone} \n
       `
-        ), (error: any) => res.status(500).json({ error: error.message })
+        ),
+        (error: any) => res.status(500).json({ error: error.message })
       );
     });
-    await MentorProgram.update({ email: true },{
-      where: {
-        id: req.params.id
+    await MentorProgram.update(
+      { email: true },
+      {
+        where: {
+          id: req.params.id,
+        },
       }
-    })
+    );
     res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -223,24 +247,16 @@ router.post("/mails/:id", async (req, res) => {
     });
     await pairs.forEach((pair: any) => {
       if (req.query.recievers !== "mentors") {
-        transporter.sendMail(
-          mailProps(
-            pair.Student.email,
-            req.body.subject,
-            req.body.content
-          )
+        sendMail(
+          mailProps(pair.Student.email, req.body.subject, req.body.content)
         );
-      };
+      }
       if (req.query.recievers !== "students") {
-        transporter.sendMail(
-          mailProps(
-            pair.Mentor.email,
-            req.body.subject,
-            req.body.content
-          )
+        sendMail(
+          mailProps(pair.Mentor.email, req.body.subject, req.body.content)
         );
-      };
-    })
+      }
+    });
     res.json(pairs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -250,11 +266,13 @@ router.post("/mails/:id", async (req, res) => {
 // Edit mentor forms sent attribute
 router.put("/editForm/:id", async (req, res) => {
   try {
-    const programForms = await MentorForm.update({ sent: true },
+    const programForms = await MentorForm.update(
+      { sent: true },
       {
         where: { id: req.params.id },
-      })
-    res.json('sent!');
+      }
+    );
+    res.json("sent!");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

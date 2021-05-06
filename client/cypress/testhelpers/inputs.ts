@@ -15,13 +15,6 @@ export const jobInputs = [
   },
   {
     type: "textfield",
-    field: "contact",
-    errors: [],
-    trueValue: "Yesyes",
-    updatedValue: "Ci agent",
-  },
-  {
-    type: "textfield",
     field: "description",
     errors: [],
     trueValue: "Tel Aviv",
@@ -170,13 +163,6 @@ export const studentInputs = [
     errors: [],
     trueValue: "Debbie",
     updatedValue: "Broncks",
-  },
-  {
-    field: "academicBackground",
-    type: "textfield",
-    errors: [],
-    trueValue: "High school diploma.",
-    updatedValue: "Banana Juggling Expert",
   },
   {
     field: "militaryService",
