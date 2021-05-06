@@ -5,6 +5,7 @@ on:
     branches: [gcloud, production, dev] # specify the branch you want the deploy to take place from
   # push:
   #   branches: [gcloud, production]
+  pull_request_target:
 
 env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
