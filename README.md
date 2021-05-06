@@ -1,5 +1,7 @@
 # CRM - STAGING
 
+<!-- Easter egg 🐰🥚-->
+
 _New features are checked **here** before going to production_
 
 Project management for courses and beyond.
