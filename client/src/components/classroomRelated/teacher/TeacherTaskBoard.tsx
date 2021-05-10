@@ -17,6 +17,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import LinkIcon from "@material-ui/icons/Link";
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import StarIcon from '@material-ui/icons/Star';
+
 import Swal from "sweetalert2";
 import { Button, MenuItem, Modal, Select } from "@material-ui/core";
 import {
@@ -41,6 +44,7 @@ import { ITaskLabel, taskType } from "../../../typescript/interfaces";
 import { capitalize } from "../../../helpers/general";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTask from "../lessons/AddTask";
+import { TasksFidget } from "../dashboard/DashBoardFidgets";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,12 +91,33 @@ const createTask = (
   lesson: string,
   endDate: Date,
   externalLink: string,
+  feedbackCount: number,
+  rankCount: number,
+  totalRank: number,
   TaskofStudents: [],
   TaskLabels: ITaskLabel[],
   createdBy: number,
   status: "active" | "disabled"
   // Grades: Grades[] //Array<IGrade | Partial<ITaskLabel>>
 ) => {
+  console.log({
+    id,
+    title,
+    body,
+    type,
+    lesson,
+    endDate,
+    externalLink,
+    feedbackCount,
+    rankCount,
+    totalRank,
+    TaskofStudents,
+    TaskLabels,
+    createdBy,
+    status,
+    // Grades,
+  });
+  
   return {
     id,
     title,
@@ -101,6 +126,9 @@ const createTask = (
     lesson,
     endDate,
     externalLink,
+    totalRank,
+    rankCount,
+    feedbackCount,
     TaskofStudents,
     TaskLabels,
     createdBy,
@@ -123,6 +151,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   const [open, setOpen] = React.useState(false);
   const [studentDetails, setStudentDetails] = useState<any[]>([]);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [feedbacksOpen, setFeedbacksOpen] = useState<boolean>(false);
 
   const classes = useStyles();
   const rowClasees = useRowStyles();
@@ -213,7 +242,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
   };
 
   // not really removing, just closing modal
-  const handleClose = () => {
+  const handleEditModalClose = () => {
     setTaskToUpdate(deepCloneWithJson(taskDetails));
     setEditModalOpen(false);
   };
@@ -302,7 +331,7 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
     <div style={modalStyle} className={classes.paper}>
       <AddTask
         students={[]}
-        handleRemove={handleClose}
+        handleRemove={handleEditModalClose}
         handleChange={handleTaskChange}
         task={taskToUpdate}
         // studentsToTask={studentsToTask}
@@ -313,9 +342,19 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
       </Button>
     </div>
   );
+  const feedbackModalBody = (
+    (taskDetails.TaskofStudents.map((task: any, i) => {
+        if (task.feedback === null) return null;
+        return (<div key={i} style={{ width: '30rem', border: '0.6px solid #e0e0e0', padding: '2rem', paddingTop: '1.5rem', margin: '1rem', borderRadius: '3px' }}><span style={{ color: "#e0e0e0", marginBottom: "3rem", fontSize: '1.5rem' }}>#{i}</span><br />{console.log(task)
+        } <span>{task.Student.firstName+" "+task.Student.lastName+": "+String(task.feedback)}</span></div>)
+      })).filter(feedback => feedback !== null)
+    );
+  
+  // });
 
   return (
     <>
+     
       <TableRow className={rowClasees.root}>
         <TableCell>
           <IconButton
@@ -328,6 +367,8 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
+          {console.log(taskDetails.title)}
+          
           {taskDetails.title}
         </TableCell>
         <TableCell align="center">{classList}</TableCell>
@@ -358,17 +399,34 @@ function Row(props: { row: ReturnType<typeof createTask> }) {
             <LinkIcon />
           </StyledAtavLink>
         </TableCell>
-        <TableCell>
+        <TableCell align="center" >
+          <Hoverable onClick={() => setFeedbacksOpen(true)}>
+            {taskDetails?.feedbackCount}
+          <ChatBubbleIcon />
+          </Hoverable>
+        </TableCell>
+        <TableCell align="center">
           <Hoverable onClick={() => setEditModalOpen(true)}>
             <EditIcon />
           </Hoverable>
         </TableCell>
-        <Modal open={editModalOpen} onClose={handleClose}>
+        <TableCell align="center">
+          { taskDetails?.totalRank/taskDetails.rankCount || 0}
+        <StarIcon />
+        </TableCell>
+        <Modal open={editModalOpen} onClose={handleEditModalClose}>
           {editTaskModalBody}
+        </Modal>
+        <Modal open={feedbacksOpen} onClose={() => setFeedbacksOpen(false)}>
+          {<div style={modalStyle} className={classes.paper}>
+        <h3 style={{ fontSize: '2rem', marginLeft: '1rem' }}>{taskDetails.title} feedbacks:</h3>
+            {feedbackModalBody?.length > 0 ? feedbackModalBody : <span style={{marginLeft: '2rem', width: '30rem'}}>"No feedbacks yet..."</span>}
+            </div>
+            }
         </Modal>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               {Object.keys(studentDetails).map((key: string) => (
@@ -575,7 +633,7 @@ export default function TeacherTaskBoard(props: any) {
         `/api/v1/task/byteacherid/${user.id}`,
         { params: { filters: filter } }
       );
-      console.log(data);
+      // console.log(data);
       setTeacherTasks(data);
     } catch (error) {
       return Swal.fire("Error", error, "error");
@@ -583,10 +641,13 @@ export default function TeacherTaskBoard(props: any) {
   };
 
   const getFilterOptins: () => Promise<void> = async () => {
-    const { data: options }: { data: any } = await network.get(
-      `/api/v1/task/options/${user.id}`
-    );
-    setFilterOptions(options);
+    try {
+      
+      const { data: options }: { data: any } = await network.get(`/api/v1/task/options/${user.id}`);
+      console.log(options);
+      
+      setFilterOptions(options);
+    } catch (e) { console.log(e) }
   };
 
   const makeFilter = useCallback(() => {
@@ -600,9 +661,9 @@ export default function TeacherTaskBoard(props: any) {
     fetchTeacherTasks();
   }, [typeFilter, classFilter]);
 
-  useEffect(() => {
-    getFilterOptins();
-  }, []);
+  // useEffect(() => {
+  //   getFilterOptins();
+  // }, []);
 
   const taskArray =
     teacherTasks?.map((task: any) => {
@@ -614,6 +675,9 @@ export default function TeacherTaskBoard(props: any) {
         task.Lesson?.title,
         task.endDate,
         task.externalLink,
+        task.feedbackCount,
+        task.rankCount,
+        task.totalRank,
         task.TaskofStudents,
         task.TaskLabels,
         task.createdBy,
@@ -677,8 +741,14 @@ export default function TeacherTaskBoard(props: any) {
               <TableCell align="center" style={{ width: "6vw" }}>
                 <b>Link</b>
               </TableCell>
+              <TableCell align="center" style={{ width: "6vw" }}>
+                <b>Feedbacks</b>
+              </TableCell>
               <TableCell align="center" style={{ width: "4vw" }}>
                 <b>Edit</b>
+              </TableCell>
+              <TableCell align="center" style={{ width: "4vw" }}>
+                <b>Rank</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -699,7 +769,7 @@ export default function TeacherTaskBoard(props: any) {
               : null}
             {emptyRows > 0 && (
               <TableRow style={{ height: 91 * emptyRows }}>
-                <TableCell colSpan={9} />
+                <TableCell colSpan={11} />
               </TableRow>
             )}
           </TableBody>
@@ -708,7 +778,7 @@ export default function TeacherTaskBoard(props: any) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={9}
+                colSpan={11}
                 count={taskArray ? taskArray.length : 0}
                 rowsPerPage={rowsPerPage}
                 page={page}

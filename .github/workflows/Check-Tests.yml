@@ -1,10 +1,12 @@
 name: Check Tests
 
 on:
-  pull_request:
-    branches: [gcloud, master, dev, staging, cloud-run] # specify the branch you want the deploy to take place from
+  # pull_request:
+  #   branches: [gcloud, master, dev, staging, cloud-run] # specify the branch you want the deploy to take place from
   # push:
   #   branches: [gcloud, production]
+  pull_request_target:
+    branches: [gcloud, master, dev, staging, cloud-run]
 
 env:
   ENV_FILE: ${{ secrets.ENV_FILE }} # Secret with all additional environment variables.
