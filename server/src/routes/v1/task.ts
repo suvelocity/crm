@@ -231,6 +231,7 @@ const changeTaskStatus: (
       incrementStuff.total_rank = rank
     }
     console.log(taskOfStudent);
+    taskOfStudent.status = "submitted"
     taskOfStudent.save();
     if ((oldRank)||oldFeedback) {
       Task.decrement(decrementStuff,{ where: { id: taskOfStudent.taskId } })
