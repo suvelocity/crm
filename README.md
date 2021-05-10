@@ -1,5 +1,5 @@
 # CRM - STAGING
-
+<!-- This is DEV branch-->
 _New features are checked **here** before going to production_
 
 Project management for courses and beyond.
@@ -29,7 +29,11 @@ deployment on cloud: http://35.226.223.57:8080/
    This could take a bit of time, you may use it to call you mother, she worries.
 
 2. Create a schema in mySQL (Docker/local), call it what you like (defaults to "crm")
-3. Create a backend `.env` file. An [example](server/example.env) file is provided.
+3. Create a 2 backend `.env` files:
+   - one in /server/
+   - second in /server/src
+   An [example](server/example.env) file is provided.
+   !Ubuntu users should remove all quotes from `.env` file.
 4. Edit `.env`.
 
 ```js
@@ -46,6 +50,7 @@ EMAIL_PASSWORD = "";
 ```
 
 5. Run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation.
+!Run `npm run seed` (optional).
 1. Run `npm run dev` to start the server in dev mode (nodemon hot reload)
 
 ### client
