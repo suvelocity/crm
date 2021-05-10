@@ -56,6 +56,7 @@
     "nodemon": "^2.0.6",
     "password-generator": "^2.3.2",
     "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0",
     "ts-node": "^9.0.0",
     "typescript": "~4.0.5"
   },
@@ -64,7 +65,6 @@
     "cross-env": "^7.0.3",
     "jest": "^26.6.3",
     "ngrok": "^3.4.0",
-    "sequelize-cli": "^6.2.0",
     "supertest": "^6.0.1"
   }
 }
