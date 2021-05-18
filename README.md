@@ -1,5 +1,7 @@
 # CRM - STAGING
+
 <!-- This is DEV branch-->
+
 _New features are checked **here** before going to production_
 
 Project management for courses and beyond.
@@ -30,10 +32,13 @@ deployment on cloud: http://35.226.223.57:8080/
 
 2. Create a schema in mySQL (Docker/local), call it what you like (defaults to "crm")
 3. Create a 2 backend `.env` files:
+
    - one in /server/
    - second in /server/src
-   An [example](server/example.env) file is provided.
-   !Ubuntu users should remove all quotes from `.env` file.
+     An [example](server/example.env) file is provided.
+
+   _Ubuntu users should remove all quotes from `.env` file._
+
 4. Edit `.env`.
 
 ```js
@@ -50,7 +55,9 @@ EMAIL_PASSWORD = "";
 ```
 
 5. Run `npm run migrate` to migrate all required tables into your schema. This could take a while, you can try meditation.
-!Run `npm run seed` (optional).
+
+1. **Optional** - Run `npm run seed`
+
 1. Run `npm run dev` to start the server in dev mode (nodemon hot reload)
 
 ### client
@@ -68,6 +75,7 @@ REACT_APP_API_KEY = ""; // google api key for location services
 - If you have changed `PORT` in the server [`.env`](server/example.env), you need to change the `proxy` property in the client [`package.json`](client/package.json)
 
 4. Run `npm start` to start react in development mode
+
 5. To log into the service oyu need credentials, contact your local admin to get them
 
 ## Contributing
@@ -81,20 +89,41 @@ REACT_APP_API_KEY = ""; // google api key for location services
 
 1. Develop the feature. Try to only work on one feature in a branch for ease of merging.
 
-1. commit often, and name the commits descriptively
+1. Use the following credentials to log in (requires seeders run):
 
-1. When you have finished work on your feature, create a PR to **dev** and stop working on the branch.
+```
+// Student
+{
+   username: "student@student.com,
+   password: "student123!"
+}
+// Teacher
+{
+   username: "teacher@teacher.com,
+   password: "teacher123!"
+}
+// Admin
+{
+   username: "Admin@admin.com,
+   password: "Admin123!"
+}
+```
+
+1. Commit often, and name the commits descriptively
+
+1. When you have finished work on your feature, create a PR to `dev` branch and stop working on your branch.
 
 1. If you need the new feature to continue, branch out from your branch and continue in that branch. Else - just start a new branch
 
-1. Alert @AlonBru that you have finished work and expect some questions about it
+1. Alert @listguy that you have finished work and expect some questions about it
 
 1. Once the PR is merged, the branch may be deleted.
 
 ## Database Tables
 
-If you need to create a [new table](#new-table) or [modify an existing one](#modifying), always consult @Alonbru.  
-you'll need to create a new migration or model, then [migrate](#migration) them to the DB.
+If you need to create a [new table](#new-table) or [modify an existing one](#modifying), always consult @listguy.
+
+You'll need to create a new migration or model, then [migrate](#migration) them to the DB.
 
 ### new table:
 
